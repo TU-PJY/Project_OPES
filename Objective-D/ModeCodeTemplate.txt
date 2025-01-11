@@ -1,0 +1,46 @@
+// cpp code
+#include "Mode1.h"
+#include "MouseUtil.h"
+
+void Mode1::Start() {
+	RegisterController();
+	scene.RegisterModeName("Mode1");
+}
+
+void Mode1::Destructor() {
+}
+
+void Mode1::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	if (nMessageID == WM_KEYDOWN && wParam == VK_ESCAPE)
+		scene.Exit();
+}
+
+void Mode1::MouseMotionController(HWND hWnd) {
+	mouse.UpdateMousePosition(hWnd);
+}
+
+
+void Mode1::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+}
+
+void Mode1::RegisterController() {
+	scene.RegisterKeyController(KeyboardController);
+	scene.RegisterMouseController(MouseController);
+	scene.RegisterMouseMotionController(MouseMotionController);
+	scene.RegisterDestructor(Destructor);
+}
+
+
+// header code
+
+#pragma once
+#include "Scene.h"
+
+namespace Mode1 {
+	void Start();
+	void Destructor();
+	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void MouseMotionController(HWND hWnd);
+	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void RegisterController();
+}

@@ -1,0 +1,10 @@
+void InputMouseMotion(HWND hwnd, POINT MotionPosition) {
+		if (GetCapture() == hwnd) {
+			mouse.HideCursor();
+			GetCapture();
+
+			XMFLOAT2 Delta = mouse.GetMotionDelta(MotionPosition, 0.5);
+			mouse.UpdateMotionPosition(MotionPosition);
+			UpdateMotionRotation(RotationDest, Delta.x, Delta.y);
+		}
+	}
