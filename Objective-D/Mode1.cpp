@@ -1,5 +1,4 @@
-#include "Mode1.h"
-#include "MouseUtil.h"
+#include "ModePack.h"
 
 #include "TestObject.h"
 
@@ -14,9 +13,17 @@
 // 간편한 모드 코드 작성을 위해 [ Template ] 필터에 템플릿을 만들어 두었으니 복붙한 후 함수 이름과 네임스페이스 이름을 바꾸면 된다.
 
 void Mode1::Start() {
+	std::vector<std::string> ControlObjectTag 
+	{
+		"test_object"
+	};
+
 	// 필요한 객체 추가
 	scene.AddObject(new TestObject, "test_object", LAYER1);
 	
+	// 컨트롤러를 가지는 오브젝트 포인터 저장
+	AddControlObject(ControlObjectTag);
+
 	// scene에 컨트롤러 및 모드 소멸자 등록
 	RegisterController();
 
@@ -28,6 +35,14 @@ void Mode1::Destructor() {
 	// 여기에 모드 종료 시 필요한 작업 추가 (리소스 메모리 해제 등)
 }
 
+void Mode1::AddControlObject(std::vector<std::string> Vec) {
+	ControlObjectList.clear();
+	for (auto const& Object : Vec) {
+		if (auto FindObject = scene.Find(Object); FindObject)
+			ControlObjectList.emplace_back(FindObject);
+	}
+}
+
 void Mode1::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	KeyEvent Event{ hWnd, nMessageID, wParam, lParam };
 
@@ -35,6 +50,10 @@ void Mode1::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM
 	if (Event.Type == WM_KEYDOWN && Event.Key == VK_ESCAPE)
 		// 프로그램을 종료하는 Scene 멤버 함수
 		scene.Exit();
+
+	// 객체로 키보드 입력
+	for (auto const& Object : ControlObjectList)
+		if (Object) Object->InputKey(Event);
 }
 
 //  마우스 모션을 지정된 객체 포인터로 전달한다
@@ -45,7 +64,8 @@ void Mode1::MouseMotionController(HWND hWnd) {
 	mouse.UpdateMousePosition(hWnd);
 
 	// 객체로 마우스 모션 입력
-	scene.InputMouseMotion("test_object", Event);
+	for (auto const& Object : ControlObjectList)
+		if (Object) Object->InputMouseMotion(Event);
 }
 
 // 마우스 버튼 클릭 이벤트를 지정된 객체 포인터로 전달한다
@@ -53,7 +73,8 @@ void Mode1::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lP
 	MouseEvent Event{ hWnd, nMessageID, wParam, lParam };
 
 	// 객체로 마우스 입력
-	scene.InputMouse("test_object", Event);
+	for (auto const& Object : ControlObjectList)
+		if (Object) Object->InputMouse(Event);
 }
 
 // scene에 컨트롤러 및 모드 소멸자 등록

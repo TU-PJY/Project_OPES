@@ -61,9 +61,9 @@ public:
 
 	void Render() override {
 		camera.Move(XMFLOAT3(0.0, 0.0, -3.0));
-		InitRenderState();
+		BeginRender();
 		Transform::Move(TranslateMatrix, 0.0, -1.0, 0.0);
 		Transform::Rotate(RotateMatrix, Rotation.x, Rotation.y, 0.0);
-		Render3D(HelicopterMesh, HelicopterTex);
+		Render3D(MeshRes.ZombieMesh, TexRes.ZombieTex);
 	}
 };

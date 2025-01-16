@@ -143,6 +143,12 @@
     <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Constant Buffer Util ]">
       <UniqueIdentifier>{8a9a0685-ce18-4df7-bf17-ba13635518e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[5]____________[ Objective-D ]\[7] - [ Matrix ]">
+      <UniqueIdentifier>{7febbad7-710f-4a0c-805a-07807e8ae6e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[0] - [ Pack ]">
+      <UniqueIdentifier>{82e1b461-5d00-4430-aea1-ac6ac2a9bd4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -171,9 +177,6 @@
     </ClInclude>
     <ClInclude Include="Objective-D.h">
       <Filter>[5]____________[ Objective-D ]\[5] - [ System ]\[ WinAPI ]\[ Header ]</Filter>
-    </ClInclude>
-    <ClInclude Include="Mode1.h">
-      <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
     </ClInclude>
     <ClInclude Include="PickingUtil.h">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Picking Util ]</Filter>
@@ -256,6 +259,12 @@
     <ClInclude Include="SettingRootSignature.h">
       <Filter>[5]____________[ Objective-D ]\[2] - [ Root Signature ]</Filter>
     </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>[5]____________[ Objective-D ]\[7] - [ Matrix ]</Filter>
+    </ClInclude>
+    <ClInclude Include="ModePack.h">
+      <Filter>[1]____________[ Game Mode ]\[0] - [ Pack ]</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -290,9 +299,6 @@
     </ClCompile>
     <ClCompile Include="TerrainUtil.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Terrain Util ]</Filter>
-    </ClCompile>
-    <ClCompile Include="Mode1.cpp">
-      <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
     </ClCompile>
     <ClCompile Include="TransformUtil.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Transform Util ]</Filter>
@@ -365,6 +371,12 @@
     </ClCompile>
     <ClCompile Include="WinMain.cpp">
       <Filter>[5]____________[ Objective-D ]\[5] - [ System ]\[ WinAPI ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>[5]____________[ Objective-D ]\[7] - [ Matrix ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Mode1.cpp">
+      <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

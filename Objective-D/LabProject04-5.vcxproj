@@ -170,7 +170,8 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="LineBrush.h" />
     <ClInclude Include="LineShader.h" />
     <ClInclude Include="MathUtil.h" />
-    <ClInclude Include="Mode1.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="ModePack.h" />
     <ClInclude Include="MouseUtil.h" />
     <ClInclude Include="Objective-D.h" />
     <ClInclude Include="MeshUtil.h" />
@@ -207,6 +208,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="LineBrush.cpp" />
     <ClCompile Include="LineShader.cpp" />
     <ClCompile Include="MathUtil.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Meshes.cpp" />
     <ClCompile Include="MeshUtil.cpp" />
     <ClCompile Include="Mode1.cpp" />

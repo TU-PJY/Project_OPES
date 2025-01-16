@@ -10,7 +10,7 @@
 // 객체의 렌더링 상태를 초기화 한다. 모든 객체는 이 함수로 렌더링 과정이 시작된다.
 // 기본 RANDER_TYPE_3D로 타입이 지정되어있다.
 // RENDER_TYPE_3D_STATIC또는 RENDER_TYPE_2D_STATIC일 경우 행렬 초기화를 실행하지 않는다. 
-void GameObject::InitRenderState(int RenderTypeFlag) {
+void GameObject::BeginRender(int RenderTypeFlag) {
 	// 출력 모드 지정
 	RenderType = RenderTypeFlag;
 
@@ -27,13 +27,13 @@ void GameObject::InitRenderState(int RenderTypeFlag) {
 
 	if (RenderTypeFlag == RENDER_TYPE_3D || RenderTypeFlag == RENDER_TYPE_3D_STATIC || RenderTypeFlag == RENDER_TYPE_3D_ORTHO) {
 		// 옵션에 따라 안개가 우선 비활성화 되거나 우선 활성화 된다.
-		if (ENABLE_FOG_AFFTER_INIT_RENDER_STATE)
+		if (ENABLE_FOG_AFTER_BEGIN_RENDER)
 			SetFogUse(ENABLE_FOG);
 		else
 			SetFogUse(DISABLE_FOG);
 
 		// 옵션에 따라 텍스처 수직 반전이 적용되거나 적용되지 않는다.
-		if (ENABLE_TEXTURE_V_FLIP_AFTER_INIT_RENDER_STATE)
+		if (ENABLE_TEXTURE_V_FLIP_AFTER_BEGIN_RENDER)
 			FlipTexture(FLIP_TYPE_V);
 		else
 			FlipTexture(FLIP_TYPE_NONE);
@@ -136,7 +136,7 @@ void GameObject::Render2D(Texture* TexturePtr, float AlphaValue, bool EnableAspe
 	ObjectAlpha = AlphaValue;
 
 	PrepareRender();
-	ImagePannel->Render(ObjectCmdList);
+	SysRes.ImagePannel->Render(ObjectCmdList);
 }
 
 // 마우스 모션으로부터 회전값 업데이트 한다.
@@ -151,7 +151,7 @@ void GameObject::UpdateMotionRotation(XMFLOAT3& Rotation, float DeltaX, float De
 	Rotation.y += DeltaX;
 }
 
-// 피킹을 위한 행렬을 업데이트 한다.
+// 피킹을 위한 행렬을 업데이트 한다. 렌더링 직후 사용하도록 한다.
 void GameObject::UpdatePickMatrix() {
 	PickMatrix = ResultMatrix;
 }
@@ -180,7 +180,7 @@ void GameObject::PrepareRender() {
 
 	ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&RotateMatrix), XMLoadFloat4x4(&TranslateMatrix));
 	ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&ScaleMatrix), ResultMatrix);
-	ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&AnimationMatrix), ResultMatrix);
+	//ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&AnimationMatrix), ResultMatrix);
 
 	// 이미지 출력 모드일경우 종횡비를 적용한다.
 	if (RenderType == RENDER_TYPE_2D || RenderType == RENDER_TYPE_2D_STATIC)

@@ -6,20 +6,32 @@
 #include "BoundboxShader.h"
 #include "LineShader.h"
 
-// 매쉬, 텍스처, 쉐이더 전역 뱐수를 여기에 extern 선언
-extern Mesh* GunMesh;
-extern Mesh* HelicopterMesh;
 /////////////////////////////////////////////////////////////////////////////////
+// 매쉬 리소스는 해당 클래스 안에 선언
+class MeshResource {
+public:
+	Mesh* GunMesh;
+	Mesh* ZombieMesh;
+};
+extern MeshResource MeshRes;
 
-extern Texture* Tex, * SkyboxTex, * WoodTex;
-extern Texture* ColorTex;
-extern Texture* HelicopterTex;
+/////////////////////////////////////////////////////////////////////////////////
+// 텍스처 리소스는 해당 클래스 안에 선언
+class TextureResource {
+public:
+	Texture* Tex, * SkyboxTex, * WoodTex;
+	Texture* ColorTex;
+	Texture* ZombieTex;
+};
+extern TextureResource TexRes;
+
 /////////////////////////////////////////////////////////////////////////////////
 
 extern Object_Shader* ObjectShader;
 extern Boundbox_Shader* BoundboxShader;
 extern Image_Shader* ImageShader;
 extern Line_Shader* LineShader;
+
 /////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////// 기본 리소스
 // 매쉬, 텍스처 로드 시 포인터를 저장하는 벡터
@@ -27,11 +39,15 @@ extern Line_Shader* LineShader;
 extern std::vector<Mesh*> LoadedMeshList;
 extern std::vector<Texture*> LoadedTextureList;
 
-extern Mesh* ImagePannel;
-extern Mesh* BillboardMesh;
-extern Mesh* SkyboxMesh;
-extern Mesh* BoundMesh;
-extern Mesh* BoundingSphereMesh;
+class SystemResource {
+public:
+	Mesh* ImagePannel;
+	Mesh* BillboardMesh;
+	Mesh* SkyboxMesh;
+	Mesh* BoundMesh;
+	Mesh* BoundingSphereMesh;
+};
+extern SystemResource SysRes;
 
 void LoadShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);
 void LoadSystemMesh(DeviceSystem& System);

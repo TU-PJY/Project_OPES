@@ -6,20 +6,13 @@
 #include "MathUtil.h"
 #include "LineBrush.h"
 #include "TerrainUtil.h"
+#include "Matrix.h"
 
 class Shader;
 typedef ID3D12GraphicsCommandList* (CommandList);
 
 class GameObject {
 public:
-	// 각 객체는 각자의 행렬을 가진다.
-	XMFLOAT4X4 TranslateMatrix{ Mat4::Identity() };
-	XMFLOAT4X4 RotateMatrix{ Mat4::Identity() };
-	XMFLOAT4X4 ScaleMatrix { Mat4::Identity() };
-	XMFLOAT4X4 ImageAspectMatrix{ Mat4::Identity() };
-	XMFLOAT4X4 AnimationMatrix{ Mat4::Identity() };
-	XMMATRIX ResultMatrix{};
-
 	// 오브젝트 피킹 될 경우 사용될 행렬
 	XMMATRIX PickMatrix{};
 
@@ -36,7 +29,7 @@ public:
 	std::string ObjectTag{};
 	bool DeleteCommand{};
 
-	void InitRenderState(int RenderTypeFlag = RENDER_TYPE_3D);
+	void BeginRender(int RenderTypeFlag = RENDER_TYPE_3D);
 	void SetColor(XMFLOAT3& Color);
 	void SetColor(float R, float G, float B);
 	void SetColorRGB(float R, float G, float B);

@@ -53,5 +53,5 @@ void LineBrush::Draw(float X1, float Y1, float X2, float Y2, float Width, float 
 	RCUtil::Input(ObjectCmdList, &LineColor, GAME_OBJECT_INDEX, 3, 16);
 	RCUtil::Input(ObjectCmdList, &TransparencyValue, GAME_OBJECT_INDEX, 1, 19);
 
-	ImagePannel->Render(ObjectCmdList);
+	SysRes.ImagePannel->Render(ObjectCmdList);
 }

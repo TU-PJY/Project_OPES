@@ -3,37 +3,31 @@
 // 기본적으로 전역 리소스이며, ResourceManager.h에 먼저 extern 선언한 뒤, 이 파일에 아래와 같이 정의하면 된다.
 // Scene::Init()에서 실행된다.
 
+MeshResource MeshRes;
+TextureResource TexRes;
+SystemResource SysRes;
 
-Mesh* GunMesh;
-Mesh* HelicopterMesh;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
-	ImportMesh(System, GunMesh, "Resources//Models//model.bin", MESH_TYPE_BIN);
-	ImportMesh(System, HelicopterMesh, "Resources//Models//zombie.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.GunMesh, "Resources//Models//model.bin", MESH_TYPE_BIN);
+	ImportMesh(System, MeshRes.ZombieMesh, "Resources//Models//zombie.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
-
-
-Texture* Tex, * SkyboxTex, * WoodTex;
-Texture* ColorTex;
-Texture* HelicopterTex;
 
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
-	ImportTexture(System, Tex, L"Resources//Image//Gun.jpg", TEXTURE_TYPE_WIC);
-	ImportTexture(System, WoodTex, L"Resources//Image//Wood.jpg", TEXTURE_TYPE_WIC);
-	ImportTexture(System, ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
-	ImportTexture(System, HelicopterTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
+	ImportTexture(System, TexRes.Tex, L"Resources//Image//Gun.jpg", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.WoodTex, L"Resources//Image//Wood.jpg", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.ZombieTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
-
 
 Object_Shader* ObjectShader;
 Boundbox_Shader* BoundboxShader;
 Image_Shader* ImageShader;
 Line_Shader* LineShader;
-
 // 쉐이더를 여기서 로드한다.
 void LoadShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 	// 일반 렌더링 쉐이더 생성
@@ -62,35 +56,29 @@ void LoadShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 std::vector<Mesh*> LoadedMeshList;
 std::vector<Texture*> LoadedTextureList;
 
-Mesh* ImagePannel;
-Mesh* BillboardMesh;
-Mesh* SkyboxMesh;
-Mesh* BoundMesh;
-Mesh* BoundingSphereMesh;
-
 // 기본 전역 매쉬 로드
 void LoadSystemMesh(DeviceSystem& System) {
 	// 이미지 출력용 매쉬 생성
-	ImagePannel = new Mesh;
-	ImagePannel->CreateImagePannelMesh(System.Device, System.CmdList);
-	LoadedMeshList.emplace_back(ImagePannel);
+	SysRes.ImagePannel = new Mesh;
+	SysRes.ImagePannel->CreateImagePannelMesh(System.Device, System.CmdList);
+	LoadedMeshList.emplace_back(SysRes.ImagePannel);
 
 	// 이미지 패널과 빌보드 매쉬는 같은 버텍스를 사용함
-	BillboardMesh = ImagePannel;
+	SysRes.BillboardMesh = SysRes.ImagePannel;
 
 	// 스카이박스 출력용 매쉬 생성
-	SkyboxMesh = new Mesh;
-	SkyboxMesh->CreateSkyboxMesh(System.Device, System.CmdList);
-	LoadedMeshList.emplace_back(SkyboxMesh);
+	SysRes.SkyboxMesh = new Mesh;
+	SysRes.SkyboxMesh->CreateSkyboxMesh(System.Device, System.CmdList);
+	LoadedMeshList.emplace_back(SysRes.SkyboxMesh);
 
 	// 바운드박스 출력용 매쉬 생성
-	BoundMesh = new Mesh;
-	BoundMesh->CreateBoundboxMesh(System.Device, System.CmdList);
-	LoadedMeshList.emplace_back(BoundMesh);
+	SysRes.BoundMesh = new Mesh;
+	SysRes.BoundMesh->CreateBoundboxMesh(System.Device, System.CmdList);
+	LoadedMeshList.emplace_back(SysRes.BoundMesh);
 
 	// 바운드스페어 출력용 매쉬 생성
-	BoundingSphereMesh = new Mesh(System.Device, System.CmdList, "Resources//SystemResources//Models//BoundingSphereMesh.txt", MESH_TYPE_TEXT);
-	LoadedMeshList.emplace_back(BoundingSphereMesh);
+	SysRes.BoundingSphereMesh = new Mesh(System.Device, System.CmdList, "Resources//SystemResources//Models//BoundingSphereMesh.txt", MESH_TYPE_TEXT);
+	LoadedMeshList.emplace_back(SysRes.BoundingSphereMesh);
 }
 
 // 업로드 버퍼를 삭제하고, 벡터를 비운다.

@@ -29,11 +29,11 @@ constexpr int DELETE_LOCATION_BUFFER_SIZE = 200;
 
 // 활성화 시 렌더 상태 설정 시 안개 사용이 활성화 된다.
 // 비활성화 시 렌더 상태 설정 시 안개 사용이 비활성화 된다.
-constexpr bool ENABLE_FOG_AFFTER_INIT_RENDER_STATE = false;
+constexpr bool ENABLE_FOG_AFTER_BEGIN_RENDER = false;
 
 // 활성화 시 3D 렌더링 상태로 설정 시 텍스처 수직 반전을 자동으로 적용한다.
 // 비활성화 시 적용하지 않는다.
-constexpr bool ENABLE_TEXTURE_V_FLIP_AFTER_INIT_RENDER_STATE = true;
+constexpr bool ENABLE_TEXTURE_V_FLIP_AFTER_BEGIN_RENDER = true;
 
 // 제목표시줄 문자열을 설정한다. 반드시 아래와 같은 형식으로 저정해야 한다.
 constexpr TCHAR TitleName[] = _T("Objective-D(");

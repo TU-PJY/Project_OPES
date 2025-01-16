@@ -1,6 +1,7 @@
 #pragma once
 #include "DirectX_3D.h"
 #include "MeshUtil.h"
+#include "Matrix.h"
 
 class AABB;
 class Range;
@@ -8,11 +9,6 @@ class Range;
 class OOBB {
 private:
 	bool Collide{};
-
-	XMFLOAT4X4 TranslateMatrix{};
-	XMFLOAT4X4 RotateMatrix{};
-	XMFLOAT4X4 ScaleMatrix{};
-
 	XMFLOAT3 BoundboxColor{ 1.0, 0.0, 0.0 };
 
 public:
@@ -29,10 +25,6 @@ public:
 class AABB {
 private:
 	bool Collide{};
-
-	XMFLOAT4X4 TranslateMatrix{};
-	XMFLOAT4X4 ScaleMatrix{};
-
 	XMFLOAT3 BoundboxColor{ 1.0, 0.0, 0.0 };
 
 public:
@@ -48,12 +40,7 @@ public:
 class Range {
 private:
 	bool Collide{};
-
 	float Size{};
-
-	XMFLOAT4X4 TranslateMatrix{};
-	XMFLOAT4X4 ScaleMatrix{};
-
 	XMFLOAT3 BoundboxColor{ 1.0, 0.0, 0.0 };
 
 public:
