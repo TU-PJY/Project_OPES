@@ -317,6 +317,10 @@ std::vector<FBXVertex> FBXUtil::GetVertexVector() {
 	return ParsedVertices;
 }
 
+void FBXUtil::ClearVertexVector(){
+	ParsedVertices.clear();
+}
+
 //
 //void FBXUtil::PrintVertexData(const std::vector<FBXVertex>& VertexVec) {
 //	std::cout << "\n--- Stored Vertex Data ---\n";

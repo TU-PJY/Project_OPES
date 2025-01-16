@@ -65,6 +65,7 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 			fbxUtil.GetVertexData();
 			MeshPtr = new Mesh();
 			MeshPtr->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
+			fbxUtil.ClearVertexVector();
 		}
 	}
 	LoadedMeshList.emplace_back(MeshPtr);

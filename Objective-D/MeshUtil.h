@@ -95,6 +95,7 @@ public:
 	void GetVertexData();
 	void ProcessNode(FbxNode* node);
 	std::vector<FBXVertex> GetVertexVector();
+	void ClearVertexVector();
 	//void ProcessSkin(FbxMesh* mesh, std::vector<std::vector<int>>& boneIndices, std::vector<std::vector<float>>& boneWeights);
 	//void PrintVertexData(const std::vector<FBXVertex>& VertexVec);
 };

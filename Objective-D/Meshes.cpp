@@ -431,6 +431,5 @@ void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdLis
 	IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	IndexBufferView.SizeInBytes = sizeof(UINT) * Indices;
 
-	VertexData.clear();
 	//std::cout << "FBX Mesh with Skinning created" << std::endl;
 }
