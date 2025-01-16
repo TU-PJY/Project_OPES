@@ -6,8 +6,8 @@
 #include <algorithm>
 
 FBXUtil fbxUtil;
-std::vector<MyVertex> parsedVertices;
-std::unordered_map<int, std::vector<std::pair<int, float>>> skinningData;
+
+//std::unordered_map<int, std::vector<std::pair<int, float>>> skinningData;
 
 // 매쉬를 담당하는 유틸이다.
 
@@ -167,62 +167,60 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 //////////////////////////////////////////////////////////////////////////
 
 
-void FBXUtil::InitializeFBX(FbxManager*& manager, FbxScene*& scene) {
-	// FBX Manager 생성
-	manager = FbxManager::Create();
-	if (!manager) {
+void FBXUtil::Init() {
+	Manager = FbxManager::Create();
+	if (!Manager) {
 		std::cerr << "Error: Unable to create FBX Manager!\n";
 		exit(1);
 	}
 	std::cout << "FBX Manager created.\n";
 
-	// IOSettings 객체 생성 및 초기화
-	FbxIOSettings* ios = FbxIOSettings::Create(manager, IOSROOT);
-	manager->SetIOSettings(ios);
-
-	// FBX Scene 생성
-	scene = FbxScene::Create(manager, "My Scene");
-	if (!scene) {
-		std::cerr << "Error: Unable to create FBX Scene!\n";
-		exit(1);
-	}
-	std::cout << "FBX Scene created.\n";
+	FbxIOSettings* IOS = FbxIOSettings::Create(Manager, IOSROOT);
+	Manager->SetIOSettings(IOS);
 }
 
-bool FBXUtil::LoadFBXFile(FbxManager* manager, FbxScene* scene, const char* filePath) {
-	// FBX Importer 생성
-	FbxImporter* importer = FbxImporter::Create(manager, "");
+bool FBXUtil::LoadFBXFile(const char* filePath) {
+	if (Scene) {
+		Scene->Destroy();
+		Scene = FbxScene::Create(Manager, "FBX_Scene");
+		if (!Scene) {
+			std::cerr << "Error: Unable to create FBX Scene!\n";
+			exit(1);
+		}
+	}
 
-	// 파일 열기
-	if (!importer->Initialize(filePath, -1, manager->GetIOSettings())) {
+	else {
+		Scene = FbxScene::Create(Manager, "FBX_Scene");
+		if (!Scene) {
+			std::cerr << "Error: Unable to create FBX Scene!\n";
+			exit(1);
+		}
+	}
+	
+	FbxImporter* Importer = FbxImporter::Create(Manager, "");
+
+	if (!Importer->Initialize(filePath, -1, Manager->GetIOSettings())) {
 		std::cerr << "Error: Unable to initialize importer!\n";
-		std::cerr << "Error: " << importer->GetStatus().GetErrorString() << "\n";
+		std::cerr << "Error: " << Importer->GetStatus().GetErrorString() << "\n";
 		return false;
 	}
 
-	// 파일에서 Scene으로 데이터 읽기
-	if (!importer->Import(scene)) {
+	if (!Importer->Import(Scene)) {
 		std::cerr << "Error: Unable to import FBX scene!\n";
 		return false;
 	}
-
 	std::cout << "FBX file loaded successfully.\n";
 
-	// Importer 삭제
-	importer->Destroy();
+	Importer->Destroy();
+
 	return true;
 }
 
-bool FBXUtil::TriangulateScene(FbxManager* pManager, FbxScene* pScene) {
-	// FbxGeometryConverter 생성
-	FbxGeometryConverter geomConverter(pManager);
+bool FBXUtil::TriangulateScene() {
+	FbxGeometryConverter GeometryConverter(Manager);
+	bool Result = GeometryConverter.Triangulate(Scene, true);
 
-	// 씬 전체 Triangulate
-	// (replace = true 로 설정하면 기존 지오메트리가 삼각화 결과로 대체됩니다.)
-	bool result = geomConverter.Triangulate(pScene, /*replace=*/true);
-
-	if (!result)
-	{
+	if (!Result) {
 		std::cerr << "Error: Triangulation failed!\n";
 		return false;
 	}
@@ -231,74 +229,68 @@ bool FBXUtil::TriangulateScene(FbxManager* pManager, FbxScene* pScene) {
 	return true;
 }
 
-void FBXUtil::GetVertexData(FbxScene* scene, std::vector<MyVertex>& VertexVec){
-	FbxNode* rootNode = scene->GetRootNode();
-	if (rootNode) {
-		for (int i = 0; i < rootNode->GetChildCount(); ++i) {
-			ProcessNode(rootNode->GetChild(i), VertexVec);
-		}
+void FBXUtil::GetVertexData(){
+	FbxNode* RootNode = Scene->GetRootNode();
+
+	if (RootNode) {
+		for (int i = 0; i < RootNode->GetChildCount(); ++i) 
+			ProcessNode(RootNode->GetChild(i));
 	}
 }
 
-void FBXUtil::ProcessNode(FbxNode* node, std::vector<MyVertex>& VertexVec) {
-	std::cout << "Node Name: " << node->GetName() << "\n";
+void FBXUtil::ProcessNode(FbxNode* Node) {
+	std::cout << "Node Name: " << Node->GetName() << "\n";
 
-	FbxMesh* mesh = node->GetMesh();
-	if (mesh) {
-		std::cout << "Processing Mesh: " << node->GetName() << "\n";
+	FbxMesh* Mesh = Node->GetMesh();
+	if (Mesh) {
+		std::cout << "Processing Mesh: " << Node->GetName() << "\n";
 
-		// 컨트롤 포인트(버텍스) 배열
-		FbxVector4* controlPoints = mesh->GetControlPoints();
-		int controlPointCount = mesh->GetControlPointsCount();
+		FbxVector4* ControlPoints = Mesh->GetControlPoints();
+		int ControlPointCount = Mesh->GetControlPointsCount();
 
-		// 뼈 및 스키닝 데이터 파싱
-		std::vector<std::vector<int>> controlPointBoneIndices(controlPointCount);
-		std::vector<std::vector<float>> controlPointBoneWeights(controlPointCount);
+		//std::vector<std::vector<int>> controlPointBoneIndices(controlPointCount);
+		//std::vector<std::vector<float>> controlPointBoneWeights(controlPointCount);
 
-		ProcessSkin(mesh, controlPointBoneIndices, controlPointBoneWeights);
+		//ProcessSkin(mesh, controlPointBoneIndices, controlPointBoneWeights);
 
-		// 폴리곤 반복
-		int polygonCount = mesh->GetPolygonCount();
-		for (int polyIndex = 0; polyIndex < polygonCount; polyIndex++) {
-			int vertexCountInPoly = mesh->GetPolygonSize(polyIndex);
-			for (int v = 0; v < vertexCountInPoly; v++) {
-				int controlPointIndex = mesh->GetPolygonVertex(polyIndex, v);
-				if (controlPointIndex < 0) continue;
+		int PolygonCount = Mesh->GetPolygonCount();
+		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
+			int VertexCountInPolygon = Mesh->GetPolygonSize(PolyIndex);
 
-				// 위치 (Pos)
-				FbxVector4 pos = controlPoints[controlPointIndex];
-				// 노멀 읽기
-				FbxVector4 normal(0, 0, 0, 0);
-				bool hasNormal = mesh->GetPolygonVertexNormal(polyIndex, v, normal);
-				// UV 읽기
-				FbxVector2 uv(0, 0);
+			for (int V = 0; V < VertexCountInPolygon; V++) {
+				int ControlPointIndex = Mesh->GetPolygonVertex(PolyIndex, V);
+				if (ControlPointIndex < 0) 
+					continue;
 
-				const char* uvSetName = nullptr;
-				if (mesh->GetElementUVCount() > 0) {
-					FbxLayerElementUV* uvElement = mesh->GetElementUV(0);
-					if (uvElement) {
-						uvSetName = uvElement->GetName();
-					}
+				FbxVector4 Position = ControlPoints[ControlPointIndex];
+				FbxVector4 Normal(0, 0, 0, 0);
+
+				bool HasNormal = Mesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
+				FbxVector2 UV(0, 0);
+
+				const char* UVSetName = nullptr;
+				if (Mesh->GetElementUVCount() > 0) {
+					FbxLayerElementUV* UVElement = Mesh->GetElementUV(0);
+					if (UVElement) 
+						UVSetName = UVElement->GetName();
 				}
 
-				bool unmapped = false;
-				bool hasUV = mesh->GetPolygonVertexUV(polyIndex, v, uvSetName, uv, unmapped);
+				bool Unmapped = false;
+				bool HasUV = Mesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
 
-				// Vertex 구조체 생성
-				MyVertex vertex{};
-				vertex.px = static_cast<float>(pos[0]);
-				vertex.py = static_cast<float>(pos[1]);
-				vertex.pz = static_cast<float>(pos[2]);
+				FBXVertex Vertex{};
+				Vertex.px = static_cast<float>(Position[0]);
+				Vertex.py = static_cast<float>(Position[1]);
+				Vertex.pz = static_cast<float>(Position[2]);
 
-				vertex.nx = hasNormal ? static_cast<float>(normal[0]) : 0.0f;
-				vertex.ny = hasNormal ? static_cast<float>(normal[1]) : 0.0f;
-				vertex.nz = hasNormal ? static_cast<float>(normal[2]) : 0.0f;
+				Vertex.nx = HasNormal ? static_cast<float>(Normal[0]) : 0.0f;
+				Vertex.ny = HasNormal ? static_cast<float>(Normal[1]) : 0.0f;
+				Vertex.nz = HasNormal ? static_cast<float>(Normal[2]) : 0.0f;
 
-				vertex.u = hasUV ? static_cast<float>(uv[0]) : 0.0f;
-				vertex.v = hasUV ? static_cast<float>(uv[1]) : 0.0f;
+				Vertex.u = HasUV ? static_cast<float>(UV[0]) : 0.0f;
+				Vertex.v = HasUV ? static_cast<float>(UV[1]) : 0.0f;
 
-				// 뼈 데이터 추가
-				auto& boneIndices = controlPointBoneIndices[controlPointIndex];
+			/*	auto& boneIndices = controlPointBoneIndices[controlPointIndex];
 				auto& boneWeights = controlPointBoneWeights[controlPointIndex];
 
 				for (size_t i = 0; i < 4; i++) {
@@ -310,63 +302,68 @@ void FBXUtil::ProcessNode(FbxNode* node, std::vector<MyVertex>& VertexVec) {
 						vertex.boneIndices[i] = 0;
 						vertex.boneWeights[i] = 0.0f;
 					}
-				}
+				}*/
 
-				VertexVec.push_back(vertex);
+				ParsedVertices.push_back(Vertex);
 			}
 		}
 	}
 
-	// 하위 노드 순회
-	for (int i = 0; i < node->GetChildCount(); ++i) {
-		ProcessNode(node->GetChild(i), VertexVec);
-	}
+	for (int i = 0; i < Node->GetChildCount(); ++i)
+		ProcessNode(Node->GetChild(i));
 }
 
-void FBXUtil::ProcessSkin(FbxMesh* mesh, std::vector<std::vector<int>>& boneIndices, std::vector<std::vector<float>>& boneWeights) {
-	int skinCount = mesh->GetDeformerCount(FbxDeformer::eSkin);
-	if (skinCount == 0) return;
-
-	FbxSkin* skin = static_cast<FbxSkin*>(mesh->GetDeformer(0, FbxDeformer::eSkin));
-	int clusterCount = skin->GetClusterCount();
-
-	for (int clusterIdx = 0; clusterIdx < clusterCount; clusterIdx++) {
-		FbxCluster* cluster = skin->GetCluster(clusterIdx);
-		if (!cluster) continue;
-
-		int* indices = cluster->GetControlPointIndices();
-		double* weights = cluster->GetControlPointWeights();
-		int count = cluster->GetControlPointIndicesCount();
-
-		for (int i = 0; i < count; i++) {
-			int controlPointIndex = indices[i];
-			float weight = static_cast<float>(weights[i]);
-
-			boneIndices[controlPointIndex].push_back(clusterIdx);
-			boneWeights[controlPointIndex].push_back(weight);
-		}
-	}
-
-	// Normalize weights to sum up to 1.0
-	for (size_t i = 0; i < boneWeights.size(); i++) {
-		float totalWeight = 0.0f;
-		for (float weight : boneWeights[i]) {
-			totalWeight += weight;
-		}
-		for (float& weight : boneWeights[i]) {
-			weight /= totalWeight;
-		}
-	}
+std::vector<FBXVertex> FBXUtil::GetVertexVector() {
+	return ParsedVertices;
 }
 
-void FBXUtil::PrintVertexData(const std::vector<MyVertex>& VertexVec) {
-	std::cout << "\n--- Stored Vertex Data ---\n";
-	for (size_t i = 0; i < VertexVec.size(); ++i) {
-		const MyVertex& vertex = VertexVec[i];
-		std::cout << "Vertex " << i << ": ";
-		std::cout << "Pos(" << vertex.px << ", " << vertex.py << ", " << vertex.pz << "), ";
-		std::cout << "Normal(" << vertex.nx << ", " << vertex.ny << ", " << vertex.nz << "), ";
-		std::cout << "UV(" << vertex.u << ", " << vertex.v << ")\n";
-	}
-	std::cout << "--- End of Vertex Data ---\n";
-}
+//
+//void FBXUtil::PrintVertexData(const std::vector<FBXVertex>& VertexVec) {
+//	std::cout << "\n--- Stored Vertex Data ---\n";
+//
+//	for (size_t i = 0; i < ParsedVertices.size(); ++i) {
+//		const FBXVertex& Vertex = ParsedVertices[i];
+//		std::cout << "Vertex " << i << ": ";
+//		std::cout << "Pos(" << Vertex.px << ", " << Vertex.py << ", " << Vertex.pz << "), ";
+//		std::cout << "Normal(" << Vertex.nx << ", " << Vertex.ny << ", " << Vertex.nz << "), ";
+//		std::cout << "UV(" << Vertex.u << ", " << Vertex.v << ")\n";
+//	}
+//
+//	std::cout << "--- End of Vertex Data ---\n";
+//}
+
+//void FBXUtil::ProcessSkin(FbxMesh* mesh, std::vector<std::vector<int>>& boneIndices, std::vector<std::vector<float>>& boneWeights) {
+//	int skinCount = mesh->GetDeformerCount(FbxDeformer::eSkin);
+//	if (skinCount == 0) 
+//		return;
+//
+//	FbxSkin* skin = static_cast<FbxSkin*>(mesh->GetDeformer(0, FbxDeformer::eSkin));
+//	int clusterCount = skin->GetClusterCount();
+//
+//	for (int clusterIdx = 0; clusterIdx < clusterCount; clusterIdx++) {
+//		FbxCluster* cluster = skin->GetCluster(clusterIdx);
+//		if (!cluster) 
+//			continue;
+//
+//		int* indices = cluster->GetControlPointIndices();
+//		double* weights = cluster->GetControlPointWeights();
+//		int count = cluster->GetControlPointIndicesCount();
+//
+//		for (int i = 0; i < count; i++) {
+//			int controlPointIndex = indices[i];
+//			float weight = static_cast<float>(weights[i]);
+//
+//			boneIndices[controlPointIndex].push_back(clusterIdx);
+//			boneWeights[controlPointIndex].push_back(weight);
+//		}
+//	}
+//
+//	for (size_t i = 0; i < boneWeights.size(); i++) {
+//		float totalWeight = 0.0f;
+//		for (float weight : boneWeights[i])
+//			totalWeight += weight;
+//
+//		for (float& weight : boneWeights[i])
+//			weight /= totalWeight;
+//	}
+//}

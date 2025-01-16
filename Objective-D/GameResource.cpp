@@ -10,18 +10,7 @@ Mesh* HelicopterMesh;
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
 	ImportMesh(System, GunMesh, "Resources//Models//model.bin", MESH_TYPE_BIN);
-
-	// FBX 로드 테스트
-	fbxUtil.InitializeFBX(fbxUtil.manager, fbxUtil.scene);
-	if (fbxUtil.LoadFBXFile(fbxUtil.manager, fbxUtil.scene, "Resources//Models//zombie.fbx")) {
-		fbxUtil.TriangulateScene(fbxUtil.manager, fbxUtil.scene);
-		fbxUtil.GetVertexData(fbxUtil.scene, parsedVertices);
-
-		//fbxUtil.ProcessAnimation(fbxUtil.scene, animations);
-		//fbxUtil.PrintAnimationData(animations);
-		HelicopterMesh = new Mesh();
-		HelicopterMesh->CreateFBXMesh(System.Device, System.CmdList, parsedVertices);
-	}
+	ImportMesh(System, HelicopterMesh, "Resources//Models//zombie.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

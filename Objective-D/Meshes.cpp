@@ -373,15 +373,15 @@ void Mesh::ImportMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, 
 	IndexBufferView.SizeInBytes = sizeof(UINT) * Indices;
 }
 
-void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, std::vector<MyVertex>& VertexData) {
+void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, std::vector<FBXVertex>& VertexData) {
 	Vertices = static_cast<UINT>(VertexData.size());
 	Indices = Vertices;
 
 	Position = new XMFLOAT3[Vertices];
 	Normal = new XMFLOAT3[Vertices];
 	TextureCoords = new XMFLOAT2[Vertices];
-	BoneIndices = new XMUINT4[Vertices];
-	BoneWeights = new XMFLOAT4[Vertices];
+	//BoneIndices = new XMUINT4[Vertices];
+	//BoneWeights = new XMFLOAT4[Vertices];
 	PnIndices = new UINT[Indices];
 
 	for (UINT i = 0; i < Vertices; i++) {
@@ -389,8 +389,8 @@ void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdLis
 		Normal[i] = XMFLOAT3(VertexData[i].nx, VertexData[i].ny, VertexData[i].nz);
 		TextureCoords[i] = XMFLOAT2(VertexData[i].u, VertexData[i].v);
 
-		BoneIndices[i] = XMUINT4(VertexData[i].boneIndices[0], VertexData[i].boneIndices[1], VertexData[i].boneIndices[2], VertexData[i].boneIndices[3]);
-		BoneWeights[i] = XMFLOAT4(VertexData[i].boneWeights[0], VertexData[i].boneWeights[1], VertexData[i].boneWeights[2], VertexData[i].boneWeights[3]);
+		//BoneIndices[i] = XMUINT4(VertexData[i].BoneIndices[0], VertexData[i].BoneIndices[1], VertexData[i].BoneIndices[2], VertexData[i].BoneIndices[3]);
+		//BoneWeights[i] = XMFLOAT4(VertexData[i].BoneWeights[0], VertexData[i].BoneWeights[1], VertexData[i].BoneWeights[2], VertexData[i].BoneWeights[3]);
 	}
 
 	for (UINT i = 0; i < Indices; i++) {
@@ -400,10 +400,10 @@ void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdLis
 	PositionBuffer = ::CreateBufferResource(Device, CmdList, Position, sizeof(XMFLOAT3) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &PositionUploadBuffer);
 	NormalBuffer = ::CreateBufferResource(Device, CmdList, Normal, sizeof(XMFLOAT3) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &NormalUploadBuffer);
 	TextureCoordBuffer = ::CreateBufferResource(Device, CmdList, TextureCoords, sizeof(XMFLOAT2) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &TextureCoordUploadBuffer);
-	BoneIndexBuffer = ::CreateBufferResource(Device, CmdList, BoneIndices, sizeof(XMUINT4) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &BoneIndexUploadBuffer);
-	BoneWeightBuffer = ::CreateBufferResource(Device, CmdList, BoneWeights, sizeof(XMFLOAT4) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &BoneWeightUploadBuffer);
+//	BoneIndexBuffer = ::CreateBufferResource(Device, CmdList, BoneIndices, sizeof(XMUINT4) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &BoneIndexUploadBuffer);
+	//BoneWeightBuffer = ::CreateBufferResource(Device, CmdList, BoneWeights, sizeof(XMFLOAT4) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &BoneWeightUploadBuffer);
 
-	NumVertexBufferViews = 5;
+	NumVertexBufferViews = 3;
 	VertexBufferViews = new D3D12_VERTEX_BUFFER_VIEW[NumVertexBufferViews];
 
 	VertexBufferViews[0].BufferLocation = PositionBuffer->GetGPUVirtualAddress();
@@ -418,18 +418,19 @@ void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdLis
 	VertexBufferViews[2].StrideInBytes = sizeof(XMFLOAT2);
 	VertexBufferViews[2].SizeInBytes = sizeof(XMFLOAT2) * Vertices;
 
-	VertexBufferViews[3].BufferLocation = BoneIndexBuffer->GetGPUVirtualAddress();
-	VertexBufferViews[3].StrideInBytes = sizeof(XMUINT4);
-	VertexBufferViews[3].SizeInBytes = sizeof(XMUINT4) * Vertices;
+	//VertexBufferViews[3].BufferLocation = BoneIndexBuffer->GetGPUVirtualAddress();
+	//VertexBufferViews[3].StrideInBytes = sizeof(XMUINT4);
+	//VertexBufferViews[3].SizeInBytes = sizeof(XMUINT4) * Vertices;
 
-	VertexBufferViews[4].BufferLocation = BoneWeightBuffer->GetGPUVirtualAddress();
-	VertexBufferViews[4].StrideInBytes = sizeof(XMFLOAT4);
-	VertexBufferViews[4].SizeInBytes = sizeof(XMFLOAT4) * Vertices;
+	//VertexBufferViews[4].BufferLocation = BoneWeightBuffer->GetGPUVirtualAddress();
+	//VertexBufferViews[4].StrideInBytes = sizeof(XMFLOAT4);
+	//VertexBufferViews[4].SizeInBytes = sizeof(XMFLOAT4) * Vertices;
 
 	IndexBuffer = ::CreateBufferResource(Device, CmdList, PnIndices, sizeof(UINT) * Indices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &IndexUploadBuffer);
 	IndexBufferView.BufferLocation = IndexBuffer->GetGPUVirtualAddress();
 	IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	IndexBufferView.SizeInBytes = sizeof(UINT) * Indices;
 
-	std::cout << "FBX Mesh with Skinning created" << std::endl;
+	VertexData.clear();
+	//std::cout << "FBX Mesh with Skinning created" << std::endl;
 }

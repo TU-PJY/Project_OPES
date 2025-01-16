@@ -74,7 +74,8 @@ enum UseFogenum {
 // 매쉬 파일 타입 열거형
 enum MeshTypeEnum {
 	MESH_TYPE_TEXT,
-	MESH_TYPE_BIN
+	MESH_TYPE_BIN,
+	MESH_TYPE_FBX
 };
 
 // 텍스처 파일 타입 열거형

@@ -40,7 +40,17 @@ void LoadTexture(DeviceSystem& System);
 void ClearUploadBuffer();
 
 inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, int Type) {
-	MeshPtr = new Mesh(System.Device, System.CmdList, Directory, Type);
+	if (Type != MESH_TYPE_FBX)
+		MeshPtr = new Mesh(System.Device, System.CmdList, Directory, Type);
+
+	else {
+		if (fbxUtil.LoadFBXFile(Directory)) {
+			fbxUtil.TriangulateScene();
+			fbxUtil.GetVertexData();
+			MeshPtr = new Mesh();
+			MeshPtr->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
+		}
+	}
 	LoadedMeshList.emplace_back(MeshPtr);
 }
 

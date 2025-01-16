@@ -3,16 +3,14 @@
 #include <fstream>
 #include <unordered_map>
 
-struct MyVertex
-{
+struct FBXVertex {
 	float px, py, pz;   // Position
 	float nx, ny, nz;   // Normal
 	float u, v;         // UV
-	int boneIndices[4]; // 영향을 받는 본 인덱스 (최대 4개)
-	float boneWeights[4]; // 본 가중치 (최대 4개)
+	//int BoneIndices[4]; // 영향을 받는 본 인덱스 (최대 4개)
+	//float BoneWeights[4]; // 본 가중치 (최대 4개)
 };
-extern std::vector<MyVertex> parsedVertices;
-extern std::unordered_map<int, std::vector<std::pair<int, float>>> skinningData;
+//extern std::unordered_map<int, std::vector<std::pair<int, float>>> skinningData;
 
 class Mesh {
 private:
@@ -78,24 +76,27 @@ public:
 	void CreateImagePannelMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList);
 	void CreateBoundboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList);
 	void ImportMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, char* Directory, bool TextMode);
-	void CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, std::vector<MyVertex>& VertexData);
+	void CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, std::vector<FBXVertex>& VertexData);
 	float GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix);
 	bool IsPointInTriangle(XMFLOAT2& pt, XMFLOAT2& v0, XMFLOAT2& v1, XMFLOAT2& v2);
 	float ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XMFLOAT3& v2);
 };
 
 class FBXUtil {
-public:
-	FbxManager* manager{};
-	FbxScene* scene{};
+private:
+	FbxManager* Manager{};
+	FbxScene* Scene{};
+	std::vector<FBXVertex> ParsedVertices{};
 
-	void InitializeFBX(FbxManager*& manager, FbxScene*& scene);
-	bool LoadFBXFile(FbxManager* manager, FbxScene* scene, const char* filePath);
-	void ProcessSkin(FbxMesh* mesh, std::vector<std::vector<int>>& boneIndices, std::vector<std::vector<float>>& boneWeights);
-	void PrintVertexData(const std::vector<MyVertex>& VertexVec);
-	bool TriangulateScene(FbxManager* pManager, FbxScene* pScene);
-	void GetVertexData(FbxScene* scene, std::vector<MyVertex>& VertexVec);
-	void ProcessNode(FbxNode* node, std::vector<MyVertex>& VertexVec);
+public:
+	void Init();
+	bool LoadFBXFile(const char* filePath);
+	bool TriangulateScene();
+	void GetVertexData();
+	void ProcessNode(FbxNode* node);
+	std::vector<FBXVertex> GetVertexVector();
+	//void ProcessSkin(FbxMesh* mesh, std::vector<std::vector<int>>& boneIndices, std::vector<std::vector<float>>& boneWeights);
+	//void PrintVertexData(const std::vector<FBXVertex>& VertexVec);
 };
 
 extern FBXUtil fbxUtil;

@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "StartMode.h"
 #include "CBVUtil.h"
+#include "MeshUtil.h"
 
 void Framework::Init() {
 	SetBackgroundColor(0.5, 0.5, 0.5);
@@ -13,6 +14,7 @@ void Framework::Init() {
 	// 루트 시그니처를 생성한다.
 	DeviceSystem System{ Device, CmdList };
 	DefaultRootSignature = scene.CreateObjectRootSignature(System.Device);
+	fbxUtil.Init();
 	LoadShader(DefaultRootSignature, System.Device);
 	LoadSystemMesh(System);
 	LoadMesh(System);
