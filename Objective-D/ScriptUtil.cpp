@@ -17,6 +17,14 @@ void ScriptUtil::Release() {
 	FileExist = false;
 }
 
+int ScriptUtil::GetCategoryNum() {
+	int CatCount{};
+	for (TiXmlElement* Element = Root->FirstChildElement(); Element != nullptr; Element = Element->NextSiblingElement())
+		CatCount++;
+
+	return CatCount;
+}
+
 float ScriptUtil::LoadDigitData(std::string CategoryName, std::string DataName) {
 	return GetDigitData(FindCategory(CategoryName), DataName);
 }
