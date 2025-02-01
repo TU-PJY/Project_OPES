@@ -183,6 +183,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="RootConstants.h" />
     <ClInclude Include="RootConstantUtil.h" />
     <ClInclude Include="ObjectShader.h" />
+    <ClInclude Include="ScriptUtil.h" />
     <ClInclude Include="SettingRootSignature.h" />
     <ClInclude Include="ShaderUtil.h" />
     <ClInclude Include="StartMode.h" />
@@ -191,6 +192,8 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="TestObject.h" />
     <ClInclude Include="TextureUtil.h" />
     <ClInclude Include="TimerUtil.h" />
+    <ClInclude Include="tinyxml\tinystr.h" />
+    <ClInclude Include="tinyxml\tinyxml.h" />
     <ClInclude Include="TransformUtil.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
@@ -220,12 +223,17 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="RootConstants.cpp" />
     <ClCompile Include="Pipelines.cpp" />
     <ClCompile Include="RootConstantUtil.cpp" />
+    <ClCompile Include="ScriptUtil.cpp" />
     <ClCompile Include="SettingRootSignature.cpp" />
     <ClCompile Include="StartMode.cpp" />
     <ClCompile Include="Stencils.cpp" />
     <ClCompile Include="TerrainUtil.cpp" />
     <ClCompile Include="TextureUtil.cpp" />
     <ClCompile Include="TimerUtil.cpp" />
+    <ClCompile Include="tinyxml\tinystr.cpp" />
+    <ClCompile Include="tinyxml\tinyxml.cpp" />
+    <ClCompile Include="tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="TransformUtil.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
     <ClCompile Include="WinMain.cpp" />

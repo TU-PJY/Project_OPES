@@ -41,6 +41,9 @@
 #define FBXSDK_SHARED
 #include <fbxsdk.h>
 
+using DigitDataVec = std::vector<float>;
+using StringDataVec = std::vector<std::string>;
+
 
 // 렌더링 타입 열거형
 enum RenderTypeEnum {
