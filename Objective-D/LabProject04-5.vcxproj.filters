@@ -208,7 +208,7 @@
     <ClInclude Include="StartMode.h">
       <Filter>[0]____________[ Config ]\Header</Filter>
     </ClInclude>
-    <ClInclude Include="TestObject.h">
+    <ClInclude Include="Map1.h">
       <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
     </ClInclude>
     <ClInclude Include="d3dx12.h">
@@ -279,6 +279,9 @@
     </ClInclude>
     <ClInclude Include="tinyxml\tinyxml.h">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -390,7 +393,7 @@
     <ClCompile Include="Matrix.cpp">
       <Filter>[5]____________[ Objective-D ]\[7] - [ Matrix ]</Filter>
     </ClCompile>
-    <ClCompile Include="Mode1.cpp">
+    <ClCompile Include="Level1.cpp">
       <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
     </ClCompile>
     <ClCompile Include="ScriptUtil.cpp">

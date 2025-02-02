@@ -156,6 +156,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BoundboxShader.h" />
+    <ClInclude Include="CameraController.h" />
     <ClInclude Include="CameraUtil.h" />
     <ClInclude Include="ConstantBufferData.h" />
     <ClInclude Include="ConstantBuffers.h" />
@@ -189,7 +190,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="StartMode.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TerrainUtil.h" />
-    <ClInclude Include="TestObject.h" />
+    <ClInclude Include="Map1.h" />
     <ClInclude Include="TextureUtil.h" />
     <ClInclude Include="TimerUtil.h" />
     <ClInclude Include="tinyxml\tinystr.h" />
@@ -214,7 +215,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Meshes.cpp" />
     <ClCompile Include="MeshUtil.cpp" />
-    <ClCompile Include="Mode1.cpp" />
+    <ClCompile Include="Level1.cpp" />
     <ClCompile Include="MouseUtil.cpp" />
     <ClCompile Include="ObjectShader.cpp" />
     <ClCompile Include="PickingUtil.cpp" />

@@ -10,17 +10,12 @@ SystemResource SysRes;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
-	ImportMesh(System, MeshRes.GunMesh, "Resources//Models//model.bin", MESH_TYPE_BIN);
-	ImportMesh(System, MeshRes.ZombieMesh, "Resources//Models//zombie.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
-	ImportTexture(System, TexRes.Tex, L"Resources//Image//Gun.jpg", TEXTURE_TYPE_WIC);
-	ImportTexture(System, TexRes.WoodTex, L"Resources//Image//Wood.jpg", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
-	ImportTexture(System, TexRes.ZombieTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

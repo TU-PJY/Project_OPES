@@ -1,6 +1,7 @@
 #include "ModePack.h"
 
-#include "TestObject.h"
+#include "Map1.h"
+#include "CameraController.h"
 
 // 해당 cpp파일과 h파일은 특정한 모드를 실행하고, 해당 모드에 존재하는 객체들을 컨트롤하기 위한 파일이다.
 // 반드시 cpp, h파일로 분리되어있어야 하며, 각 모드에 따라 네임스페이스로 구분되어야한다.
@@ -15,11 +16,13 @@
 void Mode1::Start() {
 	std::vector<std::string> ControlObjectTag 
 	{
-		"test_object"
+		"camera_controller",
+		"map"
 	};
 
 	// 필요한 객체 추가
-	scene.AddObject(new TestObject, "test_object", LAYER1);
+	scene.AddObject(new CameraController, "camera_controller", LAYER1);
+	scene.AddObject(new Map1, "map1", LAYER1);
 	
 	// 컨트롤러를 가지는 오브젝트 포인터 저장
 	AddControlObject(ControlObjectTag);
@@ -28,7 +31,7 @@ void Mode1::Start() {
 	RegisterController();
 
 	// 모드 이름을 Scene에 등록
-	scene.RegisterModeName("Mode1");
+	scene.RegisterModeName("Level1");
 }
 
 void Mode1::Destructor() {
