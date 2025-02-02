@@ -182,6 +182,7 @@ void FBXUtil::Init() {
 bool FBXUtil::LoadFBXFile(const char* filePath) {
 	if (Scene) {
 		Scene->Destroy();
+		Scene = nullptr;
 		Scene = FbxScene::Create(Manager, "FBX_Scene");
 		if (!Scene) {
 			std::cerr << "Error: Unable to create FBX Scene!\n";
@@ -202,6 +203,8 @@ bool FBXUtil::LoadFBXFile(const char* filePath) {
 	if (!Importer->Initialize(filePath, -1, Manager->GetIOSettings())) {
 		std::cerr << "Error: Unable to initialize importer!\n";
 		std::cerr << "Error: " << Importer->GetStatus().GetErrorString() << "\n";
+		FbxStatus status = Importer->GetStatus();
+		std::cerr << "Detailed Status Code: " << status.GetCode() << "\n";
 		return false;
 	}
 

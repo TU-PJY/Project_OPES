@@ -13,9 +13,9 @@ private:
 
 public:
 	Map1() {
-		/*ObjectPosition.clear();
+		ObjectPosition.clear();
 		PositionScript.Release();
-		PositionScript.Load("Resources//Script//Map1.xml");
+		PositionScript.Load("Resources//Scripts//Map1.xml");
 		int Count = PositionScript.GetCategoryNum();
 		for (int i = 0; i < Count; ++i) {
 			std::string Str = "Object";
@@ -26,18 +26,17 @@ public:
 			LoadedPosition.z = PositionScript.LoadDigitData(Str, "Z");
 
 			ObjectPosition.emplace_back(LoadedPosition);
-		}*/
-
+		}
 	}
 
 	void InputKey(KeyEvent& Event) override {
 		if (Event.Type == WM_KEYDOWN) {
 			switch (Event.Key) {
-			case 'r':
+			case 'R':
 			{
-				/*ObjectPosition.clear();
+				ObjectPosition.clear();
 				PositionScript.Release();
-				PositionScript.Load("Resources//Script//Map1.xml");
+				PositionScript.Load("Resources//Scripts//Map1.xml");
 
 				int Count = PositionScript.GetCategoryNum();
 				for (int i = 0; i < Count; ++i) {
@@ -49,7 +48,7 @@ public:
 					LoadedPosition.z = PositionScript.LoadDigitData(Str, "Z");
 
 					ObjectPosition.emplace_back(LoadedPosition);
-				}*/
+				}
 			}
 			break;
 			}
@@ -64,10 +63,14 @@ public:
 		Transform::Scale(ScaleMatrix, 20.0, 20.0, 1.0);
 		Render3D(SysRes.BillboardMesh, TexRes.ColorTex);
 
-		/*for (auto& P : ObjectPosition) {
+
+		for (auto& P : ObjectPosition) {
 			BeginRender();
+			BeginRender();
+			SetColor(0.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, P);
-			Render3D()
-		}*/
+			Transform::Scale(ScaleMatrix, 0.5, 0.5, 0.5);
+			Render3D(MeshRes.RockMesh, TexRes.RockTexture);
+		}
 	}
 };

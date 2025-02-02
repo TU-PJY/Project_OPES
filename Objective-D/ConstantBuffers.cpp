@@ -31,8 +31,8 @@ void CreateConstantBufferResource(ID3D12Device* Device) {
 		{1.0f, 0.9f, 0.8f },  // Light Color
 		0.0, // padding2
 
-		{0.2f, 0.2f, 0.2f },  // Ambient Light Color
-		2.5,  // Shadow Strength
+		{0.1f, 0.1f, 0.1f },  // Ambient Light Color
+		1.0,  // Shadow Strength
 	};
 	ReserveConstantBuffer(LightCBV, 1);
 	CBVUtil::Create(Device, &LighData, sizeof(LIGHT_DATA), LightCBV);

@@ -44,7 +44,7 @@ void Framework::Init() {
 	WaitForGpuComplete();
 
 	// 매쉬 및 텍스처 업로드 버퍼 삭제
-	ClearUploadBuffer();
+	//ClearUploadBuffer();
 
 	Timer.Reset();
 }

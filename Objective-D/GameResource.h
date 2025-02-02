@@ -10,8 +10,7 @@
 // 매쉬 리소스는 해당 클래스 안에 선언
 class MeshResource {
 public:
-	Mesh* GunMesh;
-	Mesh* ZombieMesh;
+	Mesh* RockMesh;
 };
 extern MeshResource MeshRes;
 
@@ -19,9 +18,10 @@ extern MeshResource MeshRes;
 // 텍스처 리소스는 해당 클래스 안에 선언
 class TextureResource {
 public:
-	Texture* Tex, * SkyboxTex, * WoodTex;
+	Texture* RockTexture;
 	Texture* ColorTex;
-	Texture* ZombieTex;
+	//Texture* Tex, * SkyboxTex, * WoodTex;
+	//Texture* ZombieTex;
 };
 extern TextureResource TexRes;
 

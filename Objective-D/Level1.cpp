@@ -17,7 +17,7 @@ void Mode1::Start() {
 	std::vector<std::string> ControlObjectTag 
 	{
 		"camera_controller",
-		"map"
+		"map1"
 	};
 
 	// 필요한 객체 추가
