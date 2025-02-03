@@ -146,14 +146,14 @@
     <Filter Include="[1]____________[ Game Mode ]\[0] - [ Pack ]">
       <UniqueIdentifier>{82e1b461-5d00-4430-aea1-ac6ac2a9bd4b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[3]____________[ Camera ]">
-      <UniqueIdentifier>{2a8bb781-cc47-466a-bc74-8a9e1cea7d74}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]">
       <UniqueIdentifier>{b84f0431-ea49-4f41-b36c-053a095d6794}</UniqueIdentifier>
     </Filter>
     <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]">
       <UniqueIdentifier>{bd01ab33-a63e-4b22-80c1-1431bd110cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[3]____________[ Camera ]">
+      <UniqueIdentifier>{2a8bb781-cc47-466a-bc74-8a9e1cea7d74}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -227,7 +227,7 @@
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Brush Util ]</Filter>
     </ClInclude>
     <ClInclude Include="CameraUtil.h">
-      <Filter>[2]____________[ Game Object ]\[3]____________[ Camera ]</Filter>
+      <Filter>[3]____________[ Camera ]</Filter>
     </ClInclude>
     <ClInclude Include="ConstantBufferData.h">
       <Filter>[5]____________[ Objective-D ]\[3] - [ Shader Variable ]\[ Constant Buffer ]</Filter>
@@ -352,7 +352,7 @@
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Mesh Util ]\[1][ Set Up ]</Filter>
     </ClCompile>
     <ClCompile Include="CameraUtil.cpp">
-      <Filter>[2]____________[ Game Object ]\[3]____________[ Camera ]</Filter>
+      <Filter>[3]____________[ Camera ]</Filter>
     </ClCompile>
     <ClCompile Include="ConstantBuffers.cpp">
       <Filter>[5]____________[ Objective-D ]\[3] - [ Shader Variable ]\[ Constant Buffer ]</Filter>

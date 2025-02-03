@@ -60,7 +60,7 @@ public:
 		BeginRender();
 		SetColor(0.0, 0.8, 0.0);
 		Transform::Rotate(RotateMatrix, 90.0, 0.0, 0.0);
-		Transform::Scale(ScaleMatrix, 20.0, 20.0, 1.0);
+		Transform::Scale(ScaleMatrix, 60.0, 60.0, 1.0);
 		Render3D(SysRes.BillboardMesh, TexRes.ColorTex);
 
 
@@ -69,8 +69,8 @@ public:
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, P);
-			Transform::Scale(ScaleMatrix, 0.5, 0.5, 0.5);
-			Render3D(MeshRes.RockMesh, TexRes.RockTexture);
+			Transform::Scale(ScaleMatrix, 0.1, 0.1, 0.1);
+			Render3D(MeshRes.RockMesh, TexRes.RockTex);
 		}
 	}
 };
