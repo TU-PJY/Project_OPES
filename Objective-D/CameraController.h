@@ -9,6 +9,9 @@ private:
 	bool MoveForward{}, MoveBackward{}, MoveRight{}, MoveLeft{};
 	bool MoveUp{}, MoveDown{};
 
+	bool MoveFast{};
+	float MulSpeed{};
+
 	XMFLOAT3 CamPosition{ 0.0, 80.0, 0.0 };
 
 	// 카메라 회전
@@ -30,6 +33,7 @@ public:
 			case 'D': MoveRight = true; break;
 			case VK_SPACE: MoveUp = true; break;
 			case VK_CONTROL: MoveDown = true; break;
+			case VK_SHIFT: MoveFast = true; break;
 			}
 			break;
 
@@ -41,6 +45,7 @@ public:
 			case 'D': MoveRight = false; break;
 			case VK_SPACE: MoveUp = false; break;
 			case VK_CONTROL: MoveDown = false; break;
+			case VK_SHIFT: MoveFast = false; break;
 			}
 			break;
 		}
@@ -51,7 +56,7 @@ public:
 			mouse.HideCursor();
 			GetCapture();
 
-			XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, 0.3);
+			XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, 0.1);
 			UpdateMotionRotation(CamRotation, Delta.x, Delta.y);
 		}
 	}
@@ -69,6 +74,12 @@ public:
 	}
 
 	void Update(float FT) override {
+		if (MoveFast)
+			MulSpeed = 3.0;
+		else
+			MulSpeed = 1.0;
+
+
 		// 상하 회전반경 제한
 		if (CamRotation.x > 90.0)
 			CamRotation.x = 90.0;
@@ -76,17 +87,17 @@ public:
 			CamRotation.x = -90.0;
 
 		if (MoveForward)
-			camera.MoveForward(FT * 40);
+			camera.MoveForward(FT * 20 * MulSpeed);
 		if (MoveBackward)
-			camera.MoveForward(-FT * 40);
+			camera.MoveForward(-FT * 20 * MulSpeed);
 		if (MoveRight)
-			camera.MoveStrafe(FT * 40);
+			camera.MoveStrafe(FT * 20 * MulSpeed);
 		if (MoveLeft)
-			camera.MoveStrafe(-FT * 40);
+			camera.MoveStrafe(-FT * 20 * MulSpeed);
 		if (MoveUp)
-			camera.MoveUp(FT * 40);
+			camera.MoveUp(FT * 20 * MulSpeed);
 		if (MoveDown)
-			camera.MoveUp(-FT * 40);
+			camera.MoveUp(-FT * 20 * MulSpeed);
 
 		camera.Rotate(CamRotation.x, CamRotation.y, 0.0);
 		CamPosition = camera.GetPosition();

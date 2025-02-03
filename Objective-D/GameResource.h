@@ -12,6 +12,7 @@ class MeshResource {
 public:
 	Mesh* RockMesh;
 	Mesh* TestMesh;
+	Mesh* LakeMesh;
 };
 extern MeshResource MeshRes;
 
@@ -22,6 +23,7 @@ public:
 	Texture* RockTex;
 	Texture* ColorTex;
 	Texture* TestTex;
+	Texture* LakeTex;
 };
 extern TextureResource TexRes;
 

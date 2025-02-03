@@ -281,7 +281,7 @@
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
     </ClInclude>
     <ClInclude Include="CameraController.h">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
+      <Filter>[3]____________[ Camera ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

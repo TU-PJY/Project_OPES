@@ -10,15 +10,17 @@ SystemResource SysRes;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
-	ImportMesh(System, MeshRes.RockMesh, "Resources//Models//Rock_4.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.RockMesh, "Resources//Models//Rock_2.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.TestMesh, "Resources//Models//zombie.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.LakeMesh, "Resources//Models//lake.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
 	ImportTexture(System, TexRes.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
-	ImportTexture(System, TexRes.RockTex, L"Resources//Image//texture.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.RockTex, L"Resources//Image//rock.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.LakeTex, L"Resources//Image//lake.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
