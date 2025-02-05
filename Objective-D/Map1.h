@@ -74,11 +74,11 @@ public:
 		BeginRender();
 		SetColor(0.0, 0.8, 0.0);
 		Transform::Rotate(RotateMatrix, 90.0, 0.0, 0.0);
-		Transform::Scale(ScaleMatrix, 350.0, 350.0, 1.0);
+		Transform::Scale(ScaleMatrix, 700.0, 700.0, 1.0);
 		Render3D(SysRes.BillboardMesh, TexRes.ColorTex);
 
-		// È£¼ö ·»´õ¸µ
 		{
+			// È£¼ö ·»´õ¸µ
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, 0.0, -1.5, 0.0);
