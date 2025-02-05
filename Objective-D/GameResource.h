@@ -11,8 +11,12 @@
 class MeshResource {
 public:
 	Mesh* RockMesh;
-	Mesh* TestMesh;
 	Mesh* LakeMesh;
+	Mesh* LakeRockMesh[3]{};
+	Mesh* TerrainMesh1{};
+
+
+	Mesh* TestMesh;
 };
 extern MeshResource MeshRes;
 
@@ -20,10 +24,11 @@ extern MeshResource MeshRes;
 // 텍스처 리소스는 해당 클래스 안에 선언
 class TextureResource {
 public:
-	Texture* RockTex;
+	Texture* Palette1;
+	Texture* Palette2;
+	Texture* Palette3;
 	Texture* ColorTex;
 	Texture* TestTex;
-	Texture* LakeTex;
 };
 extern TextureResource TexRes;
 
