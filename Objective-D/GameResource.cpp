@@ -21,6 +21,12 @@ void LoadMesh(DeviceSystem& System) {
 		FileName += std::to_string(i + 1) + ".fbx";
 		ImportMesh(System, MeshRes.LakeRockMesh[i], (char*)FileName.c_str(), MESH_TYPE_FBX);
 	}
+
+	for (int i = 0; i < 5; ++i) {
+		std::string FileName = "Resources//Models//map1//map-object-";
+		FileName += std::to_string(i + 1) + ".fbx";
+		ImportMesh(System, MeshRes.MapObjectMesh[i], (char*)FileName.c_str(), MESH_TYPE_FBX);
+	}
 }
 /////////////////////////////////////////////////////////////////////////////////
 

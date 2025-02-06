@@ -14,6 +14,7 @@ public:
 	Mesh* LakeMesh;
 	Mesh* LakeRockMesh[3]{};
 	Mesh* TerrainMesh1{};
+	Mesh* MapObjectMesh[5]{};
 
 
 	Mesh* TestMesh;
