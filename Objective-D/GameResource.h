@@ -10,12 +10,15 @@
 // 매쉬 리소스는 해당 클래스 안에 선언
 class MeshResource {
 public:
+	// Map1 매쉬
 	Mesh* RockMesh;
 	Mesh* LakeMesh;
 	Mesh* LakeRockMesh[3]{};
 	Mesh* TerrainMesh1{};
 	Mesh* MapObjectMesh[5]{};
-
+	Mesh* Mushroom[2]{};
+	Mesh* Grass[2]{};
+	Mesh* Flower[2]{};
 
 	Mesh* TestMesh;
 };

@@ -27,6 +27,13 @@ void LoadMesh(DeviceSystem& System) {
 		FileName += std::to_string(i + 1) + ".fbx";
 		ImportMesh(System, MeshRes.MapObjectMesh[i], (char*)FileName.c_str(), MESH_TYPE_FBX);
 	}
+
+	ImportMesh(System, MeshRes.Grass[0], "Resources//Models//map1//grass-1.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.Grass[1], "Resources//Models//map1//grass-2.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.Flower[0], "Resources//Models//map1//flower-1.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.Flower[1], "Resources//Models//map1//flower-2.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

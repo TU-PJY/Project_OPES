@@ -6,7 +6,7 @@
 #include "PickingUtil.h"
 #include "ScriptUtil.h"
 
-struct RockStruct {
+struct ObjectStruct {
 	XMFLOAT3 Position;
 	XMFLOAT3 Size;
 	float Rotation;
@@ -15,14 +15,17 @@ struct RockStruct {
 
 class Map1 : public GameObject {
 private:
-	std::vector<RockStruct> WallObjectPosition{};
+	std::vector<ObjectStruct> WallObjectPosition{};
 	ScriptUtil WallPositionScript{};
 
-	std::vector<RockStruct> LakeObjectPosition{};
+	std::vector<ObjectStruct> LakeObjectPosition{};
 	ScriptUtil LakePositionScript{};
 
-	std::vector<RockStruct> MapObjectPosition{};
+	std::vector<ObjectStruct> MapObjectPosition{};
 	ScriptUtil MapObjectPositionScript{};
+
+	std::vector<ObjectStruct> SmallObjectPosition{};
+	ScriptUtil SmallObjectPositionScript{};
 
 public:
 	Map1() {
@@ -101,6 +104,41 @@ public:
 			Render3D(MeshRes.MapObjectMesh[P.Index], TexRes.Palette3);
 		}
 
+		// 소형 맵 오브젝트 렌더링
+		for (auto& P : SmallObjectPosition) {
+			BeginRender();
+			SetColor(0.0, 0.0, 0.0);
+			Transform::Move(TranslateMatrix, P.Position);
+			Transform::Scale(ScaleMatrix, P.Size);
+			Transform::Rotate(RotateMatrix, 0.0, P.Rotation, 0.0);
+			// 0: Grass1
+			// 1: Grass2
+			// 2: Flower1
+			// 3: Flower2
+			// 4: Mushroom1
+			// 5: MushRoom2
+			switch (P.Index) {
+			case 0:
+				Render3D(MeshRes.Grass[0], TexRes.Palette3);
+				break;
+			case 1:
+				Render3D(MeshRes.Grass[1], TexRes.Palette3);
+				break;
+			case 2:
+				Render3D(MeshRes.Flower[0], TexRes.Palette3);
+				break;
+			case 3:
+				Render3D(MeshRes.Flower[1], TexRes.Palette3);
+				break;
+			case 4:
+				Render3D(MeshRes.Mushroom[0], TexRes.Palette3);
+				break;
+			case 5:
+				Render3D(MeshRes.Mushroom[1], TexRes.Palette3);
+				break;
+			}
+		}
+
 		// 테스트용 플레이어 모델
 		BeginRender();
 		SetColor(0.0, 0.0, 0.0);
@@ -119,16 +157,16 @@ public:
 		for (int i = 0; i < Count; ++i) {
 			std::string Str = "Object";
 			Str += std::to_string(i + 1);
-			RockStruct rockStruct{};
-			rockStruct.Position.x = WallPositionScript.LoadDigitData(Str, "X");
-			rockStruct.Position.y = WallPositionScript.LoadDigitData(Str, "Y");
-			rockStruct.Position.z = WallPositionScript.LoadDigitData(Str, "Z");
-			rockStruct.Size.x = WallPositionScript.LoadDigitData(Str, "SizeX");
-			rockStruct.Size.y = WallPositionScript.LoadDigitData(Str, "SizeY");
-			rockStruct.Size.z = WallPositionScript.LoadDigitData(Str, "SizeZ");
-			rockStruct.Rotation = WallPositionScript.LoadDigitData(Str, "Rotation");
+			ObjectStruct objectStruct{};
+			objectStruct.Position.x = WallPositionScript.LoadDigitData(Str, "X");
+			objectStruct.Position.y = WallPositionScript.LoadDigitData(Str, "Y");
+			objectStruct.Position.z = WallPositionScript.LoadDigitData(Str, "Z");
+			objectStruct.Size.x = WallPositionScript.LoadDigitData(Str, "SizeX");
+			objectStruct.Size.y = WallPositionScript.LoadDigitData(Str, "SizeY");
+			objectStruct.Size.z = WallPositionScript.LoadDigitData(Str, "SizeZ");
+			objectStruct.Rotation = WallPositionScript.LoadDigitData(Str, "Rotation");
 
-			WallObjectPosition.emplace_back(rockStruct);
+			WallObjectPosition.emplace_back(objectStruct);
 		}
 
 		LakeObjectPosition.clear();
@@ -138,17 +176,17 @@ public:
 		for (int i = 0; i < Count; ++i) {
 			std::string Str = "Object";
 			Str += std::to_string(i + 1);
-			RockStruct rockStruct{};
-			rockStruct.Position.x = LakePositionScript.LoadDigitData(Str, "X");
-			rockStruct.Position.y = LakePositionScript.LoadDigitData(Str, "Y");
-			rockStruct.Position.z = LakePositionScript.LoadDigitData(Str, "Z");
-			rockStruct.Size.x = LakePositionScript.LoadDigitData(Str, "SizeX");
-			rockStruct.Size.y = LakePositionScript.LoadDigitData(Str, "SizeY");
-			rockStruct.Size.z = LakePositionScript.LoadDigitData(Str, "SizeZ");
-			rockStruct.Rotation = LakePositionScript.LoadDigitData(Str, "Rotation");
-			rockStruct.Index = LakePositionScript.LoadDigitData(Str, "Index");
+			ObjectStruct objectStruct{};
+			objectStruct.Position.x = LakePositionScript.LoadDigitData(Str, "X");
+			objectStruct.Position.y = LakePositionScript.LoadDigitData(Str, "Y");
+			objectStruct.Position.z = LakePositionScript.LoadDigitData(Str, "Z");
+			objectStruct.Size.x = LakePositionScript.LoadDigitData(Str, "SizeX");
+			objectStruct.Size.y = LakePositionScript.LoadDigitData(Str, "SizeY");
+			objectStruct.Size.z = LakePositionScript.LoadDigitData(Str, "SizeZ");
+			objectStruct.Rotation = LakePositionScript.LoadDigitData(Str, "Rotation");
+			objectStruct.Index = LakePositionScript.LoadDigitData(Str, "Index");
 
-			LakeObjectPosition.emplace_back(rockStruct);
+			LakeObjectPosition.emplace_back(objectStruct);
 		}
 
 		MapObjectPosition.clear();
@@ -159,17 +197,38 @@ public:
 		for (int i = 0; i < Count; ++i) {
 			std::string Str = "Object";
 			Str += std::to_string(i + 1);
-			RockStruct rockStruct{};
-			rockStruct.Position.x = MapObjectPositionScript.LoadDigitData(Str, "X");
-			rockStruct.Position.y = MapObjectPositionScript.LoadDigitData(Str, "Y");
-			rockStruct.Position.z = MapObjectPositionScript.LoadDigitData(Str, "Z");
-			rockStruct.Size.x = MapObjectPositionScript.LoadDigitData(Str, "SizeX");
-			rockStruct.Size.y = MapObjectPositionScript.LoadDigitData(Str, "SizeY");
-			rockStruct.Size.z = MapObjectPositionScript.LoadDigitData(Str, "SizeZ");
-			rockStruct.Rotation = MapObjectPositionScript.LoadDigitData(Str, "Rotation");
-			rockStruct.Index = MapObjectPositionScript.LoadDigitData(Str, "Index");
+			ObjectStruct objectStruct{};
+			objectStruct.Position.x = MapObjectPositionScript.LoadDigitData(Str, "X");
+			objectStruct.Position.y = MapObjectPositionScript.LoadDigitData(Str, "Y");
+			objectStruct.Position.z = MapObjectPositionScript.LoadDigitData(Str, "Z");
+			objectStruct.Size.x = MapObjectPositionScript.LoadDigitData(Str, "SizeX");
+			objectStruct.Size.y = MapObjectPositionScript.LoadDigitData(Str, "SizeY");
+			objectStruct.Size.z = MapObjectPositionScript.LoadDigitData(Str, "SizeZ");
+			objectStruct.Rotation = MapObjectPositionScript.LoadDigitData(Str, "Rotation");
+			objectStruct.Index = MapObjectPositionScript.LoadDigitData(Str, "Index");
 
-			MapObjectPosition.emplace_back(rockStruct);
+			MapObjectPosition.emplace_back(objectStruct);
+		}
+
+		SmallObjectPosition.clear();
+		SmallObjectPositionScript.Release();
+		SmallObjectPositionScript.Load("Resources//Scripts//map1//map1-object-small.xml");
+		Count = SmallObjectPositionScript.GetCategoryNum();
+
+		for (int i = 0; i < Count; ++i) {
+			std::string Str = "Object";
+			Str += std::to_string(i + 1);
+			ObjectStruct rockStruct{};
+			rockStruct.Position.x = SmallObjectPositionScript.LoadDigitData(Str, "X");
+			rockStruct.Position.y = SmallObjectPositionScript.LoadDigitData(Str, "Y");
+			rockStruct.Position.z = SmallObjectPositionScript.LoadDigitData(Str, "Z");
+			rockStruct.Size.x = SmallObjectPositionScript.LoadDigitData(Str, "SizeX");
+			rockStruct.Size.y = SmallObjectPositionScript.LoadDigitData(Str, "SizeY");
+			rockStruct.Size.z = SmallObjectPositionScript.LoadDigitData(Str, "SizeZ");
+			rockStruct.Rotation = SmallObjectPositionScript.LoadDigitData(Str, "Rotation");
+			rockStruct.Index = SmallObjectPositionScript.LoadDigitData(Str, "Index");
+
+			SmallObjectPosition.emplace_back(rockStruct);
 		}
 	}
 };

@@ -1,0 +1,69 @@
+<?xml version="1.0" ?>
+<Script>
+	<!-- 호숫가 -->
+	<Object1 X="-5" Y="0" Z="10" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="0"/>
+	<Object2 X="25" Y="0" Z="20" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="0"/>
+	<Object3 X="25" Y="0" Z="15" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="0"/>
+	<Object4 X="19" Y="0" Z="-11" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="0"/>
+	<Object5 X="10" Y="10.3" Z="-3" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" Index="2"/>
+	<Object6 X="50" Y="0" Z="12" SizeX="0.2" SizeY="0.2" SizeZ="0.2" Rotation="0.0" Index="3"/>
+	<Object7 X="-15" Y="1" Z="35" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" Index="4"/>
+	<Object8 X="-10" Y="2" Z="35" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" Index="5"/>
+
+	<!-- 디펜스 지점 -->
+	<Object9 X="-155" Y="-2.3" Z="-115" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="4"/>
+	<Object10 X="-160" Y="-2.3" Z="-100" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="4"/>
+	<Object11 X="-80" Y="0.2" Z="-125" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="5"/>
+	<Object12 X="-90" Y="-1.0" Z="-150" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="4"/>
+	<Object13 X="-93" Y="-0.8" Z="-150" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="5"/>
+	<Object14 X="-105" Y="-1.5" Z="-160" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="4"/>
+	<Object15 X="-148" Y="-2.6" Z="-153" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="4"/>
+	<Object16 X="-158" Y="-2.7" Z="-125" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="4"/>
+
+<!-- 꽃 -->
+	<Object17 X="-145" Y="-1.5" Z="-120" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="2"/>
+
+	<Object18 X="-135" Y="0.3" Z="-90" SizeX="0.06" SizeY="0.06" SizeZ="0.06" Rotation="0.0" Index="3"/>
+	<Object19 X="-132" Y="0.3" Z="-90" SizeX="0.06" SizeY="0.06" SizeZ="0.06" Rotation="0.0" Index="2"/>
+	<Object20 X="-130" Y="0.3" Z="-93" SizeX="0.06" SizeY="0.06" SizeZ="0.06" Rotation="0.0" Index="3"/>
+
+	<Object21 X="-120" Y="-1.7" Z="-150" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="3"/>
+	<Object22 X="-118" Y="-1.7" Z="-150" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="3"/>
+	<Object23 X="-118" Y="-1.7" Z="-148" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="3"/>
+
+	<Object24 X="-80" Y="0.2" Z="-110" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="2"/>
+	<Object25 X="-80" Y="0.2" Z="-112" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="2"/>
+	<Object26 X="-82" Y="0.4" Z="-111" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="3"/>
+
+	<Object27 X="-90" Y="0.8" Z="-140" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="2"/>
+	<Object28 X="-90" Y="0.6" Z="-142" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="2"/>
+	<Object29 X="-92" Y="0.6" Z="-141" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="2"/>
+
+	<!-- 풀 -->
+	<Object30 X="-145" Y="-1.3" Z="-122" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1"/>
+	<Object31 X="-140" Y="-0.5" Z="-118" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1"/>
+	<Object32 X="-139" Y="-0.5" Z="-125" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1"/>
+
+	<Object33 X="-139" Y="0.6" Z="-90" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1"/>
+	<Object34 X="-130" Y="0.3" Z="-90" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1"/>
+	<Object35 X="-134" Y="0.6" Z="-95" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1"/>
+
+	<Object36 X="-85" Y="0.7" Z="-115" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1"/>
+	<Object37 X="-82" Y="0.4" Z="-113" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1"/>
+	
+	<Object38 X="-82" Y="0.5" Z="-127" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="1"/>
+
+	<Object39 X="-90" Y="1.2" Z="-138" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="1"/>
+	<Object40 X="-85" Y="-0.8" Z="-150" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="1"/>
+
+	<Object41 X="-123" Y="-1.2" Z="-148" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="1"/>
+	<Object42 X="-118" Y="-1.6" Z="-153" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="0.0" Index="1"/>
+
+	<!-- 나무 옆 버섯 -->
+	<Object43 X="-70" Y="-0.9" Z="-50" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="4"/>
+	<Object44 X="-110" Y="-4.5" Z="-10" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="4"/>
+
+	<Object45 X="-65" Y="-2.5" Z="30" SizeX="0.08" SizeY="0.08" SizeZ="0.08" Rotation="0.0" Index="5"/>
+	<Object46 X="-63" Y="-2.5" Z="31" SizeX="0.08" SizeY="0.08" SizeZ="0.08" Rotation="0.0" Index="4"/>
+	<Object47 X="-7" Y="-4.5" Z="-80" SizeX="0.07" SizeY="0.07" SizeZ="0.07" Rotation="0.0" Index="4"/>
+</Script>          
