@@ -170,6 +170,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="ImageShader.h" />
     <ClInclude Include="LineBrush.h" />
     <ClInclude Include="LineShader.h" />
+    <ClInclude Include="Map2.h" />
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModePack.h" />
@@ -209,6 +210,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ImageShader.cpp" />
+    <ClCompile Include="Level2.cpp" />
     <ClCompile Include="LineBrush.cpp" />
     <ClCompile Include="LineShader.cpp" />
     <ClCompile Include="MathUtil.cpp" />

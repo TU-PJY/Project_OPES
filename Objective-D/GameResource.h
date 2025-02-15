@@ -6,6 +6,13 @@
 #include "BoundboxShader.h"
 #include "LineShader.h"
 
+struct ObjectStruct {
+	XMFLOAT3 Position;
+	XMFLOAT3 Size;
+	float Rotation;
+	int Index;
+};
+
 /////////////////////////////////////////////////////////////////////////////////
 // 매쉬 리소스는 해당 클래스 안에 선언
 class MeshResource {
@@ -20,6 +27,9 @@ public:
 	Mesh* Grass[2]{};
 	Mesh* Flower[2]{};
 
+	// Map2 매쉬
+	Mesh* WinterRock{};
+
 	Mesh* TestMesh;
 };
 extern MeshResource MeshRes;
@@ -33,6 +43,8 @@ public:
 	Texture* Palette3;
 	Texture* ColorTex;
 	Texture* TestTex;
+
+	Texture* Map2Palette{};
 };
 extern TextureResource TexRes;
 

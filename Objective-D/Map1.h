@@ -2,16 +2,7 @@
 #include "GameObject.h"
 #include "MouseUtil.h"
 #include "CameraUtil.h"
-#include <cmath>
-#include "PickingUtil.h"
 #include "ScriptUtil.h"
-
-struct ObjectStruct {
-	XMFLOAT3 Position;
-	XMFLOAT3 Size;
-	float Rotation;
-	int Index;
-};
 
 class Map1 : public GameObject {
 private:

@@ -283,6 +283,9 @@
     <ClInclude Include="CameraController.h">
       <Filter>[3]____________[ Camera ]</Filter>
     </ClInclude>
+    <ClInclude Include="Map2.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -410,6 +413,9 @@
     </ClCompile>
     <ClCompile Include="tinyxml\tinyxmlparser.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level2.cpp">
+      <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

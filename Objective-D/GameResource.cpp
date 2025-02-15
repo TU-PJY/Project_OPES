@@ -11,9 +11,10 @@ SystemResource SysRes;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
-	ImportMesh(System, MeshRes.RockMesh, "Resources//Models//map1//wall-rock.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.TestMesh, "Resources//Models//zombie.fbx", MESH_TYPE_FBX);
-	ImportMesh(System, MeshRes.LakeMesh, "Resources//Models//lake.fbx", MESH_TYPE_FBX);
+
+	ImportMesh(System, MeshRes.RockMesh, "Resources//Models//map1//wall-rock.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.LakeMesh, "Resources//Models//map1//lake.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.TerrainMesh1, "Resources//Models//map1//terrain.fbx", MESH_TYPE_FBX);
 
 	for (int i = 0; i < 3; ++i) {
@@ -34,6 +35,8 @@ void LoadMesh(DeviceSystem& System) {
 	ImportMesh(System, MeshRes.Flower[1], "Resources//Models//map1//flower-2.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx", MESH_TYPE_FBX);
+
+	ImportMesh(System, MeshRes.WinterRock, "Resources//Models//map2//winter-cliff.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -44,6 +47,8 @@ void LoadTexture(DeviceSystem& System) {
 	ImportTexture(System, TexRes.Palette2, L"Resources//Image//palette-2.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.Palette3, L"Resources//Image//palette-3.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
+
+	ImportTexture(System, TexRes.Map2Palette, L"Resources//Image//GradientSS.png", TEXTURE_TYPE_WIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

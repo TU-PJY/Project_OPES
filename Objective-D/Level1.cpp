@@ -13,7 +13,7 @@
 
 // 간편한 모드 코드 작성을 위해 [ Template ] 필터에 템플릿을 만들어 두었으니 복붙한 후 함수 이름과 네임스페이스 이름을 바꾸면 된다.
 
-void Mode1::Start() {
+void Level1::Start() {
 	std::vector<std::string> ControlObjectTag 
 	{
 		"camera_controller",
@@ -34,11 +34,11 @@ void Mode1::Start() {
 	scene.RegisterModeName("Level1");
 }
 
-void Mode1::Destructor() {
+void Level1::Destructor() {
 	// 여기에 모드 종료 시 필요한 작업 추가 (리소스 메모리 해제 등)
 }
 
-void Mode1::AddControlObject(std::vector<std::string> Vec) {
+void Level1::AddControlObject(std::vector<std::string> Vec) {
 	ControlObjectList.clear();
 	for (auto const& Object : Vec) {
 		if (auto FindObject = scene.Find(Object); FindObject)
@@ -46,7 +46,7 @@ void Mode1::AddControlObject(std::vector<std::string> Vec) {
 	}
 }
 
-void Mode1::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+void Level1::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	KeyEvent Event{ hWnd, nMessageID, wParam, lParam };
 
 	// esc 누를 시 프로그램 종료
@@ -60,7 +60,7 @@ void Mode1::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM
 }
 
 //  마우스 모션을 지정된 객체 포인터로 전달한다
-void Mode1::MouseMotionController(HWND hWnd) {
+void Level1::MouseMotionController(HWND hWnd) {
 	MotionEvent Event{ hWnd, mouse.MotionPosition };
 
 	// 마우스 좌표를 뷰포트 좌표로 변환한다.
@@ -72,7 +72,7 @@ void Mode1::MouseMotionController(HWND hWnd) {
 }
 
 // 마우스 버튼 클릭 이벤트를 지정된 객체 포인터로 전달한다
-void Mode1::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+void Level1::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	MouseEvent Event{ hWnd, nMessageID, wParam, lParam };
 
 	// 객체로 마우스 입력
@@ -81,7 +81,7 @@ void Mode1::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lP
 }
 
 // scene에 컨트롤러 및 모드 소멸자 등록
-void Mode1::RegisterController() {
+void Level1::RegisterController() {
 	scene.RegisterKeyController(KeyboardController);
 	scene.RegisterMouseController(MouseController);
 	scene.RegisterMouseMotionController(MouseMotionController);
