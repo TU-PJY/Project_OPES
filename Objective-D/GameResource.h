@@ -28,7 +28,9 @@ public:
 	Mesh* Flower[2]{};
 
 	// Map2 매쉬
-	Mesh* WinterRock{};
+	Mesh* WinterWall{};
+	Mesh* WinterIce[2]{};
+	Mesh* WinterRock[3]{};
 
 	Mesh* TestMesh;
 };
@@ -38,13 +40,18 @@ extern MeshResource MeshRes;
 // 텍스처 리소스는 해당 클래스 안에 선언
 class TextureResource {
 public:
+	// map1
 	Texture* Palette1;
 	Texture* Palette2;
 	Texture* Palette3;
 	Texture* ColorTex;
-	Texture* TestTex;
-
+	
+	// map2
 	Texture* Map2Palette{};
+	Texture* Map2TerrainTex{};
+	Texture* IceTex;
+
+	Texture* TestTex;
 };
 extern TextureResource TexRes;
 

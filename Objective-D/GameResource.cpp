@@ -36,7 +36,17 @@ void LoadMesh(DeviceSystem& System) {
 	ImportMesh(System, MeshRes.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx", MESH_TYPE_FBX);
 
-	ImportMesh(System, MeshRes.WinterRock, "Resources//Models//map2//winter-cliff.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.WinterWall, "Resources//Models//map2//winter-cliff.fbx", MESH_TYPE_FBX);
+
+	for (int i = 0; i < 3; ++i) {
+		std::string FileName = "Resources//Models//map2//winter-rock-" + std::to_string(i + 1) + ".fbx";
+		ImportMesh(System, MeshRes.WinterRock[i], (char*)FileName.c_str(), MESH_TYPE_FBX);
+	}
+
+	for (int i = 0; i < 2; ++i) {
+		std::string FileName = "Resources//Models//map2//winter-ice-" + std::to_string(i + 1) + ".fbx";
+		ImportMesh(System, MeshRes.WinterIce[i], (char*)FileName.c_str(), MESH_TYPE_FBX);
+	}
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -49,6 +59,8 @@ void LoadTexture(DeviceSystem& System) {
 	ImportTexture(System, TexRes.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
 
 	ImportTexture(System, TexRes.Map2Palette, L"Resources//Image//GradientSS.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.Map2TerrainTex, L"Resources//Image//map2-terrain.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.IceTex, L"Resources//Image//ice.png", TEXTURE_TYPE_WIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
