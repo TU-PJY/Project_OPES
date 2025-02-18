@@ -286,6 +286,9 @@
     <ClInclude Include="Map2.h">
       <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
     </ClInclude>
+    <ClInclude Include="Map3.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -415,6 +418,9 @@
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
     </ClCompile>
     <ClCompile Include="Level2.cpp">
+      <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level3.cpp">
       <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
     </ClCompile>
   </ItemGroup>

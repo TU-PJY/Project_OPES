@@ -24,3 +24,14 @@ namespace Level2 {
 	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void RegisterController();
 }
+
+namespace Level3 {
+	void Start();
+	void Destructor();
+	void AddControlObject(std::vector<std::string> Vec);
+	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void MouseMotionController(HWND hWnd);
+	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	void RegisterController();
+}
+

@@ -13,6 +13,7 @@ SystemResource SysRes;
 void LoadMesh(DeviceSystem& System) {
 	ImportMesh(System, MeshRes.TestMesh, "Resources//Models//zombie.fbx", MESH_TYPE_FBX);
 
+	// map1
 	ImportMesh(System, MeshRes.RockMesh, "Resources//Models//map1//wall-rock.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.LakeMesh, "Resources//Models//map1//lake.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.TerrainMesh1, "Resources//Models//map1//terrain.fbx", MESH_TYPE_FBX);
@@ -36,6 +37,8 @@ void LoadMesh(DeviceSystem& System) {
 	ImportMesh(System, MeshRes.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx", MESH_TYPE_FBX);
 
+
+	// map2
 	ImportMesh(System, MeshRes.WinterWall, "Resources//Models//map2//winter-cliff.fbx", MESH_TYPE_FBX);
 
 	for (int i = 0; i < 3; ++i) {
@@ -47,20 +50,30 @@ void LoadMesh(DeviceSystem& System) {
 		std::string FileName = "Resources//Models//map2//winter-ice-" + std::to_string(i + 1) + ".fbx";
 		ImportMesh(System, MeshRes.WinterIce[i], (char*)FileName.c_str(), MESH_TYPE_FBX);
 	}
+
+	// map3
+	ImportMesh(System, MeshRes.FloatingRock, "Resources//Models//map3//map3-rock.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
 	ImportTexture(System, TexRes.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
+
+	// map1
 	ImportTexture(System, TexRes.Palette1, L"Resources//Image//palette-1.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.Palette2, L"Resources//Image//palette-2.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.Palette3, L"Resources//Image//palette-3.png", TEXTURE_TYPE_WIC);
-	ImportTexture(System, TexRes.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
 
+	// map2
 	ImportTexture(System, TexRes.Map2Palette, L"Resources//Image//GradientSS.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.Map2TerrainTex, L"Resources//Image//map2-terrain.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.IceTex, L"Resources//Image//ice.png", TEXTURE_TYPE_WIC);
+
+	// map3
+	ImportTexture(System, TexRes.Magma, L"Resources//Image//Cave_Magma_B.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
+	ImportTexture(System, TexRes.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

@@ -32,6 +32,9 @@ public:
 	Mesh* WinterIce[2]{};
 	Mesh* WinterRock[3]{};
 
+	// Map3  ¸Å½¬
+	Mesh* FloatingRock{};
+
 	Mesh* TestMesh;
 };
 extern MeshResource MeshRes;
@@ -50,6 +53,10 @@ public:
 	Texture* Map2Palette{};
 	Texture* Map2TerrainTex{};
 	Texture* IceTex;
+
+	//map3
+	Texture* Magma{};
+	Texture* Map3Palette{};
 
 	Texture* TestTex;
 };
