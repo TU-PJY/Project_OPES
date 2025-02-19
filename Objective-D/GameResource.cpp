@@ -53,6 +53,8 @@ void LoadMesh(DeviceSystem& System) {
 
 	// map3
 	ImportMesh(System, MeshRes.FloatingRock, "Resources//Models//map3//map3-rock.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.Volcano, "Resources//Models//map3//volcano.fbx", MESH_TYPE_FBX);
+	ImportMesh(System, MeshRes.SmallVolcano, "Resources//Models//map3//volcano-small.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -74,6 +76,8 @@ void LoadTexture(DeviceSystem& System) {
 	// map3
 	ImportTexture(System, TexRes.Magma, L"Resources//Image//Cave_Magma_B.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
 	ImportTexture(System, TexRes.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

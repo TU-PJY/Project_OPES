@@ -1,56 +1,54 @@
 <?xml version="1.0" ?>
 <Script>
-    <!-- 디펜스 모드 공간 -->
-    <Object1 X="-170" Y="-4.0" Z="-175" SizeX="0.15" SizeY="0.1" SizeZ="0.1" Rotation="45.0" />
-    <Object2 X="-190" Y="-4.0" Z="-125" SizeX="0.1" SizeY="0.1" SizeZ="0.15" Rotation="180.0" />
-    <Object3 X="-190" Y="-4.0" Z="-90" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="180.0" />
-    <Object4 X="-170" Y="-4.0" Z="-60" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-60.0" />
-    <Object5 X="-140" Y="-4.0" Z="-50" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-10.0" />
-    <Object6 X="-130" Y="-4.0" Z="-190" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" />
-    <Object7 X="-100" Y="-4.0" Z="-190" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" />
-    <Object8 X="-60" Y="-5.0" Z="-180" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="45.0" />
-    <Object9 X="-50" Y="-4.0" Z="-150" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-90.0" />
-    <Object10 X="-50" Y="-4.0" Z="-120" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-90.0" />
+	<!-- 디펜스 모드 공간 -->
+	<Object1 X="-170" Y="-4.0" Z="-175" SizeX="0.15" SizeY="0.1" SizeZ="0.1" Rotation="45.0" />
+	<Object2 X="-190" Y="-4.0" Z="-125" SizeX="0.1" SizeY="0.1" SizeZ="0.15" Rotation="180.0" />
+	<Object3 X="-190" Y="-4.0" Z="-90" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="180.0" />
+	<Object4 X="-170" Y="-4.0" Z="-60" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-60.0" />
+	<Object5 X="-140" Y="-4.0" Z="-50" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-10.0" />
+	<Object6 X="-130" Y="-4.0" Z="-190" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" />
+	<Object7 X="-100" Y="-4.0" Z="-190" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" />
+	<Object8 X="-60" Y="-5.0" Z="-180" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="45.0" />
+	<Object9 X="-50" Y="-4.0" Z="-150" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-90.0" />
+	<Object10 X="-50" Y="-4.0" Z="-120" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-90.0" />
 
-    <!-- 도착 지점 공간 -->
-    <Object11 X="160" Y="-6.0" Z="160" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="45.0" />
-    <Object12 X="170" Y="-6.0" Z="120" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="100.0" />
-    <Object13 X="170" Y="-6.0" Z="90" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-93.0" />
-    <Object14 X="160" Y="-6.0" Z="60" SizeX="0.1" SizeY="0.1" SizeZ="0.1"Rotation="-45.0" />
-    <Object15 X="140" Y="-6.0" Z="50" SizeX="0.1" SizeY="0.1" SizeZ="0.1"Rotation="-10.0" />
-    <Object16 X="130" Y="-6.0" Z="170" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" />
-    <Object17 X="100" Y="-6.0" Z="170" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" />
-    <Object18 X="70" Y="-6.0" Z="160" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="45.0" />
-    <Object19 X="70" Y="-6.0" Z="130" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="90.0" />
-    <Object20 X="70" Y="-6.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="80.0" />
+	<!-- 도착 지점 공간 -->
+	<Object11 X="160" Y="-6.0" Z="160" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="45.0" />
+	<Object12 X="170" Y="-6.0" Z="120" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="100.0" />
+	<Object13 X="170" Y="-6.0" Z="90" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="-93.0" />
+	<Object14 X="160" Y="-6.0" Z="60" SizeX="0.1" SizeY="0.1" SizeZ="0.1"Rotation="-45.0" />
+	<Object15 X="140" Y="-6.0" Z="50" SizeX="0.1" SizeY="0.1" SizeZ="0.1"Rotation="-10.0" />
+	<Object16 X="130" Y="-6.0" Z="170" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" />
+	<Object17 X="100" Y="-6.0" Z="170" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" />
+	<Object18 X="70" Y="-6.0" Z="160" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="45.0" />
+	<Object19 X="70" Y="-6.0" Z="130" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="90.0" />
+	<Object20 X="70" Y="-6.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="80.0" />
 
-    <!-- 중앙 공간 -->
-    <!-- 오른쪽 벽 -->
-    <Object21 X="-10" Y="-4.0" Z="-110" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="-270.0" />
-    <Object22 X="60" Y="-4.0" Z="-110" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="-290.0" />
-    <Object23 X="130" Y="-4.0" Z="0" SizeX="0.1" SizeY="0.1" SizeZ="0.3" Rotation="-165.0" />
+	<!-- 중앙 공간 -->
+	<!-- 오른쪽 벽 -->
+	<Object21 X="-10" Y="-4.0" Z="-110" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="-270.0" />
+	<Object22 X="60" Y="-4.0" Z="-110" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="-290.0" />
+	<Object23 X="130" Y="-4.0" Z="0" SizeX="0.1" SizeY="0.1" SizeZ="0.3" Rotation="-165.0" />
 
-    <!-- 왼쪽 벽 -->
-    <Object24 X="-140" Y="-4.0" Z="-10" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="-180.0" />
-    <Object25 X="-120" Y="-4.0" Z="60" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="25.0" />
-    <Object26 X="-80" Y="-4.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="65.0" />
-    <Object27 X="-20" Y="-4.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="90.0" />
-    <Object28 X="40" Y="-4.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<!-- 왼쪽 벽 -->
+	<Object24 X="-140" Y="-4.0" Z="-10" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="-180.0" />
+	<Object25 X="-120" Y="-4.0" Z="60" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="25.0" />
+	<Object26 X="-80" Y="-4.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="65.0" />
+	<Object27 X="-20" Y="-4.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="90.0" />
+	<Object28 X="40" Y="-4.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
 
-    <!-- 던전 -->
-    <Object29 X="120" Y="-4.0" Z="-130" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="120.0" />
-    <Object30 X="150" Y="-4.0" Z="-80" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="130.0" />
-    <Object31 X="170" Y="-4.0" Z="-170" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object32 X="180" Y="-4.0" Z="-200" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object33 X="210" Y="-4.0" Z="-220" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object34 X="240" Y="-4.0" Z="-220" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object35 X="270" Y="-4.0" Z="-200" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object36 X="280" Y="-4.0" Z="-180" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object37 X="280" Y="-5.0" Z="-160" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object38 X="260" Y="-5.0" Z="-130" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object39 X="220" Y="-4.0" Z="-120" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-    <Object40 X="190" Y="-4.0" Z="-110" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-
-
+	<!-- 던전 -->
+	<Object29 X="120" Y="-4.0" Z="-130" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="120.0" />
+	<Object30 X="150" Y="-4.0" Z="-80" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="130.0" />
+	<Object31 X="170" Y="-4.0" Z="-170" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object32 X="180" Y="-4.0" Z="-200" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object33 X="210" Y="-4.0" Z="-220" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object34 X="240" Y="-4.0" Z="-220" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object35 X="270" Y="-4.0" Z="-200" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object36 X="280" Y="-4.0" Z="-180" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object37 X="280" Y="-5.0" Z="-160" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object38 X="260" Y="-5.0" Z="-130" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object39 X="220" Y="-4.0" Z="-120" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object40 X="190" Y="-4.0" Z="-110" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
 
 </Script>

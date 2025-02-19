@@ -34,6 +34,8 @@ public:
 
 	// Map3  ¸Å½¬
 	Mesh* FloatingRock{};
+	Mesh* Volcano{};
+	Mesh* SmallVolcano{};
 
 	Mesh* TestMesh;
 };
@@ -56,7 +58,9 @@ public:
 
 	//map3
 	Texture* Magma{};
+	Texture* Map3RockColor{};
 	Texture* Map3Palette{};
+	Texture* Volcano{};
 
 	Texture* TestTex;
 };

@@ -1,0 +1,25 @@
+<?xml version="1.0" ?>
+<Script>
+    <!-- 첫 번째 지형 -->
+    <Object1 X="-190" Y="-7.0" Z="60" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object2 X="-200" Y="-7.0" Z="0" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object3 X="-140" Y="-7.0" Z="30" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	
+	<!-- 두 번째 지형 -->
+	<Object4 X="-150" Y="-7.0" Z="200" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object5 X="-100" Y="-7.0" Z="160" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object6 X="-50" Y="-7.0" Z="230" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object7 X="-120" Y="-7.0" Z="240" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	
+	<!-- 두 번째 지형과 도착 지점 잇는 길 -->
+	<Object8 X="25" Y="-6.5" Z="200" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	
+	<!-- 도착 지점 -->
+	<Object9 X="130" Y="-7.0" Z="150" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object10 X="150" Y="-7.0" Z="100" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object11 X="220" Y="-7.0" Z="80" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object12 X="260" Y="-7.0" Z="120" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object13 X="250" Y="-7.0" Z="210" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	<Object14 X="170" Y="-7.0" Z="220" SizeX="0.01" SizeY="0.01" SizeZ="0.01" Rotation="0.0" Index="0" />
+	
+</Script>
