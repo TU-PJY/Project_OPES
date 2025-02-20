@@ -55,6 +55,18 @@ void LoadMesh(DeviceSystem& System) {
 	ImportMesh(System, MeshRes.FloatingRock, "Resources//Models//map3//map3-rock.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.Volcano, "Resources//Models//map3//volcano.fbx", MESH_TYPE_FBX);
 	ImportMesh(System, MeshRes.SmallVolcano, "Resources//Models//map3//volcano-small.fbx", MESH_TYPE_FBX);
+
+	for (int i = 0; i < 2; i++) {
+		std::string FileName = "Resources//Models//map3//map3-stone-" + std::to_string(i + 1) + ".fbx";
+		ImportMesh(System, MeshRes.Map3Stone[i], (char*)FileName.c_str(), MESH_TYPE_FBX);
+	}
+
+	for (int i = 0; i < 3; ++i) {
+		std::string FileName = "Resources//Models//map3//map3-crystal-" + std::to_string(i + 1) + ".fbx";
+		ImportMesh(System, MeshRes.Crystal[i], (char*)FileName.c_str(), MESH_TYPE_FBX);
+	}
+
+	ImportMesh(System, MeshRes.DeadTree, "Resources//Models//map3//map3-tree.fbx", MESH_TYPE_FBX);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

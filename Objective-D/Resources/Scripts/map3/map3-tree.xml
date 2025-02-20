@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<Script>
+	<!-- 디펜스 지점 -->
+	<Object1 X="-120" Y="0.0" Z="-65" SizeX="0.02" SizeY="0.02" SizeZ="0.02" Rotation="0.0" Index="0" />
+	<Object2 X="-160" Y="0.0" Z="-170" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="60.0" Index="0" />
+	 
+	<!-- 1번 지형 -->
+	<Object3 X="-170" Y="0.0" Z="-15" SizeX="0.02" SizeY="0.02" SizeZ="0.02" Rotation="60.0" Index="0" />
+	<Object4 X="-180" Y="0.0" Z="95" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="120.0" Index="0" />
+	<Object5 X="-230" Y="0.0" Z="30" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="0" />
+	
+	<!-- 2번 지형 -->
+	<Object6 X="-170" Y="0.0" Z="180" SizeX="0.02" SizeY="0.02" SizeZ="0.02" Rotation="120.0" Index="0" />
+	<Object7 X="-150" Y="0.0" Z="250" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="120.0" Index="0" />
+	<Object8 X="-60" Y="0.0" Z="170" SizeX="0.04" SizeY="0.04" SizeZ="0.04" Rotation="120.0" Index="90.0" />
+	<Object9 X="-30" Y="0.0" Z="220" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="120.0" Index="60.0" />
+
+	<!-- 도착 지점 -->
+	<Object10 X="140" Y="0.0" Z="220" SizeX="0.04" SizeY="0.04" SizeZ="0.04" Rotation="120.0" Index="60.0" />
+	<Object11 X="280" Y="0.0" Z="210" SizeX="0.04" SizeY="0.04" SizeZ="0.04" Rotation="120.0" Index="60.0" />
+	
+</Script>

@@ -13,6 +13,15 @@ private:
 	ScriptUtil VolcanoPositionScript{};
 	std::vector<ObjectStruct> VolcanoPosition{};
 
+	ScriptUtil TreePositionScript{};
+	std::vector<ObjectStruct> TreePosition{};
+
+	ScriptUtil StonePositionScript{};
+	std::vector<ObjectStruct> StonePosition{};
+
+	ScriptUtil CrystalPositionScript{};
+	std::vector<ObjectStruct> CrystalPosition{};
+
 public:
 	Map3() {
 		Load();
@@ -57,6 +66,7 @@ public:
 			Render3D(MeshRes.SmallVolcano, TexRes.Map3Palette);
 		}
 
+		// 바닥 돌
 		for (auto& Rock : RockPosition) {
 			BeginRender();
 			Transform::Move(TranslateMatrix, Rock.Position);
@@ -65,6 +75,32 @@ public:
 			Render3D(MeshRes.FloatingRock, TexRes.Map3Palette);
 		}
 
+		// 나무
+		for (auto& Tree : TreePosition) {
+			BeginRender();
+			Transform::Move(TranslateMatrix, Tree.Position.x, Tree.Position.y - 1.0, Tree.Position.z);
+			Transform::Scale(ScaleMatrix, Tree.Size);
+			Transform::Rotate(RotateMatrix, 0.0, Tree.Rotation, 0.0);
+			Render3D(MeshRes.DeadTree, TexRes.Map3Palette);
+		}
+
+		// 바위
+		for (auto& Stone : StonePosition) {
+			BeginRender();
+			Transform::Move(TranslateMatrix, Stone.Position);
+			Transform::Scale(ScaleMatrix, Stone.Size);
+			Transform::Rotate(RotateMatrix, 0.0, Stone.Rotation, 0.0);
+			Render3D(MeshRes.Map3Stone[Stone.Index], TexRes.Map3Palette);
+		}
+
+		// 크리스탈
+		for (auto& Crystal : CrystalPosition) {
+			BeginRender();
+			Transform::Move(TranslateMatrix, Crystal.Position);
+			Transform::Scale(ScaleMatrix, Crystal.Size);
+			Transform::Rotate(RotateMatrix, 0.0, Crystal.Rotation, 0.0);
+			Render3D(MeshRes.Crystal[Crystal.Index], TexRes.Map3Palette);
+		}
 
 		// 테스트용 플레이어 모델
 		BeginRender();
@@ -114,5 +150,69 @@ public:
 
 			VolcanoPosition.emplace_back(Obj);
 		}
+
+		TreePosition.clear();
+		TreePositionScript.Release();
+		TreePositionScript.Load("Resources//Scripts//map3//map3-tree.xml");
+		Count = TreePositionScript.GetCategoryNum();
+		for (int i = 0; i < Count; i++) {
+			ObjectStruct Obj{};
+			std::string CatName = "Object" + std::to_string(i + 1);
+			Obj.Position.x = TreePositionScript.LoadDigitData(CatName, "X");
+			Obj.Position.y = TreePositionScript.LoadDigitData(CatName, "Y");
+			Obj.Position.z = TreePositionScript.LoadDigitData(CatName, "Z");
+
+			Obj.Size.x = TreePositionScript.LoadDigitData(CatName, "SizeX");
+			Obj.Size.y = TreePositionScript.LoadDigitData(CatName, "SizeY");
+			Obj.Size.z = TreePositionScript.LoadDigitData(CatName, "SizeZ");
+
+			Obj.Rotation = TreePositionScript.LoadDigitData(CatName, "Rotation");
+
+			TreePosition.emplace_back(Obj);
+		}
+
+		StonePosition.clear();
+		StonePositionScript.Release();
+		StonePositionScript.Load("Resources//Scripts//map3//map3-stone.xml");
+		Count = StonePositionScript.GetCategoryNum();
+		for (int i = 0; i < Count; i++) {
+			ObjectStruct Obj{};
+			std::string CatName = "Object" + std::to_string(i + 1);
+			Obj.Position.x = StonePositionScript.LoadDigitData(CatName, "X");
+			Obj.Position.y = StonePositionScript.LoadDigitData(CatName, "Y");
+			Obj.Position.z = StonePositionScript.LoadDigitData(CatName, "Z");
+
+			Obj.Size.x = StonePositionScript.LoadDigitData(CatName, "SizeX");
+			Obj.Size.y = StonePositionScript.LoadDigitData(CatName, "SizeY");
+			Obj.Size.z = StonePositionScript.LoadDigitData(CatName, "SizeZ");
+
+			Obj.Rotation = StonePositionScript.LoadDigitData(CatName, "Rotation");
+
+			Obj.Index = StonePositionScript.LoadDigitData(CatName, "Index");
+
+			StonePosition.emplace_back(Obj);
+		}
+
+		CrystalPosition.clear();
+		CrystalPositionScript.Release();
+		CrystalPositionScript.Load("Resources//Scripts//map3//map3-crystal.xml");
+		Count = CrystalPositionScript.GetCategoryNum();
+		for (int i = 0; i < Count; i++) {
+			ObjectStruct Obj{};
+			std::string CatName = "Object" + std::to_string(i + 1);
+			Obj.Position.x = CrystalPositionScript.LoadDigitData(CatName, "X");
+			Obj.Position.y = CrystalPositionScript.LoadDigitData(CatName, "Y");
+			Obj.Position.z = CrystalPositionScript.LoadDigitData(CatName, "Z");
+
+			Obj.Size.x = CrystalPositionScript.LoadDigitData(CatName, "SizeX");
+			Obj.Size.y = CrystalPositionScript.LoadDigitData(CatName, "SizeY");
+			Obj.Size.z = CrystalPositionScript.LoadDigitData(CatName, "SizeZ");
+
+			Obj.Rotation = CrystalPositionScript.LoadDigitData(CatName, "Rotation");
+
+			Obj.Index = CrystalPositionScript.LoadDigitData(CatName, "Index");
+
+			CrystalPosition.emplace_back(Obj);
+		} 
 	}
 };

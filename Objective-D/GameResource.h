@@ -36,6 +36,9 @@ public:
 	Mesh* FloatingRock{};
 	Mesh* Volcano{};
 	Mesh* SmallVolcano{};
+	Mesh* DeadTree{};
+	Mesh* Map3Stone[2]{};
+	Mesh* Crystal[3]{};
 
 	Mesh* TestMesh;
 };
