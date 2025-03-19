@@ -44,18 +44,18 @@ bool IOCompletionPort::BindandListen(int nBindPort) {
     return true;
 }
 
-bool IOCompletionPort::StartServer(const UINT32 maxClientCount) {
-    iocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, MAX_WORKERTHREAD);
+bool IOCompletionPort::StartServer() {
+    iocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 4);
     if (iocpHandle == NULL) {
         std::cerr << "[에러] CreateIoCompletionPort() 실패: " << GetLastError() << "\n";
         return false;
     }
 
-    for (int i = 0; i < MAX_WORKERTHREAD; i++) {
-        workerThreads.emplace_back([this]() { WorkerThread(); });
-    }
-
+    //for (int i = 0; i < MAX_WORKERTHREAD; i++) {
+    //    workerThreads.emplace_back([this]() { WorkerThread(); });
+    //}
     accepterThread = std::thread([this]() { AcceptThread(); });
+    workerThread=std::thread([this]() { WorkThread(); });
 
     std::cout << "서버가 시작되었습니다.\n";
     return true;
@@ -66,30 +66,55 @@ void IOCompletionPort::AcceptThread() {
         SOCKADDR_IN clientAddr;
         int addrLen = sizeof(SOCKADDR_IN);
 
-        stClientInfo newClient;
-        newClient.socketClient = accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-        if (newClient.socketClient == INVALID_SOCKET) {
+        // 클라이언트 구조체를 동적 할당하여 저장
+        stClientInfo* newClient = new stClientInfo();
+        newClient->socketClient = accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+        if (newClient->socketClient == INVALID_SOCKET) {
             std::cerr << "[에러] accept() 실패\n";
+            delete newClient;  // 메모리 해제
             continue;
         }
 
-        CreateIoCompletionPort((HANDLE)newClient.socketClient, iocpHandle, (ULONG_PTR)&newClient, 0);
+        CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
         clients.push_back(newClient);
 
         std::cout << "새로운 클라이언트 접속! 현재 클라이언트 수: " << clients.size() << "\n";
 
-        RegisterRecv(&clients.back());
+        RegisterRecv(newClient);
     }
 }
 
+
 void IOCompletionPort::RegisterRecv(stClientInfo* client) {
+    if (!client || client->socketClient == INVALID_SOCKET) {
+        std::cerr << "[에러] 유효하지 않은 클라이언트 소켓\n";
+        return;
+    }
+
     DWORD flags = 0;
+    DWORD bytesReceived = 0;
     client->recvOverlapped.operation = IOOperation::RECV;
     client->recvOverlapped.wsaBuf.len = MAX_SOCKBUF;
     client->recvOverlapped.wsaBuf.buf = client->recvOverlapped.buffer;
 
-    WSARecv(client->socketClient, &client->recvOverlapped.wsaBuf, 1, NULL, &flags, &client->recvOverlapped.overlapped, NULL);
+    int result = WSARecv(client->socketClient, &client->recvOverlapped.wsaBuf, 1, &bytesReceived, &flags, &client->recvOverlapped.overlapped, NULL);
+    if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        std::cerr << "[에러] WSARecv 실패: " << WSAGetLastError() << std::endl;
+        closesocket(client->socketClient);
+        RemoveClient(client);
+    }
 }
+void IOCompletionPort::RemoveClient(stClientInfo* client) {
+    std::lock_guard<std::mutex> lock(clientMutex);
+
+    auto it = std::find(clients.begin(), clients.end(), client);
+    if (it != clients.end()) {
+        clients.erase(it);
+        delete client;  // 동적 할당된 클라이언트 삭제
+    }
+}
+
+
 
 void IOCompletionPort::SendData(stClientInfo* client, const char* message, int length) {
     client->sendOverlapped.operation = IOOperation::SEND;
@@ -100,7 +125,7 @@ void IOCompletionPort::SendData(stClientInfo* client, const char* message, int l
     WSASend(client->socketClient, &client->sendOverlapped.wsaBuf, 1, NULL, 0, &client->sendOverlapped.overlapped, NULL);
 }
 
-void IOCompletionPort::WorkerThread() {
+void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
     OVERLAPPED* overlapped;
@@ -112,21 +137,69 @@ void IOCompletionPort::WorkerThread() {
         stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
         stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
 
-        if (pOverlappedEx->operation == IOOperation::RECV) {
-            std::cout << "받은 메시지: " << pOverlappedEx->buffer << std::endl;
-            RegisterRecv(client);
+        PacketType* packetType = reinterpret_cast<PacketType*>(pOverlappedEx->buffer);
+
+        std::cout << "[디버깅] 수신된 패킷 타입: " << static_cast<int>(*packetType)
+            << ", 받은 바이트: " << bytesTransferred << std::endl;
+
+        if (*packetType == PacketType::MOVE) {
+           // if (bytesTransferred < sizeof(MovePacket)) {
+           //     std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+           //     continue;
+           // }
+
+            MovePacket* movePacket = reinterpret_cast<MovePacket*>(pOverlappedEx->buffer);
+
+            // 이동 처리
+            switch (movePacket->direction) {
+            case 0: client->y -= 1; break; // UP
+            case 1: client->y += 1; break; // DOWN
+            case 2: client->x -= 1; break; // LEFT
+            case 3: client->x += 1; break; // RIGHT
+            default: continue;
+            }
+
+            std::cout << "[이동] 클라이언트 " << client->id
+                << " 위치: (" << client->x << ", " << client->y << ")\n";
+
+            // 이동 패킷을 모든 클라이언트에게 전송
+            for (stClientInfo* otherClient : clients) {
+                if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    SendData(otherClient, reinterpret_cast<char*>(movePacket), sizeof(MovePacket));
+                }
+            }
         }
+        else if (*packetType == PacketType::CHAT) {
+            //if (bytesTransferred < sizeof(ChatPacket)) {
+            //    std::cerr << "[에러] CHAT 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+            //    continue;
+            //}
+
+            ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(pOverlappedEx->buffer);
+            std::cout << "[채팅] 클라이언트 " << client->id << ": " << chatPacket->message << std::endl;
+
+            // 채팅 패킷을 모든 클라이언트에게 전송
+            for (stClientInfo* otherClient : clients) {
+                if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    SendData(otherClient, reinterpret_cast<char*>(chatPacket), sizeof(MovePacket));
+                }
+            }
+        }
+
+        RegisterRecv(client);  // 다시 수신 대기
     }
 }
+
 
 void IOCompletionPort::DestroyThread() {
     isRunning = false;
     CloseHandle(iocpHandle);
     closesocket(listenSocket);
 
-    for (auto& th : workerThreads) {
-        if (th.joinable()) th.join();
-    }
+    //for (auto& th : workerThreads) {
+    //    if (th.joinable()) th.join();
+    //} 
+    if (workerThread.joinable()) workerThread.join();
 
     if (accepterThread.joinable()) accepterThread.join();
 
