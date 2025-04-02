@@ -66,6 +66,9 @@ public:
     void SendData(stClientInfo* client, const char* message, int length);
     void RemoveClient(stClientInfo* client);
 private:
+    
+    
+    int idCount = 0;
     std::vector<stClientInfo*> clients;
     SOCKET listenSocket = INVALID_SOCKET;
     HANDLE iocpHandle = INVALID_HANDLE_VALUE;
@@ -77,4 +80,5 @@ private:
 
     void WorkThread();
     void AcceptThread();
+
 };
