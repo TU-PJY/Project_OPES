@@ -79,7 +79,8 @@ void IOCompletionPort::AcceptThread() {
         clients.push_back(newClient);
 
         std::cout << "새로운 클라이언트 접속! 현재 클라이언트 수: " << clients.size() << "\n";
-
+        idCount++;
+        newClient->id = idCount;
         RegisterRecv(newClient);
     }
 }
@@ -132,7 +133,14 @@ void IOCompletionPort::WorkThread() {
 
     while (isRunning) {
         BOOL result = GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, &completionKey, &overlapped, INFINITE);
-        if (!result || bytesTransferred == 0) continue;
+        if (!result || bytesTransferred == 0) {
+            // 클라이언트 종료 감지
+            stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
+            std::cerr << "[연결 종료] 클라이언트 ID " << client->id << " 접속 해제\n";
+            closesocket(client->socketClient);
+            RemoveClient(client);
+            continue;
+        }
 
         stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
         stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
@@ -163,11 +171,11 @@ void IOCompletionPort::WorkThread() {
                 << " 위치: (" << client->x << ", " << client->y << ")\n";
 
             // 이동 패킷을 모든 클라이언트에게 전송
-            for (stClientInfo* otherClient : clients) {
-                if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                    SendData(otherClient, reinterpret_cast<char*>(movePacket), sizeof(MovePacket));
-                }
-            }
+            //for (stClientInfo* otherClient : clients) {
+            //    if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+            //        SendData(otherClient, reinterpret_cast<char*>(movePacket), sizeof(MovePacket));
+            //    }
+            //}
         }
         else if (*packetType == PacketType::CHAT) {
             //if (bytesTransferred < sizeof(ChatPacket)) {
@@ -179,11 +187,11 @@ void IOCompletionPort::WorkThread() {
             std::cout << "[채팅] 클라이언트 " << client->id << ": " << chatPacket->message << std::endl;
 
             // 채팅 패킷을 모든 클라이언트에게 전송
-            for (stClientInfo* otherClient : clients) {
-                if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                    SendData(otherClient, reinterpret_cast<char*>(chatPacket), sizeof(MovePacket));
-                }
-            }
+            //for (stClientInfo* otherClient : clients) {
+            //    if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+            //        SendData(otherClient, reinterpret_cast<char*>(chatPacket), sizeof(MovePacket));
+            //    }
+            //}
         }
 
         RegisterRecv(client);  // 다시 수신 대기
