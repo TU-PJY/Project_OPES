@@ -5,29 +5,13 @@
 #include <vector>
 #include <mutex>
 #include <thread>
-
+#include <unordered_map>
 #define MAX_SOCKBUF 1024  
 //#define MAX_WORKERTHREAD 4  
 
 enum class IOOperation {
     RECV,
     SEND
-};
-enum class PacketType {
-    CHAT,
-    MOVE
-};
-
-// 채팅 패킷 구조체
-struct ChatPacket {
-    PacketType type;  // 항상 PacketType::CHAT
-    char message[MAX_SOCKBUF];
-};
-
-// 이동 패킷 구조체
-struct MovePacket {
-    PacketType type;  // 항상 PacketType::MOVE
-    int direction;    // 0: UP, 1: DOWN, 2: LEFT, 3: RIGHT
 };
 
 struct stOverlappedEx {
@@ -54,6 +38,11 @@ struct stClientInfo {
         y = 0;
     }
 };
+
+struct Room {
+    int roomID;
+    std::vector<stClientInfo*> clients;
+};
 class IOCompletionPort {
 public:
     IOCompletionPort();
@@ -64,7 +53,10 @@ public:
     void DestroyThread();
     void RegisterRecv(stClientInfo* client);
     void SendData(stClientInfo* client, const char* message, int length);
+    void SendData_Move(stClientInfo* client);
     void RemoveClient(stClientInfo* client);
+    //
+    void CreateRoom(const std::vector<stClientInfo*>& members);
 private:
     
     
@@ -77,6 +69,12 @@ private:
     std::thread workerThread;
     bool isRunning = true;
     std::mutex clientMutex;
+    //
+    std::vector<stClientInfo*> waitingClients;
+    std::unordered_map<int, Room> rooms;
+    int nextRoomID = 0;
+    std::mutex waitMutex;
+    std::mutex roomMutex;
 
     void WorkThread();
     void AcceptThread();
