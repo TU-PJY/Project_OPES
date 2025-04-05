@@ -1,4 +1,5 @@
 #include "IOCompletionPort.h"
+#include"Packet.h"
 #include <iostream>
 
 IOCompletionPort::IOCompletionPort() {}
@@ -55,7 +56,7 @@ bool IOCompletionPort::StartServer() {
     //    workerThreads.emplace_back([this]() { WorkerThread(); });
     //}
     accepterThread = std::thread([this]() { AcceptThread(); });
-    workerThread=std::thread([this]() { WorkThread(); });
+    workerThread = std::thread([this]() { WorkThread(); });
 
     std::cout << "서버가 시작되었습니다.\n";
     return true;
@@ -115,17 +116,48 @@ void IOCompletionPort::RemoveClient(stClientInfo* client) {
     }
 }
 
-
-
 void IOCompletionPort::SendData(stClientInfo* client, const char* message, int length) {
     client->sendOverlapped.operation = IOOperation::SEND;
-    client->sendOverlapped.wsaBuf.len = length;
-    client->sendOverlapped.wsaBuf.buf = client->sendOverlapped.buffer;
-    memcpy(client->sendOverlapped.buffer, message, length);
+    ZeroMemory(&client->sendOverlapped.overlapped, sizeof(client->sendOverlapped.overlapped));
+    ChatPacket_S chatPacket = {};
+    chatPacket.type = PacketType::CHAT;
+    int msg_size = length - sizeof(PacketType);
+    memcpy(chatPacket.message, message, msg_size);
+    chatPacket.id = client->id;
 
-    WSASend(client->socketClient, &client->sendOverlapped.wsaBuf, 1, NULL, 0, &client->sendOverlapped.overlapped, NULL);
+    client->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&chatPacket);
+    client->sendOverlapped.wsaBuf.len = length + sizeof(unsigned int);
+
+    DWORD size_sent = 0;
+    int ret = WSASend(client->socketClient, &client->sendOverlapped.wsaBuf, 1, &size_sent, 0, &client->sendOverlapped.overlapped, NULL);
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
+        closesocket(client->socketClient);
+        RemoveClient(client);
+    }
+
 }
+void IOCompletionPort::SendData_Move(stClientInfo* client) {
+    client->sendOverlapped.operation = IOOperation::SEND;
+    ZeroMemory(&client->sendOverlapped.overlapped, sizeof(client->sendOverlapped.overlapped));
+    MovePacket_S movePacket = {};
+    movePacket.type = PacketType::MOVE;
+    movePacket.x = client->x;
+    movePacket.y = client->y;
+    movePacket.id = client->id;
 
+    client->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&movePacket);
+    client->sendOverlapped.wsaBuf.len = sizeof(movePacket);
+
+    DWORD size_sent = 0;
+    int ret = WSASend(client->socketClient, &client->sendOverlapped.wsaBuf, 1, &size_sent, 0, &client->sendOverlapped.overlapped, NULL);
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
+        closesocket(client->socketClient);
+        RemoveClient(client);
+    }
+
+}
 void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
@@ -143,58 +175,63 @@ void IOCompletionPort::WorkThread() {
         }
 
         stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
-        stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
+        if (pOverlappedEx->operation == IOOperation::RECV) {
+            stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
 
-        PacketType* packetType = reinterpret_cast<PacketType*>(pOverlappedEx->buffer);
+            PacketType* packetType = reinterpret_cast<PacketType*>(pOverlappedEx->buffer);
 
-        std::cout << "[디버깅] 수신된 패킷 타입: " << static_cast<int>(*packetType)
-            << ", 받은 바이트: " << bytesTransferred << std::endl;
+            std::cout << "[디버깅] 수신된 패킷 타입: " << static_cast<int>(*packetType)
+                << ", 받은 바이트: " << bytesTransferred << std::endl;
 
-        if (*packetType == PacketType::MOVE) {
-           // if (bytesTransferred < sizeof(MovePacket)) {
-           //     std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-           //     continue;
-           // }
+            if (*packetType == PacketType::MOVE) {
+                //if (bytesTransferred < sizeof(MovePacket)) {
+                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+                //    continue;
+                //}
 
-            MovePacket* movePacket = reinterpret_cast<MovePacket*>(pOverlappedEx->buffer);
+                MovePacket_R* movePacket = reinterpret_cast<MovePacket_R*>(pOverlappedEx->buffer);
 
-            // 이동 처리
-            switch (movePacket->direction) {
-            case 0: client->y -= 1; break; // UP
-            case 1: client->y += 1; break; // DOWN
-            case 2: client->x -= 1; break; // LEFT
-            case 3: client->x += 1; break; // RIGHT
-            default: continue;
+                // 이동 처리
+                switch (movePacket->direction) {
+                case 0: client->y -= 1; break; // UP
+                case 1: client->y += 1; break; // DOWN
+                case 2: client->x -= 1; break; // LEFT
+                case 3: client->x += 1; break; // RIGHT
+                default: continue;
+                }
+                //movePacket->id = client->id;
+                std::cout << "[이동] 클라이언트 " << client->id
+                    << " 위치: (" << client->x << ", " << client->y << ")\n";
+
+                // 이동 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    //if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    SendData_Move(otherClient);
+                    //}
+                }
+            }
+            else if (*packetType == PacketType::CHAT) {
+                //if (bytesTransferred < sizeof(ChatPacket)) {
+                //    std::cerr << "[에러] CHAT 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+                //    continue;
+                //}
+
+                ChatPacket_R* chatPacket = reinterpret_cast<ChatPacket_R*>(pOverlappedEx->buffer);
+                std::string msg{ chatPacket->message,bytesTransferred - sizeof(PacketType) };
+
+                std::cout << "[채팅] 클라이언트 " << client->id << ": " << msg << std::endl;
+
+                //채팅 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData(otherClient, msg.c_str(), bytesTransferred);
+                        std::cout << "send\n";
+                    }
+                }
             }
 
-            std::cout << "[이동] 클라이언트 " << client->id
-                << " 위치: (" << client->x << ", " << client->y << ")\n";
-
-            // 이동 패킷을 모든 클라이언트에게 전송
-            //for (stClientInfo* otherClient : clients) {
-            //    if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-            //        SendData(otherClient, reinterpret_cast<char*>(movePacket), sizeof(MovePacket));
-            //    }
-            //}
+            RegisterRecv(client);  // 다시 수신 대기
         }
-        else if (*packetType == PacketType::CHAT) {
-            //if (bytesTransferred < sizeof(ChatPacket)) {
-            //    std::cerr << "[에러] CHAT 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-            //    continue;
-            //}
-
-            ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(pOverlappedEx->buffer);
-            std::cout << "[채팅] 클라이언트 " << client->id << ": " << chatPacket->message << std::endl;
-
-            // 채팅 패킷을 모든 클라이언트에게 전송
-            //for (stClientInfo* otherClient : clients) {
-            //    if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-            //        SendData(otherClient, reinterpret_cast<char*>(chatPacket), sizeof(MovePacket));
-            //    }
-            //}
-        }
-
-        RegisterRecv(client);  // 다시 수신 대기
     }
 }
 
