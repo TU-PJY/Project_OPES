@@ -52,8 +52,8 @@ public:
     bool StartServer();
     void DestroyThread();
     void RegisterRecv(stClientInfo* client);
-    void SendData(stClientInfo* client, const char* message, int length);
-    void SendData_Move(stClientInfo* client);
+    void SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length);
+    void SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void RemoveClient(stClientInfo* client);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
