@@ -72,7 +72,10 @@ protected:
 	bool HeightCacheSaved{};
 	std::vector<XMFLOAT3> HeightCache;
 
+
 public:
+	std::vector<FBXVertex> AnimatedVertices; // 애니메이션 적용 후 결과 저장
+	std::vector<FBXVertex> OriginalVertices; // CreateFBXMesh()에서 VertexData를 복사해 둠
 	BoundingOrientedBox	OOBB = BoundingOrientedBox();
 
 	Mesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, char* Directory, int Type);

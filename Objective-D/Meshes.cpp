@@ -374,6 +374,8 @@ void Mesh::ImportMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, 
 }
 
 void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, std::vector<FBXVertex>& VertexData) {
+	OriginalVertices = VertexData;
+
 	Vertices = static_cast<UINT>(VertexData.size());
 	Indices = Vertices;
 
