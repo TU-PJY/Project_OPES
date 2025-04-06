@@ -1,4 +1,5 @@
 #include "ModePack.h"
+#include "CameraController.h"
 
 //FBX 애니메이션 구현을 위한 테스트 모드.
 
@@ -11,18 +12,23 @@ public:
 	}
 
 	void Render() override {
-
+		BeginRender(RENDER_TYPE_3D);
+		Transform::Move(TranslateMatrix, 0.0, 0.0, 10.0);
+		Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
+		Render3D(MeshRes.Test, TexRes.Test);
 	}
 };
 
 void TestMode::Start() {
 	std::vector<std::string> ControlObjectTag
 	{
-		"test_object"
+		"test_object",
+		"camera_controller"
 	};
 
 	// 필요한 작업 추가
 
+	scene.AddObject(new CameraController, "camera_controller", LAYER1);
 	scene.AddObject(new TestObject, "test_object", LAYER1);
 
 	AddControlObject(ControlObjectTag);

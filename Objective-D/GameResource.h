@@ -17,6 +17,9 @@ struct ObjectStruct {
 // 매쉬 리소스는 해당 클래스 안에 선언
 class MeshResource {
 public:
+	// FBX 테스트용 매쉬
+	Mesh* Test{};
+
 	// Map1 매쉬
 	Mesh* RockMesh;
 	Mesh* LakeMesh;
@@ -48,6 +51,9 @@ extern MeshResource MeshRes;
 // 텍스처 리소스는 해당 클래스 안에 선언
 class TextureResource {
 public:
+	// FBX 테스트용 매쉬 텍스처
+	Texture* Test{};
+
 	// map1
 	Texture* Palette1;
 	Texture* Palette2;
