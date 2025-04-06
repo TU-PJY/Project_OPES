@@ -233,6 +233,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="StartMode.cpp" />
     <ClCompile Include="Stencils.cpp" />
     <ClCompile Include="TerrainUtil.cpp" />
+    <ClCompile Include="TestMode.cpp" />
     <ClCompile Include="TextureUtil.cpp" />
     <ClCompile Include="TimerUtil.cpp" />
     <ClCompile Include="tinyxml\tinystr.cpp" />

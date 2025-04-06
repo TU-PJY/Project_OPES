@@ -11,6 +11,8 @@ SystemResource SysRes;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
+	// 일단 FBX 애니메이션 구현을 위해 테스트에 필요없는 것들을 로드하지 않고 일시적으로 비활성화 한다.
+	/*
 	ImportMesh(System, MeshRes.TestMesh, "Resources//Models//zombie.fbx", MESH_TYPE_FBX);
 
 	// map1
@@ -67,11 +69,14 @@ void LoadMesh(DeviceSystem& System) {
 	}
 
 	ImportMesh(System, MeshRes.DeadTree, "Resources//Models//map3//map3-tree.fbx", MESH_TYPE_FBX);
+	*/
 }
 /////////////////////////////////////////////////////////////////////////////////
 
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
+	// FBX 애니메이션 테스트에 필요없는 것들을 일시적으로 비활성화 한다.
+	/*
 	ImportTexture(System, TexRes.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
 
@@ -90,6 +95,7 @@ void LoadTexture(DeviceSystem& System) {
 	ImportTexture(System, TexRes.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
+	*/
 }
 /////////////////////////////////////////////////////////////////////////////////
 
