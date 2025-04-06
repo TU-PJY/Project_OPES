@@ -18,7 +18,7 @@ struct ObjectStruct {
 class MeshResource {
 public:
 	// FBX 테스트용 매쉬
-	Mesh* Test{};
+	Mesh* Man{};
 
 	// Map1 매쉬
 	Mesh* RockMesh;
@@ -52,7 +52,7 @@ extern MeshResource MeshRes;
 class TextureResource {
 public:
 	// FBX 테스트용 매쉬 텍스처
-	Texture* Test{};
+	Texture* Man{};
 
 	// map1
 	Texture* Palette1;
@@ -113,6 +113,8 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 		if (fbxUtil.LoadFBXFile(Directory)) {
 			fbxUtil.TriangulateScene();
 			fbxUtil.GetVertexData();
+			fbxUtil.ProcessAnimation();
+			fbxUtil.PrintAnimationStackNames();
 			MeshPtr = new Mesh();
 			MeshPtr->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
 			fbxUtil.ClearVertexVector();

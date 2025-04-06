@@ -13,9 +13,9 @@ public:
 
 	void Render() override {
 		BeginRender(RENDER_TYPE_3D);
-		Transform::Move(TranslateMatrix, 0.0, 0.0, 10.0);
-		Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
-		Render3D(MeshRes.Test, TexRes.Test);
+		Transform::Move(TranslateMatrix, 0.0, 0.0, 5.0);
+		Transform::Rotate(RotateMatrix, -90.0, 180.0, 0.0);
+		Render3D(MeshRes.Man, TexRes.Man);
 	}
 };
 

@@ -7,10 +7,22 @@ struct FBXVertex {
 	float px, py, pz;   // Position
 	float nx, ny, nz;   // Normal
 	float u, v;         // UV
-	//int BoneIndices[4]; // 영향을 받는 본 인덱스 (최대 4개)
-	//float BoneWeights[4]; // 본 가중치 (최대 4개)
 };
-//extern std::unordered_map<int, std::vector<std::pair<int, float>>> skinningData;
+
+struct AnimationKeyFrame {
+	float time;
+	float translation[3];
+	float rotation[3]; // 회전 키프레임 (필요하다면)
+	float scale[3];    // 스케일 키프레임 (필요하다면)
+};
+
+struct AnimationChannel {
+	std::string nodeName;
+	std::vector<AnimationKeyFrame> keyframes;
+};
+
+// 모든 애니메이션 채널을 담을 컨테이너
+extern std::vector<AnimationChannel> AnimationChannels;
 
 class Mesh {
 private:
@@ -94,10 +106,11 @@ public:
 	bool TriangulateScene();
 	void GetVertexData();
 	void ProcessNode(FbxNode* node);
+	void ProcessNodeForAnimation(FbxNode* node, FbxAnimLayer* animLayer);
+	void ProcessAnimation();
+	void PrintAnimationStackNames();
 	std::vector<FBXVertex> GetVertexVector();
 	void ClearVertexVector();
-	//void ProcessSkin(FbxMesh* mesh, std::vector<std::vector<int>>& boneIndices, std::vector<std::vector<float>>& boneWeights);
-	//void PrintVertexData(const std::vector<FBXVertex>& VertexVec);
 };
 
 extern FBXUtil fbxUtil;

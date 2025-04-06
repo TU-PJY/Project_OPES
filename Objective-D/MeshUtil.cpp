@@ -6,8 +6,7 @@
 #include <algorithm>
 
 FBXUtil fbxUtil;
-
-//std::unordered_map<int, std::vector<std::pair<int, float>>> skinningData;
+std::vector<AnimationChannel> AnimationChannels;
 
 // 매쉬를 담당하는 유틸이다.
 
@@ -251,11 +250,6 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 		FbxVector4* ControlPoints = Mesh->GetControlPoints();
 		int ControlPointCount = Mesh->GetControlPointsCount();
 
-		//std::vector<std::vector<int>> controlPointBoneIndices(controlPointCount);
-		//std::vector<std::vector<float>> controlPointBoneWeights(controlPointCount);
-
-		//ProcessSkin(mesh, controlPointBoneIndices, controlPointBoneWeights);
-
 		int PolygonCount = Mesh->GetPolygonCount();
 		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
 			int VertexCountInPolygon = Mesh->GetPolygonSize(PolyIndex);
@@ -293,20 +287,6 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 				Vertex.u = HasUV ? static_cast<float>(UV[0]) : 0.0f;
 				Vertex.v = HasUV ? static_cast<float>(UV[1]) : 0.0f;
 
-			/*	auto& boneIndices = controlPointBoneIndices[controlPointIndex];
-				auto& boneWeights = controlPointBoneWeights[controlPointIndex];
-
-				for (size_t i = 0; i < 4; i++) {
-					if (i < boneIndices.size()) {
-						vertex.boneIndices[i] = boneIndices[i];
-						vertex.boneWeights[i] = boneWeights[i];
-					}
-					else {
-						vertex.boneIndices[i] = 0;
-						vertex.boneWeights[i] = 0.0f;
-					}
-				}*/
-
 				ParsedVertices.push_back(Vertex);
 			}
 		}
@@ -316,6 +296,67 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 		ProcessNode(Node->GetChild(i));
 }
 
+void FBXUtil::ProcessNodeForAnimation(FbxNode* node, FbxAnimLayer* animLayer) {
+	AnimationChannel channel;
+    channel.nodeName = node->GetName();
+    
+    FbxAnimCurve* transCurveX = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
+    FbxAnimCurve* transCurveY = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+    FbxAnimCurve* transCurveZ = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+
+    if (transCurveX && transCurveY && transCurveZ) {
+        int keyCount = transCurveX->KeyGetCount();
+        for (int keyIndex = 0; keyIndex < keyCount; ++keyIndex) {
+            AnimationKeyFrame keyFrame;
+            keyFrame.time = static_cast<float>(transCurveX->KeyGetTime(keyIndex).GetSecondDouble());
+            keyFrame.translation[0] = static_cast<float>(transCurveX->KeyGetValue(keyIndex));
+            keyFrame.translation[1] = static_cast<float>(transCurveY->KeyGetValue(keyIndex));
+            keyFrame.translation[2] = static_cast<float>(transCurveZ->KeyGetValue(keyIndex));
+
+			//std::cout << "Node: " << node->GetName() << ", Time: " << keyFrame.time
+			//	<< ", Translation: (" << keyFrame.translation[0] << ", " << keyFrame.translation[1] << ", " << keyFrame.translation[2] << ")\n";
+
+            // 회전, 스케일 데이터도 필요하다면 유사하게 추가
+
+            channel.keyframes.push_back(keyFrame);
+        }
+    }
+
+    // 채널에 키프레임이 하나라도 존재한다면 저장
+    if (!channel.keyframes.empty()) {
+        AnimationChannels.push_back(channel);
+    }
+
+    // 자식 노드 처리
+    for (int i = 0; i < node->GetChildCount(); ++i) {
+        ProcessNodeForAnimation(node->GetChild(i), animLayer);
+    }
+}
+
+void FBXUtil::ProcessAnimation() {
+	int animStackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
+	if (animStackCount > 0) {
+		// 첫 번째 애니메이션 스택 선택 (필요에 따라 다른 스택 선택 가능)
+		FbxAnimStack* animStack = Scene->GetSrcObject<FbxAnimStack>(0);
+		Scene->SetCurrentAnimationStack(animStack);
+		FbxAnimLayer* animLayer = animStack->GetMember<FbxAnimLayer>(0);
+
+		// 루트 노드부터 애니메이션 데이터 처리 시작
+		ProcessNodeForAnimation(Scene->GetRootNode(), animLayer);
+	}
+}
+
+void FBXUtil::PrintAnimationStackNames() {
+	int animStackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
+	std::cout << "Total animation stacks: " << animStackCount << "\n";
+	for (int i = 0; i < animStackCount; ++i) {
+		FbxAnimStack* animStack = Scene->GetSrcObject<FbxAnimStack>(i);
+		if (animStack) {
+			std::cout << "Animation stack [" << i << "]: " << animStack->GetName() << "\n";
+		}
+	}
+}
+
 std::vector<FBXVertex> FBXUtil::GetVertexVector() {
 	return ParsedVertices;
 }
@@ -323,54 +364,3 @@ std::vector<FBXVertex> FBXUtil::GetVertexVector() {
 void FBXUtil::ClearVertexVector(){
 	ParsedVertices.clear();
 }
-
-//
-//void FBXUtil::PrintVertexData(const std::vector<FBXVertex>& VertexVec) {
-//	std::cout << "\n--- Stored Vertex Data ---\n";
-//
-//	for (size_t i = 0; i < ParsedVertices.size(); ++i) {
-//		const FBXVertex& Vertex = ParsedVertices[i];
-//		std::cout << "Vertex " << i << ": ";
-//		std::cout << "Pos(" << Vertex.px << ", " << Vertex.py << ", " << Vertex.pz << "), ";
-//		std::cout << "Normal(" << Vertex.nx << ", " << Vertex.ny << ", " << Vertex.nz << "), ";
-//		std::cout << "UV(" << Vertex.u << ", " << Vertex.v << ")\n";
-//	}
-//
-//	std::cout << "--- End of Vertex Data ---\n";
-//}
-
-//void FBXUtil::ProcessSkin(FbxMesh* mesh, std::vector<std::vector<int>>& boneIndices, std::vector<std::vector<float>>& boneWeights) {
-//	int skinCount = mesh->GetDeformerCount(FbxDeformer::eSkin);
-//	if (skinCount == 0) 
-//		return;
-//
-//	FbxSkin* skin = static_cast<FbxSkin*>(mesh->GetDeformer(0, FbxDeformer::eSkin));
-//	int clusterCount = skin->GetClusterCount();
-//
-//	for (int clusterIdx = 0; clusterIdx < clusterCount; clusterIdx++) {
-//		FbxCluster* cluster = skin->GetCluster(clusterIdx);
-//		if (!cluster) 
-//			continue;
-//
-//		int* indices = cluster->GetControlPointIndices();
-//		double* weights = cluster->GetControlPointWeights();
-//		int count = cluster->GetControlPointIndicesCount();
-//
-//		for (int i = 0; i < count; i++) {
-//			int controlPointIndex = indices[i];
-//			float weight = static_cast<float>(weights[i]);
-//
-//			boneIndices[controlPointIndex].push_back(clusterIdx);
-//			boneWeights[controlPointIndex].push_back(weight);
-//		}
-//	}
-//
-//	for (size_t i = 0; i < boneWeights.size(); i++) {
-//		float totalWeight = 0.0f;
-//		for (float weight : boneWeights[i])
-//			totalWeight += weight;
-//
-//		for (float& weight : boneWeights[i])
-//			weight /= totalWeight;
-//	}
-//}
