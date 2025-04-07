@@ -85,26 +85,30 @@ void IOCompletionPort::AcceptThread() {
         //
         std::lock_guard<std::mutex> lock(waitMutex);
         waitingClients.push_back(newClient);
-
         if (waitingClients.size() >= 3) {
             std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + 3);
             waitingClients.erase(waitingClients.begin(), waitingClients.begin() + 3);
 
             CreateRoom(roomMembers);
+            for (auto& client : roomMembers) {
+                SendData_EnterRoom(client);
+                RegisterRecv(client);
+            }
         }
         else {
-            // 대기 중 메시지 전송 (선택사항)
-            //SendWaitingMessage(client);
+            SendData_EnterRoom(newClient);
+            RegisterRecv(newClient);
         }
 
-        RegisterRecv(newClient);
+
     }
 }
 void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     std::lock_guard<std::mutex> lock(roomMutex);
 
     Room newRoom;
-    newRoom.roomID = nextRoomID++;
+    nextRoomID++;
+    newRoom.roomID = nextRoomID;
     newRoom.clients = members;
 
     for (auto* client : members) {
@@ -116,7 +120,23 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     rooms[newRoom.roomID] = newRoom;
     std::cout << "create room!: " << newRoom.roomID << std::endl;
 }
+void IOCompletionPort::SendData_EnterRoom(stClientInfo* recvingClient) {
+    recvingClient->sendOverlapped.operation = IOOperation::SEND;
+    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
+    EnterRoomPacket p;
+    p.type = PacketType::ENTER;
+    p.roomID = recvingClient->roomID;
+    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&p);
+    recvingClient->sendOverlapped.wsaBuf.len = sizeof(EnterRoomPacket);
 
+    DWORD size_sent = 0;
+    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
+        closesocket(recvingClient->socketClient);
+        RemoveClient(recvingClient);
+    }
+}
 void IOCompletionPort::RegisterRecv(stClientInfo* client) {
     if (!client || client->socketClient == INVALID_SOCKET) {
         std::cerr << "[에러] 유효하지 않은 클라이언트 소켓\n";
@@ -139,11 +159,22 @@ void IOCompletionPort::RegisterRecv(stClientInfo* client) {
 void IOCompletionPort::RemoveClient(stClientInfo* client) {
     std::lock_guard<std::mutex> lock(clientMutex);
 
-    auto it = std::find(clients.begin(), clients.end(), client);
-    if (it != clients.end()) {
-        clients.erase(it);
-        delete client;  // 동적 할당된 클라이언트 삭제
-    }
+    clients.erase(std::remove_if(clients.begin(), clients.end(),
+        [&](stClientInfo* c) {
+            if (c == client) {
+                //delete c;
+                return true;
+            }
+            return false;
+        }), clients.end());
+    waitingClients.erase(std::remove_if(waitingClients.begin(), waitingClients.end(),
+        [&](stClientInfo* c) {
+            if (c == client) {
+                delete c;
+                return true;
+            }
+            return false;
+        }), waitingClients.end());
 }
 
 void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length) {
@@ -235,7 +266,7 @@ void IOCompletionPort::WorkThread() {
 
                 // 이동 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
-                    if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    if (otherClient != client && client->roomID == otherClient->roomID) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_Move(client, otherClient);
                     }
                 }

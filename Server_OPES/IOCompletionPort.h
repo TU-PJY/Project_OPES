@@ -33,7 +33,7 @@ struct stClientInfo {
         ZeroMemory(&recvOverlapped, sizeof(stOverlappedEx));
         ZeroMemory(&sendOverlapped, sizeof(stOverlappedEx));
         socketClient = INVALID_SOCKET;
-        roomID = -1;
+        roomID = 0;
         x = 0; 
         y = 0;
     }
@@ -54,6 +54,7 @@ public:
     void RegisterRecv(stClientInfo* client);
     void SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length);
     void SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient);
+    void SendData_EnterRoom(stClientInfo* recvingClient);
     void RemoveClient(stClientInfo* client);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
