@@ -1,7 +1,8 @@
 #define MAX_SOCKBUF 1024
 enum class PacketType {
     CHAT,
-    MOVE
+    MOVE,
+    ENTER
 };
 
 // 채팅 패킷 구조체
@@ -26,4 +27,8 @@ struct MovePacket_S {
     unsigned int id;
     int x;
     int y;
+};
+struct EnterRoomPacket {
+    PacketType type;
+    unsigned int roomID;
 };

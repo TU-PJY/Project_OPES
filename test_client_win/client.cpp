@@ -14,7 +14,7 @@
 
 SOCKET clientSocket;
 bool isRunning = true;
-
+bool enter_room = false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
@@ -39,6 +39,16 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
     else if (*type == PacketType::MOVE) {
         MovePacket_R* movePacket = reinterpret_cast<MovePacket_R*>(recv_buffer);
         std::cout << "[서버]  " << movePacket->id << ":" << movePacket->x << "," << movePacket->y << std::endl;
+    }
+    else if (*type == PacketType::ENTER) {
+        EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
+        std::cout << "[서버]  " << EnterPacket->roomID << std::endl;
+        if (0 != EnterPacket->roomID) {
+            enter_room = true;
+        }
+        else {
+            std::cout << "대기중.." << std::endl;
+        }
     }
 
     // 다음 수신 요청
@@ -70,48 +80,51 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 // 이동 패킷 전송 함수
 void SendMovePacket(char direction) {
-    MovePacket_S movePacket = {};
-    movePacket.type = PacketType::MOVE;
-    movePacket.direction = direction;
+    if (enter_room) {
+        MovePacket_S movePacket = {};
+        movePacket.type = PacketType::MOVE;
+        movePacket.direction = direction;
 
-    WSABUF wsaBuf;
-    wsaBuf.buf = reinterpret_cast<char*>(&movePacket);
-    wsaBuf.len = sizeof(MovePacket_S);
+        WSABUF wsaBuf;
+        wsaBuf.buf = reinterpret_cast<char*>(&movePacket);
+        wsaBuf.len = sizeof(MovePacket_S);
 
-    // WSAOVERLAPPED 구조체를 동적 할당
-    WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-    ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+        // WSAOVERLAPPED 구조체를 동적 할당
+        WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+        ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
-    DWORD bytesSent = 0;
+        DWORD bytesSent = 0;
 
-    int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
-    if (result == SOCKET_ERROR) {
-        int err = WSAGetLastError();
-        if (err != WSA_IO_PENDING) {
-            std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
-            delete send_over;  // 오류 발생 시 할당 해제
+        int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+        if (result == SOCKET_ERROR) {
+            int err = WSAGetLastError();
+            if (err != WSA_IO_PENDING) {
+                std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
+                delete send_over;  // 오류 발생 시 할당 해제
+            }
         }
     }
 }
 
 // 채팅 패킷 전송 함수
 void SendChatPacket(const char* message) {
-    ChatPacket_S chatPacket = {};
-    chatPacket.type = PacketType::CHAT;
-    int msg_size = strlen(message);
-    memcpy(chatPacket.message, message, msg_size);
+    if (enter_room) {
+        ChatPacket_S chatPacket = {};
+        chatPacket.type = PacketType::CHAT;
+        int msg_size = strlen(message);
+        memcpy(chatPacket.message, message, msg_size);
 
-    WSABUF wsaBuf[1];
-    wsaBuf[0].buf = reinterpret_cast<char*>(&chatPacket);
-    wsaBuf[0].len = sizeof(PacketType) + msg_size;
+        WSABUF wsaBuf[1];
+        wsaBuf[0].buf = reinterpret_cast<char*>(&chatPacket);
+        wsaBuf[0].len = sizeof(PacketType) + msg_size;
 
-    WSAOVERLAPPED send_over = { 0 };
+        WSAOVERLAPPED send_over = { 0 };
 
-    int result = WSASend(clientSocket, wsaBuf, 1, NULL, 0, &send_over, SendCallback);//동기 io
-    if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[클라이언트] 채팅 패킷 전송 오류\n";
+        int result = WSASend(clientSocket, wsaBuf, 1, NULL, 0, &send_over, SendCallback);//동기 io
+        if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+            std::cerr << "[클라이언트] 채팅 패킷 전송 오류\n";
+        }
     }
-
 }
 
 // 윈도우 프로시저
@@ -177,10 +190,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
     HWND hwnd = CreateWindow(L"GameClient", L"테스트 클라이언트", WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, 400, 300, NULL, NULL, wc.hInstance, NULL);
     ShowWindow(hwnd, SW_SHOWDEFAULT);
-
-    // 메시지 루프
+    //while (1) {
+    //    if (enter_room) break;
+    //    SleepEx(0, TRUE);
+    //}
+     // 메시지 루프
     MSG msg;
     while (isRunning) {
+
         while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
