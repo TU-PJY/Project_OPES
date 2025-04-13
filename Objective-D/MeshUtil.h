@@ -2,6 +2,7 @@
 #include "DirectX_3D.h"
 #include <fstream>
 #include <unordered_map>
+#include <set>
 
 struct FBXVertex {
 	float px, py, pz;   // Position

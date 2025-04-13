@@ -298,34 +298,69 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 
 void FBXUtil::ProcessNodeForAnimation(FbxNode* node, FbxAnimLayer* animLayer) {
 	AnimationChannel channel;
-    channel.nodeName = node->GetName();
-    
-    FbxAnimCurve* transCurveX = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
-    FbxAnimCurve* transCurveY = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Y);
-    FbxAnimCurve* transCurveZ = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+	channel.nodeName = node->GetName();
 
-    if (transCurveX && transCurveY && transCurveZ) {
-        int keyCount = transCurveX->KeyGetCount();
-        for (int keyIndex = 0; keyIndex < keyCount; ++keyIndex) {
-            AnimationKeyFrame keyFrame;
-            keyFrame.time = static_cast<float>(transCurveX->KeyGetTime(keyIndex).GetSecondDouble());
-            keyFrame.translation[0] = static_cast<float>(transCurveX->KeyGetValue(keyIndex));
-            keyFrame.translation[1] = static_cast<float>(transCurveY->KeyGetValue(keyIndex));
-            keyFrame.translation[2] = static_cast<float>(transCurveZ->KeyGetValue(keyIndex));
+	// Translation curves
+	FbxAnimCurve* transX = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
+	FbxAnimCurve* transY = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+	FbxAnimCurve* transZ = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Z);
 
-            channel.keyframes.push_back(keyFrame);
-        }
-    }
+	// Rotation curves
+	FbxAnimCurve* rotX = node->LclRotation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
+	FbxAnimCurve* rotY = node->LclRotation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+	FbxAnimCurve* rotZ = node->LclRotation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Z);
 
-    // 채널에 키프레임이 하나라도 존재한다면 저장
-    if (!channel.keyframes.empty()) {
-        AnimationChannels.push_back(channel);
-    }
+	// Scaling curves
+	FbxAnimCurve* scaleX = node->LclScaling.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
+	FbxAnimCurve* scaleY = node->LclScaling.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+	FbxAnimCurve* scaleZ = node->LclScaling.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Z);
 
-    // 자식 노드 처리
-    for (int i = 0; i < node->GetChildCount(); ++i) {
-        ProcessNodeForAnimation(node->GetChild(i), animLayer);
-    }
+	// 통합 시간 수집 (Set으로 중복 제거 및 정렬)
+	std::set<FbxTime> keyTimes;
+
+	auto CollectTimes = [&keyTimes](FbxAnimCurve* curve) {
+		if (!curve) return;
+		int count = curve->KeyGetCount();
+		for (int i = 0; i < count; ++i)
+			keyTimes.insert(curve->KeyGetTime(i));
+		};
+
+	CollectTimes(transX); CollectTimes(transY); CollectTimes(transZ);
+	CollectTimes(rotX);   CollectTimes(rotY);   CollectTimes(rotZ);
+	CollectTimes(scaleX); CollectTimes(scaleY); CollectTimes(scaleZ);
+
+	// 시간 기준으로 키프레임 생성
+	for (const FbxTime& time : keyTimes) {
+		AnimationKeyFrame key{};
+		key.time = static_cast<float>(time.GetSecondDouble());
+
+		// Translation
+		key.translation[0] = transX ? static_cast<float>(transX->Evaluate(time)) : 0.0f;
+		key.translation[1] = transY ? static_cast<float>(transY->Evaluate(time)) : 0.0f;
+		key.translation[2] = transZ ? static_cast<float>(transZ->Evaluate(time)) : 0.0f;
+
+		// Rotation
+		key.rotation[0] = rotX ? static_cast<float>(rotX->Evaluate(time)) : 0.0f;
+		key.rotation[1] = rotY ? static_cast<float>(rotY->Evaluate(time)) : 0.0f;
+		key.rotation[2] = rotZ ? static_cast<float>(rotZ->Evaluate(time)) : 0.0f;
+
+		// Scale
+		key.scale[0] = scaleX ? static_cast<float>(scaleX->Evaluate(time)) : 1.0f;
+		key.scale[1] = scaleY ? static_cast<float>(scaleY->Evaluate(time)) : 1.0f;
+		key.scale[2] = scaleZ ? static_cast<float>(scaleZ->Evaluate(time)) : 1.0f;
+
+		channel.keyframes.push_back(key);
+	}
+
+	// 키프레임이 존재하면 채널 저장
+	if (!channel.keyframes.empty()) {
+		AnimationChannels.push_back(channel);
+	}
+
+	// 자식 노드 재귀 처리
+	for (int i = 0; i < node->GetChildCount(); ++i) {
+		ProcessNodeForAnimation(node->GetChild(i), animLayer);
+	}
 }
 
 void FBXUtil::ProcessAnimation() {
