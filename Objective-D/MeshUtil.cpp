@@ -4,9 +4,11 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include "Framework.h"
 
 FBXUtil fbxUtil;
 std::vector<AnimationChannel> AnimationChannels;
+std::vector<Mesh*> AnimatedMesh;
 
 // 매쉬를 담당하는 유틸이다.
 
@@ -243,55 +245,59 @@ void FBXUtil::GetVertexData(){
 void FBXUtil::ProcessNode(FbxNode* Node) {
 	std::cout << "Node Name: " << Node->GetName() << "\n";
 
-	FbxMesh* Mesh = Node->GetMesh();
-	if (Mesh) {
+	FbxMesh* fbxMesh = Node->GetMesh();
+	if (fbxMesh) {
 		std::cout << "Processing Mesh: " << Node->GetName() << "\n";
 
-		FbxVector4* ControlPoints = Mesh->GetControlPoints();
-		int ControlPointCount = Mesh->GetControlPointsCount();
+		ParsedVertices.clear(); // 이 노드에 대해 정점 버퍼 초기화
 
-		int PolygonCount = Mesh->GetPolygonCount();
+		FbxVector4* ControlPoints = fbxMesh->GetControlPoints();
+		int PolygonCount = fbxMesh->GetPolygonCount();
+
 		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
-			int VertexCountInPolygon = Mesh->GetPolygonSize(PolyIndex);
+			int VertexCountInPolygon = fbxMesh->GetPolygonSize(PolyIndex);
 
 			for (int V = 0; V < VertexCountInPolygon; V++) {
-				int ControlPointIndex = Mesh->GetPolygonVertex(PolyIndex, V);
-				if (ControlPointIndex < 0) 
-					continue;
+				int ControlPointIndex = fbxMesh->GetPolygonVertex(PolyIndex, V);
+				if (ControlPointIndex < 0) continue;
 
 				FbxVector4 Position = ControlPoints[ControlPointIndex];
 				FbxVector4 Normal(0, 0, 0, 0);
+				bool HasNormal = fbxMesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
 
-				bool HasNormal = Mesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
 				FbxVector2 UV(0, 0);
-
 				const char* UVSetName = nullptr;
-				if (Mesh->GetElementUVCount() > 0) {
-					FbxLayerElementUV* UVElement = Mesh->GetElementUV(0);
-					if (UVElement) 
-						UVSetName = UVElement->GetName();
+				if (fbxMesh->GetElementUVCount() > 0) {
+					FbxLayerElementUV* UVElement = fbxMesh->GetElementUV(0);
+					if (UVElement) UVSetName = UVElement->GetName();
 				}
-
 				bool Unmapped = false;
-				bool HasUV = Mesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
+				bool HasUV = fbxMesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
 
 				FBXVertex Vertex{};
 				Vertex.px = static_cast<float>(Position[0]);
 				Vertex.py = static_cast<float>(Position[1]);
 				Vertex.pz = static_cast<float>(Position[2]);
-
 				Vertex.nx = HasNormal ? static_cast<float>(Normal[0]) : 0.0f;
 				Vertex.ny = HasNormal ? static_cast<float>(Normal[1]) : 0.0f;
 				Vertex.nz = HasNormal ? static_cast<float>(Normal[2]) : 0.0f;
-
 				Vertex.u = HasUV ? static_cast<float>(UV[0]) : 0.0f;
 				Vertex.v = HasUV ? static_cast<float>(UV[1]) : 0.0f;
 
 				ParsedVertices.push_back(Vertex);
 			}
 		}
+
+		// 새로운 Mesh 객체 생성
+		Mesh* NewMesh = new Mesh();
+		NewMesh->nodeName = Node->GetName(); // Mesh 이름 저장 (선택사항)
+		NewMesh->CreateFBXMesh(framework.Device, framework.CmdList, ParsedVertices); // 장치 및 커맨드리스트 필요
+
+		// AnimatedMesh 리스트에 저장
+		AnimatedMesh.push_back(NewMesh);
 	}
 
+	// 자식 노드 재귀 처리
 	for (int i = 0; i < Node->GetChildCount(); ++i)
 		ProcessNode(Node->GetChild(i));
 }

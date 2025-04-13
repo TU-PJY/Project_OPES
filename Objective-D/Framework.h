@@ -40,13 +40,15 @@ public:
 
 	XMFLOAT3 BackgroundColor{};
 
+	ID3D12GraphicsCommandList* CmdList;
+	ID3D12Device* Device;
+
 private:
 	HINSTANCE					hInstance;
 	HWND						hWnd;
 
 	IDXGIFactory4* DxgiFactory;
 	IDXGISwapChain3* DxgiSwapChain;
-	ID3D12Device* Device;
 
 	bool						MSAA_4x_Option = false;
 	UINT						MSAA_4x_QualityLevels = 8;
@@ -64,7 +66,6 @@ private:
 
 	ID3D12CommandAllocator* CmdAllocator;
 	ID3D12CommandQueue* CmdQueue;
-	ID3D12GraphicsCommandList* CmdList;
 
 	ID3D12Fence* m_pd3dFence;
 	UINT64						FenceValues[SwapChainBuffers];
@@ -81,3 +82,5 @@ public:
 	TCHAR						WindowName[50]{};
 	int							TitleNameLength{};
 };
+ 
+extern Framework framework;

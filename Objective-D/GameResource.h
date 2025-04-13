@@ -115,8 +115,8 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 			fbxUtil.GetVertexData();
 			fbxUtil.ProcessAnimation();
 			fbxUtil.PrintAnimationStackNames();
-			MeshPtr = new Mesh();
-			MeshPtr->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
+			//MeshPtr = new Mesh();
+			//MeshPtr->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
 			fbxUtil.ClearVertexVector();
 		}
 	}

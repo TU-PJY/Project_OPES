@@ -15,7 +15,8 @@ public:
 		BeginRender(RENDER_TYPE_3D);
 		Transform::Move(TranslateMatrix, 0.0, 0.0, 5.0);
 		Transform::Rotate(RotateMatrix, -90.0, 180.0, 0.0);
-		Render3D(MeshRes.Man, TexRes.Man);
+		for (auto& m : AnimatedMesh)
+			Render3D(m, TexRes.Man);
 	}
 };
 

@@ -25,6 +25,10 @@ struct AnimationChannel {
 // 모든 애니메이션 채널을 담을 컨테이너
 extern std::vector<AnimationChannel> AnimationChannels;
 
+class Mesh;
+
+extern std::vector<Mesh*> AnimatedMesh;
+
 class Mesh {
 private:
 	int Ref{};
@@ -32,6 +36,7 @@ private:
 public:
 	void AddRef();
 	void Release();
+	std::string nodeName{};
 
 protected:
 	UINT Vertices{};
