@@ -313,11 +313,6 @@ void FBXUtil::ProcessNodeForAnimation(FbxNode* node, FbxAnimLayer* animLayer) {
             keyFrame.translation[1] = static_cast<float>(transCurveY->KeyGetValue(keyIndex));
             keyFrame.translation[2] = static_cast<float>(transCurveZ->KeyGetValue(keyIndex));
 
-			//std::cout << "Node: " << node->GetName() << ", Time: " << keyFrame.time
-			//	<< ", Translation: (" << keyFrame.translation[0] << ", " << keyFrame.translation[1] << ", " << keyFrame.translation[2] << ")\n";
-
-            // 회전, 스케일 데이터도 필요하다면 유사하게 추가
-
             channel.keyframes.push_back(keyFrame);
         }
     }
