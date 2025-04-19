@@ -49,47 +49,84 @@ void Mesh::Release() {
 }
 
 void Mesh::UpdateSkinning(float timeInSeconds){
-	// 1) 애니메이션 채널에서 본 트랜스폼 평가 (여기선 단일 채널 당 하나의 본 nodeName 가정)
-	//    → 실제로는 애니메이션 키프레임 간 선형 보간, 회전은 쿼터니언 Slerp 적용
-	//    아래 예시는 pseudocode입니다. 여러분의 AnimationChannels 구조에 맞게 바꿔주세요.
+	// 본 개수
+	UINT B = static_cast<UINT>(BoneOffsetMatrices.size());
 
-	size_t boneCount = BoneOffsetMatrices.size();
-	std::vector<XMFLOAT4X4> finalBoneTransforms(boneCount);
+	// 로컬/글로벌 행렬 저장용
+	std::vector<XMMATRIX> localTransform(B);
+	std::vector<XMMATRIX> globalTransform(B);
 
-	for (size_t b = 0; b < boneCount; ++b) {
-		// 채널 찾기
-		auto& channel = AnimationChannels[b];
-		// keyframes 사이 보간
-		AnimationKeyFrame before, after;
-		// (생략) before/after time 검색 및 t 보간 인자 u 계산
-		// FbxUtil::InterpolateKeyframe(channel, timeInSeconds, before, after, u);
+	// 1) 로컬 변환 계산 (키프레임 보간)
+	for (UINT b = 0; b < B; ++b) {
+		auto& frames = AnimationChannels[b].keyframes;
+		// 기본값: 첫 키프레임
+		AnimationKeyFrame* prev = &frames[0];
+		AnimationKeyFrame* next = &frames[0];
 
-		// 변환 행렬 T*R*S 계산
-		XMMATRIX T = XMMatrixTranslation(before.translation[0], before.translation[1], before.translation[2]);
+		// timeInSeconds 사이에 있는 prev/next 찾기
+		for (size_t i = 0; i + 1 < frames.size(); ++i) {
+			if (frames[i].time <= timeInSeconds && frames[i + 1].time >= timeInSeconds) {
+				prev = &frames[i];
+				next = &frames[i + 1];
+				break;
+			}
+		}
+
+		// 보간 비율 u
+		float span = next->time - prev->time;
+		float u = (span > 0.0f)
+			? (timeInSeconds - prev->time) / span
+			: 0.0f;
+
+		// 선형 보간된 트랜슬레이션/로테이션/스케일 값
+		float tx = prev->translation[0] + (next->translation[0] - prev->translation[0]) * u;
+		float ty = prev->translation[1] + (next->translation[1] - prev->translation[1]) * u;
+		float tz = prev->translation[2] + (next->translation[2] - prev->translation[2]) * u;
+
+		float rx = prev->rotation[0] + (next->rotation[0] - prev->rotation[0]) * u;
+		float ry = prev->rotation[1] + (next->rotation[1] - prev->rotation[1]) * u;
+		float rz = prev->rotation[2] + (next->rotation[2] - prev->rotation[2]) * u;
+
+		float sx = prev->scale[0] + (next->scale[0] - prev->scale[0]) * u;
+		float sy = prev->scale[1] + (next->scale[1] - prev->scale[1]) * u;
+		float sz = prev->scale[2] + (next->scale[2] - prev->scale[2]) * u;
+
+		// T, R, S 매트릭스 생성
+		XMMATRIX Tm = XMMatrixTranslation(tx, ty, tz);
 		XMVECTOR q = XMQuaternionRotationRollPitchYaw(
-			XMConvertToRadians(before.rotation[0]),
-			XMConvertToRadians(before.rotation[1]),
-			XMConvertToRadians(before.rotation[2]));
-		XMMATRIX R = XMMatrixRotationQuaternion(q);
-		XMMATRIX S = XMMatrixScaling(before.scale[0], before.scale[1], before.scale[2]);
-		XMMATRIX local = S * R * T;
+			XMConvertToRadians(rx),
+			XMConvertToRadians(ry),
+			XMConvertToRadians(rz)
+		);
+		XMMATRIX Rm = XMMatrixRotationQuaternion(q);
+		XMMATRIX Sm = XMMatrixScaling(sx, sy, sz);
 
-		// (간단화) 부모 본 없음 가정 → 전역 = local
-		XMMATRIX global = local;
-
-		// 최종 스킨 매트릭스 = global * offset
-		XMMATRIX offset = XMLoadFloat4x4(&BoneOffsetMatrices[b]);
-		XMMATRIX finalM = offset * global;
-
-		XMStoreFloat4x4(&finalBoneTransforms[b], finalM);
+		localTransform[b] = Sm * Rm * Tm;
 	}
 
-	// 2) 각 버텍스에 스킨닝 적용
+	// 2) 부모 계층 누적
+	for (UINT b = 0; b < B; ++b) {
+		int p = boneParentIndices[b];
+		if (p >= 0)
+			globalTransform[b] = globalTransform[p] * localTransform[b];
+		else
+			globalTransform[b] = localTransform[b];
+	}
+
+	// 3) global × offset → 최종 스킨 행렬
+	finalBoneTransforms.resize(B);
+	for (UINT b = 0; b < B; ++b) {
+		XMMATRIX offset = XMLoadFloat4x4(&BoneOffsetMatrices[b]);
+		// 올바른 곱순서: global → offset
+		XMMATRIX skinM = globalTransform[b] * offset;
+		XMStoreFloat4x4(&finalBoneTransforms[b], skinM);
+	}
+
+	// 4) 버텍스 스키닝
 	for (UINT i = 0; i < Vertices; ++i) {
 		XMVECTOR pos = XMLoadFloat3(&RestPosition[i]);
 		XMVECTOR nrm = XMLoadFloat3(&RestNormal[i]);
-
-		XMUINT4 bi = BoneIndices[i];
+		XMUINT4  bi = BoneIndices[i];
 		XMFLOAT4 bw = BoneWeights[i];
 
 		XMVECTOR skPos = XMVectorZero();
@@ -97,8 +134,10 @@ void Mesh::UpdateSkinning(float timeInSeconds){
 
 		for (int k = 0; k < 4; ++k) {
 			float w = ((float*)&bw)[k];
-			if (w <= 0) continue;
-			XMMATRIX M = XMLoadFloat4x4(&finalBoneTransforms[((UINT*)&bi)[k]]);
+			if (w <= 0.0f) continue;
+
+			UINT boneIndex = ((UINT*)&bi)[k];
+			XMMATRIX M = XMLoadFloat4x4(&finalBoneTransforms[boneIndex]);
 			skPos += XMVector3Transform(pos, M) * w;
 			skNrm += XMVector3TransformNormal(nrm, M) * w;
 		}
@@ -107,8 +146,9 @@ void Mesh::UpdateSkinning(float timeInSeconds){
 		XMStoreFloat3(&Normal[i], XMVector3Normalize(skNrm));
 	}
 
-	// 3) 업데이트된 버텍스 데이터를 GPU로 업로드 (HEAP_TYPE_UPLOAD)
+	// 5) GPU로 업로드 (HEAP_TYPE_UPLOAD 유지)
 	void* pData = nullptr;
+
 	PositionUploadBuffer->Map(0, nullptr, &pData);
 	memcpy(pData, Position, sizeof(XMFLOAT3) * Vertices);
 	PositionUploadBuffer->Unmap(0, nullptr);
@@ -483,7 +523,6 @@ void FBXUtil::ParseSkin(FbxMesh* fbxMesh, Mesh* mesh) {
 	mesh->BoneWeights = new XMFLOAT4[V]{};
 	mesh->RestPosition = new XMFLOAT3[V];
 	mesh->RestNormal = new XMFLOAT3[V];
-	// copy rest pose
 	for (UINT i = 0; i < V; ++i) {
 		mesh->RestPosition[i] = mesh->Position[i];
 		mesh->RestNormal[i] = mesh->Normal[i];
@@ -492,11 +531,11 @@ void FBXUtil::ParseSkin(FbxMesh* fbxMesh, Mesh* mesh) {
 	// 2) 클러스터(본) 수만큼 오프셋 행렬 저장
 	int clusterCount = skin->GetClusterCount();
 	mesh->BoneOffsetMatrices.resize(clusterCount);
+
 	for (int c = 0; c < clusterCount; ++c) {
 		FbxCluster* cluster = skin->GetCluster(c);
-		FbxAMatrix     linkMatrix;
-		cluster->GetTransformLinkMatrix(linkMatrix);  // inverse bind
-		// FbxAMatrix → XMFLOAT4X4 변환
+		FbxAMatrix   linkMatrix;
+		cluster->GetTransformLinkMatrix(linkMatrix);
 		XMFLOAT4X4 m;
 		for (int r = 0; r < 4; ++r)
 			for (int k = 0; k < 4; ++k)
@@ -504,17 +543,35 @@ void FBXUtil::ParseSkin(FbxMesh* fbxMesh, Mesh* mesh) {
 		mesh->BoneOffsetMatrices[c] = m;
 	}
 
+	// → 여기에 부모 인덱스 채우기
+	mesh->boneParentIndices.resize(clusterCount);
+	// (a) 클러스터의 link node → 인덱스 맵 생성
+	std::unordered_map<FbxNode*, int> nodeToIndex;
+	for (int c = 0; c < clusterCount; ++c) {
+		FbxCluster* cluster = skin->GetCluster(c);
+		nodeToIndex[cluster->GetLink()] = c;
+	}
+	// (b) 각 클러스터의 부모 노드를 맵에서 찾아 인덱스 저장
+	for (int c = 0; c < clusterCount; ++c) {
+		FbxCluster* cluster = skin->GetCluster(c);
+		FbxNode* linkNode = cluster->GetLink();
+		FbxNode* parentNode = linkNode->GetParent();
+		auto it = nodeToIndex.find(parentNode);
+		mesh->boneParentIndices[c] = (it != nodeToIndex.end())
+			? it->second   // 부모 노드가 클러스터에 있으면 그 인덱스
+			: -1;          // 없으면 루트 본(-
+	}
+
 	// 3) 각 클러스터의 영향도(웨이트)와 인덱스를 버텍스에 채우기
 	for (int c = 0; c < clusterCount; ++c) {
 		FbxCluster* cluster = skin->GetCluster(c);
-		int          idxCount = cluster->GetControlPointIndicesCount();
+		int   idxCount = cluster->GetControlPointIndicesCount();
 		int* indices = cluster->GetControlPointIndices();
 		double* weights = cluster->GetControlPointWeights();
 
 		for (int i = 0; i < idxCount; ++i) {
 			int v = indices[i];
 			float w = static_cast<float>(weights[i]);
-			// 첫 빈 슬롯(0 weight) 찾기
 			XMFLOAT4& bw = mesh->BoneWeights[v];
 			XMUINT4& bi = mesh->BoneIndices[v];
 			for (int k = 0; k < 4; ++k) {

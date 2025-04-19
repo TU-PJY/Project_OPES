@@ -45,6 +45,9 @@ public:
 	XMFLOAT3* RestPosition{};     // [Vertices]
 	XMFLOAT3* RestNormal{};       // [Vertices]
 
+	std::vector<int> boneParentIndices;            // clusterCount 크기
+	std::vector<XMFLOAT4X4> finalBoneTransforms;   // clusterCount 크기
+
 	// 매 프레임 호출해서 위치/노말을 다시 계산하고 GPU로 업로드
 	void UpdateSkinning(float timeInSeconds);
 
