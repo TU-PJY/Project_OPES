@@ -7,9 +7,6 @@
     <Filter Include="[2]____________[ Game Object ]">
       <UniqueIdentifier>{ff900b4e-0c5d-4b64-8b68-91350d32ea6d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]">
-      <UniqueIdentifier>{03135e75-d38d-4b93-81cb-cd9d7aad3e82}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[2]____________[ Game Object ]\[2] [ Template ]">
       <UniqueIdentifier>{03b6b546-94f5-4152-a165-f88612df9eb3}</UniqueIdentifier>
     </Filter>
@@ -157,6 +154,9 @@
     </Filter>
     <Filter Include="[1]____________[ Game Mode ]\[ Modes ]">
       <UniqueIdentifier>{64814673-b711-4547-a2fa-f83b097a05fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]">
+      <UniqueIdentifier>{03135e75-d38d-4b93-81cb-cd9d7aad3e82}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

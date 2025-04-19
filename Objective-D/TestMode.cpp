@@ -8,7 +8,8 @@ public:
 	TestObject() {}
 
 	void Update(float FT) override {
-
+		for (auto& m : AnimatedMesh)
+			m->UpdateSkinning(FT);
 	}
 
 	void Render() override {
