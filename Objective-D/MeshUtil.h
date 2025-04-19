@@ -13,8 +13,8 @@ struct FBXVertex {
 struct AnimationKeyFrame {
 	float time;
 	float translation[3];
-	float rotation[3]; // 회전 키프레임 (필요하다면)
-	float scale[3];    // 스케일 키프레임 (필요하다면)
+	float rotation[3];
+	float scale[3];
 };
 
 struct AnimationChannel {
@@ -38,7 +38,6 @@ public:
 	void Release();
 	std::string nodeName{};
 
-protected:
 	UINT Vertices{};
 	XMFLOAT3* Position{};
 	ID3D12Resource* PositionBuffer{};
