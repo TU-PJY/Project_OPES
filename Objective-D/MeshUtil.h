@@ -36,22 +36,8 @@ public:
 	void AddRef();
 	void Release();
 
-	// FBX에서 가져온 본 인덱스/웨이트
-	XMUINT4* BoneIndices{};      // [Vertices]
-	XMFLOAT4* BoneWeights{};      // [Vertices]
-	std::vector<XMFLOAT4X4> BoneOffsetMatrices; // 본 오프셋(= inverse bind pose) 행렬들
-
-	// CPU 스킨닝용 원본(rest) 위치/노말
-	XMFLOAT3* RestPosition{};     // [Vertices]
-	XMFLOAT3* RestNormal{};       // [Vertices]
-
-	std::vector<int> boneParentIndices;            // clusterCount 크기
-	std::vector<XMFLOAT4X4> finalBoneTransforms;   // clusterCount 크기
-
-	// 매 프레임 호출해서 위치/노말을 다시 계산하고 GPU로 업로드
-	void UpdateSkinning(float timeInSeconds);
-
 	std::string nodeName{};
+
 	UINT Vertices{};
 	XMFLOAT3* Position{};
 	ID3D12Resource* PositionBuffer{};
@@ -129,7 +115,6 @@ public:
 	void PrintAnimationStackNames();
 	std::vector<FBXVertex> GetVertexVector();
 	void ClearVertexVector();
-	void ParseSkin(FbxMesh* fbxMesh, Mesh* mesh);
 };
 
 extern FBXUtil fbxUtil;
