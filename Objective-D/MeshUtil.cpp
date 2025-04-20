@@ -9,9 +9,6 @@
 FBXUtil fbxUtil;
 std::vector<AnimationChannel> AnimationChannels;
 std::vector<Mesh*> AnimatedMesh;
-
-std::unordered_multimap<int, int> ControlPointToVertexMap;
-std::unordered_map<int, std::vector<int>> ControlPointToVertex;
 // 매쉬를 담당하는 유틸이다.
 
 
@@ -299,8 +296,6 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 
 				ParsedVertices.push_back(Vertex);
 				int vertexIndex = ParsedVertices.size() - 1;
-				ControlPointToVertexMap.insert({ ControlPointIndex, vertexIndex });
-				ControlPointToVertex[ControlPointIndex].push_back(GlobalVertexIndex);
 				NewMesh->ControlPointToVertexIndices[controlPoint].push_back(vertexIndex);
 			}
 		}
