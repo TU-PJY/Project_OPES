@@ -10,9 +10,9 @@ public:
 	float time{};
 
 	void Update(float FT) override {
-	//	time += FT;
-	//	for (auto& m : AnimatedMesh)
-		//	m->UpdateSkinning(0.0);
+		time += FT;
+		for (auto& m : AnimatedMesh)
+			m->UpdateSkinning(time);
 	}
 
 	void Render() override {

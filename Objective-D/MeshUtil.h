@@ -36,6 +36,16 @@ public:
 	void AddRef();
 	void Release();
 
+	std::unordered_map<int, std::vector<int>> ControlPointToVertexIndices;
+
+	XMFLOAT3* OriginalPosition{};                // 원본 정점 위치
+	XMUINT4* BoneIndices{};                      // 정점당 본 인덱스 (최대 4개)
+	XMFLOAT4* BoneWeights{};                     // 정점당 본 가중치 (최대 4개)
+
+	std::vector<XMMATRIX> BoneOffsetMatrices;    // 각 본의 inverse bind pose
+	std::vector<int> BoneParentIndices;          // 각 본의 부모 인덱스
+	std::vector<std::string> BoneNames;          // 애니메이션 채널 매칭용 이름
+
 	std::string nodeName{};
 
 	UINT Vertices{};
@@ -96,6 +106,7 @@ public:
 	float GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix);
 	bool IsPointInTriangle(XMFLOAT2& pt, XMFLOAT2& v0, XMFLOAT2& v1, XMFLOAT2& v2);
 	float ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XMFLOAT3& v2);
+	void UpdateSkinning(float timeInSeconds);
 };
 
 class FBXUtil {
@@ -115,6 +126,8 @@ public:
 	void PrintAnimationStackNames();
 	std::vector<FBXVertex> GetVertexVector();
 	void ClearVertexVector();
+	void ParseSkin(FbxMesh* fbxMesh, Mesh* mesh);
+	void GetBoneMatricesFromScene(Mesh* mesh, float timeInSeconds, std::vector<XMMATRIX>& outBoneMatrices);
 };
 
 extern FBXUtil fbxUtil;
