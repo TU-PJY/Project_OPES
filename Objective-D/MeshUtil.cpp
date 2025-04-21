@@ -246,7 +246,9 @@ bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 		std::cerr << "Error: Unable to create FBX Scene!\n";
 		exit(1);
 	}
+	MeshPtr = &TargetMesh;
 	TargetMesh.Scene = Scene;
+	FbxAxisSystem::DirectX.ConvertScene(TargetMesh.Scene);
 	
 	FbxImporter* Importer = FbxImporter::Create(Manager, "");
 
@@ -266,8 +268,6 @@ bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 
 	std::cout << "FBX file loaded successfully.\n";
 	Importer->Destroy();
-
-	MeshPtr = &TargetMesh;
 
 	return true;
 }
