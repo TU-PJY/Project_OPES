@@ -7,10 +7,6 @@
 #include "Framework.h"
 
 FBXUtil fbxUtil;
-std::vector<AnimationChannel> AnimationChannels;
-std::vector<Mesh*> AnimatedMesh;
-// 매쉬를 담당하는 유틸이다.
-
 
 // ResourList에서 해당 함수를 사용하여 매쉬를 로드하도록 한다
 Mesh::Mesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, char* Directory, int Type) {
@@ -164,6 +160,36 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 	return height;
 }
 
+void Mesh::UpdateSkinning(float timeInSeconds) {
+	std::vector<XMMATRIX> boneMatrices;
+
+	// FBX 내부 트랜스폼 기반으로 안전하게 본 행렬 계산
+	fbxUtil.GetBoneMatricesFromScene(this, timeInSeconds, boneMatrices);
+
+	for (UINT v = 0; v < Vertices; ++v) {
+		XMVECTOR skinned = XMVectorZero();
+		XMVECTOR orig = XMLoadFloat3(&OriginalPosition[v]);
+
+		UINT boneIdx[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
+		float weights[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
+
+		for (int i = 0; i < 4; ++i) {
+			if (weights[i] > 0.0f && boneIdx[i] < boneMatrices.size()) {
+				XMVECTOR transformed = XMVector3Transform(orig, boneMatrices[boneIdx[i]]);
+				skinned += transformed * weights[i];
+			}
+		}
+		XMStoreFloat3(&Position[v], skinned);
+	}
+
+	// 5. GPU 업로드
+	void* pMapped = nullptr;
+	D3D12_RANGE r{ 0, 0 };
+	PositionBuffer->Map(0, &r, &pMapped);
+	memcpy(pMapped, Position, sizeof(XMFLOAT3) * Vertices);
+	PositionBuffer->Unmap(0, nullptr);
+}
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -180,7 +206,10 @@ void FBXUtil::Init() {
 	Manager->SetIOSettings(IOS);
 }
 
-bool FBXUtil::LoadFBXFile(const char* filePath) {
+bool FBXUtil::LoadFBXFile(const char* filePath, FBXMesh& TargetMesh) {
+	// 로드 시작 시 데이터를 추가할 대상 매쉬 포인터를 저장하여 이후에 접근 시 사용
+	MeshPtr = &TargetMesh;
+
 	if (Scene) {
 		Scene->Destroy();
 		Scene = nullptr;
@@ -299,19 +328,12 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 				NewMesh->ControlPointToVertexIndices[controlPoint].push_back(vertexIndex);
 			}
 		}
-		NewMesh->nodeName = Node->GetName(); // Mesh 이름 저장 (선택사항)
+		NewMesh->NodeName = Node->GetName(); // Mesh 이름 저장 (선택사항)
 		NewMesh->CreateFBXMesh(framework.Device, framework.CmdList, ParsedVertices); // 장치 및 커맨드리스트 필요
 		fbxUtil.ParseSkin(fbxMesh, NewMesh);  // 이 줄 추가
 
-		// AnimatedMesh 리스트에 저장
-		AnimatedMesh.push_back(NewMesh);
-
-		std::cout << "[Debug] Vertices: " << ParsedVertices.size() << std::endl;
-		for (UINT i = 0; i < ParsedVertices.size() && i < 10; ++i) {
-			std::cout << "Original: " << NewMesh->OriginalPosition[i].x << ", " << NewMesh->OriginalPosition[i].y << ", " << NewMesh->OriginalPosition[i].z << std::endl;
-			std::cout << "BoneIndices: " << NewMesh->BoneIndices[i].x << ", " << NewMesh->BoneIndices[i].y << ", " << NewMesh->BoneIndices[i].z << ", " << NewMesh->BoneIndices[i].w << std::endl;
-			std::cout << "BoneWeights: " << NewMesh->BoneWeights[i].x << ", " << NewMesh->BoneWeights[i].y << ", " << NewMesh->BoneWeights[i].z << ", " << NewMesh->BoneWeights[i].w << std::endl;
-		}
+		// 이전에 지정해둔 매쉬 포인터를 통해 매쉬 파트 저장
+		MeshPtr->MeshPart.push_back(NewMesh);
 	}
 
 	// 자식 노드 재귀 처리
@@ -321,7 +343,7 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 
 void FBXUtil::ProcessNodeForAnimation(FbxNode* node, FbxAnimLayer* animLayer) {
 	AnimationChannel channel;
-	channel.nodeName = node->GetName();
+	channel.NodeName = node->GetName();
 
 	// Translation curves
 	FbxAnimCurve* transX = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
@@ -377,7 +399,7 @@ void FBXUtil::ProcessNodeForAnimation(FbxNode* node, FbxAnimLayer* animLayer) {
 
 	// 키프레임이 존재하면 채널 저장
 	if (!channel.keyframes.empty()) {
-		AnimationChannels.push_back(channel);
+		MeshPtr->AnimationChannel.push_back(channel);
 	}
 
 	// 자식 노드 재귀 처리
@@ -394,13 +416,8 @@ void FBXUtil::ProcessAnimation() {
 		Scene->SetCurrentAnimationStack(animStack);
 		FbxAnimLayer* animLayer = animStack->GetMember<FbxAnimLayer>(0);
 
-		// 루트 노드부터 애니메이션 데이터 처리 시작
 		ProcessNodeForAnimation(Scene->GetRootNode(), animLayer);
 	}
-
-	std::cout << "========== Animation Channel Names ==========" << std::endl;
-	for (const auto& ch : AnimationChannels)
-		std::cout << ch.nodeName << std::endl;
 }
 
 void FBXUtil::PrintAnimationStackNames() {
@@ -432,35 +449,6 @@ void FBXUtil::ParseSkin(FbxMesh* fbxMesh, Mesh* mesh) {
 	mesh->BoneOffsetMatrices.resize(clusterCount);
 	mesh->BoneParentIndices.resize(clusterCount, -1);
 	mesh->BoneNames.resize(clusterCount);
-
-	for (int c = 0; c < clusterCount; ++c) {
-		FbxCluster* cluster = skin->GetCluster(c);
-		FbxNode* boneNode = cluster->GetLink();
-
-		//  여기!!
-		std::string name = boneNode ? boneNode->GetName() : "NULL";
-		std::cout << "[BoneName] " << c << ": " << name << std::endl;
-
-		mesh->BoneNames[c] = name;
-	}
-
-	for (int c = 0; c < skin->GetClusterCount(); ++c) {
-		FbxCluster* cluster = skin->GetCluster(c);
-		if (!cluster) {
-			std::cout << "Cluster " << c << " is NULL" << std::endl;
-			continue;
-		}
-
-		FbxNode* link = cluster->GetLink();
-		if (!link) {
-			std::cout << "Cluster " << c << " has no link" << std::endl;
-			continue;
-		}
-
-		std::string name = link->GetName();
-		std::cout << "[BoneName] " << c << ": " << name << std::endl;
-	}
-
 	mesh->BoneIndices = new XMUINT4[mesh->Vertices]{};
 	mesh->BoneWeights = new XMFLOAT4[mesh->Vertices]{};
 
@@ -486,7 +474,7 @@ void FBXUtil::ParseSkin(FbxMesh* fbxMesh, Mesh* mesh) {
 		);
 
 		mesh->BoneOffsetMatrices[c] = xmOffset;
-		std::cout << "[BoneOffsetMatrix] " << c << ": " << XMVectorGetX(mesh->BoneOffsetMatrices[c].r[3]) << ", " << XMVectorGetY(mesh->BoneOffsetMatrices[c].r[3]) << ", " << XMVectorGetZ(mesh->BoneOffsetMatrices[c].r[3]) << "\n";
+		//std::cout << "[BoneOffsetMatrix] " << c << ": " << XMVectorGetX(mesh->BoneOffsetMatrices[c].r[3]) << ", " << XMVectorGetY(mesh->BoneOffsetMatrices[c].r[3]) << ", " << XMVectorGetZ(mesh->BoneOffsetMatrices[c].r[3]) << "\n";
 
 		// 부모 찾기
 		FbxNode* parent = boneNode->GetParent();
@@ -539,22 +527,6 @@ void FBXUtil::ParseSkin(FbxMesh* fbxMesh, Mesh* mesh) {
 			}
 		}
 	}
-
-	/*std::cout << "[ControlPointToVertexIndices] Size: " << mesh->ControlPointToVertexIndices.size() << "\n";
-
-	for (auto& [cpIdx, vertices] : mesh->ControlPointToVertexIndices) {
-		std::cout << "CP " << cpIdx << " → Vertices: ";
-		for (int vi : vertices) std::cout << vi << " ";
-		std::cout << "\n";
-	}*/
-}
-
-void DebugPrintMatrix(const std::string& name, const XMMATRIX& mat) {
-	XMFLOAT4X4 f;
-	XMStoreFloat4x4(&f, mat);
-	std::cout << "[" << name << "]\n";
-	for (int r = 0; r < 4; ++r)
-		std::cout << f.m[r][0] << ", " << f.m[r][1] << ", " << f.m[r][2] << ", " << f.m[r][3] << "\n";
 }
 
 void FBXUtil::GetBoneMatricesFromScene(Mesh* mesh, float timeInSeconds, std::vector<XMMATRIX>& outBoneMatrices) {
@@ -591,61 +563,14 @@ void FBXUtil::GetBoneMatricesFromScene(Mesh* mesh, float timeInSeconds, std::vec
 	}
 }
 
-
-void Mesh::UpdateSkinning(float timeInSeconds) {
-	/*for (UINT i = 0; i < BoneNames.size(); ++i) {
-		auto it = std::find_if(AnimationChannels.begin(), AnimationChannels.end(),
-			[&](const AnimationChannel& ch) { return ch.nodeName == BoneNames[i]; });
-
-		if (it == AnimationChannels.end()) {
-			std::cout << "[WARNING] Bone not animated: " << BoneNames[i] << "\n";
+float FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh) {
+	float maxTime = 0.0;
+	for (const auto& channel : TargetMesh.AnimationChannel) {
+		if (!channel.keyframes.empty()) {
+			float endTime = channel.keyframes.back().time;
+			if (endTime > maxTime)
+				maxTime = endTime;
 		}
-
-		else 
-			std::cout << "[WARNING] Bone animated: " << BoneNames[i] << "\n";
-	}*/
-
-	//UINT B = static_cast<UINT>(BoneOffsetMatrices.size());
-	//std::vector<XMMATRIX> local(B), global(B), final(B);
-
-	//for (UINT v = 0; v < Vertices && v < 10; ++v) {
-	//	const auto& w = BoneWeights[v];
-	//	float sum = w.x + w.y + w.z + w.w;
-	//	std::cout << "[WeightSum] Vertex " << v << " → " << sum << "\n";
-
-	//	if (sum == 0.0f)
-	//		std::cout << "이 정점은 본에 영향을 받지 않음: " << v << "\n";
-	//}
-
-	/*for (UINT v = 0; v < Vertices && v < 5; ++v) {
-		std::cout << "[Position] " << Position[v].x << ", " << Position[v].y << ", " << Position[v].z << "\n";
-	}*/
-
-	std::vector<XMMATRIX> boneMatrices;
-
-	// FBX 내부 트랜스폼 기반으로 안전하게 본 행렬 계산
-	fbxUtil.GetBoneMatricesFromScene(this, timeInSeconds, boneMatrices);
-
-	for (UINT v = 0; v < Vertices; ++v) {
-		XMVECTOR skinned = XMVectorZero();
-		XMVECTOR orig = XMLoadFloat3(&OriginalPosition[v]);
-
-		UINT boneIdx[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
-		float weights[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
-
-		for (int i = 0; i < 4; ++i) {
-			if (weights[i] > 0.0f && boneIdx[i] < boneMatrices.size()) {
-				XMVECTOR transformed = XMVector3Transform(orig, boneMatrices[boneIdx[i]]);
-				skinned += transformed * weights[i];
-			}
-		}
-		XMStoreFloat3(&Position[v], skinned);
 	}
-
-	// 5. GPU 업로드
-	void* pMapped = nullptr;
-	D3D12_RANGE r{ 0, 0 };
-	PositionBuffer->Map(0, &r, &pMapped);
-	memcpy(pMapped, Position, sizeof(XMFLOAT3) * Vertices);
-	PositionBuffer->Unmap(0, nullptr);
+	return maxTime;
 }

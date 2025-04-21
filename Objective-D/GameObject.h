@@ -37,6 +37,9 @@ public:
 	void SetFogUse(int Flag);
 	void FlipTexture(int FlipType);
 	float ASP(float Value);
+	void UpdateFBXAnimation(FBXMesh& TargetMesh, float Time);
+	void RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue = 1.0, float DepthTestFlag = true);
+	int PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance);
 	void Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue=1.0f, bool DepthTestFlag=true);
 	void Render2D(Texture* TexturePtr, float AlphaValue=1.0f, bool EnableAspect=true);
 	void UpdateMotionRotation(float& RotationX, float& RotationY, float DeltaX, float DeltaY);

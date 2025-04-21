@@ -161,6 +161,34 @@ float GameObject::ASP(float Value) {
 	return ASPECT * Value;
 }
 
+// FBX 애니메이션을 업데이트 한다. 프레임 시간을 넣어주면 자동으로 재생된다.
+void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
+	TargetMesh.TotalTime += FrameTime;
+	for (auto const& M : TargetMesh.MeshPart)
+		M->UpdateSkinning(TargetMesh.TotalTime);
+}
+
+// FBX 렌더용 함수이다. 앞으로 모델 렌더링 시 이 함수를 쓰도록 한다.
+// Render3D는 기존의 코드를 최대한 건들지 않기 위해 남겨둔다.
+void GameObject::RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue, float DepthTestFlag){
+	for (auto const& M : TargetMesh.MeshPart)
+		Render3D(M, TexturePtr, AlphaValue, DepthTestFlag);
+}
+
+// FBX 매쉬전용 피킹 검사 함수이다. 대부분의 스키닝 애니메이션을 사용하는 FBX 파일들은 1~2개의 매쉬를 가지고 있을 것이므로 성능 상 큰 오버헤드는 없을것이다. (많다면 있겠지만...)
+int GameObject::PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance) {
+	int TotelInterSected{};
+	for (auto const& M : TargetMesh.MeshPart) {
+		int InterSected{};
+		XMVECTOR PickRayOrigin, PickRayDirecton;
+		GenPickingRay(PickPosition, ViewMatrix, PickRayOrigin, PickRayDirecton);
+		InterSected = M->CheckRayIntersection(PickRayOrigin, PickRayDirecton, HitDistance);
+		TotelInterSected += InterSected;
+	}
+
+	return TotelInterSected;
+}
+
 // 피킹 시 사용하는 함수이다. 프로그래머가 이 함수를 직접 사용할 일은 없다.
 int GameObject::PickRayInter(Mesh* MeshPtr, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance) {
 	int InterSected{};

@@ -18,7 +18,11 @@ struct ObjectStruct {
 class MeshResource {
 public:
 	// FBX 테스트용 매쉬
-	Mesh* Man{};
+//	Mesh* Man{};
+
+	// Animated FBX 전용 mesh
+	// FBX 매쉬는 내부에 매쉬가 여러개일 수 있으므로 내부에서 vector로 일괄 처리 및 렌더링 한다.
+	FBXMesh AMesh{};
 
 	// Map1 매쉬
 	Mesh* RockMesh;
@@ -88,6 +92,7 @@ extern Line_Shader* LineShader;
 // 한꺼번에 업로드 버퍼를 삭제함
 extern std::vector<Mesh*> LoadedMeshList;
 extern std::vector<Texture*> LoadedTextureList;
+extern std::vector<FBXMesh> LoadedFBXMeshList;
 
 class SystemResource {
 public:
@@ -106,21 +111,22 @@ void LoadTexture(DeviceSystem& System);
 void ClearUploadBuffer();
 
 inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, int Type) {
-	if (Type != MESH_TYPE_FBX)
-		MeshPtr = new Mesh(System.Device, System.CmdList, Directory, Type);
-
-	else {
-		if (fbxUtil.LoadFBXFile(Directory)) {
-			fbxUtil.TriangulateScene();
-			fbxUtil.GetVertexData();
-			fbxUtil.ProcessAnimation();
-			fbxUtil.PrintAnimationStackNames();
-			//MeshPtr = new Mesh();
-			//MeshPtr->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
-			fbxUtil.ClearVertexVector();
-		}
-	}
+	MeshPtr = new Mesh(System.Device, System.CmdList, Directory, Type);
 	LoadedMeshList.emplace_back(MeshPtr);
+}
+
+inline void ImportFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory, int HeapType=HEAP_TYPE_UPLOAD) {
+	if (fbxUtil.LoadFBXFile(Directory, TargetMesh)) {
+		TargetMesh.HeapType = HeapType;
+		fbxUtil.TriangulateScene();
+		fbxUtil.GetVertexData();
+		fbxUtil.ProcessAnimation();
+		fbxUtil.PrintAnimationStackNames();
+
+		// HEAP_TYPE_DEFAULT인 경우 업로드 버퍼를 삭제하도록 한다.(여기서 당장 하지 않고 나중에 일괄로 처리한다.)
+		if (HeapType == HEAP_TYPE_DEFAULT)
+			LoadedFBXMeshList.emplace_back(TargetMesh);
+	}
 }
 
 inline void ImportTexture(DeviceSystem& System, Texture*& TexturePtr, wchar_t* Directory, int Type, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_LINEAR) {

@@ -87,6 +87,12 @@ enum TextureTypeEnum {
 	TEXTURE_TYPE_DDS
 };
 
+// FBX 힙타입 열거형
+enum FBXHeapTypeEnum {
+	HEAP_TYPE_UPLOAD,
+	HEAP_TYPE_DEFAULT
+};
+
 // 오브젝트 벡터 구조체
 typedef struct Vector {
 	DirectX::XMFLOAT3 Look;

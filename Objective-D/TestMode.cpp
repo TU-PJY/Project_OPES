@@ -6,40 +6,26 @@
 class TestObject : public GameObject {
 public:
 	TestObject() {
-		totaltime = GetMeshAnimationDuration();
+		totaltime = fbxUtil.GetAnimationPlayTime(MeshRes.AMesh);
 		std::cout << totaltime << std::endl;
 	}
 
 	float time{};
 	float totaltime{};
 
-	double GetMeshAnimationDuration() {
-		double maxTime = 0.0;
-		for (const auto& channel : AnimationChannels) {
-			if (!channel.keyframes.empty()) {
-				double endTime = channel.keyframes.back().time;
-				if (endTime > maxTime)
-					maxTime = endTime;
-			}
-		}
-		return maxTime;
-	}
-
 	void Update(float FT) override {
 		time += FT;
 		if (time >= totaltime)
 			time = 0.0;
-		for (auto& m : AnimatedMesh)
-			m->UpdateSkinning(time);
+		UpdateFBXAnimation(MeshRes.AMesh, FT);
 	}
 
 	void Render() override {
 		BeginRender(RENDER_TYPE_3D);
 		Transform::Move(TranslateMatrix, 0.0, 0.0, 5.0);
 		Transform::Rotate(RotateMatrix, 0.0, 0.0, 0.0);
-		Transform::Scale(ScaleMatrix, 0.1, 0.1, 0.1);
-		for (auto& m : AnimatedMesh)
-			Render3D(m, TexRes.Man);
+		Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
+		RenderFBX(MeshRes.AMesh, TexRes.Man);
 	}
 };
 

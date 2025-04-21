@@ -18,15 +18,17 @@ struct AnimationKeyFrame {
 };
 
 struct AnimationChannel {
-	std::string nodeName;
+	std::string NodeName;
 	std::vector<AnimationKeyFrame> keyframes;
 };
 
-// 모든 애니메이션 채널을 담을 컨테이너
-extern std::vector<AnimationChannel> AnimationChannels;
-
 class Mesh;
-extern std::vector<Mesh*> AnimatedMesh;
+typedef struct {
+	int HeapType;
+	std::vector<Mesh*> MeshPart;
+	std::vector<AnimationChannel> AnimationChannel;
+	float TotalTime;
+}FBXMesh;
 
 class Mesh {
 private:
@@ -46,7 +48,7 @@ public:
 	std::vector<int> BoneParentIndices;          // 각 본의 부모 인덱스
 	std::vector<std::string> BoneNames;          // 애니메이션 채널 매칭용 이름
 
-	std::string nodeName{};
+	std::string NodeName{};
 
 	UINT Vertices{};
 	XMFLOAT3* Position{};
@@ -115,9 +117,11 @@ private:
 	FbxScene* Scene{};
 	std::vector<FBXVertex> ParsedVertices{};
 
+	FBXMesh* MeshPtr{};
+
 public:
 	void Init();
-	bool LoadFBXFile(const char* filePath);
+	bool LoadFBXFile(const char* filePath, FBXMesh& TargetMesh);
 	bool TriangulateScene();
 	void GetVertexData();
 	void ProcessNode(FbxNode* node);
@@ -128,6 +132,7 @@ public:
 	void ClearVertexVector();
 	void ParseSkin(FbxMesh* fbxMesh, Mesh* mesh);
 	void GetBoneMatricesFromScene(Mesh* mesh, float timeInSeconds, std::vector<XMMATRIX>& outBoneMatrices);
+	float GetAnimationPlayTime(FBXMesh& TargetMesh);
 };
 
 extern FBXUtil fbxUtil;
