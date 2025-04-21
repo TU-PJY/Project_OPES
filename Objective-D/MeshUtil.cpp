@@ -568,39 +568,38 @@ void FBXUtil::GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::
 		OutBoneMatrices[i] = MeshPtr->BoneOffsetMatrices[i] * Global[i];
 }
 
-void FBXUtil::EnumerateAnimationStacks(FBXMesh& mesh) {
-	mesh.AnimationStackNames.clear();
+void FBXUtil::EnumerateAnimationStacks(FBXMesh& TargetMesh) {
+	TargetMesh.AnimationStackNames.clear();
+	int Count = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
 
-	int count = mesh.Scene->GetSrcObjectCount<FbxAnimStack>();
-	for (int i = 0; i < count; ++i) {
-		FbxAnimStack* stack = mesh.Scene->GetSrcObject<FbxAnimStack>(i);
-		if (stack) {
-			std::string name = stack->GetName();
-			mesh.AnimationStackNames.push_back(name);
+	for (int i = 0; i < Count; ++i) {
+		FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
+		if (Stack) {
+			std::string StackName = Stack->GetName();
+			TargetMesh.AnimationStackNames.push_back(StackName);
 		}
 	}
 
-	if (!mesh.AnimationStackNames.empty()) {
-		mesh.CurrentAnimationStackName = mesh.AnimationStackNames[0];
-		mesh.CurrentAnimationStackIndex = 0;
+	if (!TargetMesh.AnimationStackNames.empty()) {
+		TargetMesh.CurrentAnimationStackName = TargetMesh.AnimationStackNames[0];
+		TargetMesh.CurrentAnimationStackIndex = 0;
+		SelectAnimation(TargetMesh, TargetMesh.AnimationStackNames[0]);
 	}
 }
 
-bool FBXUtil::SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName) {
-	int count = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
-	for (int i = 0; i < count; ++i) {
-		FbxAnimStack* stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
-		if (stack && AnimationName == stack->GetName()) {
-			TargetMesh.Scene->SetCurrentAnimationStack(stack);
+void FBXUtil::SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName) {
+	int Count = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
+
+	for (int i = 0; i < Count; ++i) {
+		FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
+
+		if (Stack && AnimationName == Stack->GetName()) {
+			TargetMesh.Scene->SetCurrentAnimationStack(Stack);
 			TargetMesh.CurrentAnimationStackName = AnimationName;
 			TargetMesh.CurrentAnimationStackIndex = i;
-			std::cout << "[FBX] Animation stack set to: " << AnimationName << "\n";
 			GetAnimationPlayTime(TargetMesh, AnimationName);
-			return true;
 		}
 	}
-	std::cerr << "[FBX] Failed to select stack: " << AnimationName << "\n";
-	return false;
 }
 
 void FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh, const std::string& AnimationName) {

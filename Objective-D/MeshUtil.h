@@ -139,7 +139,7 @@ public:
 	void ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr);
 	void GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::vector<XMMATRIX>& OutBoneMatrices);
 	void EnumerateAnimationStacks(FBXMesh& TargetMesh);
-	bool SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName);
+	void SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName);
 	void GetAnimationPlayTime(FBXMesh& TargetMesh, const std::string& AnimationName);
 	void ResetCurrentTime(FBXMesh& TargetMesh);
 };

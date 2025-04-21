@@ -12,10 +12,6 @@
 
 class TestObject : public GameObject {
 public:
-	TestObject() {
-		fbxUtil.SelectAnimation(MeshRes.Lain, "HoodUp");
-	}
-
 	void InputKey(KeyEvent& Event) {
 		if (Event.Type == WM_KEYDOWN) {
 			switch (Event.Key) {
