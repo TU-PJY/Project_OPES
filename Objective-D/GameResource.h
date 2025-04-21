@@ -116,6 +116,7 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 }
 
 // HeapType은 디폴트가 HEAP_TYPE_UPLOAD
+// 애니메이션이 필요없는 FBX를 로드할 경우 HeapType을 HEAP_TYPE_DEFAULT로 설정하여 성능 최적화를 할 것을 권장한다.
 inline void ImportFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory, int HeapType=HEAP_TYPE_UPLOAD) {
 	TargetMesh.HeapType = HeapType;
 
