@@ -115,18 +115,16 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 	LoadedMeshList.emplace_back(MeshPtr);
 }
 
+// HeapType은 디폴트가 HEAP_TYPE_UPLOAD
 inline void ImportFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory, int HeapType=HEAP_TYPE_UPLOAD) {
+	TargetMesh.HeapType = HeapType;
+
 	if (fbxUtil.LoadFBXFile(Directory, TargetMesh)) {
-		TargetMesh.HeapType = HeapType;
 		fbxUtil.TriangulateScene();
 		fbxUtil.GetVertexData();
 		fbxUtil.ProcessAnimation();
 		fbxUtil.PrintAnimationStackNames();
-
-		// HEAP_TYPE_DEFAULT인 경우 업로드 버퍼를 삭제하도록 한다.(여기서 당장 하지 않고 나중에 일괄로 처리한다.)
-		// HEAP_TYPE_UPLOAD일때만 애니메이션 재생이 가능함에 유의한다.
-		if (HeapType == HEAP_TYPE_DEFAULT)
-			LoadedFBXMeshList.emplace_back(TargetMesh);
+		LoadedFBXMeshList.emplace_back(TargetMesh);
 	}
 }
 

@@ -171,6 +171,11 @@ void ClearUploadBuffer() {
 	for (auto const& TexturePtr : LoadedTextureList)
 		TexturePtr->ReleaseUploadBuffers();
 
+	for (auto const& FBXPtr : LoadedFBXMeshList) {
+		for (auto const& M : FBXPtr.MeshPart)
+			M->ReleaseUploadBuffers();
+	}
+
 	LoadedMeshList.clear();
 	LoadedTextureList.clear();
 }

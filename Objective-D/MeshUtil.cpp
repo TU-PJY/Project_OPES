@@ -45,7 +45,7 @@ void Mesh::Release() {
 }
 
 void Mesh::ReleaseUploadBuffers() {
-	/*if (PositionUploadBuffer) PositionUploadBuffer->Release();
+	if (PositionUploadBuffer) PositionUploadBuffer->Release();
 	if (NormalUploadBuffer) NormalUploadBuffer->Release();
 	if (TextureCoordUploadBuffer) TextureCoordUploadBuffer->Release();
 	if (IndexUploadBuffer) IndexUploadBuffer->Release();
@@ -53,7 +53,7 @@ void Mesh::ReleaseUploadBuffers() {
 	PositionUploadBuffer = NULL;
 	NormalUploadBuffer = NULL;
 	TextureCoordUploadBuffer = NULL;
-	IndexUploadBuffer = NULL;*/
+	IndexUploadBuffer = NULL;
 };
 
 void Mesh::Render(ID3D12GraphicsCommandList* CmdList) {
@@ -290,6 +290,7 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 		int VertexIndex{};
 
 		Mesh* NewMesh = new Mesh();
+		NewMesh->HeapType = MeshPtr->HeapType;
 
 		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
 			int VertexCountInPolygon = FMesh->GetPolygonSize(PolyIndex);

@@ -39,7 +39,9 @@ public:
 	void AddRef();
 	void Release();
 
-	std::unordered_map<int, std::vector<int>> ControlPointToVertexIndices;
+	int HeapType{};
+
+	std::unordered_map<int, std::vector<int>> ControlPointToVertexIndices{};
 
 	XMUINT4* BoneIndices{};                      // 정점당 본 인덱스 (최대 4개)
 	XMFLOAT4* BoneWeights{};                     // 정점당 본 가중치 (최대 4개)
