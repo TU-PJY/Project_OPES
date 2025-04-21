@@ -178,4 +178,5 @@ void ClearUploadBuffer() {
 
 	LoadedMeshList.clear();
 	LoadedTextureList.clear();
+	LoadedFBXMeshList.clear();
 }
