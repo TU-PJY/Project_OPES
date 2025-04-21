@@ -12,8 +12,6 @@ SystemResource SysRes;
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
 	ImportFBX(System, MeshRes.AMesh, "Resources//TestMesh//test.fbx");
-	// FBX  테스트용 단순 모델 로드
-//	ImportMesh(System, MeshRes.Man, "Resources//TestMesh//test.fbx", MESH_TYPE_FBX);
 
 	// 일단 FBX 애니메이션 구현을 위해 테스트에 필요없는 것들을 로드하지 않고 일시적으로 비활성화 한다.
 	/*

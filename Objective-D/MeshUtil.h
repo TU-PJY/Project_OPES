@@ -27,6 +27,7 @@ typedef struct {
 	int HeapType;
 	std::vector<Mesh*> MeshPart;
 	std::vector<AnimationChannel> AnimationChannel;
+	float CurrentTime;
 	float TotalTime;
 }FBXMesh;
 
@@ -108,7 +109,7 @@ public:
 	float GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix);
 	bool IsPointInTriangle(XMFLOAT2& pt, XMFLOAT2& v0, XMFLOAT2& v1, XMFLOAT2& v2);
 	float ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XMFLOAT3& v2);
-	void UpdateSkinning(float timeInSeconds);
+	void UpdateSkinning(float Time);
 };
 
 class FBXUtil {
@@ -116,22 +117,19 @@ private:
 	FbxManager* Manager{};
 	FbxScene* Scene{};
 	std::vector<FBXVertex> ParsedVertices{};
-
 	FBXMesh* MeshPtr{};
 
 public:
 	void Init();
-	bool LoadFBXFile(const char* filePath, FBXMesh& TargetMesh);
+	bool LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh);
 	bool TriangulateScene();
 	void GetVertexData();
-	void ProcessNode(FbxNode* node);
-	void ProcessNodeForAnimation(FbxNode* node, FbxAnimLayer* animLayer);
+	void ProcessNode(FbxNode* Node);
+	void ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLayer);
 	void ProcessAnimation();
 	void PrintAnimationStackNames();
-	std::vector<FBXVertex> GetVertexVector();
-	void ClearVertexVector();
-	void ParseSkin(FbxMesh* fbxMesh, Mesh* mesh);
-	void GetBoneMatricesFromScene(Mesh* mesh, float timeInSeconds, std::vector<XMMATRIX>& outBoneMatrices);
+	void ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr);
+	void GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::vector<XMMATRIX>& OutBoneMatrices);
 	float GetAnimationPlayTime(FBXMesh& TargetMesh);
 };
 

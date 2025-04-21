@@ -163,12 +163,16 @@ float GameObject::ASP(float Value) {
 
 // FBX 애니메이션을 업데이트 한다. 프레임 시간을 넣어주면 자동으로 재생된다.
 void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
-	TargetMesh.TotalTime += FrameTime;
+	TargetMesh.CurrentTime += FrameTime;
+	if (TargetMesh.CurrentTime >= TargetMesh.TotalTime) {
+		float OverTime = TargetMesh.CurrentTime - TargetMesh.TotalTime;
+		TargetMesh.CurrentTime = OverTime;
+	}
 	for (auto const& M : TargetMesh.MeshPart)
-		M->UpdateSkinning(TargetMesh.TotalTime);
+		M->UpdateSkinning(TargetMesh.CurrentTime);
 }
 
-// FBX 렌더용 함수이다. 앞으로 모델 렌더링 시 이 함수를 쓰도록 한다.
+// FBX 렌더용 함수이다. 앞으로 FBX 모델 렌더링 시 이 함수를 쓰도록 한다.
 // Render3D는 기존의 코드를 최대한 건들지 않기 위해 남겨둔다.
 void GameObject::RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue, float DepthTestFlag){
 	for (auto const& M : TargetMesh.MeshPart)

@@ -160,33 +160,30 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 	return height;
 }
 
-void Mesh::UpdateSkinning(float timeInSeconds) {
-	std::vector<XMMATRIX> boneMatrices;
-
-	// FBX 내부 트랜스폼 기반으로 안전하게 본 행렬 계산
-	fbxUtil.GetBoneMatricesFromScene(this, timeInSeconds, boneMatrices);
+void Mesh::UpdateSkinning(float Time) {
+	std::vector<XMMATRIX> BoneMatrices;
+	fbxUtil.GetBoneMatricesFromScene(this, Time, BoneMatrices);
 
 	for (UINT v = 0; v < Vertices; ++v) {
-		XMVECTOR skinned = XMVectorZero();
-		XMVECTOR orig = XMLoadFloat3(&OriginalPosition[v]);
+		XMVECTOR Skinned = XMVectorZero();
+		XMVECTOR Origin = XMLoadFloat3(&OriginalPosition[v]);
 
-		UINT boneIdx[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
-		float weights[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
+		UINT BoneIndex[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
+		float Weights[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
 
 		for (int i = 0; i < 4; ++i) {
-			if (weights[i] > 0.0f && boneIdx[i] < boneMatrices.size()) {
-				XMVECTOR transformed = XMVector3Transform(orig, boneMatrices[boneIdx[i]]);
-				skinned += transformed * weights[i];
+			if (Weights[i] > 0.0f && BoneIndex[i] < BoneMatrices.size()) {
+				XMVECTOR Transformed = XMVector3Transform(Origin, BoneMatrices[BoneIndex[i]]);
+				Skinned += Transformed * Weights[i];
 			}
 		}
-		XMStoreFloat3(&Position[v], skinned);
+		XMStoreFloat3(&Position[v], Skinned);
 	}
 
-	// 5. GPU 업로드
-	void* pMapped = nullptr;
-	D3D12_RANGE r{ 0, 0 };
-	PositionBuffer->Map(0, &r, &pMapped);
-	memcpy(pMapped, Position, sizeof(XMFLOAT3) * Vertices);
+	void* Mapped = nullptr;
+	D3D12_RANGE Read{ 0, 0 };
+	PositionBuffer->Map(0, &Read, &Mapped);
+	memcpy(Mapped, Position, sizeof(XMFLOAT3) * Vertices);
 	PositionBuffer->Unmap(0, nullptr);
 }
 
@@ -206,10 +203,7 @@ void FBXUtil::Init() {
 	Manager->SetIOSettings(IOS);
 }
 
-bool FBXUtil::LoadFBXFile(const char* filePath, FBXMesh& TargetMesh) {
-	// 로드 시작 시 데이터를 추가할 대상 매쉬 포인터를 저장하여 이후에 접근 시 사용
-	MeshPtr = &TargetMesh;
-
+bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 	if (Scene) {
 		Scene->Destroy();
 		Scene = nullptr;
@@ -230,7 +224,7 @@ bool FBXUtil::LoadFBXFile(const char* filePath, FBXMesh& TargetMesh) {
 	
 	FbxImporter* Importer = FbxImporter::Create(Manager, "");
 
-	if (!Importer->Initialize(filePath, -1, Manager->GetIOSettings())) {
+	if (!Importer->Initialize(FilePath, -1, Manager->GetIOSettings())) {
 		std::cerr << "Error: Unable to initialize importer!\n";
 		std::cerr << "Error: " << Importer->GetStatus().GetErrorString() << "\n";
 		FbxStatus status = Importer->GetStatus();
@@ -242,9 +236,11 @@ bool FBXUtil::LoadFBXFile(const char* filePath, FBXMesh& TargetMesh) {
 		std::cerr << "Error: Unable to import FBX scene!\n";
 		return false;
 	}
-	std::cout << "FBX file loaded successfully.\n";
 
+	std::cout << "FBX file loaded successfully.\n";
 	Importer->Destroy();
+
+	MeshPtr = &TargetMesh;
 
 	return true;
 }
@@ -274,44 +270,40 @@ void FBXUtil::GetVertexData(){
 void FBXUtil::ProcessNode(FbxNode* Node) {
 	std::cout << "Node Name: " << Node->GetName() << "\n";
 
-	FbxMesh* fbxMesh = Node->GetMesh();
-	if (fbxMesh) {
-		std::cout << "Processing Mesh: " << Node->GetName() << "\n";
+	FbxMesh* FMesh = Node->GetMesh();
+	if (FMesh) {
+		ParsedVertices.clear();
 
-		ParsedVertices.clear(); // 이 노드에 대해 정점 버퍼 초기화
+		FbxVector4* ControlPoints = FMesh->GetControlPoints();
+		int PolygonCount = FMesh->GetPolygonCount();
+		int NumControlPoint{};
+		int VertexIndex{};
 
-		FbxVector4* ControlPoints = fbxMesh->GetControlPoints();
-		int PolygonCount = fbxMesh->GetPolygonCount();
-
-		int controlPoint{};
-		int vertexIndex{};
-
-		// 새로운 Mesh 객체 생성
 		Mesh* NewMesh = new Mesh();
 
 		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
-			int VertexCountInPolygon = fbxMesh->GetPolygonSize(PolyIndex);
+			int VertexCountInPolygon = FMesh->GetPolygonSize(PolyIndex);
 
 			for (int V = 0; V < VertexCountInPolygon; V++) {
-				int ControlPointIndex = fbxMesh->GetPolygonVertex(PolyIndex, V);
+				int ControlPointIndex = FMesh->GetPolygonVertex(PolyIndex, V);
 				int GlobalVertexIndex = ParsedVertices.size();
-				controlPoint = ControlPointIndex;
-				vertexIndex = GlobalVertexIndex;
+				NumControlPoint = ControlPointIndex;
+				VertexIndex = GlobalVertexIndex;
 
 				if (ControlPointIndex < 0) continue;
 
 				FbxVector4 Position = ControlPoints[ControlPointIndex];
 				FbxVector4 Normal(0, 0, 0, 0);
-				bool HasNormal = fbxMesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
+				bool HasNormal = FMesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
 
 				FbxVector2 UV(0, 0);
 				const char* UVSetName = nullptr;
-				if (fbxMesh->GetElementUVCount() > 0) {
-					FbxLayerElementUV* UVElement = fbxMesh->GetElementUV(0);
+				if (FMesh->GetElementUVCount() > 0) {
+					FbxLayerElementUV* UVElement = FMesh->GetElementUV(0);
 					if (UVElement) UVSetName = UVElement->GetName();
 				}
 				bool Unmapped = false;
-				bool HasUV = fbxMesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
+				bool HasUV = FMesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
 
 				FBXVertex Vertex{};
 				Vertex.px = static_cast<float>(Position[0]);
@@ -325,252 +317,230 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 
 				ParsedVertices.push_back(Vertex);
 				int vertexIndex = ParsedVertices.size() - 1;
-				NewMesh->ControlPointToVertexIndices[controlPoint].push_back(vertexIndex);
+				NewMesh->ControlPointToVertexIndices[NumControlPoint].push_back(vertexIndex);
 			}
 		}
-		NewMesh->NodeName = Node->GetName(); // Mesh 이름 저장 (선택사항)
-		NewMesh->CreateFBXMesh(framework.Device, framework.CmdList, ParsedVertices); // 장치 및 커맨드리스트 필요
-		fbxUtil.ParseSkin(fbxMesh, NewMesh);  // 이 줄 추가
-
-		// 이전에 지정해둔 매쉬 포인터를 통해 매쉬 파트 저장
+		NewMesh->NodeName = Node->GetName();
+		NewMesh->CreateFBXMesh(framework.Device, framework.CmdList, ParsedVertices);
+		fbxUtil.ParseSkin(FMesh, NewMesh);
 		MeshPtr->MeshPart.push_back(NewMesh);
 	}
 
-	// 자식 노드 재귀 처리
 	for (int i = 0; i < Node->GetChildCount(); ++i)
 		ProcessNode(Node->GetChild(i));
 }
 
-void FBXUtil::ProcessNodeForAnimation(FbxNode* node, FbxAnimLayer* animLayer) {
-	AnimationChannel channel;
-	channel.NodeName = node->GetName();
+void FBXUtil::ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLayer) {
+	AnimationChannel Channel;
+	Channel.NodeName = Node->GetName();
 
-	// Translation curves
-	FbxAnimCurve* transX = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
-	FbxAnimCurve* transY = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Y);
-	FbxAnimCurve* transZ = node->LclTranslation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+	FbxAnimCurve* TransformX = Node->LclTranslation.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_X);
+	FbxAnimCurve* TransformY = Node->LclTranslation.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+	FbxAnimCurve* TransformZ = Node->LclTranslation.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_Z);
 
-	// Rotation curves
-	FbxAnimCurve* rotX = node->LclRotation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
-	FbxAnimCurve* rotY = node->LclRotation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Y);
-	FbxAnimCurve* rotZ = node->LclRotation.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+	FbxAnimCurve* RotationX = Node->LclRotation.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_X);
+	FbxAnimCurve* RotationY = Node->LclRotation.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+	FbxAnimCurve* RotationZ = Node->LclRotation.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_Z);
 
-	// Scaling curves
-	FbxAnimCurve* scaleX = node->LclScaling.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_X);
-	FbxAnimCurve* scaleY = node->LclScaling.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Y);
-	FbxAnimCurve* scaleZ = node->LclScaling.GetCurve(animLayer, FBXSDK_CURVENODE_COMPONENT_Z);
+	FbxAnimCurve* ScaleX = Node->LclScaling.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_X);
+	FbxAnimCurve* ScaleY = Node->LclScaling.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_Y);
+	FbxAnimCurve* ScaleZ = Node->LclScaling.GetCurve(AnimationLayer, FBXSDK_CURVENODE_COMPONENT_Z);
 
-	// 통합 시간 수집 (Set으로 중복 제거 및 정렬)
-	std::set<FbxTime> keyTimes;
+	std::set<FbxTime> KeyTimes;
 
-	auto CollectTimes = [&keyTimes](FbxAnimCurve* curve) {
-		if (!curve) return;
-		int count = curve->KeyGetCount();
-		for (int i = 0; i < count; ++i)
-			keyTimes.insert(curve->KeyGetTime(i));
+	auto CollectTimes = 
+		[&KeyTimes](FbxAnimCurve* Curve) {
+		if (!Curve) 
+			return;
+		int Counts = Curve->KeyGetCount();
+		for (int i = 0; i < Counts; ++i)
+			KeyTimes.insert(Curve->KeyGetTime(i));
 		};
 
-	CollectTimes(transX); CollectTimes(transY); CollectTimes(transZ);
-	CollectTimes(rotX);   CollectTimes(rotY);   CollectTimes(rotZ);
-	CollectTimes(scaleX); CollectTimes(scaleY); CollectTimes(scaleZ);
+	CollectTimes(TransformX); 
+	CollectTimes(TransformY); 
+	CollectTimes(TransformZ);
 
-	// 시간 기준으로 키프레임 생성
-	for (const FbxTime& time : keyTimes) {
-		AnimationKeyFrame key{};
-		key.time = static_cast<float>(time.GetSecondDouble());
+	CollectTimes(RotationX);   
+	CollectTimes(RotationY);   
+	CollectTimes(RotationZ);
 
-		// Translation
-		key.translation[0] = transX ? static_cast<float>(transX->Evaluate(time)) : 0.0f;
-		key.translation[1] = transY ? static_cast<float>(transY->Evaluate(time)) : 0.0f;
-		key.translation[2] = transZ ? static_cast<float>(transZ->Evaluate(time)) : 0.0f;
+	CollectTimes(ScaleX); 
+	CollectTimes(ScaleY); 
+	CollectTimes(ScaleZ);
 
-		// Rotation
-		key.rotation[0] = rotX ? static_cast<float>(rotX->Evaluate(time)) : 0.0f;
-		key.rotation[1] = rotY ? static_cast<float>(rotY->Evaluate(time)) : 0.0f;
-		key.rotation[2] = rotZ ? static_cast<float>(rotZ->Evaluate(time)) : 0.0f;
+	for (const FbxTime& Time : KeyTimes) {
+		AnimationKeyFrame Key{};
+		Key.time = static_cast<float>(Time.GetSecondDouble());
 
-		// Scale
-		key.scale[0] = scaleX ? static_cast<float>(scaleX->Evaluate(time)) : 1.0f;
-		key.scale[1] = scaleY ? static_cast<float>(scaleY->Evaluate(time)) : 1.0f;
-		key.scale[2] = scaleZ ? static_cast<float>(scaleZ->Evaluate(time)) : 1.0f;
+		Key.translation[0] = TransformX ? static_cast<float>(TransformX->Evaluate(Time)) : 0.0f;
+		Key.translation[1] = TransformY ? static_cast<float>(TransformY->Evaluate(Time)) : 0.0f;
+		Key.translation[2] = TransformZ ? static_cast<float>(TransformZ->Evaluate(Time)) : 0.0f;
 
-		channel.keyframes.push_back(key);
+		Key.rotation[0] = RotationX ? static_cast<float>(RotationX->Evaluate(Time)) : 0.0f;
+		Key.rotation[1] = RotationY ? static_cast<float>(RotationY->Evaluate(Time)) : 0.0f;
+		Key.rotation[2] = RotationZ ? static_cast<float>(RotationZ->Evaluate(Time)) : 0.0f;
+
+		Key.scale[0] = ScaleX ? static_cast<float>(ScaleX->Evaluate(Time)) : 1.0f;
+		Key.scale[1] = ScaleY ? static_cast<float>(ScaleY->Evaluate(Time)) : 1.0f;
+		Key.scale[2] = ScaleZ ? static_cast<float>(ScaleZ->Evaluate(Time)) : 1.0f;
+
+		Channel.keyframes.push_back(Key);
 	}
 
-	// 키프레임이 존재하면 채널 저장
-	if (!channel.keyframes.empty()) {
-		MeshPtr->AnimationChannel.push_back(channel);
-	}
-
-	// 자식 노드 재귀 처리
-	for (int i = 0; i < node->GetChildCount(); ++i) {
-		ProcessNodeForAnimation(node->GetChild(i), animLayer);
-	}
+	if (!Channel.keyframes.empty()) 
+		MeshPtr->AnimationChannel.push_back(Channel);
+	
+	for (int i = 0; i < Node->GetChildCount(); ++i) 
+		ProcessNodeForAnimation(Node->GetChild(i), AnimationLayer);
 }
 
 void FBXUtil::ProcessAnimation() {
-	int animStackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
-	if (animStackCount > 0) {
-		// 첫 번째 애니메이션 스택 선택 (필요에 따라 다른 스택 선택 가능)
-		FbxAnimStack* animStack = Scene->GetSrcObject<FbxAnimStack>(0);
-		Scene->SetCurrentAnimationStack(animStack);
-		FbxAnimLayer* animLayer = animStack->GetMember<FbxAnimLayer>(0);
+	int AnimationStackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
+	if (AnimationStackCount > 0) {
+		FbxAnimStack* AnimationStack = Scene->GetSrcObject<FbxAnimStack>(0);
+		Scene->SetCurrentAnimationStack(AnimationStack);
+		FbxAnimLayer* AnimationLayer = AnimationStack->GetMember<FbxAnimLayer>(0);
 
-		ProcessNodeForAnimation(Scene->GetRootNode(), animLayer);
+		ProcessNodeForAnimation(Scene->GetRootNode(), AnimationLayer);
 	}
 }
 
 void FBXUtil::PrintAnimationStackNames() {
-	int animStackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
-	std::cout << "Total animation stacks: " << animStackCount << "\n";
-	for (int i = 0; i < animStackCount; ++i) {
-		FbxAnimStack* animStack = Scene->GetSrcObject<FbxAnimStack>(i);
-		if (animStack) {
-			std::cout << "Animation stack [" << i << "]: " << animStack->GetName() << "\n";
-		}
+	int AnimationStackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
+	std::cout << "Total animation stacks: " << AnimationStackCount << "\n";
+	for (int i = 0; i < AnimationStackCount; ++i) {
+		FbxAnimStack* AnimationStack = Scene->GetSrcObject<FbxAnimStack>(i);
+		if (AnimationStack)
+			std::cout << "Animation stack [" << i << "]: " << AnimationStack->GetName() << "\n";
 	}
 }
 
-std::vector<FBXVertex> FBXUtil::GetVertexVector() {
-	return ParsedVertices;
-}
-
-void FBXUtil::ClearVertexVector(){
-	ParsedVertices.clear();
-}
-
-void FBXUtil::ParseSkin(FbxMesh* fbxMesh, Mesh* mesh) {
+void FBXUtil::ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr) {
 	std::unordered_map<int, std::vector<std::pair<int, float>>> VertexSkinData;
 
-	auto* skin = static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
-	if (!skin) return;
+	auto* Skin = static_cast<FbxSkin*>(FMesh->GetDeformer(0, FbxDeformer::eSkin));
+	if (!Skin) return;
 
-	int clusterCount = skin->GetClusterCount();
-	mesh->BoneOffsetMatrices.resize(clusterCount);
-	mesh->BoneParentIndices.resize(clusterCount, -1);
-	mesh->BoneNames.resize(clusterCount);
-	mesh->BoneIndices = new XMUINT4[mesh->Vertices]{};
-	mesh->BoneWeights = new XMFLOAT4[mesh->Vertices]{};
+	int ClusterCount = Skin->GetClusterCount();
+	MeshPtr->BoneOffsetMatrices.resize(ClusterCount);
+	MeshPtr->BoneParentIndices.resize(ClusterCount, -1);
+	MeshPtr->BoneNames.resize(ClusterCount);
 
-	for (int c = 0; c < clusterCount; ++c) {
-		FbxCluster* cluster = skin->GetCluster(c);
-		FbxNode* boneNode = cluster->GetLink();
-		mesh->BoneNames[c] = boneNode->GetName();
+	MeshPtr->BoneIndices = new XMUINT4[MeshPtr->Vertices]{};
+	MeshPtr->BoneWeights = new XMFLOAT4[MeshPtr->Vertices]{};
 
-		FbxAMatrix meshBindGlobal;
-		FbxAMatrix boneBindGlobal;
+	for (int c = 0; c < ClusterCount; ++c) {
+		FbxCluster* Cluster = Skin->GetCluster(c);
+		FbxNode* BoneNode = Cluster->GetLink();
+		MeshPtr->BoneNames[c] = BoneNode->GetName();
 
-		cluster->GetTransformMatrix(meshBindGlobal);        // 메시 바인드 시점의 글로벌 트랜스폼
-		cluster->GetTransformLinkMatrix(boneBindGlobal);    // 본 바인드 시점의 글로벌 트랜스폼
+		FbxAMatrix MeshBindGlobal;
+		FbxAMatrix BoneBindGlobal;
 
-		FbxAMatrix offsetMatrix = boneBindGlobal.Inverse() * meshBindGlobal;
+		Cluster->GetTransformMatrix(MeshBindGlobal);
+		Cluster->GetTransformLinkMatrix(BoneBindGlobal);
 
-		// → 이후 XMMATRIX로 변환
-		XMMATRIX xmOffset = XMMATRIX(
-			(float)offsetMatrix[0][0], (float)offsetMatrix[0][1], (float)offsetMatrix[0][2], (float)offsetMatrix[0][3],
-			(float)offsetMatrix[1][0], (float)offsetMatrix[1][1], (float)offsetMatrix[1][2], (float)offsetMatrix[1][3],
-			(float)offsetMatrix[2][0], (float)offsetMatrix[2][1], (float)offsetMatrix[2][2], (float)offsetMatrix[2][3],
-			(float)offsetMatrix[3][0], (float)offsetMatrix[3][1], (float)offsetMatrix[3][2], (float)offsetMatrix[3][3]
+		FbxAMatrix OffsetMatrix = BoneBindGlobal.Inverse() * MeshBindGlobal;
+		XMMATRIX XMOffset = XMMATRIX(
+			(float)OffsetMatrix[0][0], (float)OffsetMatrix[0][1], (float)OffsetMatrix[0][2], (float)OffsetMatrix[0][3],
+			(float)OffsetMatrix[1][0], (float)OffsetMatrix[1][1], (float)OffsetMatrix[1][2], (float)OffsetMatrix[1][3],
+			(float)OffsetMatrix[2][0], (float)OffsetMatrix[2][1], (float)OffsetMatrix[2][2], (float)OffsetMatrix[2][3],
+			(float)OffsetMatrix[3][0], (float)OffsetMatrix[3][1], (float)OffsetMatrix[3][2], (float)OffsetMatrix[3][3]
 		);
-
-		mesh->BoneOffsetMatrices[c] = xmOffset;
-		//std::cout << "[BoneOffsetMatrix] " << c << ": " << XMVectorGetX(mesh->BoneOffsetMatrices[c].r[3]) << ", " << XMVectorGetY(mesh->BoneOffsetMatrices[c].r[3]) << ", " << XMVectorGetZ(mesh->BoneOffsetMatrices[c].r[3]) << "\n";
-
-		// 부모 찾기
-		FbxNode* parent = boneNode->GetParent();
-		for (int p = 0; p < clusterCount; ++p) {
-			if (skin->GetCluster(p)->GetLink() == parent) {
-				mesh->BoneParentIndices[c] = p;
+		MeshPtr->BoneOffsetMatrices[c] = XMOffset;
+		
+		FbxNode* Parent = BoneNode->GetParent();
+		for (int p = 0; p < ClusterCount; ++p) {
+			if (Skin->GetCluster(p)->GetLink() == Parent) {
+				MeshPtr->BoneParentIndices[c] = p;
 				break;
 			}
 		}
 
-		// 본 영향 정점 설정
-		int* indices = cluster->GetControlPointIndices();
-		double* weights = cluster->GetControlPointWeights();
-		int count = cluster->GetControlPointIndicesCount();
+		int* Indices = Cluster->GetControlPointIndices();
+		double* Weights = Cluster->GetControlPointWeights();
+		int Count = Cluster->GetControlPointIndicesCount();
 
-		for (int i = 0; i < count; ++i) {
-			int ctrlIdx = indices[i];
-			float weight = static_cast<float>(weights[i]);
+		for (int i = 0; i < Count; ++i) {
+			int ControlIndex = Indices[i];
+			float Weight = static_cast<float>(Weights[i]);
 
-			auto it = mesh->ControlPointToVertexIndices.find(ctrlIdx);
-			if (it == mesh->ControlPointToVertexIndices.end()) continue;
+			auto Found = MeshPtr->ControlPointToVertexIndices.find(ControlIndex);
+			if (Found == MeshPtr->ControlPointToVertexIndices.end()) 
+				continue;
 
-			for (int vertexIndex : it->second) {
-				VertexSkinData[vertexIndex].emplace_back(c, weight);  // c: 클러스터 인덱스 (== 본 인덱스)
-			}
+			for (int VertexIndex : Found->second)
+				VertexSkinData[VertexIndex].emplace_back(c, Weight);
 		}
 
-		for (auto& [vertexIndex, skinList] : VertexSkinData) {
-			// 가중치 높은 순으로 정렬
-			std::sort(skinList.begin(), skinList.end(), [](auto& a, auto& b) {
+		for (auto& [VertexIndex, SkinList] : VertexSkinData) {
+			std::sort(SkinList.begin(), SkinList.end(), [](auto& a, auto& b) {
 				return a.second > b.second;
 				});
 
-			XMUINT4& bi = mesh->BoneIndices[vertexIndex];
-			XMFLOAT4& bw = mesh->BoneWeights[vertexIndex];
+			XMUINT4& BoneIndice = MeshPtr->BoneIndices[VertexIndex];
+			XMFLOAT4& BoneWeight = MeshPtr->BoneWeights[VertexIndex];
 
-			float totalWeight = 0.f;
-			for (int i = 0; i < 4 && i < skinList.size(); ++i) {
-				(&bi.x)[i] = skinList[i].first;
-				(&bw.x)[i] = skinList[i].second;
-				totalWeight += skinList[i].second;
+			float TotalWeight = 0.f;
+			for (int i = 0; i < 4 && i < SkinList.size(); ++i) {
+				(&BoneIndice.x)[i] = SkinList[i].first;
+				(&BoneWeight.x)[i] = SkinList[i].second;
+				TotalWeight += SkinList[i].second;
 			}
 
-			// 정규화
-			if (totalWeight > 0.f) {
-				bw.x /= totalWeight;
-				bw.y /= totalWeight;
-				bw.z /= totalWeight;
-				bw.w /= totalWeight;
+			if (TotalWeight > 0.f) {
+				BoneWeight.x /= TotalWeight;
+				BoneWeight.y /= TotalWeight;
+				BoneWeight.z /= TotalWeight;
+				BoneWeight.w /= TotalWeight;
 			}
 		}
 	}
 }
 
-void FBXUtil::GetBoneMatricesFromScene(Mesh* mesh, float timeInSeconds, std::vector<XMMATRIX>& outBoneMatrices) {
-	UINT B = static_cast<UINT>(mesh->BoneNames.size());
-	outBoneMatrices.resize(B);
+void FBXUtil::GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::vector<XMMATRIX>& OutBoneMatrices) {
+	UINT B = static_cast<UINT>(MeshPtr->BoneNames.size());
 
-	std::vector<XMMATRIX> global(B);
+	OutBoneMatrices.resize(B);
+	std::vector<XMMATRIX> Global(B);
 
-	FbxTime fbxTime;
-	fbxTime.SetSecondDouble(timeInSeconds);
+	FbxTime Time;
+	Time.SetSecondDouble(TimeInSeconds);
 
 	for (UINT i = 0; i < B; ++i) {
-		const std::string& boneName = mesh->BoneNames[i];
-		FbxNode* boneNode = fbxUtil.Scene->FindNodeByName(boneName.c_str());
+		const std::string& BoneName = MeshPtr->BoneNames[i];
+		FbxNode* BoneNode = fbxUtil.Scene->FindNodeByName(BoneName.c_str());
 
-		if (!boneNode) {
-			global[i] = XMMatrixIdentity();
+		if (!BoneNode) {
+			Global[i] = XMMatrixIdentity();
 			continue;
 		}
 
-		FbxAMatrix mat = boneNode->EvaluateGlobalTransform(fbxTime);
-		XMMATRIX xm = XMMATRIX(
-			(float)mat[0][0], (float)mat[0][1], (float)mat[0][2], (float)mat[0][3],
-			(float)mat[1][0], (float)mat[1][1], (float)mat[1][2], (float)mat[1][3],
-			(float)mat[2][0], (float)mat[2][1], (float)mat[2][2], (float)mat[2][3],
-			(float)mat[3][0], (float)mat[3][1], (float)mat[3][2], (float)mat[3][3]
+		FbxAMatrix Matrix = BoneNode->EvaluateGlobalTransform(Time);
+		XMMATRIX XM = XMMATRIX(
+			(float)Matrix[0][0], (float)Matrix[0][1], (float)Matrix[0][2], (float)Matrix[0][3],
+			(float)Matrix[1][0], (float)Matrix[1][1], (float)Matrix[1][2], (float)Matrix[1][3],
+			(float)Matrix[2][0], (float)Matrix[2][1], (float)Matrix[2][2], (float)Matrix[2][3],
+			(float)Matrix[3][0], (float)Matrix[3][1], (float)Matrix[3][2], (float)Matrix[3][3]
 		);
 
-		global[i] = xm;  // 직접 할당 (누적 X)
+		Global[i] = XM;
 	}
 
-	for (UINT i = 0; i < B; ++i) {
-		outBoneMatrices[i] = mesh->BoneOffsetMatrices[i] * global[i];
-	}
+	for (UINT i = 0; i < B; ++i)
+		OutBoneMatrices[i] = MeshPtr->BoneOffsetMatrices[i] * Global[i];
 }
 
 float FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh) {
-	float maxTime = 0.0;
-	for (const auto& channel : TargetMesh.AnimationChannel) {
-		if (!channel.keyframes.empty()) {
-			float endTime = channel.keyframes.back().time;
-			if (endTime > maxTime)
-				maxTime = endTime;
+	float PlayTime{};
+	for (const auto& Channel : TargetMesh.AnimationChannel) {
+		if (!Channel.keyframes.empty()) {
+			float EndTime = Channel.keyframes.back().time;
+			if (EndTime > PlayTime)
+				TargetMesh.TotalTime = EndTime;
 		}
 	}
-	return maxTime;
+
+	return PlayTime;
 }
