@@ -133,7 +133,7 @@ public:
 	void PrintAnimationStackNames();
 	void ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr);
 	void GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::vector<XMMATRIX>& OutBoneMatrices);
-	float GetAnimationPlayTime(FBXMesh& TargetMesh);
+	void GetAnimationPlayTime(FBXMesh& TargetMesh);
 };
 
 extern FBXUtil fbxUtil;

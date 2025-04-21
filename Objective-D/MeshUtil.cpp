@@ -543,15 +543,12 @@ void FBXUtil::GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::
 		OutBoneMatrices[i] = MeshPtr->BoneOffsetMatrices[i] * Global[i];
 }
 
-float FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh) {
-	float PlayTime{};
+void FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh) {
 	for (const auto& Channel : TargetMesh.AnimationChannel) {
 		if (!Channel.KeyFrames.empty()) {
 			float EndTime = Channel.KeyFrames.back().time;
-			if (EndTime > PlayTime)
+			if (EndTime > 0.0)
 				TargetMesh.TotalTime = EndTime;
 		}
 	}
-
-	return PlayTime;
 }

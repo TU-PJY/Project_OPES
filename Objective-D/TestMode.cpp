@@ -6,8 +6,7 @@
 class TestObject : public GameObject {
 public:
 	TestObject() {
-		totaltime = fbxUtil.GetAnimationPlayTime(MeshRes.AMesh);
-		std::cout << totaltime << std::endl;
+		fbxUtil.GetAnimationPlayTime(MeshRes.AMesh);
 	}
 
 	float time{};
