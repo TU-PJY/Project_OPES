@@ -2,7 +2,7 @@
 #include "ModePack.h"
 
 // 컨트롤러에 사용할 오브젝트 포인터 벡터
-std::vector<GameObject*> ControlObjectList;
+std::deque<GameObject*> ControlObjectList;
 
 ////////////////////////////////////////////////////
 
