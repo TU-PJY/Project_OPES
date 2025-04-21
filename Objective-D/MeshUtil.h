@@ -24,11 +24,16 @@ struct AnimationChannel {
 
 class Mesh;
 typedef struct {
+	FbxScene* Scene;
 	int HeapType;
 	std::vector<Mesh*> MeshPart;
 	std::vector<AnimationChannel> AnimationChannel;
 	float CurrentTime;
 	float TotalTime;
+
+	std::vector<std::string> AnimationStackNames; // 전체 스택 이름들
+	std::string CurrentAnimationStackName;        // 현재 선택된 스택 이름
+	int CurrentAnimationStackIndex;          // 현재 선택된 스택 인덱스
 }FBXMesh;
 
 class Mesh {
@@ -123,7 +128,6 @@ private:
 	FBXMesh* MeshPtr{};
 
 public:
-	FbxScene* Scene{};
 	void Init();
 	bool LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh);
 	bool TriangulateScene();
@@ -134,7 +138,10 @@ public:
 	void PrintAnimationStackNames();
 	void ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr);
 	void GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::vector<XMMATRIX>& OutBoneMatrices);
-	void GetAnimationPlayTime(FBXMesh& TargetMesh);
+	void EnumerateAnimationStacks(FBXMesh& TargetMesh);
+	bool SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName);
+	void GetAnimationPlayTime(FBXMesh& TargetMesh, const std::string& AnimationName);
+	void ResetCurrentTime(FBXMesh& TargetMesh);
 };
 
 extern FBXUtil fbxUtil;

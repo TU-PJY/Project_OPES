@@ -241,23 +241,12 @@ void FBXUtil::Init() {
 }
 
 bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
-	if (Scene) {
-		Scene->Destroy();
-		Scene = nullptr;
-		Scene = FbxScene::Create(Manager, "FBX_Scene");
-		if (!Scene) {
-			std::cerr << "Error: Unable to create FBX Scene!\n";
-			exit(1);
-		}
+	FbxScene* Scene = FbxScene::Create(Manager, "FBX_Scene");
+	if (!Scene) {
+		std::cerr << "Error: Unable to create FBX Scene!\n";
+		exit(1);
 	}
-
-	else {
-		Scene = FbxScene::Create(Manager, "FBX_Scene");
-		if (!Scene) {
-			std::cerr << "Error: Unable to create FBX Scene!\n";
-			exit(1);
-		}
-	}
+	TargetMesh.Scene = Scene;
 	
 	FbxImporter* Importer = FbxImporter::Create(Manager, "");
 
@@ -285,7 +274,7 @@ bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 
 bool FBXUtil::TriangulateScene() {
 	FbxGeometryConverter GeometryConverter(Manager);
-	bool Result = GeometryConverter.Triangulate(Scene, true);
+	bool Result = GeometryConverter.Triangulate(MeshPtr->Scene, true);
 
 	if (!Result) {
 		std::cerr << "Error: Triangulation failed!\n";
@@ -297,7 +286,7 @@ bool FBXUtil::TriangulateScene() {
 }
 
 void FBXUtil::GetVertexData(){
-	FbxNode* RootNode = Scene->GetRootNode();
+	FbxNode* RootNode = MeshPtr->Scene->GetRootNode();
 
 	if (RootNode) {
 		for (int i = 0; i < RootNode->GetChildCount(); ++i) 
@@ -436,21 +425,21 @@ void FBXUtil::ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLaye
 }
 
 void FBXUtil::ProcessAnimation() {
-	int AnimationStackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
+	int AnimationStackCount = MeshPtr->Scene->GetSrcObjectCount<FbxAnimStack>();
 	if (AnimationStackCount > 0) {
-		FbxAnimStack* AnimationStack = Scene->GetSrcObject<FbxAnimStack>(0);
-		Scene->SetCurrentAnimationStack(AnimationStack);
+		FbxAnimStack* AnimationStack = MeshPtr->Scene->GetSrcObject<FbxAnimStack>(0);
+		MeshPtr->Scene->SetCurrentAnimationStack(AnimationStack);
 		FbxAnimLayer* AnimationLayer = AnimationStack->GetMember<FbxAnimLayer>(0);
 
-		ProcessNodeForAnimation(Scene->GetRootNode(), AnimationLayer);
+		ProcessNodeForAnimation(MeshPtr->Scene->GetRootNode(), AnimationLayer);
 	}
 }
 
 void FBXUtil::PrintAnimationStackNames() {
-	int AnimationStackCount = Scene->GetSrcObjectCount<FbxAnimStack>();
+	int AnimationStackCount = MeshPtr->Scene->GetSrcObjectCount<FbxAnimStack>();
 	std::cout << "Total animation stacks: " << AnimationStackCount << "\n";
 	for (int i = 0; i < AnimationStackCount; ++i) {
-		FbxAnimStack* AnimationStack = Scene->GetSrcObject<FbxAnimStack>(i);
+		FbxAnimStack* AnimationStack = MeshPtr->Scene->GetSrcObject<FbxAnimStack>(i);
 		if (AnimationStack)
 			std::cout << "Animation stack [" << i << "]: " << AnimationStack->GetName() << "\n";
 	}
@@ -579,12 +568,53 @@ void FBXUtil::GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::
 		OutBoneMatrices[i] = MeshPtr->BoneOffsetMatrices[i] * Global[i];
 }
 
-void FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh) {
-	for (const auto& Channel : TargetMesh.AnimationChannel) {
-		if (!Channel.KeyFrames.empty()) {
-			float EndTime = Channel.KeyFrames.back().time;
-			if (EndTime > 0.0)
-				TargetMesh.TotalTime = EndTime;
+void FBXUtil::EnumerateAnimationStacks(FBXMesh& mesh) {
+	mesh.AnimationStackNames.clear();
+
+	int count = mesh.Scene->GetSrcObjectCount<FbxAnimStack>();
+	for (int i = 0; i < count; ++i) {
+		FbxAnimStack* stack = mesh.Scene->GetSrcObject<FbxAnimStack>(i);
+		if (stack) {
+			std::string name = stack->GetName();
+			mesh.AnimationStackNames.push_back(name);
 		}
 	}
+
+	if (!mesh.AnimationStackNames.empty()) {
+		mesh.CurrentAnimationStackName = mesh.AnimationStackNames[0];
+		mesh.CurrentAnimationStackIndex = 0;
+	}
+}
+
+bool FBXUtil::SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName) {
+	int count = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
+	for (int i = 0; i < count; ++i) {
+		FbxAnimStack* stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
+		if (stack && AnimationName == stack->GetName()) {
+			TargetMesh.Scene->SetCurrentAnimationStack(stack);
+			TargetMesh.CurrentAnimationStackName = AnimationName;
+			TargetMesh.CurrentAnimationStackIndex = i;
+			std::cout << "[FBX] Animation stack set to: " << AnimationName << "\n";
+			GetAnimationPlayTime(TargetMesh, AnimationName);
+			return true;
+		}
+	}
+	std::cerr << "[FBX] Failed to select stack: " << AnimationName << "\n";
+	return false;
+}
+
+void FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh, const std::string& AnimationName) {
+	FbxAnimStack* stack = TargetMesh.Scene->FindMember<FbxAnimStack>(AnimationName.c_str());
+	if (!stack)
+		TargetMesh.TotalTime = 0.0;
+
+	FbxTimeSpan span = stack->GetLocalTimeSpan();
+	FbxTime start = span.GetStart();
+	FbxTime end = span.GetStop();
+
+	TargetMesh.TotalTime = (end - start).GetSecondDouble();
+}
+
+void FBXUtil::ResetCurrentTime(FBXMesh& TargetMesh) {
+	TargetMesh.CurrentTime = 0.0;
 }

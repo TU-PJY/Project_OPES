@@ -3,22 +3,37 @@
 
 //FBX 애니메이션 구현을 위한 테스트 모드.
 
+//Animation stack[0]: HoodDown
+//Animation stack[1] : HoodUp
+//Animation stack[2] : Armature | ArmatureAction
+//Animation stack[3] : Armature | HoodDown
+//Animation stack[4] : Armature | HoodUp
+//Animation stack[5] : Armature | SpinAction
+
 class TestObject : public GameObject {
 public:
 	TestObject() {
-		fbxUtil.GetAnimationPlayTime(MeshRes.Lain);
+		fbxUtil.SelectAnimation(MeshRes.Lain, "HoodUp");
 	}
 
-	float time{};
-	float totaltime{};
+	void InputKey(KeyEvent& Event) {
+		if (Event.Type == WM_KEYDOWN) {
+			switch (Event.Key) {
+			case '1':
+				fbxUtil.SelectAnimation(MeshRes.Lain, "HoodDown");
+				fbxUtil.ResetCurrentTime(MeshRes.Lain);
+				break;
 
-	float Rotation{};
+			case '2':
+				fbxUtil.SelectAnimation(MeshRes.Lain, "HoodUp");
+				fbxUtil.ResetCurrentTime(MeshRes.Lain);
+				break;
+			}
+		}
+	}
 
 	void Update(float FT) override {
 		UpdateFBXAnimation(MeshRes.Lain, FT);
-
-
-	//	Rotation += 360.0 * FT;
 	}
 
 	void Render() override {
@@ -27,10 +42,10 @@ public:
 		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
 		RenderFBX(MeshRes.Lain, TexRes.Lain);
-	//	Render3D(MeshRes.Lain.MeshPart[5], TexRes.Lain);
-		//std::cout << MeshRes.Lain.MeshPart[5]->NodeName << std::endl;
 	}
 };
+
+
 
 void TestMode::Start() {
 	std::vector<std::string> ControlObjectTag

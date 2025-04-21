@@ -127,6 +127,7 @@ inline void ImportFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory
 		fbxUtil.GetVertexData();
 		fbxUtil.ProcessAnimation();
 		fbxUtil.PrintAnimationStackNames();
+		fbxUtil.EnumerateAnimationStacks(TargetMesh);
 		LoadedFBXMeshList.emplace_back(TargetMesh);
 	}
 }
