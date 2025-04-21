@@ -6,7 +6,7 @@
 class TestObject : public GameObject {
 public:
 	TestObject() {
-		fbxUtil.GetAnimationPlayTime(MeshRes.AMesh);
+		fbxUtil.GetAnimationPlayTime(MeshRes.Lain);
 	}
 
 	float time{};
@@ -15,7 +15,7 @@ public:
 	float Rotation{};
 
 	void Update(float FT) override {
-		UpdateFBXAnimation(MeshRes.AMesh, FT * 4.0);
+		UpdateFBXAnimation(MeshRes.Lain, FT);
 
 
 	//	Rotation += 360.0 * FT;
@@ -26,7 +26,9 @@ public:
 		Transform::Move(TranslateMatrix, 0.0, 0.0, 5.0);
 		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
-		RenderFBX(MeshRes.AMesh, TexRes.Man);
+		RenderFBX(MeshRes.Lain, TexRes.Lain);
+	//	Render3D(MeshRes.Lain.MeshPart[5], TexRes.Lain);
+		//std::cout << MeshRes.Lain.MeshPart[5]->NodeName << std::endl;
 	}
 };
 

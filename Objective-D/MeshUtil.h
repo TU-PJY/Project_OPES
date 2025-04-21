@@ -46,9 +46,10 @@ public:
 	XMUINT4* BoneIndices{};                      // 정점당 본 인덱스 (최대 4개)
 	XMFLOAT4* BoneWeights{};                     // 정점당 본 가중치 (최대 4개)
 
-	std::vector<XMMATRIX> BoneOffsetMatrices;    // 각 본의 inverse bind pose
-	std::vector<int> BoneParentIndices;          // 각 본의 부모 인덱스
-	std::vector<std::string> BoneNames;          // 애니메이션 채널 매칭용 이름
+	std::vector<XMMATRIX> BoneOffsetMatrices{};    // 각 본의 inverse bind pose
+	std::vector<int> BoneParentIndices{};          // 각 본의 부모 인덱스
+	std::vector<FbxNode*> BoneNodes{};
+	FbxNode* FbxNodePtr{};
 
 	std::string NodeName{};
 
@@ -118,11 +119,11 @@ public:
 class FBXUtil {
 private:
 	FbxManager* Manager{};
-	FbxScene* Scene{};
 	std::vector<FBXVertex> ParsedVertices{};
 	FBXMesh* MeshPtr{};
 
 public:
+	FbxScene* Scene{};
 	void Init();
 	bool LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh);
 	bool TriangulateScene();

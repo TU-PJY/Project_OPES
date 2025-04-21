@@ -161,28 +161,56 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 }
 
 void Mesh::UpdateSkinning(float Time) {
-	std::vector<XMMATRIX> BoneMatrices;
-	fbxUtil.GetBoneMatricesFromScene(this, Time, BoneMatrices);
+	if (!BoneIndices || !BoneWeights) {
+		if (FbxNodePtr) {
+			FbxTime t;
+			t.SetSecondDouble(Time);
+			FbxAMatrix Transform = FbxNodePtr->EvaluateGlobalTransform(t);
 
-	for (UINT v = 0; v < Vertices; ++v) {
-		XMVECTOR SkinnedPosition = XMVectorZero();
-		XMVECTOR SkinnedNormal = XMVectorZero();
-		XMVECTOR OriginPosition = XMLoadFloat3(&OriginalPosition[v]);
-		XMVECTOR OriginNormal = XMLoadFloat3(&OriginalNormal[v]);
+			XMMATRIX M = XMMATRIX(
+				(float)Transform[0][0], (float)Transform[0][1], (float)Transform[0][2], (float)Transform[0][3],
+				(float)Transform[1][0], (float)Transform[1][1], (float)Transform[1][2], (float)Transform[1][3],
+				(float)Transform[2][0], (float)Transform[2][1], (float)Transform[2][2], (float)Transform[2][3],
+				(float)Transform[3][0], (float)Transform[3][1], (float)Transform[3][2], (float)Transform[3][3]
+			);
 
-		UINT BoneIndex[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
-		float Weights[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
+			for (UINT v = 0; v < Vertices; ++v) {
+				XMVECTOR p = XMLoadFloat3(&OriginalPosition[v]);
+				XMVECTOR n = XMLoadFloat3(&OriginalNormal[v]);
 
-		for (int i = 0; i < 4; ++i) {
-			if (Weights[i] > 0.0f && BoneIndex[i] < BoneMatrices.size()) {
-				XMVECTOR TransformedPosition = XMVector3Transform(OriginPosition, BoneMatrices[BoneIndex[i]]);
-				XMVECTOR TransformedNormal = XMVector3Transform(OriginNormal, BoneMatrices[BoneIndex[i]]);
-				SkinnedPosition += TransformedPosition * Weights[i];
-				SkinnedNormal += TransformedNormal * Weights[i];
+				XMVECTOR tp = XMVector3Transform(p, M);
+				XMVECTOR tn = XMVector3TransformNormal(n, M);
+
+				XMStoreFloat3(&Position[v], tp);
+				XMStoreFloat3(&Normal[v], tn);
 			}
 		}
-		XMStoreFloat3(&Position[v], SkinnedPosition);
-		XMStoreFloat3(&Normal[v], SkinnedNormal);
+	}
+
+	else {
+		std::vector<XMMATRIX> BoneMatrices;
+		fbxUtil.GetBoneMatricesFromScene(this, Time, BoneMatrices);
+
+		for (UINT v = 0; v < Vertices; ++v) {
+			XMVECTOR SkinnedPosition = XMVectorZero();
+			XMVECTOR SkinnedNormal = XMVectorZero();
+			XMVECTOR OriginPosition = XMLoadFloat3(&OriginalPosition[v]);
+			XMVECTOR OriginNormal = XMLoadFloat3(&OriginalNormal[v]);
+
+			UINT BoneIndex[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
+			float Weights[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
+
+			for (int i = 0; i < 4; ++i) {
+				if (Weights[i] > 0.0f && BoneIndex[i] < BoneMatrices.size()) {
+					XMVECTOR TransformedPosition = XMVector3Transform(OriginPosition, BoneMatrices[BoneIndex[i]]);
+					XMVECTOR TransformedNormal = XMVector3Transform(OriginNormal, BoneMatrices[BoneIndex[i]]);
+					SkinnedPosition += TransformedPosition * Weights[i];
+					SkinnedNormal += TransformedNormal * Weights[i];
+				}
+			}
+			XMStoreFloat3(&Position[v], SkinnedPosition);
+			XMStoreFloat3(&Normal[v], SkinnedNormal);
+		}
 	}
 
 	void* Mapped = nullptr;
@@ -291,6 +319,7 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 
 		Mesh* NewMesh = new Mesh();
 		NewMesh->HeapType = MeshPtr->HeapType;
+		NewMesh->FbxNodePtr = Node;
 
 		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
 			int VertexCountInPolygon = FMesh->GetPolygonSize(PolyIndex);
@@ -436,7 +465,7 @@ void FBXUtil::ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr) {
 	int ClusterCount = Skin->GetClusterCount();
 	MeshPtr->BoneOffsetMatrices.resize(ClusterCount);
 	MeshPtr->BoneParentIndices.resize(ClusterCount, -1);
-	MeshPtr->BoneNames.resize(ClusterCount);
+	MeshPtr->BoneNodes.resize(ClusterCount);
 
 	MeshPtr->BoneIndices = new XMUINT4[MeshPtr->Vertices]{};
 	MeshPtr->BoneWeights = new XMFLOAT4[MeshPtr->Vertices]{};
@@ -444,7 +473,7 @@ void FBXUtil::ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr) {
 	for (int c = 0; c < ClusterCount; ++c) {
 		FbxCluster* Cluster = Skin->GetCluster(c);
 		FbxNode* BoneNode = Cluster->GetLink();
-		MeshPtr->BoneNames[c] = BoneNode->GetName();
+		MeshPtr->BoneNodes[c] = BoneNode;
 
 		FbxAMatrix MeshBindGlobal;
 		FbxAMatrix BoneBindGlobal;
@@ -508,10 +537,18 @@ void FBXUtil::ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr) {
 			}
 		}
 	}
+
+	for (UINT v = 0; v < MeshPtr->Vertices; ++v) {
+		XMFLOAT4& bw = MeshPtr->BoneWeights[v];
+		if (bw.x + bw.y + bw.z + bw.w == 0.0f) {
+			MeshPtr->BoneIndices[v] = XMUINT4(0, 0, 0, 0);
+			MeshPtr->BoneWeights[v] = XMFLOAT4(1.0f, 0.0f, 0.0f, 0.0f);
+		}
+	}
 }
 
 void FBXUtil::GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::vector<XMMATRIX>& OutBoneMatrices) {
-	UINT B = static_cast<UINT>(MeshPtr->BoneNames.size());
+	UINT B = static_cast<UINT>(MeshPtr->BoneNodes.size());
 
 	OutBoneMatrices.resize(B);
 	std::vector<XMMATRIX> Global(B);
@@ -520,8 +557,7 @@ void FBXUtil::GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::
 	Time.SetSecondDouble(TimeInSeconds);
 
 	for (UINT i = 0; i < B; ++i) {
-		const std::string& BoneName = MeshPtr->BoneNames[i];
-		FbxNode* BoneNode = fbxUtil.Scene->FindNodeByName(BoneName.c_str());
+		FbxNode* BoneNode = MeshPtr->BoneNodes[i];
 
 		if (!BoneNode) {
 			Global[i] = XMMatrixIdentity();
