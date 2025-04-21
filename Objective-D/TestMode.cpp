@@ -13,17 +13,19 @@ public:
 	float time{};
 	float totaltime{};
 
+	float Rotation{};
+
 	void Update(float FT) override {
-		time += FT;
-		if (time >= totaltime)
-			time = 0.0;
-		UpdateFBXAnimation(MeshRes.AMesh, FT);
+		UpdateFBXAnimation(MeshRes.AMesh, FT * 4.0);
+
+
+	//	Rotation += 360.0 * FT;
 	}
 
 	void Render() override {
 		BeginRender(RENDER_TYPE_3D);
 		Transform::Move(TranslateMatrix, 0.0, 0.0, 5.0);
-		Transform::Rotate(RotateMatrix, 0.0, 0.0, 0.0);
+		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
 		RenderFBX(MeshRes.AMesh, TexRes.Man);
 	}

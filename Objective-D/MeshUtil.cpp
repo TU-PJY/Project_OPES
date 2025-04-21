@@ -165,19 +165,24 @@ void Mesh::UpdateSkinning(float Time) {
 	fbxUtil.GetBoneMatricesFromScene(this, Time, BoneMatrices);
 
 	for (UINT v = 0; v < Vertices; ++v) {
-		XMVECTOR Skinned = XMVectorZero();
-		XMVECTOR Origin = XMLoadFloat3(&OriginalPosition[v]);
+		XMVECTOR SkinnedPosition = XMVectorZero();
+		XMVECTOR SkinnedNormal = XMVectorZero();
+		XMVECTOR OriginPosition = XMLoadFloat3(&OriginalPosition[v]);
+		XMVECTOR OriginNormal = XMLoadFloat3(&OriginalNormal[v]);
 
 		UINT BoneIndex[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
 		float Weights[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
 
 		for (int i = 0; i < 4; ++i) {
 			if (Weights[i] > 0.0f && BoneIndex[i] < BoneMatrices.size()) {
-				XMVECTOR Transformed = XMVector3Transform(Origin, BoneMatrices[BoneIndex[i]]);
-				Skinned += Transformed * Weights[i];
+				XMVECTOR TransformedPosition = XMVector3Transform(OriginPosition, BoneMatrices[BoneIndex[i]]);
+				XMVECTOR TransformedNormal = XMVector3Transform(OriginNormal, BoneMatrices[BoneIndex[i]]);
+				SkinnedPosition += TransformedPosition * Weights[i];
+				SkinnedNormal += TransformedNormal * Weights[i];
 			}
 		}
-		XMStoreFloat3(&Position[v], Skinned);
+		XMStoreFloat3(&Position[v], SkinnedPosition);
+		XMStoreFloat3(&Normal[v], SkinnedNormal);
 	}
 
 	void* Mapped = nullptr;
@@ -185,6 +190,10 @@ void Mesh::UpdateSkinning(float Time) {
 	PositionBuffer->Map(0, &Read, &Mapped);
 	memcpy(Mapped, Position, sizeof(XMFLOAT3) * Vertices);
 	PositionBuffer->Unmap(0, nullptr);
+
+	NormalBuffer->Map(0, &Read, &Mapped);
+	memcpy(Mapped, Normal, sizeof(XMFLOAT3) * Vertices);
+	NormalBuffer->Unmap(0, nullptr);
 }
 
 
@@ -227,8 +236,9 @@ bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 	if (!Importer->Initialize(FilePath, -1, Manager->GetIOSettings())) {
 		std::cerr << "Error: Unable to initialize importer!\n";
 		std::cerr << "Error: " << Importer->GetStatus().GetErrorString() << "\n";
-		FbxStatus status = Importer->GetStatus();
-		std::cerr << "Detailed Status Code: " << status.GetCode() << "\n";
+
+		FbxStatus Status = Importer->GetStatus();
+		std::cerr << "Detailed Status Code: " << Status.GetCode() << "\n";
 		return false;
 	}
 

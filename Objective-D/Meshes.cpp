@@ -393,8 +393,10 @@ void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdLis
 	}
 
 	OriginalPosition = new XMFLOAT3[Vertices];
+	OriginalNormal = new XMFLOAT3[Vertices];
 	for (UINT i = 0; i < Vertices; i++) {
 		OriginalPosition[i] = Position[i];
+		OriginalNormal[i] = Normal[i];
 	}
 
 	PositionBuffer = ::CreateBufferResource(Device, CmdList, Position, sizeof(XMFLOAT3) * Vertices, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &PositionUploadBuffer);

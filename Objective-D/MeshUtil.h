@@ -41,7 +41,6 @@ public:
 
 	std::unordered_map<int, std::vector<int>> ControlPointToVertexIndices;
 
-	XMFLOAT3* OriginalPosition{};                // 원본 정점 위치
 	XMUINT4* BoneIndices{};                      // 정점당 본 인덱스 (최대 4개)
 	XMFLOAT4* BoneWeights{};                     // 정점당 본 가중치 (최대 4개)
 
@@ -55,10 +54,12 @@ public:
 	XMFLOAT3* Position{};
 	ID3D12Resource* PositionBuffer{};
 	ID3D12Resource* PositionUploadBuffer{};
+	XMFLOAT3* OriginalPosition{};
 
 	XMFLOAT3* Normal{};
 	ID3D12Resource* NormalBuffer{};
 	ID3D12Resource* NormalUploadBuffer{};
+	XMFLOAT3* OriginalNormal{};
 
 	XMFLOAT2* TextureCoords{};
 	ID3D12Resource* TextureCoordBuffer{};
