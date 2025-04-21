@@ -19,7 +19,7 @@ struct AnimationKeyFrame {
 
 struct AnimationChannel {
 	std::string NodeName;
-	std::vector<AnimationKeyFrame> keyframes;
+	std::vector<AnimationKeyFrame> KeyFrames;
 };
 
 class Mesh;

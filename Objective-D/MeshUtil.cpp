@@ -385,10 +385,10 @@ void FBXUtil::ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLaye
 		Key.scale[1] = ScaleY ? static_cast<float>(ScaleY->Evaluate(Time)) : 1.0f;
 		Key.scale[2] = ScaleZ ? static_cast<float>(ScaleZ->Evaluate(Time)) : 1.0f;
 
-		Channel.keyframes.push_back(Key);
+		Channel.KeyFrames.push_back(Key);
 	}
 
-	if (!Channel.keyframes.empty()) 
+	if (!Channel.KeyFrames.empty()) 
 		MeshPtr->AnimationChannel.push_back(Channel);
 	
 	for (int i = 0; i < Node->GetChildCount(); ++i) 
@@ -535,8 +535,8 @@ void FBXUtil::GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::
 float FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh) {
 	float PlayTime{};
 	for (const auto& Channel : TargetMesh.AnimationChannel) {
-		if (!Channel.keyframes.empty()) {
-			float EndTime = Channel.keyframes.back().time;
+		if (!Channel.KeyFrames.empty()) {
+			float EndTime = Channel.KeyFrames.back().time;
 			if (EndTime > PlayTime)
 				TargetMesh.TotalTime = EndTime;
 		}
