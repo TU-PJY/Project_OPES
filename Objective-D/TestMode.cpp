@@ -36,7 +36,7 @@ public:
 		BeginRender(RENDER_TYPE_3D);
 		Transform::Move(TranslateMatrix, 0.0, 0.0, 10.0);
 		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
+		//Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
 		RenderFBX(MeshRes.Lain, TexRes.Lain);
 	}
 };

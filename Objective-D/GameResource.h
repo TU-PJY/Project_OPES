@@ -128,9 +128,11 @@ inline void ImportFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory
 	if (fbxUtil.LoadFBXFile(Directory, TargetMesh)) {
 		fbxUtil.TriangulateScene();
 		fbxUtil.GetVertexData();
-		fbxUtil.ProcessAnimation();
-		fbxUtil.PrintAnimationStackNames();
-		fbxUtil.EnumerateAnimationStacks(TargetMesh);
+		if (HeapType == HEAP_TYPE_UPLOAD) {
+			fbxUtil.ProcessAnimation();
+			fbxUtil.PrintAnimationStackNames();
+			fbxUtil.EnumerateAnimationStacks(TargetMesh);
+		}
 		LoadedFBXMeshList.emplace_back(TargetMesh);
 	}
 }
