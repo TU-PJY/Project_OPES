@@ -9,9 +9,13 @@
 // 한 터레인 매쉬 당 한 번만 실행하면 된다. 생성자에서 실행할 것을 권장한다.
 // 터레인이 아닌 객체는 해당 함수를 실행할 필요가 없다.
 void TerrainUtil::InputData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat, Mesh* MeshData) {
-	XMMATRIX ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&SMat), XMLoadFloat4x4(&RMat));
-	ResultMatrix = XMMatrixMultiply(ResultMatrix, XMLoadFloat4x4(&TMat));
-	XMStoreFloat4x4(&TerrainMatrix, XMMatrixTranspose(ResultMatrix));
+	XMMATRIX world = XMMatrixMultiply(
+		XMMatrixMultiply(XMLoadFloat4x4(&SMat),
+		XMLoadFloat4x4(&RMat)),
+		XMLoadFloat4x4(&TMat)
+	);
+
+	XMStoreFloat4x4(&TerrainMatrix, world);
 
 	TerrainMesh = MeshData;
 

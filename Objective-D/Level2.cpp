@@ -3,17 +3,20 @@
 
 #include "Map2.h"
 #include "CameraController.h"
+#include "Player.h"
 
 void Level2::Start() {
 	std::vector<std::string> ControlObjectTag
 	{
-		"camera_controller",
-		"map2"
+		//"camera_controller",
+		"map2",
+		"player"
 	};
 
 	// 필요한 작업 추가
-	scene.AddObject(new CameraController, "camera_controller", LAYER1);
+	//scene.AddObject(new CameraController, "camera_controller", LAYER1);
 	scene.AddObject(new Map2, "map2", LAYER1);
+	scene.AddObject(new Player, "player", LAYER1);
 
 	AddControlObject(ControlObjectTag);
 	RegisterController();

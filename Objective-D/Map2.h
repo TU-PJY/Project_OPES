@@ -12,9 +12,23 @@ private:
 	ScriptUtil ObjectPositionScript{};
 	std::vector<ObjectStruct> ObjectVec{};
 
+	TerrainUtil terrain{};
+
 public:
 	Map2() {
 		Load();
+		//BeginRender();
+		Transform::Identity(TranslateMatrix);
+		Transform::Identity(ScaleMatrix);
+		Transform::Identity(RotateMatrix);
+
+		Transform::Move(TranslateMatrix, 0.0, -50.0, 0.0);
+		Transform::Scale(ScaleMatrix, 0.3, 0.2, 0.3);
+		terrain.InputData(TranslateMatrix, RotateMatrix, ScaleMatrix, MESH.TerrainMesh1);
+	}
+
+	TerrainUtil GetTerrain() override {
+		return terrain;
 	}
 
 	void InputKey(KeyEvent& Event) override {
