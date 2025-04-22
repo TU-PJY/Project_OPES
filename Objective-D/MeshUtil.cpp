@@ -203,7 +203,7 @@ void Mesh::UpdateSkinning(float Time) {
 			for (int i = 0; i < 4; ++i) {
 				if (Weights[i] > 0.0f && BoneIndex[i] < BoneMatrices.size()) {
 					XMVECTOR TransformedPosition = XMVector3Transform(OriginPosition, BoneMatrices[BoneIndex[i]]);
-					XMVECTOR TransformedNormal = XMVector3Transform(OriginNormal, BoneMatrices[BoneIndex[i]]);
+					XMVECTOR TransformedNormal = XMVector3TransformNormal(OriginNormal, BoneMatrices[BoneIndex[i]]);
 					SkinnedPosition += TransformedPosition * Weights[i];
 					SkinnedNormal += TransformedNormal * Weights[i];
 				}
