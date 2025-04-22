@@ -11,8 +11,8 @@ SystemResource SysRes;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
-	//ImportFBX(System, MeshRes.AMesh, "Resources//TestMesh//test.fbx");
-	//ImportFBX(System, MeshRes.Lain, "Resources//TestMesh//lain.fbx");
+	ImportFBX(System, MeshRes.AMesh, "Resources//TestMesh//test.fbx");
+	ImportFBX(System, MeshRes.Lain, "Resources//TestMesh//lain.fbx");
 	ImportFBX(System, MeshRes.steve, "Resources//TestMesh//steve.fbx");
 
 	// 일단 FBX 애니메이션 구현을 위해 테스트에 필요없는 것들을 로드하지 않고 일시적으로 비활성화 한다.
@@ -80,8 +80,8 @@ void LoadMesh(DeviceSystem& System) {
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
 	// FBX 테스트용 모델 텍스터 로드
-	//ImportTexture(System, TexRes.Man, L"Resources//TestMesh//test.png", TEXTURE_TYPE_WIC);
-	//ImportTexture(System, TexRes.Lain, L"Resources//TestMesh//lain.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.Man, L"Resources//TestMesh//test.png", TEXTURE_TYPE_WIC);
+	ImportTexture(System, TexRes.Lain, L"Resources//TestMesh//lain.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TexRes.steve, L"Resources//TestMesh//steve.png", TEXTURE_TYPE_WIC);
 
 	// FBX 애니메이션 테스트에 필요없는 것들을 일시적으로 비활성화 한다.

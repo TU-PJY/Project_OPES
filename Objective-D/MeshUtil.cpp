@@ -265,6 +265,7 @@ bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 		std::cerr << "Error: Unable to import FBX scene!\n";
 		return false;
 	}
+	//FbxAxisSystem::DirectX.ConvertScene(TargetMesh.Scene);
 
 	std::cout << "FBX file loaded successfully.\n";
 	Importer->Destroy();

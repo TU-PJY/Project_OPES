@@ -12,32 +12,32 @@
 
 class TestObject : public GameObject {
 public:
-	//void InputKey(KeyEvent& Event) {
-	//	if (Event.Type == WM_KEYDOWN) {
-	//		switch (Event.Key) {
-	//		case '1':
-	//			fbxUtil.SelectAnimation(MeshRes.Lain, "HoodDown");
-	//			fbxUtil.ResetCurrentTime(MeshRes.Lain);
-	//			break;
+	void InputKey(KeyEvent& Event) {
+		if (Event.Type == WM_KEYDOWN) {
+			switch (Event.Key) {
+			case '1':
+				fbxUtil.SelectAnimation(MeshRes.Lain, "HoodDown");
+				fbxUtil.ResetCurrentTime(MeshRes.Lain);
+				break;
 
-	//		case '2':
-	//			fbxUtil.SelectAnimation(MeshRes.Lain, "HoodUp");
-	//			fbxUtil.ResetCurrentTime(MeshRes.Lain);
-	//			break;
-	//		}
-	//	}
-	//}
+			case '2':
+				fbxUtil.SelectAnimation(MeshRes.Lain, "HoodUp");
+				fbxUtil.ResetCurrentTime(MeshRes.Lain);
+				break;
+			}
+		}
+	}
 
 	void Update(float FT) override {
-	    UpdateFBXAnimation(MeshRes.steve, FT);
+	    UpdateFBXAnimation(MeshRes.Lain, FT);
 	}
 
 	void Render() override {
 		BeginRender(RENDER_TYPE_3D);
 		Transform::Move(TranslateMatrix, 0.0, 0.0, 10.0);
-	//	Transform::Rotate(RotateMatrix, -90.0, 180.0, 0.0);
+		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
-		RenderFBX(MeshRes.steve, TexRes.steve);
+		RenderFBX(MeshRes.Lain, TexRes.Lain);
 	}
 };
 
