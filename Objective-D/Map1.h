@@ -38,7 +38,7 @@ public:
 		BeginRender();
 		Transform::Move(TranslateMatrix, 0.0, -50.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.3, 0.2, 0.3);
-		Render3D(MeshRes.TerrainMesh1, TexRes.Palette1);
+		Render3D(MESH.TerrainMesh1, TEX.Palette1);
 
 		// È£¼ö ·»´õ¸µ
 		{
@@ -47,14 +47,14 @@ public:
 			SetColor(0.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, 0.0, -1.5, 0.0);
 			Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
-			Render3D(MeshRes.LakeMesh, TexRes.Palette2);
+			Render3D(MESH.LakeMesh, TEX.Palette2);
 
 			// Áß¾Ó È£¼ý¹ÙÀ§ ·»´õ¸µ
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, 12.5, -4.0, -2.0);
 			Transform::Scale(ScaleMatrix, 0.03, 0.04, 0.03);
-			Render3D(MeshRes.RockMesh, TexRes.Palette1);
+			Render3D(MESH.RockMesh, TEX.Palette1);
 
 			// ¹° ·»´õ¸µ
 			BeginRender();
@@ -62,7 +62,7 @@ public:
 			Transform::Rotate(RotateMatrix, 90.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, 6.0, 0.6, 8.0);
 			Transform::Scale(ScaleMatrix, 41.0, 40.0, 1.0);
-			Render3D(SysRes.BillboardMesh, TexRes.ColorTex, 0.5);
+			Render3D(SysRes.BillboardMesh, TEX.ColorTex, 0.5);
 
 			// È£¼ö ÁÖº¯ ¹ÙÀ§ ·»´õ¸µ
 			for (auto& P : LakeObjectPosition) {
@@ -71,7 +71,7 @@ public:
 				Transform::Move(TranslateMatrix, P.Position);
 				Transform::Scale(ScaleMatrix, P.Size);
 				Transform::Rotate(RotateMatrix, 0.0, P.Rotation, 0.0);
-				Render3D(MeshRes.LakeRockMesh[P.Index], TexRes.Palette2);
+				Render3D(MESH.LakeRockMesh[P.Index], TEX.Palette2);
 			}
 		}
 
@@ -82,7 +82,7 @@ public:
 			Transform::Move(TranslateMatrix, P.Position);
 			Transform::Scale(ScaleMatrix, P.Size);
 			Transform::Rotate(RotateMatrix, 0.0, P.Rotation, 0.0);
-			Render3D(MeshRes.RockMesh, TexRes.Palette1);
+			Render3D(MESH.RockMesh, TEX.Palette1);
 		}
 
 		// ¸Ê ¿ÀºêÁ§Æ® ·»´õ¸µ
@@ -92,7 +92,7 @@ public:
 			Transform::Move(TranslateMatrix, P.Position);
 			Transform::Scale(ScaleMatrix, P.Size);
 			Transform::Rotate(RotateMatrix, 0.0, P.Rotation, 0.0);
-			Render3D(MeshRes.MapObjectMesh[P.Index], TexRes.Palette3);
+			Render3D(MESH.MapObjectMesh[P.Index], TEX.Palette3);
 		}
 
 		// ¼ÒÇü ¸Ê ¿ÀºêÁ§Æ® ·»´õ¸µ
@@ -110,22 +110,22 @@ public:
 			// 5: MushRoom2
 			switch (P.Index) {
 			case 0:
-				Render3D(MeshRes.Grass[0], TexRes.Palette3);
+				Render3D(MESH.Grass[0], TEX.Palette3);
 				break;
 			case 1:
-				Render3D(MeshRes.Grass[1], TexRes.Palette3);
+				Render3D(MESH.Grass[1], TEX.Palette3);
 				break;
 			case 2:
-				Render3D(MeshRes.Flower[0], TexRes.Palette3);
+				Render3D(MESH.Flower[0], TEX.Palette3);
 				break;
 			case 3:
-				Render3D(MeshRes.Flower[1], TexRes.Palette3);
+				Render3D(MESH.Flower[1], TEX.Palette3);
 				break;
 			case 4:
-				Render3D(MeshRes.Mushroom[0], TexRes.Palette3);
+				Render3D(MESH.Mushroom[0], TEX.Palette3);
 				break;
 			case 5:
-				Render3D(MeshRes.Mushroom[1], TexRes.Palette3);
+				Render3D(MESH.Mushroom[1], TEX.Palette3);
 				break;
 			}
 		}
@@ -136,7 +136,7 @@ public:
 		Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
 		Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);
 		Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
-		Render3D(MeshRes.TestMesh, TexRes.TestTex);
+		Render3D(MESH.TestMesh, TEX.TestTex);
 	}
 
 	void Load() {

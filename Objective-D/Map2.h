@@ -33,7 +33,7 @@ public:
 		Transform::Move(TranslateMatrix, 0.0, -50.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.3, 0.2, 0.3);
 		//SetColor(0.8, 0.8, 0.8);
-		Render3D(MeshRes.TerrainMesh1, TexRes.Map2TerrainTex);
+		Render3D(MESH.TerrainMesh1, TEX.Map2TerrainTex);
 
 		for (auto& Wall : WallVec) {
 			BeginRender();
@@ -41,7 +41,7 @@ public:
 			Transform::Move(TranslateMatrix, Wall.Position);
 			Transform::Scale(ScaleMatrix, Wall.Size);
 			Transform::Rotate(RotateMatrix, -90.0, 0.0, Wall.Rotation);
-			Render3D(MeshRes.WinterWall, TexRes.Map2Palette);
+			Render3D(MESH.WinterWall, TEX.Map2Palette);
 		}
 
 		for (auto& Object : ObjectVec) {
@@ -55,15 +55,15 @@ public:
 				Transform::Rotate(RotateMatrix, 0.0, Object.Rotation, 0.0);
 
 			if(Object.Index == 0)
-				Render3D(MeshRes.WinterRock[0], TexRes.Map2Palette);
+				Render3D(MESH.WinterRock[0], TEX.Map2Palette);
 			else if(Object.Index == 1)
-				Render3D(MeshRes.WinterRock[1], TexRes.Map2Palette);
+				Render3D(MESH.WinterRock[1], TEX.Map2Palette);
 			else if (Object.Index == 2) 
-				Render3D(MeshRes.WinterIce[0], TexRes.IceTex);
+				Render3D(MESH.WinterIce[0], TEX.IceTex);
 			else if (Object.Index == 3) 
-				Render3D(MeshRes.WinterIce[1], TexRes.IceTex);
+				Render3D(MESH.WinterIce[1], TEX.IceTex);
 			else if(Object.Index == 4)
-				Render3D(MeshRes.WinterRock[2], TexRes.Map2Palette);
+				Render3D(MESH.WinterRock[2], TEX.Map2Palette);
 		}
 
 		// 테스트용 플레이어 모델
@@ -72,7 +72,7 @@ public:
 		Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
 		Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);
 		Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
-		Render3D(MeshRes.TestMesh, TexRes.TestTex);
+		Render3D(MESH.TestMesh, TEX.TestTex);
 	}
 
 	void Load() {

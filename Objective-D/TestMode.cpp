@@ -11,47 +11,47 @@
 //Animation stack[5] : Armature | SpinAction
 
 class TestObject : public GameObject {
-public:
-	void InputKey(KeyEvent& Event) {
-		if (Event.Type == WM_KEYDOWN) {
-			switch (Event.Key) {
-			case '1':
-				fbxUtil.SelectAnimation(MeshRes.Lain, "HoodDown");
-				fbxUtil.ResetCurrentTime(MeshRes.Lain);
-				break;
-
-			case '2':
-				fbxUtil.SelectAnimation(MeshRes.Lain, "HoodUp");
-				fbxUtil.ResetCurrentTime(MeshRes.Lain);
-				break;
-			}
-		}
-	}
-
-	void Update(float FT) override {
-	    UpdateFBXAnimation(MeshRes.Lain, FT);
-		UpdateFBXAnimation(MeshRes.steve, FT);
-		UpdateFBXAnimation(MeshRes.AMesh, FT);
-	}
-
-	void Render() override {
-		BeginRender(RENDER_TYPE_3D);
-		Transform::Move(TranslateMatrix, -5.0, 0.0, 5.0);
-		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		RenderFBX(MeshRes.Lain, TexRes.Lain);
-
-		BeginRender(RENDER_TYPE_3D);
-		Transform::Move(TranslateMatrix, 0.0, 2.5, 5.0);
-		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		Transform::Scale(ScaleMatrix, 0.35, 0.35, 0.35);
-		RenderFBX(MeshRes.steve, TexRes.steve);
-
-		BeginRender(RENDER_TYPE_3D);
-		Transform::Move(TranslateMatrix, 5.0, 0.0, 5.0);
-		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
-		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		RenderFBX(MeshRes.AMesh, TexRes.Man);
-	}
+//public:
+//	void InputKey(KeyEvent& Event) {
+//		if (Event.Type == WM_KEYDOWN) {
+//			switch (Event.Key) {
+//			case '1':
+//				fbxUtil.SelectAnimation(MeshRes.Lain, "HoodDown");
+//				fbxUtil.ResetCurrentTime(MeshRes.Lain);
+//				break;
+//
+//			case '2':
+//				fbxUtil.SelectAnimation(MeshRes.Lain, "HoodUp");
+//				fbxUtil.ResetCurrentTime(MeshRes.Lain);
+//				break;
+//			}
+//		}
+//	}
+//
+//	void Update(float FT) override {
+//	    UpdateFBXAnimation(MeshRes.Lain, FT);
+//		UpdateFBXAnimation(MeshRes.steve, FT);
+//		UpdateFBXAnimation(MeshRes.AMesh, FT);
+//	}
+//
+//	void Render() override {
+//		BeginRender(RENDER_TYPE_3D);
+//		Transform::Move(TranslateMatrix, -5.0, 0.0, 5.0);
+//		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
+//		RenderFBX(MeshRes.Lain, TexRes.Lain);
+//
+//		BeginRender(RENDER_TYPE_3D);
+//		Transform::Move(TranslateMatrix, 0.0, 2.5, 5.0);
+//		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
+//		Transform::Scale(ScaleMatrix, 0.35, 0.35, 0.35);
+//		RenderFBX(MeshRes.steve, TexRes.steve);
+//
+//		BeginRender(RENDER_TYPE_3D);
+//		Transform::Move(TranslateMatrix, 5.0, 0.0, 5.0);
+//		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
+//		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
+//		RenderFBX(MeshRes.AMesh, TexRes.Man);
+//	}
 };
 
 

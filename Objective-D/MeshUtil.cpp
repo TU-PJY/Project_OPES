@@ -18,7 +18,9 @@ Mesh::Mesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, char* Direc
 	}
 }
 
-Mesh::Mesh() {}
+Mesh::Mesh() {
+	std::cout << "Mesh object created." << std::endl;
+}
 
 Mesh::~Mesh() {
 	if (Position) delete[] Position;
@@ -57,7 +59,7 @@ void Mesh::ReleaseUploadBuffers() {
 };
 
 void Mesh::Render(ID3D12GraphicsCommandList* CmdList) {
-	CmdList->IASetPrimitiveTopology(PromitiveTopology);
+	CmdList->IASetPrimitiveTopology(PrimitiveTopology);
 	CmdList->IASetVertexBuffers(Slot, NumVertexBufferViews, VertexBufferViews);
 	if (IndexBuffer) {
 		CmdList->IASetIndexBuffer(&IndexBufferView);
@@ -240,9 +242,9 @@ void FBXUtil::Init() {
 	Manager->SetIOSettings(IOS);
 }
 
-bool FBXUtil::LoadStaticFBXFile(const char* FilePath, Mesh* TargetMesh) {
+bool FBXUtil::LoadStaticFBXFile(const char* FilePath, Mesh*& TargetMesh) {
 	if (!TargetMesh) {
-		TargetMesh = new Mesh;
+		TargetMesh = new Mesh();
 		TargetMesh->MeshType = FBX_STATIC;
 	}
 
@@ -306,35 +308,35 @@ void FBXUtil::GetStaticVertexData() {
 void FBXUtil::ProcessStaticNode(FbxNode* Node) {
 	std::cout << "Node Name: " << Node->GetName() << "\n";
 
-	FbxMesh* Mesh = Node->GetMesh();
-	if (Mesh) {
-		FbxVector4* ControlPoints = Mesh->GetControlPoints();
-		int ControlPointCount = Mesh->GetControlPointsCount();
+	FbxMesh* FMesh = Node->GetMesh();
+	if (FMesh) {
+		FbxVector4* ControlPoints = FMesh->GetControlPoints();
+		int ControlPointCount = FMesh->GetControlPointsCount();
 
-		int PolygonCount = Mesh->GetPolygonCount();
+		int PolygonCount = FMesh->GetPolygonCount();
 		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
-			int VertexCountInPolygon = Mesh->GetPolygonSize(PolyIndex);
+			int VertexCountInPolygon = FMesh->GetPolygonSize(PolyIndex);
 
 			for (int V = 0; V < VertexCountInPolygon; V++) {
-				int ControlPointIndex = Mesh->GetPolygonVertex(PolyIndex, V);
+				int ControlPointIndex = FMesh->GetPolygonVertex(PolyIndex, V);
 				if (ControlPointIndex < 0)
 					continue;
 
 				FbxVector4 Position = ControlPoints[ControlPointIndex];
 				FbxVector4 Normal(0, 0, 0, 0);
 
-				bool HasNormal = Mesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
+				bool HasNormal = FMesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
 				FbxVector2 UV(0, 0);
 
 				const char* UVSetName = nullptr;
-				if (Mesh->GetElementUVCount() > 0) {
-					FbxLayerElementUV* UVElement = Mesh->GetElementUV(0);
+				if (FMesh->GetElementUVCount() > 0) {
+					FbxLayerElementUV* UVElement = FMesh->GetElementUV(0);
 					if (UVElement)
 						UVSetName = UVElement->GetName();
 				}
 
 				bool Unmapped = false;
-				bool HasUV = Mesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
+				bool HasUV = FMesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
 
 				FBXVertex Vertex{};
 				Vertex.px = static_cast<float>(Position[0]);

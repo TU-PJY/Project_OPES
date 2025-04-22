@@ -18,14 +18,12 @@ struct ObjectStruct {
 class MeshResource {
 public:
 	// FBX 테스트용 매쉬
-//	Mesh* Man{};
 
-	// Animated FBX 전용 mesh
-	// FBX 매쉬는 내부에 매쉬가 여러개일 수 있으므로 내부에서 vector로 일괄 처리 및 렌더링 한다.
-	FBXMesh AMesh{};
-	FBXMesh Lain{};
-
-	FBXMesh steve{};
+	//// Animated FBX 전용 mesh
+	//// FBX 매쉬는 내부에 매쉬가 여러개일 수 있으므로 내부에서 vector로 일괄 처리 및 렌더링 한다.
+	//FBXMesh AMesh{};
+	//FBXMesh Lain{};
+	//FBXMesh steve{};
 
 	// Map1 매쉬
 	Mesh* RockMesh;
@@ -52,16 +50,16 @@ public:
 
 	Mesh* TestMesh;
 };
-extern MeshResource MeshRes;
+extern MeshResource MESH;
 
 /////////////////////////////////////////////////////////////////////////////////
 // 텍스처 리소스는 해당 클래스 안에 선언
 class TextureResource {
 public:
-	// FBX 테스트용 매쉬 텍스처
-	Texture* Man{};
-	Texture* Lain{};
-	Texture* steve{};
+	//// FBX 테스트용 매쉬 텍스처
+	//Texture* Man{};
+	//Texture* Lain{};
+	//Texture* steve{};
 
 	// map1
 	Texture* Palette1;
@@ -82,7 +80,7 @@ public:
 
 	Texture* TestTex;
 };
-extern TextureResource TexRes;
+extern TextureResource TEX;
 
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -133,7 +131,7 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Dir
 }
 
 // 애니메이션이 없는 FBX 파일 로드용 함수
-inline void LoadStaticFBX(DeviceSystem& System, Mesh* TargetMesh, char* Directory) {
+inline void LoadStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, char* Directory) {
 	if (fbxUtil.LoadStaticFBXFile(Directory, TargetMesh)) {
 		fbxUtil.TriangulateStaticScene();
 		fbxUtil.GetStaticVertexData();

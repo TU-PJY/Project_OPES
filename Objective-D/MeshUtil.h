@@ -88,7 +88,7 @@ public:
 
 	D3D12_INDEX_BUFFER_VIEW	IndexBufferView{};
 
-	D3D12_PRIMITIVE_TOPOLOGY PromitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	D3D12_PRIMITIVE_TOPOLOGY PrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	UINT Slot{};
 	UINT Stride{};
 	UINT Offset{};
@@ -130,7 +130,7 @@ private:
 
 public:
 	void Init();
-	bool LoadStaticFBXFile(const char* FilePath, Mesh* TargetMesh);
+	bool LoadStaticFBXFile(const char* FilePath, Mesh*& TargetMesh);
 	bool LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh);
 	bool TriangulateAnimatedScene();
 	void GetAnimatedVertexData(DeviceSystem& System);

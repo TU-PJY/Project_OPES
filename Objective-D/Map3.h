@@ -47,7 +47,7 @@ public:
 		Transform::Move(TranslateMatrix, 0.0, -30.0, 0.0);
 		Transform::Rotate(RotateMatrix, 90.0, 0.0, 0.0);
 		Transform::Scale(ScaleMatrix, 1000.0, 1000.0, 1.0);
-		Render3D(SysRes.BillboardMesh, TexRes.Magma);
+		Render3D(SysRes.BillboardMesh, TEX.Magma);
 
 		// 화산
 		BeginRender();
@@ -55,7 +55,7 @@ public:
 		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
 		Transform::Rotate(RotateMatrix, 0.0, -50.0, 0.0);
 		Transform::Move(TranslateMatrix, 60.0, 5.0, -60.0);
-		Render3D(MeshRes.Volcano, TexRes.Volcano);
+		Render3D(MESH.Volcano, TEX.Volcano);
 
 		// 분화구
 		for (auto& Volcano : VolcanoPosition) {
@@ -63,7 +63,7 @@ public:
 			Transform::Move(TranslateMatrix, Volcano.Position);
 			Transform::Scale(ScaleMatrix, Volcano.Size);
 			Transform::Rotate(RotateMatrix, 0.0, Volcano.Rotation, 0.0);
-			Render3D(MeshRes.SmallVolcano, TexRes.Map3Palette);
+			Render3D(MESH.SmallVolcano, TEX.Map3Palette);
 		}
 
 		// 바닥 돌
@@ -72,7 +72,7 @@ public:
 			Transform::Move(TranslateMatrix, Rock.Position);
 			Transform::Scale(ScaleMatrix, Rock.Size);
 			Transform::Rotate(RotateMatrix, 0.0, Rock.Rotation, 0.0);
-			Render3D(MeshRes.FloatingRock, TexRes.Map3Palette);
+			Render3D(MESH.FloatingRock, TEX.Map3Palette);
 		}
 
 		// 나무
@@ -81,7 +81,7 @@ public:
 			Transform::Move(TranslateMatrix, Tree.Position.x, Tree.Position.y - 1.0, Tree.Position.z);
 			Transform::Scale(ScaleMatrix, Tree.Size);
 			Transform::Rotate(RotateMatrix, 0.0, Tree.Rotation, 0.0);
-			Render3D(MeshRes.DeadTree, TexRes.Map3Palette);
+			Render3D(MESH.DeadTree, TEX.Map3Palette);
 		}
 
 		// 바위
@@ -90,7 +90,7 @@ public:
 			Transform::Move(TranslateMatrix, Stone.Position);
 			Transform::Scale(ScaleMatrix, Stone.Size);
 			Transform::Rotate(RotateMatrix, 0.0, Stone.Rotation, 0.0);
-			Render3D(MeshRes.Map3Stone[Stone.Index], TexRes.Map3Palette);
+			Render3D(MESH.Map3Stone[Stone.Index], TEX.Map3Palette);
 		}
 
 		// 크리스탈
@@ -99,7 +99,7 @@ public:
 			Transform::Move(TranslateMatrix, Crystal.Position);
 			Transform::Scale(ScaleMatrix, Crystal.Size);
 			Transform::Rotate(RotateMatrix, 0.0, Crystal.Rotation, 0.0);
-			Render3D(MeshRes.Crystal[Crystal.Index], TexRes.Map3Palette);
+			Render3D(MESH.Crystal[Crystal.Index], TEX.Map3Palette);
 		}
 
 		// 테스트용 플레이어 모델
@@ -107,7 +107,7 @@ public:
 		Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
 		Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);
 		Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
-		Render3D(MeshRes.TestMesh, TexRes.TestTex);
+		Render3D(MESH.TestMesh, TEX.TestTex);
 	}
 
 	void Load() {
