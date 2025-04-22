@@ -240,7 +240,124 @@ void FBXUtil::Init() {
 	Manager->SetIOSettings(IOS);
 }
 
-bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
+bool FBXUtil::LoadStaticFBXFile(const char* FilePath, Mesh* TargetMesh) {
+	if (!TargetMesh) {
+		TargetMesh = new Mesh;
+		TargetMesh->MeshType = FBX_STATIC;
+	}
+
+	if (StaticScene)
+		StaticScene->Destroy();
+	StaticScene = FbxScene::Create(Manager, "FBX_Scene");
+
+	if (!StaticScene) {
+		std::cerr << "Error: Unable to create FBX Scene!\n";
+		exit(1);
+	}
+
+	FbxImporter* Importer = FbxImporter::Create(Manager, "");
+
+	if (!Importer->Initialize(FilePath, -1, Manager->GetIOSettings())) {
+		std::cerr << "Error: Unable to initialize importer!\n";
+		std::cerr << "Error: " << Importer->GetStatus().GetErrorString() << "\n";
+
+		FbxStatus Status = Importer->GetStatus();
+		std::cerr << "Detailed Status Code: " << Status.GetCode() << "\n";
+		return false;
+	}
+
+	if (!Importer->Import(StaticScene)) {
+		std::cerr << "Error: Unable to import FBX scene!\n";
+		return false;
+	}
+
+	FbxAxisSystem directX(FbxAxisSystem::eDirectX);
+	directX.DeepConvertScene(StaticScene);
+	FbxSystemUnit::m.ConvertScene(StaticScene);
+
+	std::cout << "FBX file loaded successfully.\n";
+	Importer->Destroy();
+
+	return true;
+}
+
+bool FBXUtil::TriangulateStaticScene() {
+	FbxGeometryConverter GeometryConverter(Manager);
+	bool Result = GeometryConverter.Triangulate(StaticScene, true);
+
+	if (!Result) {
+		std::cerr << "Error: Triangulation failed!\n";
+		return false;
+	}
+
+	std::cout << "Scene triangulated successfully.\n";
+	return true;
+}
+
+void FBXUtil::GetStaticVertexData() {
+	FbxNode* RootNode = StaticScene->GetRootNode();
+
+	if (RootNode) {
+		for (int i = 0; i < RootNode->GetChildCount(); ++i)
+			ProcessStaticNode(RootNode->GetChild(i));
+	}
+}
+
+void FBXUtil::ProcessStaticNode(FbxNode* Node) {
+	std::cout << "Node Name: " << Node->GetName() << "\n";
+
+	FbxMesh* Mesh = Node->GetMesh();
+	if (Mesh) {
+		FbxVector4* ControlPoints = Mesh->GetControlPoints();
+		int ControlPointCount = Mesh->GetControlPointsCount();
+
+		int PolygonCount = Mesh->GetPolygonCount();
+		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
+			int VertexCountInPolygon = Mesh->GetPolygonSize(PolyIndex);
+
+			for (int V = 0; V < VertexCountInPolygon; V++) {
+				int ControlPointIndex = Mesh->GetPolygonVertex(PolyIndex, V);
+				if (ControlPointIndex < 0)
+					continue;
+
+				FbxVector4 Position = ControlPoints[ControlPointIndex];
+				FbxVector4 Normal(0, 0, 0, 0);
+
+				bool HasNormal = Mesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
+				FbxVector2 UV(0, 0);
+
+				const char* UVSetName = nullptr;
+				if (Mesh->GetElementUVCount() > 0) {
+					FbxLayerElementUV* UVElement = Mesh->GetElementUV(0);
+					if (UVElement)
+						UVSetName = UVElement->GetName();
+				}
+
+				bool Unmapped = false;
+				bool HasUV = Mesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
+
+				FBXVertex Vertex{};
+				Vertex.px = static_cast<float>(Position[0]);
+				Vertex.py = static_cast<float>(Position[1]);
+				Vertex.pz = static_cast<float>(Position[2]);
+
+				Vertex.nx = HasNormal ? static_cast<float>(Normal[0]) : 0.0f;
+				Vertex.ny = HasNormal ? static_cast<float>(Normal[1]) : 0.0f;
+				Vertex.nz = HasNormal ? static_cast<float>(Normal[2]) : 0.0f;
+
+				Vertex.u = HasUV ? static_cast<float>(UV[0]) : 0.0f;
+				Vertex.v = HasUV ? static_cast<float>(UV[1]) : 0.0f;
+
+				ParsedVertices.push_back(Vertex);
+			}
+		}
+	}
+
+	for (int i = 0; i < Node->GetChildCount(); ++i)
+		ProcessStaticNode(Node->GetChild(i));
+}
+
+bool FBXUtil::LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 	FbxScene* Scene = FbxScene::Create(Manager, "FBX_Scene");
 	if (!Scene) {
 		std::cerr << "Error: Unable to create FBX Scene!\n";
@@ -248,7 +365,7 @@ bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 	}
 	MeshPtr = &TargetMesh;
 	TargetMesh.Scene = Scene;
-	
+
 	FbxImporter* Importer = FbxImporter::Create(Manager, "");
 
 	if (!Importer->Initialize(FilePath, -1, Manager->GetIOSettings())) {
@@ -275,7 +392,7 @@ bool FBXUtil::LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 	return true;
 }
 
-bool FBXUtil::TriangulateScene() {
+bool FBXUtil::TriangulateAnimatedScene() {
 	FbxGeometryConverter GeometryConverter(Manager);
 	bool Result = GeometryConverter.Triangulate(MeshPtr->Scene, true);
 
@@ -288,16 +405,16 @@ bool FBXUtil::TriangulateScene() {
 	return true;
 }
 
-void FBXUtil::GetVertexData(){
+void FBXUtil::GetAnimatedVertexData(DeviceSystem& System) {
 	FbxNode* RootNode = MeshPtr->Scene->GetRootNode();
 
 	if (RootNode) {
-		for (int i = 0; i < RootNode->GetChildCount(); ++i) 
-			ProcessNode(RootNode->GetChild(i));
+		for (int i = 0; i < RootNode->GetChildCount(); ++i)
+			ProcessAnimatedNode(RootNode->GetChild(i), System);
 	}
 }
 
-void FBXUtil::ProcessNode(FbxNode* Node) {
+void FBXUtil::ProcessAnimatedNode(FbxNode* Node, DeviceSystem& System) {
 	std::cout << "Node Name: " << Node->GetName() << "\n";
 
 	FbxMesh* FMesh = Node->GetMesh();
@@ -310,7 +427,7 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 		int VertexIndex{};
 
 		Mesh* NewMesh = new Mesh();
-		NewMesh->HeapType = MeshPtr->HeapType;
+		NewMesh->MeshType = FBX_ANIMATED;
 		NewMesh->FbxNodePtr = Node;
 
 		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
@@ -353,13 +470,13 @@ void FBXUtil::ProcessNode(FbxNode* Node) {
 			}
 		}
 		NewMesh->NodeName = Node->GetName();
-		NewMesh->CreateFBXMesh(framework.Device, framework.CmdList, ParsedVertices);
+		NewMesh->CreateFBXMesh(System.Device, System.CmdList, ParsedVertices);
 		fbxUtil.ParseSkin(FMesh, NewMesh);
 		MeshPtr->MeshPart.push_back(NewMesh);
 	}
 
 	for (int i = 0; i < Node->GetChildCount(); ++i)
-		ProcessNode(Node->GetChild(i));
+		ProcessAnimatedNode(Node->GetChild(i), System);
 }
 
 void FBXUtil::ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLayer) {
@@ -571,22 +688,22 @@ void FBXUtil::GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::
 		OutBoneMatrices[i] = MeshPtr->BoneOffsetMatrices[i] * Global[i];
 }
 
-void FBXUtil::EnumerateAnimationStacks(FBXMesh& TargetMesh) {
-	TargetMesh.AnimationStackNames.clear();
-	int Count = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
+void FBXUtil::EnumerateAnimationStacks() {
+	MeshPtr->AnimationStackNames.clear();
+	int Count = MeshPtr->Scene->GetSrcObjectCount<FbxAnimStack>();
 
 	for (int i = 0; i < Count; ++i) {
-		FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
+		FbxAnimStack* Stack = MeshPtr->Scene->GetSrcObject<FbxAnimStack>(i);
 		if (Stack) {
 			std::string StackName = Stack->GetName();
-			TargetMesh.AnimationStackNames.push_back(StackName);
+			MeshPtr->AnimationStackNames.push_back(StackName);
 		}
 	}
 
-	if (!TargetMesh.AnimationStackNames.empty()) {
-		TargetMesh.CurrentAnimationStackName = TargetMesh.AnimationStackNames[0];
-		TargetMesh.CurrentAnimationStackIndex = 0;
-		SelectAnimation(TargetMesh, TargetMesh.AnimationStackNames[0]);
+	if (!MeshPtr->AnimationStackNames.empty()) {
+		MeshPtr->CurrentAnimationStackName = MeshPtr->AnimationStackNames[0];
+		MeshPtr->CurrentAnimationStackIndex = 0;
+		SelectAnimation(*MeshPtr, MeshPtr->AnimationStackNames[0]);
 	}
 }
 
@@ -619,4 +736,12 @@ void FBXUtil::GetAnimationPlayTime(FBXMesh& TargetMesh, const std::string& Anima
 
 void FBXUtil::ResetCurrentTime(FBXMesh& TargetMesh) {
 	TargetMesh.CurrentTime = 0.0;
+}
+
+std::vector<FBXVertex> FBXUtil::GetVertexVector() {
+	return ParsedVertices;
+}
+
+void FBXUtil::ClearVertexVector() {
+	ParsedVertices.clear();
 }

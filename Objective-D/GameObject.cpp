@@ -164,9 +164,6 @@ float GameObject::ASP(float Value) {
 // FBX 애니메이션을 업데이트 한다. 프레임 시간을 넣어주면 자동으로 재생된다.
 // HEAP_TYPE_DEFAULT로 지정된 FBX는 애니메이션 업데이트를 할 수 없다.
 void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
-	if (TargetMesh.HeapType == HEAP_TYPE_DEFAULT)
-		return;
-
 	TargetMesh.CurrentTime += FrameTime;
 	if (TargetMesh.CurrentTime >= TargetMesh.TotalTime) {
 		float OverTime = TargetMesh.CurrentTime - TargetMesh.TotalTime;

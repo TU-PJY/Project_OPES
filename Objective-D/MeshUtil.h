@@ -25,7 +25,6 @@ struct AnimationChannel {
 class Mesh;
 typedef struct {
 	FbxScene* Scene;
-	int HeapType;
 	std::vector<Mesh*> MeshPart;
 	std::vector<AnimationChannel> AnimationChannel;
 	float CurrentTime;
@@ -44,7 +43,7 @@ public:
 	void AddRef();
 	void Release();
 
-	int HeapType{};
+	int MeshType{};
 
 	std::unordered_map<int, std::vector<int>> ControlPointToVertexIndices{};
 
@@ -127,21 +126,29 @@ private:
 	std::vector<FBXVertex> ParsedVertices{};
 	FBXMesh* MeshPtr{};
 
+	FbxScene* StaticScene{};
+
 public:
 	void Init();
-	bool LoadFBXFile(const char* FilePath, FBXMesh& TargetMesh);
-	bool TriangulateScene();
-	void GetVertexData();
-	void ProcessNode(FbxNode* Node);
+	bool LoadStaticFBXFile(const char* FilePath, Mesh* TargetMesh);
+	bool LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh);
+	bool TriangulateAnimatedScene();
+	void GetAnimatedVertexData(DeviceSystem& System);
+	void ProcessAnimatedNode(FbxNode* Node, DeviceSystem& System);
+	bool TriangulateStaticScene();
+	void GetStaticVertexData();
+	void ProcessStaticNode(FbxNode* Node);
 	void ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLayer);
 	void ProcessAnimation();
 	void PrintAnimationStackNames();
 	void ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr);
 	void GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::vector<XMMATRIX>& OutBoneMatrices);
-	void EnumerateAnimationStacks(FBXMesh& TargetMesh);
+	void EnumerateAnimationStacks();
 	void SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName);
 	void GetAnimationPlayTime(FBXMesh& TargetMesh, const std::string& AnimationName);
 	void ResetCurrentTime(FBXMesh& TargetMesh);
+	std::vector<FBXVertex> GetVertexVector();
+	void ClearVertexVector();
 };
 
 extern FBXUtil fbxUtil;

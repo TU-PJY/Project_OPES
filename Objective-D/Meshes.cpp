@@ -401,10 +401,10 @@ void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdLis
 
 	D3D12_HEAP_TYPE SelectedHeapType{};
 
-	if (HeapType == HEAP_TYPE_UPLOAD)
+	if (MeshType == FBX_ANIMATED)
 		SelectedHeapType = D3D12_HEAP_TYPE_UPLOAD;
 
-	else if (HeapType == HEAP_TYPE_DEFAULT)
+	else if (MeshType == FBX_STATIC)
 		SelectedHeapType = D3D12_HEAP_TYPE_DEFAULT;
 
 	PositionBuffer = ::CreateBufferResource(Device, CmdList, Position, sizeof(XMFLOAT3) * Vertices, SelectedHeapType, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &PositionUploadBuffer);

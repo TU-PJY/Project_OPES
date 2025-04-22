@@ -88,9 +88,9 @@ enum TextureTypeEnum {
 };
 
 // FBX 힙타입 열거형
-enum FBXHeapTypeEnum {
-	HEAP_TYPE_UPLOAD,
-	HEAP_TYPE_DEFAULT
+enum FBXTypeEnum {
+	FBX_ANIMATED,
+	FBX_STATIC
 };
 
 // 오브젝트 벡터 구조체

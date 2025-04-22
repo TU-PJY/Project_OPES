@@ -120,24 +120,33 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 	LoadedMeshList.emplace_back(MeshPtr);
 }
 
-// HeapType은 디폴트가 HEAP_TYPE_UPLOAD
-// 애니메이션이 필요없는 FBX를 로드할 경우 HeapType을 HEAP_TYPE_DEFAULT로 설정하여 성능 최적화를 할 것을 권장한다.
-inline void ImportFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory, int HeapType=HEAP_TYPE_UPLOAD) {
-	TargetMesh.HeapType = HeapType;
-
-	if (fbxUtil.LoadFBXFile(Directory, TargetMesh)) {
-		fbxUtil.TriangulateScene();
-		fbxUtil.GetVertexData();
-		if (HeapType == HEAP_TYPE_UPLOAD) {
-			fbxUtil.ProcessAnimation();
-			fbxUtil.PrintAnimationStackNames();
-			fbxUtil.EnumerateAnimationStacks(TargetMesh);
-		}
+// 애니메이션 FBX 파일 로드용 함수
+inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory) {
+	if (fbxUtil.LoadAnimatedFBXFile(Directory, TargetMesh)) {
+		fbxUtil.TriangulateAnimatedScene();
+		fbxUtil.GetAnimatedVertexData(System);
+		fbxUtil.ProcessAnimation();
+		fbxUtil.PrintAnimationStackNames();
+		fbxUtil.EnumerateAnimationStacks();
 		LoadedFBXMeshList.emplace_back(TargetMesh);
 	}
 }
 
-inline void ImportTexture(DeviceSystem& System, Texture*& TexturePtr, wchar_t* Directory, int Type, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_LINEAR) {
+// 애니메이션이 없는 FBX 파일 로드용 함수
+inline void LoadStaticFBX(DeviceSystem& System, Mesh* TargetMesh, char* Directory) {
+	if (fbxUtil.LoadStaticFBXFile(Directory, TargetMesh)) {
+		fbxUtil.TriangulateStaticScene();
+		fbxUtil.GetStaticVertexData();
+		if (TargetMesh) {
+			TargetMesh->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
+			LoadedMeshList.emplace_back(TargetMesh);
+		}
+		fbxUtil.ClearVertexVector();
+	}
+}
+
+// TEXTURE_TYPE_WIC, D3D12_FILTER_MIN_MAG_MIP_POINT가 디폴트
+inline void ImportTexture(DeviceSystem& System, Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_POINT) {
 	TexturePtr = new Texture(System.Device, System.CmdList, Directory, Type, FilterOption);
 	LoadedTextureList.emplace_back(TexturePtr);
 }
