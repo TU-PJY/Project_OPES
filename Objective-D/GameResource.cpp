@@ -11,11 +11,11 @@ SystemResource SysRes;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
-	//LoadAnimatedFBX(System, MeshRes.AMesh, "Resources//TestMesh//test.fbx");
-	//LoadAnimatedFBX(System, MeshRes.Lain, "Resources//TestMesh//lain.fbx");
-	//LoadAnimatedFBX(System, MeshRes.steve, "Resources//TestMesh//steve.fbx");
+	LoadAnimatedFBX(System, MESH.man, "Resources//TestMesh//test.fbx");
+	LoadAnimatedFBX(System, MESH.Lain, "Resources//TestMesh//lain.fbx");
+	LoadAnimatedFBX(System, MESH.steve, "Resources//TestMesh//steve.fbx");
 
-	LoadStaticFBX(System, MESH.TestMesh, "Resources//Models//zombie.fbx");
+	//LoadAnimatedFBX(System, MESH.TestMesh, "Resources//Models//zombie.fbx");
 
 	// map1
 	LoadStaticFBX(System, MESH.RockMesh, "Resources//Models//map1//wall-rock.fbx");
@@ -77,12 +77,12 @@ void LoadMesh(DeviceSystem& System) {
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
 	//// FBX 테스트용 모델 텍스터 로드
-	//ImportTexture(System, TexRes.Man, L"Resources//TestMesh//test.png");
-	//ImportTexture(System, TexRes.Lain, L"Resources//TestMesh//lain.png");
-	//ImportTexture(System, TexRes.steve, L"Resources//TestMesh//steve.png");
+	ImportTexture(System, TEX.man, L"Resources//TestMesh//test.png");
+	ImportTexture(System, TEX.Lain, L"Resources//TestMesh//lain.png");
+	ImportTexture(System, TEX.steve, L"Resources//TestMesh//steve.png");
 
 	ImportTexture(System, TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
-	ImportTexture(System, TEX.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
+	//ImportTexture(System, TEX.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
 
 	// map1
 	ImportTexture(System, TEX.Palette1, L"Resources//Image//palette-1.png", TEXTURE_TYPE_WIC);

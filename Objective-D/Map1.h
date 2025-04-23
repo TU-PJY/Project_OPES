@@ -130,13 +130,13 @@ public:
 			}
 		}
 
-		// 테스트용 플레이어 모델
-		BeginRender();
-		SetColor(0.0, 0.0, 0.0);
-		Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
-		Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);
-		Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
-		Render3D(MESH.TestMesh, TEX.TestTex);
+		//// 테스트용 플레이어 모델
+		//BeginRender();
+		//SetColor(0.0, 0.0, 0.0);
+		//Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
+		//Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);
+		//Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
+		//Render3D(MESH.TestMesh, TEX.TestTex);
 	}
 
 	void Load() {

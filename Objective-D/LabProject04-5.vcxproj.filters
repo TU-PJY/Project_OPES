@@ -161,6 +161,9 @@
     <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]">
       <UniqueIdentifier>{e8466c80-c624-4454-8506-31d701736f5b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]">
+      <UniqueIdentifier>{7be1c762-6b7c-423f-8572-d6e6b2c91a13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -298,6 +301,9 @@
     <ClInclude Include="Player.h">
       <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]</Filter>
     </ClInclude>
+    <ClInclude Include="SampleMonster.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -434,9 +440,6 @@
     </ClCompile>
     <ClCompile Include="TestMode.cpp">
       <Filter>[1]____________[ Game Mode ]\[ Test bed ]</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

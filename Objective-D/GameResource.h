@@ -21,9 +21,9 @@ public:
 
 	//// Animated FBX 전용 mesh
 	//// FBX 매쉬는 내부에 매쉬가 여러개일 수 있으므로 내부에서 vector로 일괄 처리 및 렌더링 한다.
-	//FBXMesh AMesh{};
-	//FBXMesh Lain{};
-	//FBXMesh steve{};
+	FBXMesh man{};
+	FBXMesh Lain{};
+	FBXMesh steve{};
 
 	// Map1 매쉬
 	Mesh* RockMesh;
@@ -48,7 +48,8 @@ public:
 	Mesh* Map3Stone[2]{};
 	Mesh* Crystal[3]{};
 
-	Mesh* TestMesh;
+	// FBX 애니메이션 보여주기용 매쉬 
+	FBXMesh TestMesh;
 };
 extern MeshResource MESH;
 
@@ -57,9 +58,9 @@ extern MeshResource MESH;
 class TextureResource {
 public:
 	//// FBX 테스트용 매쉬 텍스처
-	//Texture* Man{};
-	//Texture* Lain{};
-	//Texture* steve{};
+	Texture* man{};
+	Texture* Lain{};
+	Texture* steve{};
 
 	// map1
 	Texture* Palette1;

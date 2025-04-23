@@ -4,6 +4,7 @@
 #include "Map2.h"
 #include "CameraController.h"
 #include "Player.h"
+#include "SampleMonster.h"
 
 void Level2::Start() {
 	std::vector<std::string> ControlObjectTag
@@ -17,6 +18,7 @@ void Level2::Start() {
 	//scene.AddObject(new CameraController, "camera_controller", LAYER1);
 	scene.AddObject(new Map2, "map2", LAYER1);
 	scene.AddObject(new Player, "player", LAYER1);
+	scene.AddObject(new SampleMonster, "monster", LAYER1);
 
 	AddControlObject(ControlObjectTag);
 	RegisterController();
