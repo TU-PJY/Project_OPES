@@ -96,7 +96,6 @@ extern Line_Shader* LineShader;
 // 한꺼번에 업로드 버퍼를 삭제함
 extern std::vector<Mesh*> LoadedMeshList;
 extern std::vector<Texture*> LoadedTextureList;
-extern std::vector<FBXMesh> LoadedFBXMeshList;
 
 class SystemResource {
 public:
@@ -127,7 +126,6 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Dir
 		fbxUtil.ProcessAnimation();
 		//fbxUtil.PrintAnimationStackNames();
 		fbxUtil.EnumerateAnimationStacks();
-		LoadedFBXMeshList.emplace_back(TargetMesh);
 	}
 }
 

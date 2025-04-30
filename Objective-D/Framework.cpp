@@ -13,9 +13,10 @@ void Framework::Init() {
 
 	// 루트 시그니처를 생성한다.
 	DeviceSystem System{ Device, CmdList };
-	DefaultRootSignature = scene.CreateObjectRootSignature(System.Device);
+	ObjectShaderRootSignature = scene.CreateObjectShaderSignature(System.Device);
+	ImageShaderRootSignature = scene.CreateImageShaderSignature(System.Device);
 	fbxUtil.Init();
-	LoadShader(DefaultRootSignature, System.Device);
+	LoadShader(ObjectShaderRootSignature, System.Device);
 	LoadSystemMesh(System);
 	LoadMesh(System);
 	LoadTexture(System);
@@ -44,7 +45,7 @@ void Framework::Init() {
 	WaitForGpuComplete();
 
 	// 매쉬 및 텍스처 업로드 버퍼 삭제
-	//ClearUploadBuffer();
+	ClearUploadBuffer();
 
 	Timer.Reset();
 }
@@ -89,16 +90,14 @@ void Framework::Update() {
 	CmdList->ClearDepthStencilView(DsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 	CmdList->OMSetRenderTargets(1, &RtvCPUDescriptorHandle, TRUE, &DsvCPUDescriptorHandle);
 
-	// 루트시그니처를 쉐이더로 전달한다
-	//scene.PrepareRender(CmdList);
-	CmdList->SetGraphicsRootSignature(DefaultRootSignature);
+	// 오브젝트 업데이트
+	scene.Update(Timer.GetTimeElapsed(), CmdList);
 
 	// 카메라를 업데이트한다.
 	camera.Update(Timer.GetTimeElapsed());
 
-	// scene을 업데이트한다.
-	// 모든 객체의 업데이트 및 렌더링은 이 함수를 통해 이루어진다.
-	scene.Routine(Timer.GetTimeElapsed(), CmdList);
+	// 오브젝트 렌더링
+	scene.Render();
 
 	// 삭제 마크가 표시된 객체를 최종삭제한다.
 	scene.CompleteCommand();

@@ -131,8 +131,18 @@ typedef struct {
 // 오브젝트에서 공용으로 사용하는 커맨트 리스트
 extern ID3D12GraphicsCommandList* ObjectCmdList;
 
-// 기본 루트 시그니처
-extern ID3D12RootSignature* DefaultRootSignature;
+// 오브젝트 쉐이더 루트 시그니처
+extern ID3D12RootSignature* ObjectShaderRootSignature;
+
+// 이미지 쉐이더 루트 시그니처
+extern ID3D12RootSignature* ImageShaderRootSignature;
+
+// 선 쉐이더 루트 시그니처
+extern ID3D12RootSignature* LineShaderRootSignature;
+
+// 바운드박스 루트 시그니처
+extern ID3D12RootSignature* BoundboxShaderRootSignature;
+
 
 // screen size
 extern int SCREEN_WIDTH, SCREEN_HEIGHT;

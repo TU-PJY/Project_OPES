@@ -11,11 +11,18 @@ void Texture::ReleaseUploadBuffers() {
 		UploadBuffer->Release();
 }
 
-void Texture::Render(ID3D12GraphicsCommandList* CmdList) {
+void Texture::Render2D(ID3D12GraphicsCommandList* CmdList) {
 	ID3D12DescriptorHeap* DescriptorHeap[] = { SRV, Sampler };
 	CmdList->SetDescriptorHeaps(_countof(DescriptorHeap), DescriptorHeap);
-	CmdList->SetGraphicsRootDescriptorTable(SRV_INDEX, SRV->GetGPUDescriptorHandleForHeapStart());
-	CmdList->SetGraphicsRootDescriptorTable(SAMPLER_INDEX, Sampler->GetGPUDescriptorHandleForHeapStart());
+	CmdList->SetGraphicsRootDescriptorTable(SRV_INDEX_2D, SRV->GetGPUDescriptorHandleForHeapStart());
+	CmdList->SetGraphicsRootDescriptorTable(SAMPLER_INDEX_2D, Sampler->GetGPUDescriptorHandleForHeapStart());
+}
+
+void Texture::Render3D(ID3D12GraphicsCommandList* CmdList) {
+	ID3D12DescriptorHeap* DescriptorHeap[] = { SRV, Sampler };
+	CmdList->SetDescriptorHeaps(_countof(DescriptorHeap), DescriptorHeap);
+	CmdList->SetGraphicsRootDescriptorTable(SRV_INDEX_3D, SRV->GetGPUDescriptorHandleForHeapStart());
+	CmdList->SetGraphicsRootDescriptorTable(SAMPLER_INDEX_3D, Sampler->GetGPUDescriptorHandleForHeapStart());
 }
 
 void Texture::CreateTextureAndSRV(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszTextureFilename, ID3D12Resource** ppd3dTexture, ID3D12DescriptorHeap** ppd3dSrvDescriptorHeap, ID3D12DescriptorHeap** ppd3dSamplerDescriptorHeap, int Type, D3D12_FILTER FilterOption) {

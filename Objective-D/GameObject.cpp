@@ -21,11 +21,17 @@ void GameObject::BeginRender(int RenderTypeFlag) {
 	}
 
 	if (RenderTypeFlag == RENDER_TYPE_2D || RenderTypeFlag == RENDER_TYPE_2D_STATIC) {
+		// 2d 오브젝트 출력용 루트 시그니처로 변경
+		ObjectCmdList->SetGraphicsRootSignature(ImageShaderRootSignature);
+
 		Transform::Identity(ImageAspectMatrix);
 		FlipTexture(FLIP_TYPE_NONE);
 	}
 
 	if (RenderTypeFlag == RENDER_TYPE_3D || RenderTypeFlag == RENDER_TYPE_3D_STATIC || RenderTypeFlag == RENDER_TYPE_3D_ORTHO) {
+		// 3d 오브젝트 출력용 루트 시그니처로 변경
+		ObjectCmdList->SetGraphicsRootSignature(ObjectShaderRootSignature);
+		
 		// 옵션에 따라 안개가 우선 비활성화 되거나 우선 활성화 된다.
 		if (ENABLE_FOG_AFTER_BEGIN_RENDER)
 			SetFogUse(ENABLE_FOG);
@@ -112,7 +118,7 @@ void GameObject::SetFogUse(int Flag) {
 
 // 3D 렌더링
 void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, bool DepthTestFlag) {
-	TexturePtr->Render(ObjectCmdList);
+	TexturePtr->Render3D(ObjectCmdList);
 
 	if(DepthTestFlag)
 		ObjectShader->RenderDefault(ObjectCmdList);
@@ -131,7 +137,7 @@ void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, 
 void GameObject::Render2D(Texture* TexturePtr, float AlphaValue, bool EnableAspect) {
 	if(EnableAspect)
 		Transform::ImageAspect(ImageAspectMatrix, TexturePtr->Width, TexturePtr->Height);
-	TexturePtr->Render(ObjectCmdList);
+	TexturePtr->Render2D(ObjectCmdList);
 	ImageShader->RenderDepthNone(ObjectCmdList);
 	ObjectAlpha = AlphaValue;
 

@@ -25,8 +25,17 @@ MouseUtil mouse;
 // 공용 커맨드 리스트
 ID3D12GraphicsCommandList* ObjectCmdList;
 
-// 기본 루트 시그니처
-ID3D12RootSignature* DefaultRootSignature;
+// 오브젝트 쉐이더 루트 시그니처
+ID3D12RootSignature* ObjectShaderRootSignature;
+
+// 이미지 쉐이더 루트 시그니처
+ID3D12RootSignature* ImageShaderRootSignature;
+
+// 선 쉐이더 루트 시그니처
+ID3D12RootSignature* LineShaderRootSignature;
+
+// 바운드박스 루트 시그니처
+ID3D12RootSignature* BoundboxShaderRootSignature;
 
 HINSTANCE						AppInstance;
 TCHAR							Title[MAX_LOADSTRING];
