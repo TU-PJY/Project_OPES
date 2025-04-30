@@ -12,6 +12,9 @@
 
 class TestObject : public GameObject {
 public:
+	OOBB oobb{};
+	LineBrush line{};
+
 	void InputKey(KeyEvent& Event) {
 		if (Event.Type == WM_KEYDOWN) {
 			switch (Event.Key) {

@@ -22,8 +22,8 @@ Scene scene;
 Camera camera;
 MouseUtil mouse;
 
-// 공용 커맨드 리스트
-ID3D12GraphicsCommandList* ObjectCmdList;
+// 전역 커맨드 리스트
+ID3D12GraphicsCommandList* GlobalCommandList;
 
 // 오브젝트 쉐이더 루트 시그니처
 ID3D12RootSignature* ObjectShaderRootSignature;

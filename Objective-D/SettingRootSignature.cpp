@@ -55,6 +55,35 @@ ID3D12RootSignature* Scene::CreateImageShaderSignature(ID3D12Device* Device) {
 	return GraphicsRootSignature;
 }
 
+// 바운드 박스 쉐이더 루트 시그니처 설정
+ID3D12RootSignature* Scene::CreateBoundboxShaderSignature(ID3D12Device* Device) {
+	ID3D12RootSignature* GraphicsRootSignature{};
+	D3D12_DESCRIPTOR_RANGE Range{};
+	std::vector<D3D12_ROOT_PARAMETER> RootParameters(2);
+
+	SetRoot(RootParameters, 20, 0, 0, GAME_OBJECT_INDEX);   // b0, cbGameObjectInfo
+
+	SetRoot(RootParameters, 35, 1, 1, CAMERA_INDEX);        // b1, cbCameraInfo
+
+	CompleteRootSignatureSetting(Device, GraphicsRootSignature, RootParameters);
+
+	return GraphicsRootSignature;
+}
+
+// 선 쉐이더 루트 시그니처 설정
+ID3D12RootSignature* Scene::CreateLineShaderSignature(ID3D12Device* Device) {
+	ID3D12RootSignature* GraphicsRootSignature{};
+	D3D12_DESCRIPTOR_RANGE Range{};
+	std::vector<D3D12_ROOT_PARAMETER> RootParameters(2);
+
+	SetRoot(RootParameters, 20, 0, 0, GAME_OBJECT_INDEX);   // b0, cbGameObjectInfo
+
+	SetRoot(RootParameters, 35, 1, 1, CAMERA_INDEX);        // b1, cbCameraInfo
+
+	CompleteRootSignatureSetting(Device, GraphicsRootSignature, RootParameters);
+
+	return GraphicsRootSignature;
+}
 
 //////////////////////////////////////////////////////////
 

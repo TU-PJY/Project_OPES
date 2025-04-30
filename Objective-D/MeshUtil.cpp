@@ -61,6 +61,7 @@ void Mesh::ReleaseUploadBuffers() {
 void Mesh::Render(ID3D12GraphicsCommandList* CmdList) {
 	CmdList->IASetPrimitiveTopology(PrimitiveTopology);
 	CmdList->IASetVertexBuffers(Slot, NumVertexBufferViews, VertexBufferViews);
+
 	if (IndexBuffer) {
 		CmdList->IASetIndexBuffer(&IndexBufferView);
 		CmdList->DrawIndexedInstanced(Indices, 1, 0, 0, 0);

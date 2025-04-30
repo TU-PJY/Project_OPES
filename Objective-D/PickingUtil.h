@@ -3,6 +3,9 @@
 #include "GameObject.h"
 
 namespace PickingUtil {
+	//bool PickByCursorFBX(LPARAM lParam, GameObject* Object, FBXMesh& Mesh);
+	//bool PickByWinCoordFBX(int X, int Y, GameObject* Object, FBXMesh& Mesh);
+	//bool PickByViewportFBX(float X, float Y, GameObject* Object, FBXMesh& Mesh);
 	bool PickByCursor(LPARAM lParam, GameObject* Object, Mesh* MeshPtr);
 	bool PickByWinCoord(int X, int Y, GameObject* Object, Mesh* MeshPtr);
 	bool PickByViewport(float X, float Y, GameObject* Object, Mesh* MeshPtr);

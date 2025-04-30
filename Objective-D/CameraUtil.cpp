@@ -65,18 +65,18 @@ void Camera::UpdateShaderVariables() {
 	case false:
 		XMStoreFloat4x4(&xmf4x4View, XMMatrixTranspose(XMLoadFloat4x4(&ViewMatrix)));
 		XMStoreFloat4x4(&xmf4x4Projection, XMMatrixTranspose(XMLoadFloat4x4(&ProjectionMatrix)));
-		RCUtil::Input(ObjectCmdList, &Position, CAMERA_INDEX, 3, 32);
+		RCUtil::Input(GlobalCommandList, &Position, CAMERA_INDEX, 3, 32);
 		break;
 
 	case true:
 		XMFLOAT3 StaticPosition{ 0.0, 0.0, 0.0 };
 		XMStoreFloat4x4(&xmf4x4View, XMMatrixTranspose(XMLoadFloat4x4(&StaticViewMatrix)));
 		XMStoreFloat4x4(&xmf4x4Projection, XMMatrixTranspose(XMLoadFloat4x4(&StaticProjectionMatrix)));
-		RCUtil::Input(ObjectCmdList, &StaticPosition, CAMERA_INDEX, 3, 32);
+		RCUtil::Input(GlobalCommandList, &StaticPosition, CAMERA_INDEX, 3, 32);
 	}
 
-	RCUtil::Input(ObjectCmdList, &xmf4x4View, CAMERA_INDEX, 16, 0);
-	RCUtil::Input(ObjectCmdList, &xmf4x4Projection, CAMERA_INDEX, 16, 16);
+	RCUtil::Input(GlobalCommandList, &xmf4x4View, CAMERA_INDEX, 16, 0);
+	RCUtil::Input(GlobalCommandList, &xmf4x4Projection, CAMERA_INDEX, 16, 16);
 }
 
 // 카메라 뷰 행렬을 설정한다.
@@ -160,8 +160,8 @@ void Camera::SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom) {
 
 // 뷰포트와 시저렉트를 쉐이더로 전달한다.
 void Camera::SetViewportsAndScissorRects() {
-	ObjectCmdList->RSSetViewports(1, &Viewport);
-	ObjectCmdList->RSSetScissorRects(1, &ScissorRect);
+	GlobalCommandList->RSSetViewports(1, &Viewport);
+	GlobalCommandList->RSSetScissorRects(1, &ScissorRect);
 }
 
 

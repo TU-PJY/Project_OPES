@@ -54,6 +54,8 @@ public:
 	void CompleteCommand();
 	ID3D12RootSignature* CreateObjectShaderSignature(ID3D12Device* Device);
 	ID3D12RootSignature* CreateImageShaderSignature(ID3D12Device* Device);
+	ID3D12RootSignature* CreateBoundboxShaderSignature(ID3D12Device* Device);
+	ID3D12RootSignature* CreateLineShaderSignature(ID3D12Device* Device);
 	ID3D12RootSignature* GetGraphicsRootSignature();
 	void PrepareRender(ID3D12GraphicsCommandList* CmdList);
 	void ReleaseObjects();

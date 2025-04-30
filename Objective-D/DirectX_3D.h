@@ -129,7 +129,7 @@ typedef struct {
 }DeviceSystem;
 
 // 오브젝트에서 공용으로 사용하는 커맨트 리스트
-extern ID3D12GraphicsCommandList* ObjectCmdList;
+extern ID3D12GraphicsCommandList* GlobalCommandList;
 
 // 오브젝트 쉐이더 루트 시그니처
 extern ID3D12RootSignature* ObjectShaderRootSignature;

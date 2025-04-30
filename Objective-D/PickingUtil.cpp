@@ -8,6 +8,33 @@ int ConvertXToWinCoord(float X);
 int ConvertYToWinCoord(float Y);
 void GenBoundboxPickingRay(XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, XMVECTOR& PickRayOrigin, XMVECTOR& PickRayDirection);
 
+
+// 어떤 이유 때문인진 몰라도 동작이 안되는데, 어차피 총알 피격 판정은 oobb 쓸거라 상관 없음
+//// 커서를 사용하여 FBX 매쉬를 피킹한다.
+//bool PickingUtil::PickByCursorFBX(LPARAM lParam, GameObject* Object, FBXMesh& Mesh) {
+//	for (auto const& M : Mesh.MeshPart) {
+//		if (PickByCursor(lParam, Object, M))
+//			return true;
+//	}
+//	return false;
+//}
+//
+//bool PickingUtil::PickByWinCoordFBX(int X, int Y, GameObject* Object, FBXMesh& Mesh) {
+//	for (auto const& M : Mesh.MeshPart) {
+//		if (PickByWinCoord(X, Y, Object, M))
+//			return true;
+//	}
+//	return false;
+//}
+//
+//bool PickingUtil::PickByViewportFBX(float X, float Y, GameObject* Object, FBXMesh& Mesh) {
+//	for (auto const& M : Mesh.MeshPart) {
+//		if (PickByViewport(X, Y, Object, M))
+//			return true;
+//	}
+//	return false;
+//}
+
 // 커서를 사용하여 매쉬를 피킹한다
 bool PickingUtil::PickByCursor(LPARAM lParam, GameObject* Object, Mesh* MeshPtr) {
 	if (!MeshPtr)
@@ -17,8 +44,6 @@ bool PickingUtil::PickByCursor(LPARAM lParam, GameObject* Object, Mesh* MeshPtr)
 	PickPoint.x = (((2.0f * LOWORD(lParam)) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;
 	PickPoint.y = -(((2.0f * HIWORD(lParam)) / (float)SCREEN_HEIGHT) - 1) / camera.ProjectionMatrix._22;
 	PickPoint.z = 1.0f;
-
-	std::cout << PickPoint.x << " " << PickPoint.y << "\n";
 
 	int Intersected{};
 	float NearestHitDist = FLT_MAX;

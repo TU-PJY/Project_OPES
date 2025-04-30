@@ -107,28 +107,37 @@ Object_Shader* ObjectShader;
 Boundbox_Shader* BoundboxShader;
 Image_Shader* ImageShader;
 Line_Shader* LineShader;
-// 쉐이더를 여기서 로드한다.
-void LoadShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
+
+// 오브젝트 출력용 쉐이더 생성
+void InitObjectShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 	// 일반 렌더링 쉐이더 생성
 	ObjectShader = new Object_Shader();
 	// 기본 파이프라인 생성
 	ObjectShader->CreateDefaultPS(Device, RootSignature);
 	// 깊이 검사 미포함 파이프라인 생성
 	ObjectShader->CreateNoneDepthPS(Device, RootSignature);
+}
 
-	// 이미지 출력용 파이프라인 생성
+// 이미지 출력용 쉐이더 생성
+void InitImageShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 	ImageShader = new Image_Shader();
 	ImageShader->CreateNoneDepthPS(Device, RootSignature);
+}
 
-	// 바운드박스 쉐이더 생성
+// 바운드박스 쉐이더 생성
+void InitBoundboxShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 	BoundboxShader = new Boundbox_Shader();
 	BoundboxShader->CreateWireframePS(Device, RootSignature);
+	// 바운드 스페어 출력용
 	BoundboxShader->CreateDefaultPS(Device, RootSignature);
+}
 
-	// 라인 브러쉬 출력용 쉐이더 생성
+// 라인 브러쉬 출력용 쉐이더 생성
+void InitLineShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 	LineShader = new Line_Shader();
 	LineShader->CreateNoneDepthPS(Device, RootSignature);
 }
+
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
 // 업로드 버퍼를 처리하기 위한 벡터

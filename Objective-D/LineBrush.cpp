@@ -18,6 +18,8 @@ void LineBrush::SetColor(float R, float G, float B) {
 }
 
 void LineBrush::Init() {
+	GlobalCommandList->SetGraphicsRootSignature(LineShaderRootSignature);
+
 	Transform::Identity(TranslateMatrix);
 	Transform::Identity(ScaleMatrix);
 	TransparencyValue = 1.0f;
@@ -43,15 +45,15 @@ void LineBrush::Draw(float X1, float Y1, float X2, float Y2, float Width, float 
 	Transform::Move(TranslateMatrix, Length / 2.0, 0.0, 0.0);
 	Transform::Scale(ScaleMatrix, Width + Length, Width, 1.0);
 
-	LineShader->RenderDepthNone(ObjectCmdList);
+	LineShader->RenderDepthNone(GlobalCommandList);
 
 	XMMATRIX ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&ScaleMatrix), XMLoadFloat4x4(&TranslateMatrix));
 	XMFLOAT4X4 xmf4x4World;
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(ResultMatrix));
 
-	RCUtil::Input(ObjectCmdList, &xmf4x4World, GAME_OBJECT_INDEX, 16, 0);
-	RCUtil::Input(ObjectCmdList, &LineColor, GAME_OBJECT_INDEX, 3, 16);
-	RCUtil::Input(ObjectCmdList, &TransparencyValue, GAME_OBJECT_INDEX, 1, 19);
+	RCUtil::Input(GlobalCommandList, &xmf4x4World, GAME_OBJECT_INDEX, 16, 0);
+	RCUtil::Input(GlobalCommandList, &LineColor, GAME_OBJECT_INDEX, 3, 16);
+	RCUtil::Input(GlobalCommandList, &TransparencyValue, GAME_OBJECT_INDEX, 1, 19);
 
-	SysRes.ImagePannel->Render(ObjectCmdList);
+	SysRes.ImagePannel->Render(GlobalCommandList);
 }

@@ -22,7 +22,7 @@ void GameObject::BeginRender(int RenderTypeFlag) {
 
 	if (RenderTypeFlag == RENDER_TYPE_2D || RenderTypeFlag == RENDER_TYPE_2D_STATIC) {
 		// 2d 오브젝트 출력용 루트 시그니처로 변경
-		ObjectCmdList->SetGraphicsRootSignature(ImageShaderRootSignature);
+		GlobalCommandList->SetGraphicsRootSignature(ImageShaderRootSignature);
 
 		Transform::Identity(ImageAspectMatrix);
 		FlipTexture(FLIP_TYPE_NONE);
@@ -30,7 +30,7 @@ void GameObject::BeginRender(int RenderTypeFlag) {
 
 	if (RenderTypeFlag == RENDER_TYPE_3D || RenderTypeFlag == RENDER_TYPE_3D_STATIC || RenderTypeFlag == RENDER_TYPE_3D_ORTHO) {
 		// 3d 오브젝트 출력용 루트 시그니처로 변경
-		ObjectCmdList->SetGraphicsRootSignature(ObjectShaderRootSignature);
+		GlobalCommandList->SetGraphicsRootSignature(ObjectShaderRootSignature);
 		
 		// 옵션에 따라 안개가 우선 비활성화 되거나 우선 활성화 된다.
 		if (ENABLE_FOG_AFTER_BEGIN_RENDER)
@@ -89,60 +89,60 @@ void GameObject::FlipTexture(int FlipType) {
 	if (RenderType == RENDER_TYPE_2D || RenderType == RENDER_TYPE_2D_STATIC) {
 		switch (FlipType) {
 		case FLIP_TYPE_V:
-			CBVUtil::Input(ObjectCmdList, FlipCBV, FLIP_TYPE_NONE); break;
+			CBVUtil::Input(GlobalCommandList, FlipCBV, FLIP_TYPE_NONE); break;
 
 		case FLIP_TYPE_H:
-			CBVUtil::Input(ObjectCmdList, FlipCBV, FLIP_TYPE_HV);   break;
+			CBVUtil::Input(GlobalCommandList, FlipCBV, FLIP_TYPE_HV);   break;
 
 		case FLIP_TYPE_HV:
-			CBVUtil::Input(ObjectCmdList, FlipCBV, FLIP_TYPE_H);    break;
+			CBVUtil::Input(GlobalCommandList, FlipCBV, FLIP_TYPE_H);    break;
 
 		case FLIP_TYPE_NONE:
-			CBVUtil::Input(ObjectCmdList, FlipCBV, FLIP_TYPE_V);    break;
+			CBVUtil::Input(GlobalCommandList, FlipCBV, FLIP_TYPE_V);    break;
 		}
 	}
 
 	else
-		CBVUtil::Input(ObjectCmdList, FlipCBV, FlipType);
+		CBVUtil::Input(GlobalCommandList, FlipCBV, FlipType);
 }
 
 // 조명 활성화 / 비활성화
 void GameObject::SetLightUse(int Flag) {
-	CBVUtil::Input(ObjectCmdList, BoolLightCBV, Flag);
+	CBVUtil::Input(GlobalCommandList, BoolLightCBV, Flag);
 }
 
 // 안개 활성화 / 비활성화
 void GameObject::SetFogUse(int Flag) {
-	CBVUtil::Input(ObjectCmdList, BoolFogCBV, Flag);
+	CBVUtil::Input(GlobalCommandList, BoolFogCBV, Flag);
 }
 
 // 3D 렌더링
 void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, bool DepthTestFlag) {
-	TexturePtr->Render3D(ObjectCmdList);
+	TexturePtr->Render3D(GlobalCommandList);
 
 	if(DepthTestFlag)
-		ObjectShader->RenderDefault(ObjectCmdList);
+		ObjectShader->RenderDefault(GlobalCommandList);
 	else
-		ObjectShader->RenderDepthNone(ObjectCmdList);
+		ObjectShader->RenderDepthNone(GlobalCommandList);
 
 	ObjectAlpha = AlphaValue;
-	CBVUtil::Input(ObjectCmdList, LightCBV);
-	CBVUtil::Input(ObjectCmdList, FogCBV);
+	CBVUtil::Input(GlobalCommandList, LightCBV);
+	CBVUtil::Input(GlobalCommandList, FogCBV);
 
 	PrepareRender();
-	MeshPtr->Render(ObjectCmdList);
+	MeshPtr->Render(GlobalCommandList);
 }
 
 // 2D 렌더링
 void GameObject::Render2D(Texture* TexturePtr, float AlphaValue, bool EnableAspect) {
 	if(EnableAspect)
 		Transform::ImageAspect(ImageAspectMatrix, TexturePtr->Width, TexturePtr->Height);
-	TexturePtr->Render2D(ObjectCmdList);
-	ImageShader->RenderDepthNone(ObjectCmdList);
+	TexturePtr->Render2D(GlobalCommandList);
+	ImageShader->RenderDepthNone(GlobalCommandList);
 	ObjectAlpha = AlphaValue;
 
 	PrepareRender();
-	SysRes.ImagePannel->Render(ObjectCmdList);
+	SysRes.ImagePannel->Render(GlobalCommandList);
 }
 
 // 마우스 모션으로부터 회전값 업데이트 한다.
@@ -228,9 +228,9 @@ void GameObject::PrepareRender() {
 	XMFLOAT4X4 xmf4x4World;
 	XMStoreFloat4x4(&xmf4x4World, XMMatrixTranspose(ResultMatrix));
 
-	RCUtil::Input(ObjectCmdList, &xmf4x4World, GAME_OBJECT_INDEX, 16, 0);
-	RCUtil::Input(ObjectCmdList, &ObjectColor, GAME_OBJECT_INDEX, 3, 16);
-	RCUtil::Input(ObjectCmdList, &ObjectAlpha, GAME_OBJECT_INDEX, 1, 19);
+	RCUtil::Input(GlobalCommandList, &xmf4x4World, GAME_OBJECT_INDEX, 16, 0);
+	RCUtil::Input(GlobalCommandList, &ObjectColor, GAME_OBJECT_INDEX, 3, 16);
+	RCUtil::Input(GlobalCommandList, &ObjectAlpha, GAME_OBJECT_INDEX, 1, 19);
 }
 
 // 렌더링 전 카메라를 설정한다.

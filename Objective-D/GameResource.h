@@ -107,7 +107,11 @@ public:
 };
 extern SystemResource SysRes;
 
-void LoadShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);
+void InitObjectShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);
+void InitImageShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);
+void InitBoundboxShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);
+void InitLineShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);
+
 void LoadSystemMesh(DeviceSystem& System);
 void LoadMesh(DeviceSystem& System);
 void LoadTexture(DeviceSystem& System);

@@ -15,8 +15,15 @@ void Framework::Init() {
 	DeviceSystem System{ Device, CmdList };
 	ObjectShaderRootSignature = scene.CreateObjectShaderSignature(System.Device);
 	ImageShaderRootSignature = scene.CreateImageShaderSignature(System.Device);
+	BoundboxShaderRootSignature = scene.CreateBoundboxShaderSignature(System.Device);
+	LineShaderRootSignature = scene.CreateLineShaderSignature(System.Device);
+
+	InitObjectShader(ObjectShaderRootSignature, System.Device);
+	InitImageShader(ImageShaderRootSignature, System.Device);
+	InitBoundboxShader(BoundboxShaderRootSignature, System.Device);
+	InitLineShader(LineShaderRootSignature, System.Device);
+
 	fbxUtil.Init();
-	LoadShader(ObjectShaderRootSignature, System.Device);
 	LoadSystemMesh(System);
 	LoadMesh(System);
 	LoadTexture(System);
