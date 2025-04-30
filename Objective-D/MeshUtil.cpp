@@ -19,7 +19,7 @@ Mesh::Mesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, char* Direc
 }
 
 Mesh::Mesh() {
-	std::cout << "Mesh object created." << std::endl;
+	//std::cout << "Mesh object created." << std::endl;
 }
 
 Mesh::~Mesh() {
@@ -236,7 +236,7 @@ void FBXUtil::Init() {
 		std::cerr << "Error: Unable to create FBX Manager!\n";
 		exit(1);
 	}
-	std::cout << "FBX Manager created.\n";
+	std::cout << "FBX Manager created.\nLoading FBX files...";
 
 	FbxIOSettings* IOS = FbxIOSettings::Create(Manager, IOSROOT);
 	Manager->SetIOSettings(IOS);
@@ -277,7 +277,7 @@ bool FBXUtil::LoadStaticFBXFile(const char* FilePath, Mesh*& TargetMesh) {
 	directX.DeepConvertScene(StaticScene);
 	FbxSystemUnit::m.ConvertScene(StaticScene);
 
-	std::cout << "FBX file loaded successfully.\n";
+	//std::cout << "FBX file loaded successfully.\n";
 	Importer->Destroy();
 
 	return true;
@@ -292,7 +292,7 @@ bool FBXUtil::TriangulateStaticScene() {
 		return false;
 	}
 
-	std::cout << "Scene triangulated successfully.\n";
+	//std::cout << "Scene triangulated successfully.\n";
 	return true;
 }
 
@@ -306,7 +306,7 @@ void FBXUtil::GetStaticVertexData() {
 }
 
 void FBXUtil::ProcessStaticNode(FbxNode* Node) {
-	std::cout << "Node Name: " << Node->GetName() << "\n";
+	//std::cout << "Node Name: " << Node->GetName() << "\n";
 
 	FbxMesh* FMesh = Node->GetMesh();
 	if (FMesh) {
@@ -388,7 +388,7 @@ bool FBXUtil::LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 	directX.DeepConvertScene(Scene);
 	FbxSystemUnit::m.ConvertScene(Scene);
 
-	std::cout << "FBX file loaded successfully.\n";
+	//std::cout << "FBX file loaded successfully.\n";
 	Importer->Destroy();
 
 	return true;
@@ -403,7 +403,7 @@ bool FBXUtil::TriangulateAnimatedScene() {
 		return false;
 	}
 
-	std::cout << "Scene triangulated successfully.\n";
+	//std::cout << "Scene triangulated successfully.\n";
 	return true;
 }
 
@@ -417,7 +417,7 @@ void FBXUtil::GetAnimatedVertexData(DeviceSystem& System) {
 }
 
 void FBXUtil::ProcessAnimatedNode(FbxNode* Node, DeviceSystem& System) {
-	std::cout << "Node Name: " << Node->GetName() << "\n";
+	//std::cout << "Node Name: " << Node->GetName() << "\n";
 
 	FbxMesh* FMesh = Node->GetMesh();
 	if (FMesh) {

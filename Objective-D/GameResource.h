@@ -125,7 +125,7 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Dir
 		fbxUtil.TriangulateAnimatedScene();
 		fbxUtil.GetAnimatedVertexData(System);
 		fbxUtil.ProcessAnimation();
-		fbxUtil.PrintAnimationStackNames();
+		//fbxUtil.PrintAnimationStackNames();
 		fbxUtil.EnumerateAnimationStacks();
 		LoadedFBXMeshList.emplace_back(TargetMesh);
 	}

@@ -9,15 +9,15 @@
 void Level2::Start() {
 	std::vector<std::string> ControlObjectTag
 	{
-		//"camera_controller",
+		"camera_controller",
 		"map2",
-		"player"
+		//"player"
 	};
 
 	// 필요한 작업 추가
-	//scene.AddObject(new CameraController, "camera_controller", LAYER1);
+	scene.AddObject(new CameraController, "camera_controller", LAYER1);
 	scene.AddObject(new Map2, "map2", LAYER1);
-	scene.AddObject(new Player, "player", LAYER1);
+	//scene.AddObject(new Player, "player", LAYER1);
 	scene.AddObject(new SampleMonster, "monster", LAYER1);
 
 	AddControlObject(ControlObjectTag);
