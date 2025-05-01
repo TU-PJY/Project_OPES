@@ -49,11 +49,15 @@ public:
 		Transform::Scale(ScaleMatrix, 0.35, 0.35, 0.35);
 		RenderFBX(MESH.steve, TEX.steve);
 
+		oobb.UpdateAnimated(MESH.steve, TranslateMatrix, RotateMatrix, ScaleMatrix, 0);
+		oobb.Render();
+
 		BeginRender(RENDER_TYPE_3D);
 		Transform::Move(TranslateMatrix, 5.0, 0.0, 5.0);
 		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
 		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
 		RenderFBX(MESH.man, TEX.man);
+		
 	}
 };
 

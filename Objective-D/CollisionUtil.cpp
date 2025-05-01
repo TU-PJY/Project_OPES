@@ -9,8 +9,25 @@
 
 // 충돌 처리를 담당하는 유틸이다.
 // 서로 다른 종류의 바운딩 객체와도 비교 가능하며, 객체가 가지는 위치, 회전, 크기를 파라미터에 넣어주면 된다.
-void OOBB::Update(Mesh* MeshPtr, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix) {
-	if (MeshPtr) {
+void OOBB::UpdateAnimated(FBXMesh& Mesh, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex) {
+	if(NodeIndex > Mesh.MeshPart.size() - 1)
+		Update(Mesh.MeshPart[0], TMatrix, RMatrix, SMatrix, true);
+	else
+		Update(Mesh.MeshPart[NodeIndex], TMatrix, RMatrix, SMatrix, true);
+}
+
+void OOBB::Update(Mesh* MeshPtr, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, bool ApplySkinning) {
+	if (ApplySkinning) {
+		DirectX::BoundingOrientedBox NewBox;
+		BoundingOrientedBox::CreateFromPoints(NewBox, MeshPtr->Vertices, (const XMFLOAT3*)MeshPtr->Position, sizeof(XMFLOAT3));
+
+		XMMATRIX ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&SMatrix), XMLoadFloat4x4(&RMatrix));
+		ResultMatrix = XMMatrixMultiply(ResultMatrix, XMLoadFloat4x4(&TMatrix));
+		NewBox.Transform(oobb, ResultMatrix);
+		XMStoreFloat4(&oobb.Orientation, XMQuaternionNormalize(XMLoadFloat4(&oobb.Orientation)));
+	}
+
+	else {
 		XMMATRIX ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&SMatrix), XMLoadFloat4x4(&RMatrix));
 		ResultMatrix = XMMatrixMultiply(ResultMatrix, XMLoadFloat4x4(&TMatrix));
 		MeshPtr->OOBB.Transform(oobb, ResultMatrix);
