@@ -7,4 +7,4 @@ std::deque<GameObject*> ControlObjectList;
 ////////////////////////////////////////////////////
 
 // 시작모드를 이곳에서 설정할 수 있다.
-START_MODE_PTR StartMode = TestMode::Start;
+START_MODE_PTR StartMode = Level1::Start;
