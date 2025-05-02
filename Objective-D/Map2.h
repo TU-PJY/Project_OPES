@@ -52,7 +52,7 @@ public:
 		for (auto& Wall : WallVec) {
 			BeginRender();
 			SetColor(0.2, 0.2, 0.2);
-			Transform::Move(TranslateMatrix, Wall.Position);
+			Transform::Move(TranslateMatrix, Wall.Position.x, Wall.Position.y - 4.0, Wall.Position.z);
 			Transform::Scale(ScaleMatrix, Wall.Size);
 			Transform::Rotate(RotateMatrix, -90.0, 0.0, Wall.Rotation);
 			Render3D(MESH.WinterWall, TEX.Map2Palette);
@@ -68,16 +68,18 @@ public:
 			else
 				Transform::Rotate(RotateMatrix, 0.0, Object.Rotation, 0.0);
 
-			if(Object.Index == 0)
+			if (Object.Index == 0)
 				Render3D(MESH.WinterRock[0], TEX.Map2Palette);
-			else if(Object.Index == 1)
+			else if (Object.Index == 1)
 				Render3D(MESH.WinterRock[1], TEX.Map2Palette);
-			else if (Object.Index == 2) 
+			else if (Object.Index == 2)
 				Render3D(MESH.WinterIce[0], TEX.IceTex);
-			else if (Object.Index == 3) 
+			else if (Object.Index == 3)
 				Render3D(MESH.WinterIce[1], TEX.IceTex);
-			else if(Object.Index == 4)
+			else if (Object.Index == 4)
 				Render3D(MESH.WinterRock[2], TEX.Map2Palette);
+			else if (Object.Index == 5)
+				Render3D(MESH.Mushroom[0], TEX.Palette3);
 		}
 
 		//// 테스트용 플레이어 모델
