@@ -1,0 +1,7 @@
+<?xml version="1.0" ?>
+<Script>
+	<!-- 디펜스 모드 공간 -->
+	<!-- X 가장 왼쪽부분부터 시작 -->
+	<OOBB1 X="-182" Z="-115" SizeX="5.0" SizeZ="45.0" Rotation="0.0" />
+	
+</Script>
