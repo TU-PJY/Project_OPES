@@ -24,6 +24,7 @@ public:
 	FBXMesh man{};
 	FBXMesh Lain{};
 	FBXMesh steve{};
+	FBXMesh muscleMan{};
 
 	// Map1 ¸Å½¬
 	Mesh* RockMesh;
@@ -61,6 +62,7 @@ public:
 	Texture* man{};
 	Texture* Lain{};
 	Texture* steve{};
+	Texture* muscleMan{};
 
 	// map1
 	Texture* Palette1;

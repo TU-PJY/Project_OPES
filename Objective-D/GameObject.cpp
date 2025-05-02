@@ -179,6 +179,10 @@ void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
 		M->UpdateSkinning(TargetMesh.CurrentTime);
 }
 
+void GameObject::ResetAnimationTime(FBXMesh& TargetMesh) {
+	TargetMesh.CurrentTime = 0.0;
+}
+
 // FBX 렌더용 함수이다. 앞으로 FBX 모델 렌더링 시 이 함수를 쓰도록 한다.
 // Render3D는 기존의 코드를 최대한 건들지 않기 위해 남겨둔다.
 void GameObject::RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue, float DepthTestFlag){

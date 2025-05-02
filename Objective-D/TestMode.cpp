@@ -18,27 +18,21 @@ public:
 	void InputKey(KeyEvent& Event) {
 		if (Event.Type == WM_KEYDOWN) {
 			switch (Event.Key) {
-			case '1':
-				fbxUtil.SelectAnimation(MESH.Lain, "HoodDown");
-				fbxUtil.ResetCurrentTime(MESH.Lain);
-				break;
-
-			case '2':
-				fbxUtil.SelectAnimation(MESH.Lain, "HoodUp");
-				fbxUtil.ResetCurrentTime(MESH.Lain);
+			case 'R':
+				ResetAnimationTime(MESH.muscleMan);
 				break;
 			}
 		}
 	}
 
 	void Update(float FT) override {
-	    UpdateFBXAnimation(MESH.Lain, FT);
-		UpdateFBXAnimation(MESH.steve, FT);
-		UpdateFBXAnimation(MESH.man, FT);
+	 //   UpdateFBXAnimation(MESH.Lain, FT);
+	//	UpdateFBXAnimation(MESH.steve, FT);
+		UpdateFBXAnimation(MESH.muscleMan, FT);
 	}
 
 	void Render() override {
-		BeginRender(RENDER_TYPE_3D);
+		/*BeginRender(RENDER_TYPE_3D);
 		Transform::Move(TranslateMatrix, -5.0, 0.0, 5.0);
 		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
 		RenderFBX(MESH.Lain, TEX.Lain);
@@ -47,16 +41,13 @@ public:
 		Transform::Move(TranslateMatrix, 0.0, 2.5, 5.0);
 		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.35, 0.35, 0.35);
-		RenderFBX(MESH.steve, TEX.steve);
-
-		oobb.UpdateAnimated(MESH.steve, TranslateMatrix, RotateMatrix, ScaleMatrix, 0);
-		oobb.Render();
+		RenderFBX(MESH.steve, TEX.steve);*/
 
 		BeginRender(RENDER_TYPE_3D);
-		Transform::Move(TranslateMatrix, 5.0, 0.0, 5.0);
+	//	Transform::Move(TranslateMatrix, 5.0, 0.0, 5.0);
 		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
 		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		RenderFBX(MESH.man, TEX.man);
+		RenderFBX(MESH.muscleMan, TEX.muscleMan);
 		
 	}
 };

@@ -38,6 +38,7 @@ public:
 	void FlipTexture(int FlipType);
 	float ASP(float Value);
 	void UpdateFBXAnimation(FBXMesh& TargetMesh, float Time);
+	void ResetAnimationTime(FBXMesh& TargetMesh);
 	void RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue = 1.0, float DepthTestFlag = true);
 	int PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance);
 	void Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue=1.0f, bool DepthTestFlag=true);

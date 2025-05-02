@@ -45,14 +45,15 @@ public:
 			// 호수 지형
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
-			Transform::Move(TranslateMatrix, 0.0, -1.5, 0.0);
+			Transform::Move(TranslateMatrix, 0.0, -1.8, 0.0);
+			Transform::Rotate(TranslateMatrix, 0.0, 180.0, 0.0);
 			Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
 			Render3D(MESH.LakeMesh, TEX.Palette2);
 
 			// 중앙 호숫바위 렌더링
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
-			Transform::Move(TranslateMatrix, 12.5, -4.0, -2.0);
+			Transform::Move(TranslateMatrix, 12.5, -2.0, -4.0);
 			Transform::Scale(ScaleMatrix, 0.03, 0.04, 0.03);
 			Render3D(MESH.RockMesh, TEX.Palette1);
 
@@ -60,8 +61,8 @@ public:
 			BeginRender();
 			SetColor(0.05, 0.53, 0.80);
 			Transform::Rotate(RotateMatrix, 90.0, 0.0, 0.0);
-			Transform::Move(TranslateMatrix, 6.0, 0.6, 8.0);
-			Transform::Scale(ScaleMatrix, 41.0, 40.0, 1.0);
+			Transform::Move(TranslateMatrix, 9.0, 0.6, -7.0);
+			Transform::Scale(ScaleMatrix, 55.0, 41.0, 1.0);
 			Render3D(SysRes.BillboardMesh, TEX.ColorTex, 0.5);
 
 			// 호수 주변 바위 렌더링
@@ -79,7 +80,7 @@ public:
 		for (auto& P : WallObjectPosition) {
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
-			Transform::Move(TranslateMatrix, P.Position);
+			Transform::Move(TranslateMatrix, P.Position.x, P.Position.y - 5.0, P.Position.z);
 			Transform::Scale(ScaleMatrix, P.Size);
 			Transform::Rotate(RotateMatrix, 0.0, P.Rotation, 0.0);
 			Render3D(MESH.RockMesh, TEX.Palette1);
