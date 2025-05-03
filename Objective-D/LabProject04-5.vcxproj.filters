@@ -164,6 +164,12 @@
     <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]">
       <UniqueIdentifier>{7be1c762-6b7c-423f-8572-d6e6b2c91a13}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]">
+      <UniqueIdentifier>{80dc9e91-a10a-4628-9f0a-12ab65fb7cb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]">
+      <UniqueIdentifier>{0e3eacd1-45f7-4761-8928-8b05d1d1d88e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -298,11 +304,14 @@
     <ClInclude Include="Map3.h">
       <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]</Filter>
-    </ClInclude>
     <ClInclude Include="SampleMonster.h">
       <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]</Filter>
+    </ClInclude>
+    <ClInclude Include="CrossHair.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -440,6 +449,12 @@
     </ClCompile>
     <ClCompile Include="TestMode.cpp">
       <Filter>[1]____________[ Game Mode ]\[ Test bed ]</Filter>
+    </ClCompile>
+    <ClCompile Include="CrossHair.cpp">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

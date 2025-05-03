@@ -164,6 +164,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="CBVUtil.h" />
     <ClInclude Include="CollisionUtil.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="CrossHair.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="Framework.h" />
@@ -210,6 +211,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="ConstantBuffers.cpp" />
     <ClCompile Include="CBVUtil.cpp" />
     <ClCompile Include="CollisionUtil.cpp" />
+    <ClCompile Include="CrossHair.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
@@ -227,6 +229,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="ObjectShader.cpp" />
     <ClCompile Include="PickingUtil.cpp" />
     <ClCompile Include="GameResource.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Resterizers.cpp" />
     <ClCompile Include="RootConstants.cpp" />
     <ClCompile Include="Pipelines.cpp" />

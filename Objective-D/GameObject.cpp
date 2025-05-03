@@ -221,6 +221,26 @@ int GameObject::PickRayInter(Mesh* MeshPtr, XMVECTOR& PickPosition, XMMATRIX& Vi
 	return(InterSected);
 }
 
+// 캐릭터 컨트롤러에 사용하는 함수이다.
+// 각 이동 bool 변수와 하나의 키에 대응한다.
+void GameObject::InputBoolSwitch(int SwitchFlag, KeyEvent& Event, WPARAM Key, bool& BoolValue) {
+	if (Key == Event.Key) {
+		if (SwitchFlag == KEY_DOWN_TRUE) {
+			if (Event.Type == WM_KEYDOWN)
+				BoolValue = true;
+			else if (Event.Type == WM_KEYUP)
+				BoolValue = false;
+		}
+
+		else if (SwitchFlag == KEY_UP_TRUE) {
+			if (Event.Type == WM_KEYUP)
+				BoolValue = true;
+			else if (Event.Type == WM_KEYDOWN)
+				BoolValue = false;
+		}
+	}
+}
+
 //////////////////////////////////////// private
 
 // 행렬과 쉐이더 및 색상 관련 값들을 쉐이더에 전달한다. Render함수를 실행하면 이 함수도 실행된다. 즉, 직접 사용할 일이 없다.

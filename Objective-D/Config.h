@@ -7,8 +7,8 @@ enum class CamMode{ MODE1 };
 
 // 프로그램 시작 시 사용할 윈도우 사이즈를 설정한다.
 // START_WITH_FULL_SCREEN 옵션 활성화 시 모니터 해상도로 실행된다.
-constexpr int START_UP_WIDTH = 1500;
-constexpr int START_UP_HEIGHT = 800;
+constexpr int START_UP_WIDTH = 2000;
+constexpr int START_UP_HEIGHT = 1000;
 
 // 풀스크린 모드로 시작할 지를 설정한다.
 constexpr bool START_WITH_FULL_SCREEN = false;

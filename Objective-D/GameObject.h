@@ -48,6 +48,7 @@ public:
 	void UpdateMotionRotation(XMFLOAT3& Rotation, float DeltaX, float DeltaY);
 	void UpdatePickMatrix();
 	int PickRayInter(Mesh* MeshPtr, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance);
+	void InputBoolSwitch(int SwitchFlag, KeyEvent& Event, WPARAM Key, bool& BoolValue);
 
 private:
 	void PrepareRender();
@@ -73,4 +74,7 @@ public:
 	virtual TerrainUtil GetTerrain() { return {}; }
 
 	// 사용자 정의 리턴 함수는 아래에 정의한다.
+	
+	// 크로스헤어 반동 부여 함수
+	virtual void InputRecoil(float Value) {}
 };

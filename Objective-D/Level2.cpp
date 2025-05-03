@@ -5,20 +5,26 @@
 #include "CameraController.h"
 #include "Player.h"
 #include "SampleMonster.h"
+#include "CrossHair.h"
 
 void Level2::Start() {
+
+	// 실제 게임 실행 시 "camera_controller"를 비활성화 해야한다.
 	std::vector<std::string> ControlObjectTag
 	{
-		"camera_controller",
+		//"camera_controller",
 		"map2",
-		//"player"
+		"player"
 	};
 
 	// 필요한 작업 추가
 	scene.AddObject(new CameraController, "camera_controller", LAYER1);
 	scene.AddObject(new Map2, "map2", LAYER1);
-	//scene.AddObject(new Player, "player", LAYER1);
+	scene.AddObject(new Player, "player", LAYER1);
 	scene.AddObject(new SampleMonster, "monster", LAYER1);
+
+	// 크로스헤어는 항상 보여야 하므로 상위 레이어에 추가
+	scene.AddObject(new CrossHair, "crosshair", LAYER2);
 
 	AddControlObject(ControlObjectTag);
 	RegisterController();

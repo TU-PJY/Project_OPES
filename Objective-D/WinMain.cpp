@@ -37,6 +37,9 @@ ID3D12RootSignature* LineShaderRootSignature;
 // 바운드박스 루트 시그니처
 ID3D12RootSignature* BoundboxShaderRootSignature;
 
+// 전역 HWND
+HWND GlobalHWND;
+
 HINSTANCE						AppInstance;
 TCHAR							Title[MAX_LOADSTRING];
 TCHAR							WindowClass[MAX_LOADSTRING];
@@ -164,6 +167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lPara
 	int wmId, wmEvent;
 	PAINTSTRUCT PaintStruct;
 	HDC Hdc;
+	GlobalHWND = hWnd;
 
 	DisplayStateChanger(hWnd, nMessageID, wParam);
 

@@ -35,8 +35,6 @@ public:
 		SetColor(0.0, 0.0, 0.0);
 		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation.y + 90.0, 0.0);
-		//Transform::Scale(ScaleMatrix, 3.0, 3.0, 3.0);
-		//Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
 		RenderFBX(MESH.man, TEX.man);
 	}
 };

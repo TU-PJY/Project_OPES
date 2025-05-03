@@ -93,6 +93,12 @@ enum FBXTypeEnum {
 	FBX_STATIC
 };
 
+// Bool Switch 동작 타입
+enum BoolSwitchFlagEnum {
+	KEY_DOWN_TRUE,
+	KEY_UP_TRUE
+};
+
 // 오브젝트 벡터 구조체
 typedef struct Vector {
 	DirectX::XMFLOAT3 Look;
@@ -143,6 +149,8 @@ extern ID3D12RootSignature* LineShaderRootSignature;
 // 바운드박스 루트 시그니처
 extern ID3D12RootSignature* BoundboxShaderRootSignature;
 
+// 전역 HWND
+extern HWND GlobalHWND;
 
 // screen size
 extern int SCREEN_WIDTH, SCREEN_HEIGHT;

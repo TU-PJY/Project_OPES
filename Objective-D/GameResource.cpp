@@ -11,7 +11,7 @@ SystemResource SysRes;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
-	//LoadAnimatedFBX(System, MESH.muscleMan, "Resources//TestMesh//muscle.fbx");
+	LoadAnimatedFBX(System, MESH.man, "Resources//TestMesh//test.fbx");
 	//LoadAnimatedFBX(System, MESH.Lain, "Resources//TestMesh//lain.fbx");
 	//LoadAnimatedFBX(System, MESH.steve, "Resources//TestMesh//steve.fbx");
 
@@ -77,7 +77,7 @@ void LoadMesh(DeviceSystem& System) {
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
 	//// FBX 테스트용 모델 텍스터 로드
-	//ImportTexture(System, TEX.muscleMan, L"Resources//TestMesh//muscle.png");
+	ImportTexture(System, TEX.man, L"Resources//TestMesh//test.png");
 	//ImportTexture(System, TEX.Lain, L"Resources//TestMesh//lain.png");
 	//ImportTexture(System, TEX.steve, L"Resources//TestMesh//steve.png");
 
