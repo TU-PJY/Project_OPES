@@ -179,6 +179,12 @@ void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
 		M->UpdateSkinning(TargetMesh.CurrentTime);
 }
 
+// 여러 애니메이션 중 하나를 선택한다.
+void GameObject::SelectFBXAnimation(FBXMesh& TargetMesh, std::string AnimationName) {
+	fbxUtil.SelectAnimation(TargetMesh, AnimationName);
+}
+
+// 현재 애니메이션 재생 시간을 초기화 한다.
 void GameObject::ResetAnimationTime(FBXMesh& TargetMesh) {
 	TargetMesh.CurrentTime = 0.0;
 }

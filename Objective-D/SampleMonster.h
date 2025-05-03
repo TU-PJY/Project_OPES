@@ -11,7 +11,7 @@ private:
 
 public:
 	SampleMonster() {
-		//fbxUtil.SelectAnimation(MESH.TestMesh, "mixamo.com");
+		
 	}
 
 	void Update(float FrameTime) override {
