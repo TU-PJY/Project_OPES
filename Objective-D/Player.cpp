@@ -46,10 +46,26 @@ void Player::Update(float FrameTime) {
 	UpdateFire(FrameTime);
 	UpdateMoveSpeed(FrameTime);
 	UpdateCameraRotation();
+	UpdateWalkMotion(FrameTime);
 	UpdateTerrainCollision();
+}
 
-	// 지형 충돌 처리
-	//position.y -= 30.0 * FrameTime;
+void Player::UpdateWalkMotion(float FrameTime) {
+	walk_shake_num += FrameTime * 10.0;
+
+	// 걷기 상태 활성화 시 카메라가 흔들리는 연출을 준다.
+	if (move_front || move_back || move_right || move_left) 
+		walk_shake_value = std::lerp(walk_shake_value, 1.5, FrameTime * 5.0);
+	
+	// 걷기 상태가 비활성화된 상태라면 점차 흔들림을 줄인다.
+	else 
+		walk_shake_value = std::lerp(walk_shake_value, 0.0, FrameTime * 5.0);
+
+	// 최종 흔들림 값 계산
+	walk_shake_result = sinf(walk_shake_num) * walk_shake_value;
+
+	// 카메라 실제 회전
+	camera.Rotate(rotation.x, rotation.y, rotation.z + walk_shake_result);
 }
 
 void Player::UpdateMoveSpeed(float FrameTime) {
@@ -77,9 +93,9 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 void Player::UpdateFire(float FrameTime) {
 	// 총 발사 간격을 업데이트 한다.
 	// dest_fire_delay 간격으로 발사하게 된다.
-	current_fire_delay -= FrameTime;
-	if (current_fire_delay < 0.0)
-		current_fire_delay = 0.0;
+	if (current_fire_delay > 0.0) {
+		current_fire_delay -= FrameTime;
+	}
 
 	// 발사 상태에서 current_fire_delay가 0.0이 되면 crosshair에 반동값 부여 -> 발사
 	if (trigger_state) {
