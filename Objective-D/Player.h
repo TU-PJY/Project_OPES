@@ -31,5 +31,9 @@ public:
 	void InputMouseMotion(MotionEvent& Event) override;
 	void InputMouse(MouseEvent& Event);
 	void InputKey(KeyEvent& Event);
+	void UpdateMoveSpeed(float FrameTime);
+	void UpdateFire(float FrameTime);
+	void UpdateCameraRotation();
+	void UpdateTerrainCollision();
 	void Update(float FrameTime) override;
 };
