@@ -1,7 +1,136 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <Script>
 	<!-- 디펜스 모드 공간 -->
-	<!-- X 가장 왼쪽부분부터 시작 -->
-	<OOBB1 X="-182" Z="-115" SizeX="5.0" SizeZ="45.0" Rotation="0.0" />
+	<!-- 1부터 15까지 오른쪽 방향으로 배치 -->
+	<OOBB1 X="-170" Z="-175" SizeX="11" SizeZ="22" Rotation="-45.0"/>
+	<OOBB2 X="-190" Z="-115" SizeX="11" SizeZ="50" Rotation="0.0"/>
+	<OOBB3 X="-175" Z="-55" SizeX="11" SizeZ="22" Rotation="45.0"/>
+	<OOBB4 X="-110" Z="-40" SizeX="11" SizeZ="45" Rotation="90.0"/>
+	<OOBB5 X="-50" Z="-50" SizeX="11" SizeZ="22" Rotation="135.0"/>
+	<OOBB6 X="-40" Z="-80" SizeX="11" SizeZ="22" Rotation="180.0"/>
+	<OOBB7 X="-40" Z="-155" SizeX="11" SizeZ="22" Rotation="180.0"/>
+	<OOBB8 X="-50" Z="-185" SizeX="11" SizeZ="22" Rotation="225.0"/>
+	<OOBB9 X="-100" Z="-200" SizeX="11" SizeZ="45" Rotation="270.0"/>
+	<OOBB10 X="-150" Z="-205" SizeX="11" SizeZ="22" Rotation="30.0"/>
+	<!-- 길 -->
+	<!-- 디펜스 공간 출구부터 도착 지점 입구까지 배치 -->
+	<!-- 디펜스 장소 출구쪽 안쪽 벽 -->
+	<OOBB11 X="20" Z="-90" SizeX="11" SizeZ="50" Rotation="90.0"/>
+	<!-- 디펜스 공간 출구쪽 바깥쪽 벽 -->
+	<OOBB12 X="30" Z="-145" SizeX="11" SizeZ="80" Rotation="90.0"/>
+	<OOBB13 X="110" Z="-135" SizeX="11" SizeZ="22" Rotation="45.0"/>
+	<OOBB14 X="120" Z="-85" SizeX="11" SizeZ="35" Rotation="0.0"/>
+	<OOBB15 X="110" Z="-45" SizeX="11" SizeZ="22" Rotation="-45.0"/>
+	<OOBB16 X="80" Z="-35" SizeX="11" SizeZ="22" Rotation="-90.0"/>
+	<OOBB17 X="50" Z="-30" SizeX="11" SizeZ="22" Rotation="-60.0"/>
+	<OOBB18 X="20" Z="-10" SizeX="11" SizeZ="22" Rotation="-60.0"/>
+	<OOBB19 X="-10" Z="10" SizeX="11" SizeZ="22" Rotation="-60.0"/>
+	<!-- 통로 벽 -->
+	<OOBB20 X="-70" Z="10" SizeX="11" SizeZ="40" Rotation="0.0"/>
+	<OOBB21 X="-60" Z="55" SizeX="11" SizeZ="22" Rotation="45.0"/>
+	<OOBB22 X="66" Z="65" SizeX="11" SizeZ="197" Rotation="90.0"/>
+	<OOBB23 X="290" Z="15" SizeX="11" SizeZ="22" Rotation="45.0"/>
+	<OOBB24 X="300" Z="75" SizeX="11" SizeZ="50" Rotation="0.0"/>
+	<OOBB25 X="250" Z="172.5" SizeX="11" SizeZ="80" Rotation="-45.0"/>
+	<OOBB26 X="120" Z="220" SizeX="11" SizeZ="80" Rotation="90.0"/>
+	<OOBB27 X="5" Z="175" SizeX="11" SizeZ="55" Rotation="45.0"/>
+	<OOBB28 X="-110" Z="140" SizeX="11" SizeZ="80" Rotation="90.0"/>
+	<!-- 통로 안쪽 벽 -->
+	<!-- 도착 지점 -->
+	<!-- z방향 기준 오른쪽 아래 벽부터 배치 -->
+	<OOBB29 X="-140" Z="55" SizeX="11" SizeZ="22" Rotation="45.0"/>
+	<OOBB30 X="-150" Z="25" SizeX="11" SizeZ="22" Rotation="180.0"/>
+	<OOBB31 X="-160" Z="-5" SizeX="11" SizeZ="22" Rotation="225.0"/>
+	<OOBB32 X="-220" Z="-20" SizeX="11" SizeZ="50" Rotation="90.0"/>
+	<OOBB33 X="-280" Z="0" SizeX="11" SizeZ="22" Rotation="135.0"/>
+	<OOBB34 X="-290" Z="60" SizeX="11" SizeZ="50" Rotation="180.0"/>
+	<OOBB35 X="-280" Z="120" SizeX="11" SizeZ="22" Rotation="225.0"/>
+	<OOBB36 X="-220" Z="135" SizeX="11" SizeZ="50" Rotation="260.0"/>
+	<!-- 던전 -->
+	<OOBB37 X="130" Z="-105" SizeX="11" SizeZ="22" Rotation="135.0"/>
+	<OOBB38 X="190" Z="-115" SizeX="11" SizeZ="50" Rotation="90.0"/>
+	<OOBB39 X="250" Z="-105" SizeX="11" SizeZ="22" Rotation="45.0"/>
+	<OOBB40 X="260" Z="-75" SizeX="11" SizeZ="22" Rotation="0.0"/>
+	<OOBB41 X="250" Z="-35" SizeX="11" SizeZ="53" Rotation="-45.0"/>
 	
+	<!--누락 추가-->
+	<OOBB42 X="170" Z="5" SizeX="11" SizeZ="105" Rotation="90.0"/>
+	<OOBB43 X="50" Z="15" SizeX="11" SizeZ="22" Rotation="120.0"/>
+
+    <!-- 디펜스 모드 공간 -->
+    <!-- 바위 -->
+    <OOBB44 X="-150" Z="-160" SizeX="5.0" SizeZ="5.0" Rotation="45.0"/>
+    <OOBB45 X="-140" Z="-160" SizeX="5.0" SizeZ="5.0" Rotation="-45.0"/>
+    <OOBB46 X="-70" Z="-60" SizeX="5.0" SizeZ="5.0" Rotation="45.0"/>
+    <OOBB47 X="-60" Z="-60" SizeX="5.0" SizeZ="5.0" Rotation="45.0"/>
+    <OOBB48 X="-60" Z="-140" SizeX="8.0" SizeZ="8.0" Rotation="120.0"/>
+    <OOBB49 X="-60" Z="-110" SizeX="5.0" SizeZ="5.0" Rotation="135.0"/>
+    <OOBB50 X="-60" Z="-100" SizeX="5.0" SizeZ="5.0" Rotation="135.0"/>
+    <OOBB51 X="-60" Z="-100" SizeX="5.0" SizeZ="5.0" Rotation="135.0"/>
+    <OOBB52 X="-160" Z="-70" SizeX="8.0" SizeZ="8.0" Rotation="0.0"/>
+
+    <!-- 얼음 -->
+    <OOBB53 X="-140" Z="-154" SizeX="0.0025" SizeZ="0.0025" Rotation="45.0"/>
+    <OOBB54 X="-137" Z="-154" SizeX="0.01" SizeZ="0.01" Rotation="0.0"/>
+    <OOBB55 X="-150" Z="-80" SizeX="0.01" SizeZ="0.01" Rotation="45.0"/>
+    <OOBB56 X="-80" Z="-80" SizeX="0.05" SizeZ="0.05" Rotation="45.0"/>
+    <OOBB57 X="-80" Z="-170" SizeX="0.03" SizeZ="0.03" Rotation="-45.0"/>
+
+    <!-- 통로 -->
+    <OOBB58 X="40" Z="-125" SizeX="8.0" SizeZ="8.0" Rotation="190.0"/>
+    <OOBB59 X="-20" Z="-70" SizeX="10.0" SizeZ="30.0" Rotation="-30.0"/>
+    <OOBB60 X="25" Z="30" SizeX="10.0" SizeZ="10.0" Rotation="-15.0"/>
+    <OOBB61 X="170" Z="50" SizeX="10.0" SizeZ="10.0" Rotation="100.0"/>
+    <OOBB62 X="100" Z="25" SizeX="12.0" SizeZ="12.0" Rotation="-55.0"/>
+    <OOBB63 X="100" Z="140" SizeX="15.0" SizeZ="50.0" Rotation="-45.0"/>
+    <OOBB64 X="130" Z="150" SizeX="8.0" SizeZ="8.0" Rotation="45.0"/>
+    <OOBB65 X="210" Z="95" SizeX="20.0" SizeZ="20.0" Rotation="120.0"/>
+    <OOBB66 X="25" Z="85" SizeX="12.0" SizeZ="12.0" Rotation="200.0"/>
+    <OOBB67 X="-20" Z="130" SizeX="20.0" SizeZ="20.0" Rotation="180.0"/>
+
+    <!-- 얼음 -->
+    <OOBB68 X="95" Z="-50" SizeX="0.01" SizeZ="0.01" Rotation="45.0"/>
+    <OOBB69 X="60" Z="-55" SizeX="0.05" SizeZ="0.08" Rotation="190.0"/>
+    <OOBB70 X="80" Z="25" SizeX="0.01" SizeZ="0.01" Rotation="190.0"/>
+    <OOBB71 X="180" Z="190" SizeX="0.05" SizeZ="0.05" Rotation="90.0"/>
+    <OOBB72 X="115" Z="165" SizeX="0.02" SizeZ="0.08" Rotation="90.0"/>
+    <OOBB73 X="-20" Z="-5" SizeX="0.02" SizeZ="0.02" Rotation="190.0"/>
+    <OOBB74 X="-110" Z="85" SizeX="0.08" SizeZ="0.08" Rotation="190.0"/>
+
+    <!-- 던전 -->
+    <OOBB75 X="180" Z="-55" SizeX="0.04" SizeZ="0.04" Rotation="45.0"/>
+
+    <!-- 도착 지점 -->
+    <OOBB76 X="-260" Z="30" SizeX="0.08" SizeZ="0.08" Rotation="-180.0"/>
+    <OOBB77 X="-220" Z="100" SizeX="0.1" SizeZ="0.1" Rotation="45.0"/>
+
+    <!-- 바위 -->
+    <OOBB78 X="-180" Z="20" SizeX="20.0" SizeZ="20.0" Rotation="45.0"/>
+    <OOBB79 X="-260" Z="100" SizeX="15.0" SizeZ="15.0" Rotation="45.0"/>
+
+    <!-- 고드름 바위 -->
+    <!-- 후반후 -->
+    <OOBB80 X="108" Z="125" SizeX="20.0" SizeZ="15.0" Rotation="55.0"/>
+    <OOBB81 X="107" Z="125" SizeX="10.0" SizeZ="10.0" Rotation="55.0"/>
+    
+    <!-- 전반부 -->
+    <OOBB82 X="-15" Z="-55" SizeX="10.0" SizeZ="20.0" Rotation="210.0"/>
+    <OOBB83 X="-15" Z="-55" SizeX="10.0" SizeZ="10.0" Rotation="210.0"/>
+
+    <!-- 적 스팟 위치 -->
+    <OOBB84 X="-45" Z="-110" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB85 X="55" Z="-125" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB86 X="45" Z="-45" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB87 X="-30" Z="5" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB88 X="75" Z="-10" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB89 X="200" Z="-60" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB90 X="120" Z="25" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB91 X="190" Z="45" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB92 X="185" Z="85" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB93 X="200" Z="150" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB94 X="150" Z="185" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB95 X="70" Z="150" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB96 X="-55" Z="120" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB97 X="-10" Z="80" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
+    <OOBB98 X="-135" Z="90" SizeX="0.8" SizeZ="0.8" Rotation="135.0"/>
 </Script>
