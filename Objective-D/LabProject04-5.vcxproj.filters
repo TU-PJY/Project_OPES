@@ -170,6 +170,9 @@
     <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]">
       <UniqueIdentifier>{0e3eacd1-45f7-4761-8928-8b05d1d1d88e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]">
+      <UniqueIdentifier>{feb2faa2-d67f-4a56-a6df-ded7fe1ed65a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -313,6 +316,9 @@
     <ClInclude Include="Player.h">
       <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
     </ClInclude>
+    <ClInclude Include="ClampUtil.h">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -455,6 +461,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
+    </ClCompile>
+    <ClCompile Include="ClampUtil.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

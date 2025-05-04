@@ -2,17 +2,19 @@
 #include "Scene.h"
 #include "MouseUtil.h"
 #include "CameraController.h"
+#include "ClampUtil.h"
 
 
-Player::Player() {
+// 생성자에서 입력받은 맵 오브젝트 이름으로 터레인 값을 받아온다.
+Player::Player(std::string MapObjectName) {
 	mouse.StartMotionCapture(GlobalHWND);
+	target_terrain_name = MapObjectName;
 }
 
 void Player::InputMouseMotion(MotionEvent& Event) {
 	if (GetCapture() == Event.CaptureState) {
 		mouse.HideCursor();
 		GetCapture();
-
 		XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, 0.08);
 		UpdateMotionRotation(rotation, Delta.x, Delta.y);
 	}
@@ -43,10 +45,19 @@ void Player::InputKey(KeyEvent& Event) {
 }
 
 void Player::Update(float FrameTime) {
+	// 총 발사 업데이트
 	UpdateFire(FrameTime);
+
+	// 이동 속도 가감속 업데이트
 	UpdateMoveSpeed(FrameTime);
+
+	// 카메라 회전 업데이트
 	UpdateCameraRotation();
+
+	// 걷기 모션 업데이트
 	UpdateWalkMotion(FrameTime);
+
+	// 터레인 충돌 처리 업데이트
 	UpdateTerrainCollision();
 }
 
@@ -93,9 +104,8 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 void Player::UpdateFire(float FrameTime) {
 	// 총 발사 간격을 업데이트 한다.
 	// dest_fire_delay 간격으로 발사하게 된다.
-	if (current_fire_delay > 0.0) {
+	if (current_fire_delay > 0.0)
 		current_fire_delay -= FrameTime;
-	}
 
 	// 발사 상태에서 current_fire_delay가 0.0이 되면 crosshair에 반동값 부여 -> 발사
 	if (trigger_state) {
@@ -109,14 +119,8 @@ void Player::UpdateFire(float FrameTime) {
 
 void Player::UpdateCameraRotation() {
 	// 상하 카메라 회전 제한
-	if (rotation.x < -90.0)
-		rotation.x = -90.0;
-	if (rotation.x > 90.0)
-		rotation.x = 90.0;
-	if (rotation.z < -90.0)
-		rotation.z = -90.0;
-	if (rotation.z > 90.0)
-		rotation.z = 90.0;
+	Clamp::ClampValue(rotation.x, -90.0, 90.0, CLAMP_FIX);
+	Clamp::ClampValue(rotation.z, -90.0, 90.0, CLAMP_FIX);
 
 	// 벡터 및 카메라 추적 업데이트
 	Math::UpdateVector(vec, rotation);
@@ -125,7 +129,7 @@ void Player::UpdateCameraRotation() {
 
 void Player::UpdateTerrainCollision() {
 	// 플레이어 높이가 항상 터레인 위에 위치하도록 한다
-	if (auto terrain = scene.Find("map2"); terrain) {
+	if (auto terrain = scene.Find(target_terrain_name); terrain) {
 		terr.InputPosition(position);
 		terr.ClampToTerrain(terrain->GetTerrain(), position, 3.0);
 	}

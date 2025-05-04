@@ -20,7 +20,7 @@ void Level2::Start() {
 	// 필요한 작업 추가
 	scene.AddObject(new CameraController, "camera_controller", LAYER1);
 	scene.AddObject(new Map2, "map2", LAYER1);
-	scene.AddObject(new Player, "player", LAYER1);
+	scene.AddObject(new Player("map2"), "player", LAYER1);
 	scene.AddObject(new SampleMonster, "monster", LAYER1);
 
 	// 크로스헤어는 항상 보여야 하므로 상위 레이어에 추가

@@ -99,6 +99,18 @@ enum BoolSwitchFlagEnum {
 	KEY_UP_TRUE
 };
 
+// 클램프 플래그 타입
+enum ClampFlagTypeEnum {
+	CLAMP_FIX,
+	CLAMP_RETURN
+};
+
+// 클램프 값 변화 방향 타입
+enum ClampDirectionEnum {
+	CLAMP_DIR_LESS,
+	CLAMP_DIR_GREATER
+};
+
 // 오브젝트 벡터 구조체
 typedef struct Vector {
 	DirectX::XMFLOAT3 Look;
