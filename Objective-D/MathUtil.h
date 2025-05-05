@@ -20,6 +20,9 @@ namespace Math {
 	void MoveForward(XMFLOAT3& Position, float RotationY, float MoveDistance);
 	void MoveStrafe(XMFLOAT3& Position, float RotationY, float MoveDistance);
 	void MoveUp(XMFLOAT3& Position, float MoveDistance);
+	void GetOOBBAxis(FXMVECTOR& OrientationQuaternion, XMVECTOR& AxisX, XMVECTOR& AxisY, XMVECTOR& AxisZ);
+	XMVECTOR ClosestPointOnOOBB(const OOBB& Box, FXMVECTOR& Point);
+	void MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, Range& A, std::vector<OOBB>& B, float FrameTime);
 	float CalcDistance2D(float FromX, float FromY, float ToX, float ToY);
 	float CalcDegree2D(float FromX, float FromY, float ToX, float ToY);
 	float CalcRadians2D(float FromX, float FromY, float ToX, float ToY);

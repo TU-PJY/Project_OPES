@@ -77,4 +77,7 @@ public:
 	
 	// 크로스헤어 반동 부여 함수
 	virtual void InputRecoil(float Value) {}
+
+	// 맵 벽 oobb 얻는 함수
+	virtual std::vector<OOBB> GetMapWallOOBB() { return{}; }
 };

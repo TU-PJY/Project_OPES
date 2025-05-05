@@ -9,6 +9,10 @@
 Player::Player(std::string MapObjectName) {
 	mouse.StartMotionCapture(GlobalHWND);
 	target_terrain_name = MapObjectName;
+
+	// 현재 맵에서 벽 oobb를 얻어온다.
+	if (auto Map = scene.Find(MapObjectName); Map)
+		MapOOBBData = Map->GetMapWallOOBB();
 }
 
 void Player::InputMouseMotion(MotionEvent& Event) {
@@ -58,7 +62,11 @@ void Player::Update(float FrameTime) {
 	UpdateWalkMotion(FrameTime);
 
 	// 터레인 충돌 처리 업데이트
-	UpdateTerrainCollision();
+	UpdateTerrainCollision(FrameTime);
+}
+
+void Player::Render() {
+	//player_range.Render();
 }
 
 void Player::UpdateWalkMotion(float FrameTime) {
@@ -96,9 +104,10 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 	if ((!move_right && !move_left) || (move_right && move_left))
 		strafe_speed = std::lerp(strafe_speed, 0.0, 5.0 * FrameTime);
 
-	// 최종 이동
-	Math::MoveForward(position, rotation.y, forward_speed * FrameTime);
-	Math::MoveStrafe(position, rotation.y, strafe_speed * FrameTime);
+	player_range.Update(position, 0.8);
+
+	// OOBB와 충돌을 체크하면서 이동
+	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_range, MapOOBBData, FrameTime);
 }
 
 void Player::UpdateFire(float FrameTime) {
@@ -127,7 +136,8 @@ void Player::UpdateCameraRotation() {
 	camera.Track(position, vec, 0);
 }
 
-void Player::UpdateTerrainCollision() {
+void Player::UpdateTerrainCollision(float FrameTime) {
+
 	// 플레이어 높이가 항상 터레인 위에 위치하도록 한다
 	if (auto terrain = scene.Find(target_terrain_name); terrain) {
 		terr.InputPosition(position);

@@ -152,4 +152,9 @@ public:
 
 		OOBBDataScript.LoadAllData(LoadOOBBData);
 	}
+
+	// 맵의 벽 oobb를 얻는다
+	std::vector<OOBB> GetMapWallOOBB() {
+		return OOBBVec;
+	}
 };

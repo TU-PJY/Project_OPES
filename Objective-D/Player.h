@@ -51,6 +51,12 @@ private:
 	// 걷기 모션 흔들림 결과 값
 	float walk_shake_result{};
 
+	// 맵 벽 oobb 데이터
+	std::vector<OOBB> MapOOBBData{};
+
+	// 플레이어 충돌 범위
+	Range player_range{};
+
 public:
 	Player(std::string MapObjectName);
 	void InputMouseMotion(MotionEvent& Event) override;
@@ -59,7 +65,8 @@ public:
 	void UpdateMoveSpeed(float FrameTime);
 	void UpdateFire(float FrameTime);
 	void UpdateCameraRotation();
-	void UpdateTerrainCollision();
+	void UpdateTerrainCollision(float FrameTime);
 	void UpdateWalkMotion(float FrameTime);
 	void Update(float FrameTime) override;
+	void Render();
 };
