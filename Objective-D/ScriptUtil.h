@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+using CategoryPtr = TiXmlElement*;
+
 // read only
 class ScriptUtil {
 public:

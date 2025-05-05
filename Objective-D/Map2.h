@@ -87,60 +87,56 @@ public:
 
 		for (auto& O : OOBBVec)
 			O.Render();
-
-		//// 테스트용 플레이어 모델
-		//BeginRender();
-		//SetColor(0.0, 0.0, 0.0);
-		//Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
-		//Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);
-		//Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
-		//Render3D(MESH.TestMesh, TEX.TestTex);
 	}
 
 	void Load() {
 		WallVec.clear();
 		WallPositionScript.Release();
 		WallPositionScript.Load("Resources//Scripts//map2//map2-wall-rock.xml");
-		int Count = WallPositionScript.GetCategoryNum();
-		for (int i = 0; i < Count; ++i) {
+
+		// 로드 동작을 람다 함수로 정의한 후 LoadAllData()에 전달하면 LoadAllData()내부에서 정의한 동작을 실행한다.
+		auto LoadWallData = [&](CategoryPtr Category) {
 			ObjectStruct Obj{};
-			std::string CatName = "Object" + std::to_string(i + 1);
-			Obj.Position.x = WallPositionScript.LoadDigitData(CatName, "X");
-			Obj.Position.y = WallPositionScript.LoadDigitData(CatName, "Y");
-			Obj.Position.z = WallPositionScript.LoadDigitData(CatName, "Z");
-			Obj.Size.x = WallPositionScript.LoadDigitData(CatName, "SizeX");
-			Obj.Size.y = WallPositionScript.LoadDigitData(CatName, "SizeY");
-			Obj.Size.z = WallPositionScript.LoadDigitData(CatName, "SizeZ");
-			Obj.Rotation = WallPositionScript.LoadDigitData(CatName, "Rotation");
+			Obj.Position.x = WallPositionScript.LoadDigitData(Category, "X");
+			Obj.Position.y = WallPositionScript.LoadDigitData(Category, "Y");
+			Obj.Position.z = WallPositionScript.LoadDigitData(Category, "Z");
+			Obj.Size.x = WallPositionScript.LoadDigitData(Category, "SizeX");
+			Obj.Size.y = WallPositionScript.LoadDigitData(Category, "SizeY");
+			Obj.Size.z = WallPositionScript.LoadDigitData(Category, "SizeZ");
+			Obj.Rotation = WallPositionScript.LoadDigitData(Category, "Rotation");
 
 			WallVec.emplace_back(Obj);
-		}
+		};
+
+		WallPositionScript.LoadAllData(LoadWallData);
+		
 
 		ObjectVec.clear();
 		ObjectPositionScript.Release();
 		ObjectPositionScript.Load("Resources//Scripts//map2//map2-object.xml");
-		Count = ObjectPositionScript.GetCategoryNum();
-		for (int i = 0; i < Count; ++i) {
+
+		auto LoadObjectData = [&](CategoryPtr Category) {
 			ObjectStruct Obj{};
-			std::string CatName = "Object" + std::to_string(i + 1);
-			Obj.Position.x = ObjectPositionScript.LoadDigitData(CatName, "X");
-			Obj.Position.y = ObjectPositionScript.LoadDigitData(CatName, "Y");
-			Obj.Position.z = ObjectPositionScript.LoadDigitData(CatName, "Z");
-			Obj.Size.x = ObjectPositionScript.LoadDigitData(CatName, "SizeX");
-			Obj.Size.y = ObjectPositionScript.LoadDigitData(CatName, "SizeY");
-			Obj.Size.z = ObjectPositionScript.LoadDigitData(CatName, "SizeZ");
-			Obj.Rotation = ObjectPositionScript.LoadDigitData(CatName, "Rotation");
-			Obj.Index = ObjectPositionScript.LoadDigitData(CatName, "Index");
+			Obj.Position.x = ObjectPositionScript.LoadDigitData(Category, "X");
+			Obj.Position.y = ObjectPositionScript.LoadDigitData(Category, "Y");
+			Obj.Position.z = ObjectPositionScript.LoadDigitData(Category, "Z");
+			Obj.Size.x = ObjectPositionScript.LoadDigitData(Category, "SizeX");
+			Obj.Size.y = ObjectPositionScript.LoadDigitData(Category, "SizeY");
+			Obj.Size.z = ObjectPositionScript.LoadDigitData(Category, "SizeZ");
+			Obj.Rotation = ObjectPositionScript.LoadDigitData(Category, "Rotation");
+			Obj.Index = ObjectPositionScript.LoadDigitData(Category, "Index");
 
 			ObjectVec.emplace_back(Obj);
-		}
+		};
+
+		ObjectPositionScript.LoadAllData(LoadObjectData);
+
 
 		OOBBVec.clear();
 		OOBBDataScript.Release();
 		OOBBDataScript.Load("Resources//Scripts//map2//map2-oobb.xml");
 
-		// 로드 동작을 람다 함수로 정의한 후 LoadAllData()에 전달하면 LoadAllData()내부에서 정의한 동작을 실행한다.
-		auto LoadFunction = [&](TiXmlElement* Category) {
+		auto LoadOOBBData = [&](CategoryPtr Category) {
 			OOBB oobb;
 			XMFLOAT3 Position;
 			XMFLOAT3 Size;
@@ -158,6 +154,6 @@ public:
 			OOBBVec.emplace_back(oobb);
 		};
 
-		OOBBDataScript.LoadAllData(LoadFunction);
+		OOBBDataScript.LoadAllData(LoadOOBBData);
 	}
 };
