@@ -20,8 +20,21 @@ public:
 	std::string LoadStringData(std::string CategoryName, std::string DataName);
 	DigitDataVec LoadCategoryDigitData(std::string CategoryName);
 	StringDataVec LoadCategoryStringData(std::string CategoryName);
+
+	template<typename Function>
+	void LoadAllData(Function Func) {
+		TiXmlElement* Category = Root->FirstChildElement();
+		while (Category) {
+			Func(Category);
+			Category = Category->NextSiblingElement();
+		}
+	}
+
 	void Release();
 	int GetCategoryNum();
+	TiXmlElement* GetRoot();
+	float LoadDigitData(TiXmlElement* Category, std::string DataName);
+	std::string LoadStringData(TiXmlElement* Category, std::string DataName);
 	TiXmlElement* FindCategory(std::string CategoryName);
 	std::string FindData(std::string CategoryName, std::string DataName);
 	float GetDigitData(TiXmlElement* CategoryVar, std::string DataName);

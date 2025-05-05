@@ -25,6 +25,18 @@ int ScriptUtil::GetCategoryNum() {
 	return CatCount;
 }
 
+TiXmlElement* ScriptUtil::GetRoot() {
+	return Root;
+}
+
+float ScriptUtil::LoadDigitData(TiXmlElement* Category, std::string DataName) {
+	return std::stof(Category->Attribute(DataName.c_str()));
+}
+
+std::string ScriptUtil::LoadStringData(TiXmlElement* Category, std::string DataName) {
+	return Category->Attribute(DataName.c_str());
+}
+
 float ScriptUtil::LoadDigitData(std::string CategoryName, std::string DataName) {
 	return GetDigitData(FindCategory(CategoryName), DataName);
 }
