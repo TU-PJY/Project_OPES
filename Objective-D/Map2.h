@@ -71,18 +71,14 @@ public:
 			else
 				Transform::Rotate(RotateMatrix, 0.0, Object.Rotation, 0.0);
 
-			if (Object.Index == 0)
-				Render3D(MESH.WinterRock[0], TEX.Map2Palette);
-			else if (Object.Index == 1)
-				Render3D(MESH.WinterRock[1], TEX.Map2Palette);
-			else if (Object.Index == 2)
-				Render3D(MESH.WinterIce[0], TEX.IceTex);
-			else if (Object.Index == 3)
-				Render3D(MESH.WinterIce[1], TEX.IceTex);
-			else if (Object.Index == 4)
-				Render3D(MESH.WinterRock[2], TEX.Map2Palette);
-			else if (Object.Index == 5)
-				Render3D(MESH.Mushroom[0], TEX.Palette3);
+			switch (Object.Index) {
+			case 0: Render3D(MESH.WinterRock[0], TEX.Map2Palette); break;
+			case 1: Render3D(MESH.WinterRock[1], TEX.Map2Palette); break;
+			case 2: Render3D(MESH.WinterIce[0], TEX.IceTex);       break;
+			case 3: Render3D(MESH.WinterIce[1], TEX.IceTex);       break;
+			case 4: Render3D(MESH.WinterRock[2], TEX.Map2Palette); break;
+			case 5: Render3D(MESH.Mushroom[0], TEX.Palette3);      break;
+			}
 		}
 
 		for (auto& O : OOBBVec)
@@ -96,7 +92,7 @@ public:
 
 		// 로드 동작을 람다 함수로 정의한 후 LoadAllData()에 전달하면 LoadAllData()내부에서 정의한 동작을 실행한다.
 		auto LoadWallData = [&](CategoryPtr Category) {
-			ObjectStruct Obj{};
+			ObjectStruct Obj;
 			Obj.Position.x = WallPositionScript.LoadDigitData(Category, "X");
 			Obj.Position.y = WallPositionScript.LoadDigitData(Category, "Y");
 			Obj.Position.z = WallPositionScript.LoadDigitData(Category, "Z");
@@ -116,7 +112,7 @@ public:
 		ObjectPositionScript.Load("Resources//Scripts//map2//map2-object.xml");
 
 		auto LoadObjectData = [&](CategoryPtr Category) {
-			ObjectStruct Obj{};
+			ObjectStruct Obj;
 			Obj.Position.x = ObjectPositionScript.LoadDigitData(Category, "X");
 			Obj.Position.y = ObjectPositionScript.LoadDigitData(Category, "Y");
 			Obj.Position.z = ObjectPositionScript.LoadDigitData(Category, "Z");
