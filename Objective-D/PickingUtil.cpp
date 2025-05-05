@@ -124,7 +124,7 @@ bool PickingUtil::PickByCursorOOBB(LPARAM lParam, const OOBB& Other) {
 	return Math::CheckRayCollision(Origin, Direction, Other);
 }
 
-bool PickingUtil::PickByCursorRange(LPARAM lParam, const Range& Other) {
+bool PickingUtil::PickByCursorRange(LPARAM lParam, const BoundSphere& Other) {
 	XMFLOAT3 PickPoint{};
 	PickPoint.x = (((2.0f * LOWORD(lParam)) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;
 	PickPoint.y = -(((2.0f * HIWORD(lParam)) / (float)SCREEN_HEIGHT) - 1) / camera.ProjectionMatrix._22;
@@ -162,7 +162,7 @@ bool PickingUtil::PickByWinCoordOOBB(int X, int Y, const OOBB& Other) {
 	return Math::CheckRayCollision(Origin, Direction, Other);
 }
 
-bool PickingUtil::PickByWinCoordRange(int X, int Y, const Range& Other) {
+bool PickingUtil::PickByWinCoordRange(int X, int Y, const BoundSphere& Other) {
 	XMFLOAT3 PickPoint{};
 	PickPoint.x = (((2.0f * X) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;
 	PickPoint.y = -(((2.0f * Y) / (float)SCREEN_HEIGHT) - 1) / camera.ProjectionMatrix._22;
@@ -200,7 +200,7 @@ bool PickingUtil::PickByViewportOOBB(float X, float Y, const OOBB& Other) {
 	return Math::CheckRayCollision(Origin, Direction, Other);
 }
 
-bool PickingUtil::PickByViewportRange(float X, float Y, const Range& Other) {
+bool PickingUtil::PickByViewportRange(float X, float Y, const BoundSphere& Other) {
 	XMFLOAT3 PickPoint{};
 	PickPoint.x = (((2.0f * ConvertXToWinCoord(X)) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;
 	PickPoint.y = -(((2.0f * ConvertYToWinCoord(Y)) / (float)SCREEN_HEIGHT) - 1) / camera.ProjectionMatrix._22;

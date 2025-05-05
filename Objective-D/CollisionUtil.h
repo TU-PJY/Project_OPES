@@ -4,7 +4,7 @@
 #include "Matrix.h"
 
 class AABB;
-class Range;
+class BoundSphere;
 
 class OOBB {
 private:
@@ -18,7 +18,7 @@ public:
 	void Update(XMFLOAT3& Position, XMFLOAT3& Size, XMFLOAT3& Rotation);
 	void Render();
 	bool CheckCollision(const AABB& Other);
-	bool CheckCollision(const Range& Other);
+	bool CheckCollision(const BoundSphere& Other);
 	bool CheckCollision(const OOBB& Other);
 };
 
@@ -34,11 +34,11 @@ public:
 	void Render();
 	bool CheckCollision(const AABB& Other);
 	bool CheckCollision(const OOBB& Other);
-	bool CheckCollision(const Range& Other);
+	bool CheckCollision(const BoundSphere& Other);
 };
 
 
-class Range {
+class BoundSphere {
 private:
 	bool Collide{};
 	float Size{};
@@ -48,7 +48,7 @@ public:
 	BoundingSphere sphere = BoundingSphere();
 	void Update(const XMFLOAT3& Center, float SizeValue);
 	void Render();
-	bool CheckCollision(const Range& Other);
+	bool CheckCollision(const BoundSphere& Other);
 	bool CheckCollision(const AABB& Other);
 	bool CheckCollision(const OOBB& Other);
 };

@@ -12,7 +12,7 @@ namespace Math {
 	XMVECTOR CalcRayOrigin(XMFLOAT3& Position);
 	bool CheckRayCollision(XMVECTOR& rayOrigin, XMVECTOR& rayDirection, const AABB& Other);
 	bool CheckRayCollision(XMVECTOR& rayOrigin, XMVECTOR& rayDirection, const OOBB& Other);
-	bool CheckRayCollision(XMVECTOR& rayOrigin, XMVECTOR& rayDirection, const Range& Other);
+	bool CheckRayCollision(XMVECTOR& rayOrigin, XMVECTOR& rayDirection, const BoundSphere& Other);
 	bool IsRightOfTarget(XMFLOAT3& ThisPosition, ObjectVector& Vector, XMFLOAT3& TargetPosition);
 	void Vector_MoveForward(XMFLOAT3& Position, XMFLOAT3& Look, float Distance);
 	void Vector_MoveStrafe(XMFLOAT3& Position, XMFLOAT3& Right, float Distance);
@@ -22,7 +22,7 @@ namespace Math {
 	void MoveUp(XMFLOAT3& Position, float MoveDistance);
 	void GetOOBBAxis(FXMVECTOR& OrientationQuaternion, XMVECTOR& AxisX, XMVECTOR& AxisY, XMVECTOR& AxisZ);
 	XMVECTOR ClosestPointOnOOBB(const OOBB& Box, FXMVECTOR& Point);
-	void MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, Range& A, std::vector<OOBB>& B, float FrameTime);
+	void MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, BoundSphere& A, std::vector<OOBB>& B, float FrameTime);
 	float CalcDistance2D(float FromX, float FromY, float ToX, float ToY);
 	float CalcDegree2D(float FromX, float FromY, float ToX, float ToY);
 	float CalcRadians2D(float FromX, float FromY, float ToX, float ToY);

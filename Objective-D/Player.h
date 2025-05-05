@@ -55,7 +55,7 @@ private:
 	std::vector<OOBB> MapOOBBData{};
 
 	// 플레이어 충돌 범위
-	Range player_range{};
+	BoundSphere player_sphere{};
 
 public:
 	Player(std::string MapObjectName);

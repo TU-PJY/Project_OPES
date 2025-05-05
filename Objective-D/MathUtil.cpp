@@ -116,7 +116,7 @@ bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const 
 }
 
 // 레이가 바운딩 박스와 충돌하는지 검사한다
-bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const Range& Other) {
+bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const BoundSphere& Other) {
 	float Distance;
 	return Other.sphere.Intersects(RayOrigin, RayDirection, Distance);
 }
@@ -204,7 +204,7 @@ XMVECTOR Math::ClosestPointOnOOBB(const OOBB& Box, FXMVECTOR& Point) {
 	return Closest;
 }
 
-void Math::MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, Range& A, std::vector<OOBB>& B, float FrameTime) {
+void Math::MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, BoundSphere& A, std::vector<OOBB>& B, float FrameTime) {
 	XMFLOAT3 PrevPosition = Position;
 
 	XMFLOAT3 Delta = { 0, 0, 0 };

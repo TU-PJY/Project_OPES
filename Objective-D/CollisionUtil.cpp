@@ -95,7 +95,7 @@ bool OOBB::CheckCollision(const AABB& Other) {
 	return false;
 }
 
-bool OOBB::CheckCollision(const Range& Other) {
+bool OOBB::CheckCollision(const BoundSphere& Other) {
 	if (oobb.Intersects(Other.sphere)) {
 		Collide = true;
 		return true;
@@ -157,7 +157,7 @@ bool AABB::CheckCollision(const OOBB& Other) {
 	return false;
 }
 
-bool AABB::CheckCollision(const Range& Other) {
+bool AABB::CheckCollision(const BoundSphere& Other) {
 	if (aabb.Intersects(Other.sphere)) {
 		Collide = true;
 		return true;
@@ -169,13 +169,13 @@ bool AABB::CheckCollision(const Range& Other) {
 
 
 
-void Range::Update(const XMFLOAT3& Center, float SizeValue) {
+void BoundSphere::Update(const XMFLOAT3& Center, float SizeValue) {
 	sphere.Center = Center;
 	sphere.Radius = SizeValue * 0.5;
 	Size = SizeValue;
 }
 
-bool Range::CheckCollision(const Range& Other) {
+bool BoundSphere::CheckCollision(const BoundSphere& Other) {
 	if (sphere.Intersects(Other.sphere)) {
 		Collide = true;
 		return true;
@@ -185,7 +185,7 @@ bool Range::CheckCollision(const Range& Other) {
 	return false;
 }
 
-bool Range::CheckCollision(const AABB& Other) {
+bool BoundSphere::CheckCollision(const AABB& Other) {
 	if (sphere.Intersects(Other.aabb)) {
 		Collide = true;
 		return true;
@@ -195,7 +195,7 @@ bool Range::CheckCollision(const AABB& Other) {
 	return false;
 }
 
-bool Range::CheckCollision(const OOBB& Other) {
+bool BoundSphere::CheckCollision(const OOBB& Other) {
 	if (sphere.Intersects(Other.oobb)) {
 		Collide = true;
 		return true;
@@ -205,7 +205,7 @@ bool Range::CheckCollision(const OOBB& Other) {
 	return false;
 }
 
-void Range::Render() {
+void BoundSphere::Render() {
 #ifdef SHOW_BOUND_BOX
 	GlobalCommandList->SetGraphicsRootSignature(BoundboxShaderRootSignature);
 

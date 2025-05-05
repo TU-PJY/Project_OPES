@@ -104,10 +104,11 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 	if ((!move_right && !move_left) || (move_right && move_left))
 		strafe_speed = std::lerp(strafe_speed, 0.0, 5.0 * FrameTime);
 
-	player_range.Update(position, 0.8);
+	// 플레이어 바운딩 스페어 업데이트
+	player_sphere.Update(position, 0.6);
 
 	// OOBB와 충돌을 체크하면서 이동
-	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_range, MapOOBBData, FrameTime);
+	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_sphere, MapOOBBData, FrameTime);
 }
 
 void Player::UpdateFire(float FrameTime) {
