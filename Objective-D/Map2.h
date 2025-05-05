@@ -138,24 +138,27 @@ public:
 		OOBBVec.clear();
 		OOBBDataScript.Release();
 		OOBBDataScript.Load("Resources//Scripts//map2//map2-oobb.xml");
-		Count = OOBBDataScript.GetCategoryNum();
-		for (int i = 0; i < Count; i++) {
+
+		// 번호 상관없이 순차적으로 로드
+		TiXmlElement* Category = OOBBDataScript.Root->FirstChildElement();
+		while (Category) {
 			OOBB oobb;
-			std::string CatName = "OOBB" + std::to_string(i + 1);
 			XMFLOAT3 Position;
-			Position.x = OOBBDataScript.LoadDigitData(CatName, "X");
-			Position.y = 3.0;
-			Position.z = OOBBDataScript.LoadDigitData(CatName, "Z");
-
 			XMFLOAT3 Size;
-			Size.x = OOBBDataScript.LoadDigitData(CatName, "SizeX");
-			Size.y = 20.0;
-			Size.z = OOBBDataScript.LoadDigitData(CatName, "SizeZ");
+			float Degree;
 
-			float Degree = OOBBDataScript.LoadDigitData(CatName, "Rotation");
+			Position.y = 3.0;
+			Position.x = std::stof(Category->Attribute("X"));
+			Position.z = std::stof(Category->Attribute("Z"));
+			Size.y = 20.0;
+			Size.x = std::stof(Category->Attribute("SizeX"));
+			Size.z = std::stof(Category->Attribute("SizeZ"));
+			Degree = std::stof(Category->Attribute("Rotation"));
 
 			oobb.Update(Position, Size, XMFLOAT3(0.0, Degree, 0.0));
 			OOBBVec.emplace_back(oobb);
+
+			Category = Category->NextSiblingElement();
 		}
 	}
 };

@@ -7,7 +7,7 @@
 
 // read only
 class ScriptUtil {
-private:
+public:
 	TiXmlDocument Doc{};
 	TiXmlElement* Root{};
 	bool          FileExist{};
@@ -21,10 +21,7 @@ public:
 	DigitDataVec LoadCategoryDigitData(std::string CategoryName);
 	StringDataVec LoadCategoryStringData(std::string CategoryName);
 	void Release();
-
 	int GetCategoryNum();
-
-private:
 	TiXmlElement* FindCategory(std::string CategoryName);
 	std::string FindData(std::string CategoryName, std::string DataName);
 	float GetDigitData(TiXmlElement* CategoryVar, std::string DataName);
