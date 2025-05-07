@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "Scene.h"
 #include "ScriptUtil.h"
+#include <random>
 
 class Player : public GameObject {
 private:
@@ -62,14 +63,33 @@ private:
 	// 총이 맵에 닿는 상태
 	bool gun_collided{};
 
+	// 정조준 상태
+	bool gun_zoomed{};
+
 	// 총 회전 각
 	XMFLOAT3 gun_rotation{};
+
+	// 총 위치
+	XMFLOAT3 gun_position_offset{};
 
 	// 총 바운드 박스
 	// gun_collided 판정을 위함
 	OOBB gun_oobb{};
 
+	// 총 발사 시 흔들림 값
+	float recoil_shake{};
 
+	// 흔들림 업데이트 값
+	float recoil_shake_num{};
+
+	// 총 발사 시 목표 흔들림 값
+	float dest_recoil_shake{};
+
+	// 반동으로 인한 카메라 올라감
+	float recoil_rotation{};
+
+	// 정조준 시 카메라 fov 목표 값
+	float fov_dest{};
 
 	// 맵 벽 oobb 데이터
 	std::vector<OOBB> MapOOBBData{};
@@ -89,6 +109,8 @@ public:
 	void UpdateTerrainCollision(float FrameTime);
 	void UpdateGunCollision();
 	void UpdateWalkMotion(float FrameTime);
+	void UpdateShootMotion(float FrameTime);
 	void Update(float FrameTime) override;
 	void Render();
+	void UpdateCamera(float FrameTime);
 };

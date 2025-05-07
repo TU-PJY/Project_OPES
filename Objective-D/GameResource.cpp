@@ -8,6 +8,9 @@ MeshResource MESH;
 TextureResource TEX;
 SystemResource SysRes;
 
+// 전역 카메라 fov 값 오프셋
+float global_fov_offset;
+
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
@@ -68,6 +71,7 @@ void LoadMesh(DeviceSystem& System) {
 
 	// polygon scifi asset
 	LoadMultiStaticFBX(System, MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
+	LoadMultiStaticFBX(System, MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

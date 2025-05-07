@@ -4,6 +4,10 @@
 #include "CameraController.h"
 #include "ClampUtil.h"
 
+std::default_random_engine rd;
+std::mt19937 gen(rd());
+std::uniform_int_distribution<int> dist(0, 1);
+
 // 생성자에서 입력받은 맵 오브젝트 이름으로 터레인 값을 받아온다.
 Player::Player(std::string MapObjectName) {
 	target_terrain_name = MapObjectName;
@@ -18,7 +22,10 @@ void Player::InputMouseMotion(MotionEvent& Event) {
 	if (GetCapture() == Event.CaptureState) {
 		mouse.HideCursor();
 		GetCapture();
-		XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, 0.08);
+
+		float sensivity = 0.08;
+		if (gun_zoomed)  sensivity = 0.04;
+		XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, sensivity);
 		UpdateMotionRotation(rotation, Delta.x, Delta.y);
 	}
 }
@@ -35,6 +42,20 @@ void Player::InputMouse(MouseEvent& Event) {
 
 	case WM_LBUTTONUP:
 		trigger_state = false;
+		break;
+
+	case WM_RBUTTONDOWN:
+		gun_zoomed = true;
+		if (auto crosshair = scene.Find("crosshair"); crosshair)
+			crosshair->DisableRender();
+		fov_dest = -20.0;
+		break;
+
+	case WM_RBUTTONUP:
+		gun_zoomed = false;
+		if (auto crosshair = scene.Find("crosshair"); crosshair)
+			crosshair->EnableRender();
+		fov_dest = 0.0;
 		break;
 	}
 }
@@ -54,23 +75,20 @@ void Player::Update(float FrameTime) {
 	// 총 발사 업데이트
 	UpdateFire(FrameTime);
 
-	// 총 - 맵 오브젝트 충돌 처리 업데이트
-	UpdateGunCollision();
-
 	// 총 업데이트
 	UpdateGun(FrameTime);
 
 	// 이동 속도 가감속 업데이트
 	UpdateMoveSpeed(FrameTime);
-
-	// 카메라 회전 업데이트
-	UpdateCameraRotation();
-
-	// 걷기 모션 업데이트
-	UpdateWalkMotion(FrameTime);
+	 
+	// 카메라 업데이트
+	UpdateCamera(FrameTime);
 
 	// 터레인 충돌 처리 업데이트
 	UpdateTerrainCollision(FrameTime);
+
+	// 총 - 맵 오브젝트 충돌 처리 업데이트
+	UpdateGunCollision();
 }
 
 void Player::Render() {
@@ -78,12 +96,33 @@ void Player::Render() {
 	BeginRender();
 	Transform::Move(TranslateMatrix, position.x, position.y, position.z);
 	Transform::Rotate(TranslateMatrix, gun_rotation.x, gun_rotation.y + gun_rotation_offset, gun_rotation.z);
-	Transform::Move(TranslateMatrix, 0.3, -0.3, 0.4 + gun_offset);
+	Transform::Move(TranslateMatrix, gun_position_offset.x, gun_position_offset.y, gun_position_offset.z + gun_offset);
 	Render3D(MESH.machine_gun, TEX.scifi, 1.0, DEPTH_TEST_FPS);
+
+	// 레드 도트 렌더링
+	SetLightUse(DISABLE_LIGHT);
+	Render3D(MESH.dot_machine_gun, TEX.scifi, 1.0, DEPTH_TEST_FPS);
 
 	Transform::Move(TranslateMatrix, 0.0, 0.0, 0.4);
 	gun_oobb.Update(MESH.machine_gun, TranslateMatrix, RotateMatrix, ScaleMatrix, true);
 	gun_oobb.Render();
+}
+
+void Player::UpdateCamera(float FrameTime) {
+	// 카메라 회전 업데이트
+	UpdateCameraRotation();
+
+	// 걷기 모션 업데이트
+	UpdateWalkMotion(FrameTime);
+
+	// 총 반동 연출 업데이트
+	UpdateShootMotion(FrameTime);
+	
+	// 카메라 최종 회전
+	camera.Rotate(rotation.x, rotation.y, rotation.z + walk_shake_result + recoil_shake);
+
+	// 정조준 시 fov 업데이트
+	global_fov_offset = std::lerp(global_fov_offset, fov_dest, FrameTime * 20.0);
 }
 
 void Player::UpdateWalkMotion(float FrameTime) {
@@ -99,9 +138,12 @@ void Player::UpdateWalkMotion(float FrameTime) {
 
 	// 최종 흔들림 값 계산
 	walk_shake_result = sinf(walk_shake_num) * walk_shake_value;
+}
 
-	// 카메라 실제 회전
-	camera.Rotate(rotation.x, rotation.y, rotation.z + walk_shake_result);
+void Player::UpdateShootMotion(float FrameTime) {
+	recoil_shake_num += FrameTime * 40.0;
+	recoil_shake = std::lerp(recoil_shake, sinf(recoil_shake_num) * dest_recoil_shake, FrameTime * 5.0);
+	dest_recoil_shake = std::lerp(dest_recoil_shake, 0.0, 5.0 * FrameTime);
 }
 
 void Player::UpdateMoveSpeed(float FrameTime) {
@@ -142,6 +184,13 @@ void Player::UpdateFire(float FrameTime) {
 				crosshair->InputRecoil(0.1);
 
 			gun_offset -= 0.1;
+			int randnum = dist(gen);
+			if (randnum == 1)
+				dest_recoil_shake = 30.0;
+			else
+				dest_recoil_shake = -30.0;
+
+			rotation.x -= 2.5;
 		}
 	}
 }
@@ -149,14 +198,30 @@ void Player::UpdateFire(float FrameTime) {
 void Player::UpdateGun(float FrameTime) {
 	gun_offset = std::lerp(gun_offset, 0.0, FrameTime * 10.0);
 
+	if (gun_zoomed && !gun_collided) {
+		gun_position_offset.x = std::lerp(gun_position_offset.x, 0.0, FrameTime * 20.0);
+		gun_position_offset.y = std::lerp(gun_position_offset.y, -0.22, FrameTime * 20.0);
+		gun_position_offset.z = std::lerp(gun_position_offset.z, 0.4, FrameTime * 20.0);
+	}
+
+	else {
+		gun_position_offset.x = std::lerp(gun_position_offset.x, 0.3, FrameTime * 20.0);
+		gun_position_offset.y = std::lerp(gun_position_offset.y, -0.3, FrameTime * 20.0);
+		gun_position_offset.z = std::lerp(gun_position_offset.z, 0.4, FrameTime * 20.0);
+	}
+
+
 	gun_rotation.x = std::lerp(gun_rotation.x, rotation.x, FrameTime * 30.0);
 	gun_rotation.y = std::lerp(gun_rotation.y, rotation.y, FrameTime * 30.0);
 	gun_rotation.z = std::lerp(gun_rotation.z, rotation.z, FrameTime * 30.0);
+	
 
 	if (gun_collided)
 		gun_rotation_offset = std::lerp(gun_rotation_offset, -90.0, FrameTime * 3.0);
 	else
 		gun_rotation_offset = std::lerp(gun_rotation_offset, 0.0, FrameTime * 3.0);
+
+
 }
 
 void Player::UpdateCameraRotation() {

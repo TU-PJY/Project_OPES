@@ -15,7 +15,18 @@ void CrossHair::Update(float Delta) {
 	recoil = std::lerp(recoil, 0.0, Delta * 5.0);
 }
 
+void CrossHair::EnableRender() {
+	render_state = true;
+}
+
+void CrossHair::DisableRender() {
+	render_state = false;
+}
+
 void CrossHair::Render() {
+	if (!render_state)
+		return;
+
 	// 크로스헤어 렌더링
 	// 반동 값이 높을 수록 크로스 헤어의 간격은 넓어지게 된다 -> 정확도가 떨어지게 된다
 	//  왼쪽 가로 선
