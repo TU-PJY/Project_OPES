@@ -51,6 +51,12 @@ private:
 	// 걷기 모션 흔들림 결과 값
 	float walk_shake_result{};
 
+	// 1인칭 총 오프셋 위치
+	float gun_offset{};
+
+	// 총 회전 각
+	XMFLOAT3 gun_rotation{};
+
 	// 맵 벽 oobb 데이터
 	std::vector<OOBB> MapOOBBData{};
 
@@ -64,6 +70,7 @@ public:
 	void InputKey(KeyEvent& Event);
 	void UpdateMoveSpeed(float FrameTime);
 	void UpdateFire(float FrameTime);
+	void UpdateGun(float FrameTime);
 	void UpdateCameraRotation();
 	void UpdateTerrainCollision(float FrameTime);
 	void UpdateWalkMotion(float FrameTime);

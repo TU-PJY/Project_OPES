@@ -11,45 +11,45 @@
 //Animation stack[5] : Armature | SpinAction
 
 class TestObject : public GameObject {
-public:
-	OOBB oobb{};
-	LineBrush line{};
+//public:
+	//OOBB oobb{};
+	//LineBrush line{};
 
-	void InputKey(KeyEvent& Event) {
-		if (Event.Type == WM_KEYDOWN) {
-			switch (Event.Key) {
-			case 'R':
-				ResetAnimationTime(MESH.muscleMan);
-				break;
-			}
-		}
-	}
+	//void InputKey(KeyEvent& Event) {
+	//	if (Event.Type == WM_KEYDOWN) {
+	//		switch (Event.Key) {
+	//		case 'R':
+	//			ResetAnimationTime(MESH.muscleMan);
+	//			break;
+	//		}
+	//	}
+	//}
 
-	void Update(float FT) override {
-	 //   UpdateFBXAnimation(MESH.Lain, FT);
-	//	UpdateFBXAnimation(MESH.steve, FT);
-		UpdateFBXAnimation(MESH.muscleMan, FT);
-	}
+	//void Update(float FT) override {
+	// //   UpdateFBXAnimation(MESH.Lain, FT);
+	////	UpdateFBXAnimation(MESH.steve, FT);
+	//	//UpdateFBXAnimation(MESH.muscleMan, FT);
+	//}
 
-	void Render() override {
-		/*BeginRender(RENDER_TYPE_3D);
-		Transform::Move(TranslateMatrix, -5.0, 0.0, 5.0);
-		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		RenderFBX(MESH.Lain, TEX.Lain);
+	//void Render() override {
+	//	/*BeginRender(RENDER_TYPE_3D);
+	//	Transform::Move(TranslateMatrix, -5.0, 0.0, 5.0);
+	//	Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
+	//	RenderFBX(MESH.Lain, TEX.Lain);
 
-		BeginRender(RENDER_TYPE_3D);
-		Transform::Move(TranslateMatrix, 0.0, 2.5, 5.0);
-		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		Transform::Scale(ScaleMatrix, 0.35, 0.35, 0.35);
-		RenderFBX(MESH.steve, TEX.steve);*/
+	//	BeginRender(RENDER_TYPE_3D);
+	//	Transform::Move(TranslateMatrix, 0.0, 2.5, 5.0);
+	//	Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
+	//	Transform::Scale(ScaleMatrix, 0.35, 0.35, 0.35);
+	//	RenderFBX(MESH.steve, TEX.steve);*/
 
-		BeginRender(RENDER_TYPE_3D);
-	//	Transform::Move(TranslateMatrix, 5.0, 0.0, 5.0);
-		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
-		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		RenderFBX(MESH.muscleMan, TEX.muscleMan);
-		
-	}
+	//	BeginRender(RENDER_TYPE_3D);
+	////	Transform::Move(TranslateMatrix, 5.0, 0.0, 5.0);
+	//	Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
+	//	Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
+	//	RenderFBX(MESH.muscleMan, TEX.muscleMan);
+	//	
+	//}
 };
 
 

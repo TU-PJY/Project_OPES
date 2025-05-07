@@ -17,15 +17,6 @@ struct ObjectStruct {
 // 매쉬 리소스는 해당 클래스 안에 선언
 class MeshResource {
 public:
-	// FBX 테스트용 매쉬
-
-	//// Animated FBX 전용 mesh
-	//// FBX 매쉬는 내부에 매쉬가 여러개일 수 있으므로 내부에서 vector로 일괄 처리 및 렌더링 한다.
-	FBXMesh man{};
-	FBXMesh Lain{};
-	FBXMesh steve{};
-	FBXMesh muscleMan{};
-
 	// Map1 매쉬
 	Mesh* RockMesh;
 	Mesh* LakeMesh;
@@ -49,8 +40,8 @@ public:
 	Mesh* Map3Stone[2]{};
 	Mesh* Crystal[3]{};
 
-	// FBX 애니메이션 보여주기용 매쉬 
-	FBXMesh TestMesh;
+	// polygon scifi asset
+	FBXMesh machine_gun{};
 };
 extern MeshResource MESH;
 
@@ -81,7 +72,8 @@ public:
 	Texture* Map3Palette{};
 	Texture* Volcano{};
 
-	Texture* TestTex;
+	// polyson scifi asset
+	Texture* scifi{};
 };
 extern TextureResource TEX;
 
@@ -132,18 +124,26 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Dir
 		fbxUtil.ProcessAnimation();
 		//fbxUtil.PrintAnimationStackNames();
 		fbxUtil.EnumerateAnimationStacks();
+		fbxUtil.ClearVertexVector();
 	}
 }
 
 // 애니메이션이 없는 FBX 파일 로드용 함수
-inline void LoadStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, char* Directory) {
+inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, char* Directory) {
 	if (fbxUtil.LoadStaticFBXFile(Directory, TargetMesh)) {
 		fbxUtil.TriangulateStaticScene();
-		fbxUtil.GetStaticVertexData();
-		if (TargetMesh) {
-			TargetMesh->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
-			LoadedMeshList.emplace_back(TargetMesh);
-		}
+		fbxUtil.GetSingleStaticVertexData();
+		TargetMesh->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
+		LoadedMeshList.emplace_back(TargetMesh);
+		fbxUtil.ClearVertexVector();
+	}
+}
+
+// 애니메이션이 없는 다중 FBX 파일 로드용 함수
+inline void LoadMultiStaticFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory) {
+	if (fbxUtil.LoadAnimatedFBXFile(Directory, TargetMesh)) {
+		fbxUtil.TriangulateAnimatedScene();
+		fbxUtil.GetMultiStaticVertexData(System);
 		fbxUtil.ClearVertexVector();
 	}
 }

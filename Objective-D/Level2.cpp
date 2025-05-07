@@ -25,7 +25,7 @@ void Level2::Start() {
 	bool dev_mode_enabled = false;
 
 	if(!dev_mode_enabled)
-		scene.AddObject(new Player("map2"), "player", LAYER1);
+		scene.AddObject(new Player("map2"), "player", LAYER2);
 	else
 		scene.AddObject(new CameraController, "camera_controller", LAYER1);
 

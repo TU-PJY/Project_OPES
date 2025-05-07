@@ -11,78 +11,69 @@ SystemResource SysRes;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
-	LoadAnimatedFBX(System, MESH.man, "Resources//TestMesh//test.fbx");
-	//LoadAnimatedFBX(System, MESH.Lain, "Resources//TestMesh//lain.fbx");
-	//LoadAnimatedFBX(System, MESH.steve, "Resources//TestMesh//steve.fbx");
-
-	LoadAnimatedFBX(System, MESH.TestMesh, "Resources//Models//zombie.fbx");
-
 	// map1
-	LoadStaticFBX(System, MESH.RockMesh, "Resources//Models//map1//wall-rock.fbx");
-	LoadStaticFBX(System, MESH.LakeMesh, "Resources//Models//map1//lake.fbx");
-	LoadStaticFBX(System, MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
+	LoadSingleStaticFBX(System, MESH.RockMesh, "Resources//Models//map1//wall-rock.fbx");
+	LoadSingleStaticFBX(System, MESH.LakeMesh, "Resources//Models//map1//lake.fbx");
+	LoadSingleStaticFBX(System, MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
 
 	for (int i = 0; i < 3; ++i) {
 		std::string FileName = "Resources//Models//map1//lake-rock-";
 		FileName += std::to_string(i + 1) + ".fbx";
-		LoadStaticFBX(System, MESH.LakeRockMesh[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(System, MESH.LakeRockMesh[i], (char*)FileName.c_str());
 	}
 
 	for (int i = 0; i < 5; ++i) {
 		std::string FileName = "Resources//Models//map1//map-object-";
 		FileName += std::to_string(i + 1) + ".fbx";
-		LoadStaticFBX(System, MESH.MapObjectMesh[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(System, MESH.MapObjectMesh[i], (char*)FileName.c_str());
 	}
 
-	LoadStaticFBX(System, MESH.Grass[0], "Resources//Models//map1//grass-1.fbx");
-	LoadStaticFBX(System, MESH.Grass[1], "Resources//Models//map1//grass-2.fbx");
-	LoadStaticFBX(System, MESH.Flower[0], "Resources//Models//map1//flower-1.fbx");
-	LoadStaticFBX(System, MESH.Flower[1], "Resources//Models//map1//flower-2.fbx");
-	LoadStaticFBX(System, MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
-	LoadStaticFBX(System, MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
+	LoadSingleStaticFBX(System, MESH.Grass[0], "Resources//Models//map1//grass-1.fbx");
+	LoadSingleStaticFBX(System, MESH.Grass[1], "Resources//Models//map1//grass-2.fbx");
+	LoadSingleStaticFBX(System, MESH.Flower[0], "Resources//Models//map1//flower-1.fbx");
+	LoadSingleStaticFBX(System, MESH.Flower[1], "Resources//Models//map1//flower-2.fbx");
+	LoadSingleStaticFBX(System, MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
+	LoadSingleStaticFBX(System, MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
 
 
 	// map2
-	LoadStaticFBX(System, MESH.WinterWall, "Resources//Models//map2//winter-cliff.fbx");
+	LoadSingleStaticFBX(System, MESH.WinterWall, "Resources//Models//map2//winter-cliff.fbx");
 
 	for (int i = 0; i < 3; ++i) {
 		std::string FileName = "Resources//Models//map2//winter-rock-" + std::to_string(i + 1) + ".fbx";
-		LoadStaticFBX(System, MESH.WinterRock[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(System, MESH.WinterRock[i], (char*)FileName.c_str());
 	}
 
 	for (int i = 0; i < 2; ++i) {
 		std::string FileName = "Resources//Models//map2//winter-ice-" + std::to_string(i + 1) + ".fbx";
-		LoadStaticFBX(System, MESH.WinterIce[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(System, MESH.WinterIce[i], (char*)FileName.c_str());
 	}
 
 	// map3
-	LoadStaticFBX(System, MESH.FloatingRock, "Resources//Models//map3//map3-rock.fbx");
-	LoadStaticFBX(System, MESH.Volcano, "Resources//Models//map3//volcano.fbx");
-	LoadStaticFBX(System, MESH.SmallVolcano, "Resources//Models//map3//volcano-small.fbx");
+	LoadSingleStaticFBX(System, MESH.FloatingRock, "Resources//Models//map3//map3-rock.fbx");
+	LoadSingleStaticFBX(System, MESH.Volcano, "Resources//Models//map3//volcano.fbx");
+	LoadSingleStaticFBX(System, MESH.SmallVolcano, "Resources//Models//map3//volcano-small.fbx");
 
 	for (int i = 0; i < 2; i++) {
 		std::string FileName = "Resources//Models//map3//map3-stone-" + std::to_string(i + 1) + ".fbx";
-		LoadStaticFBX(System, MESH.Map3Stone[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(System, MESH.Map3Stone[i], (char*)FileName.c_str());
 	}
 
 	for (int i = 0; i < 3; ++i) {
 		std::string FileName = "Resources//Models//map3//map3-crystal-" + std::to_string(i + 1) + ".fbx";
-		LoadStaticFBX(System, MESH.Crystal[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(System, MESH.Crystal[i], (char*)FileName.c_str());
 	}
 
-	LoadStaticFBX(System, MESH.DeadTree, "Resources//Models//map3//map3-tree.fbx");
+	LoadSingleStaticFBX(System, MESH.DeadTree, "Resources//Models//map3//map3-tree.fbx");
+
+	// polygon scifi asset
+	LoadMultiStaticFBX(System, MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
-	//// FBX 테스트용 모델 텍스터 로드
-	ImportTexture(System, TEX.man, L"Resources//TestMesh//test.png");
-	//ImportTexture(System, TEX.Lain, L"Resources//TestMesh//lain.png");
-	//ImportTexture(System, TEX.steve, L"Resources//TestMesh//steve.png");
-
 	ImportTexture(System, TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
-	//ImportTexture(System, TEX.TestTex, L"Resources//Image//zombie.png", TEXTURE_TYPE_WIC);
 
 	// map1
 	ImportTexture(System, TEX.Palette1, L"Resources//Image//palette-1.png", TEXTURE_TYPE_WIC);
@@ -99,6 +90,9 @@ void LoadTexture(DeviceSystem& System) {
 	ImportTexture(System, TEX.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TEX.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
 	ImportTexture(System, TEX.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
+
+	// polygon scifi asset
+	ImportTexture(System, TEX.scifi, L"Resources//Image//scifi//polygon_scifi.png", TEXTURE_TYPE_WIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

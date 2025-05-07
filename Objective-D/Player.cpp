@@ -54,6 +54,9 @@ void Player::Update(float FrameTime) {
 	// 총 발사 업데이트
 	UpdateFire(FrameTime);
 
+	// 총 업데이트
+	UpdateGun(FrameTime);
+
 	// 이동 속도 가감속 업데이트
 	UpdateMoveSpeed(FrameTime);
 
@@ -68,7 +71,12 @@ void Player::Update(float FrameTime) {
 }
 
 void Player::Render() {
-	//player_range.Render();
+	// 1인칭 총 렌더링
+	BeginRender();
+	Transform::Move(TranslateMatrix, position.x, position.y, position.z);
+	Transform::Rotate(TranslateMatrix, gun_rotation);
+	Transform::Move(TranslateMatrix, 0.3, -0.3, 0.4 + gun_offset);
+	RenderFBX(MESH.machine_gun, TEX.scifi, 1.0, false);
 }
 
 void Player::UpdateWalkMotion(float FrameTime) {
@@ -125,8 +133,18 @@ void Player::UpdateFire(float FrameTime) {
 			current_fire_delay = dest_fire_delay;
 			if (auto crosshair = scene.Find("crosshair"); crosshair)
 				crosshair->InputRecoil(0.1);
+
+			gun_offset -= 0.1;
 		}
 	}
+}
+
+void Player::UpdateGun(float FrameTime) {
+	gun_offset = std::lerp(gun_offset, 0.0, FrameTime * 10.0);
+
+	gun_rotation.x = std::lerp(gun_rotation.x, rotation.x, FrameTime * 30.0);
+	gun_rotation.y = std::lerp(gun_rotation.y, rotation.y, FrameTime * 30.0);
+	gun_rotation.z = std::lerp(gun_rotation.z, rotation.z, FrameTime * 30.0);
 }
 
 void Player::UpdateCameraRotation() {

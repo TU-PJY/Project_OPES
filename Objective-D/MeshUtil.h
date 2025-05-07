@@ -136,8 +136,10 @@ public:
 	void GetAnimatedVertexData(DeviceSystem& System);
 	void ProcessAnimatedNode(FbxNode* Node, DeviceSystem& System);
 	bool TriangulateStaticScene();
-	void GetStaticVertexData();
-	void ProcessStaticNode(FbxNode* Node);
+	void GetSingleStaticVertexData();
+	void GetMultiStaticVertexData(DeviceSystem& System);\
+	void ProcessMultiStaticNode(FbxNode* Node, DeviceSystem& System);
+	void ProcessSingleStaticNode(FbxNode* Node);
 	void ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLayer);
 	void ProcessAnimation();
 	void PrintAnimationStackNames();

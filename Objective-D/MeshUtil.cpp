@@ -297,16 +297,108 @@ bool FBXUtil::TriangulateStaticScene() {
 	return true;
 }
 
-void FBXUtil::GetStaticVertexData() {
+void FBXUtil::GetSingleStaticVertexData() {
 	FbxNode* RootNode = StaticScene->GetRootNode();
 
 	if (RootNode) {
 		for (int i = 0; i < RootNode->GetChildCount(); ++i)
-			ProcessStaticNode(RootNode->GetChild(i));
+			ProcessSingleStaticNode(RootNode->GetChild(i));
 	}
 }
 
-void FBXUtil::ProcessStaticNode(FbxNode* Node) {
+void FBXUtil::GetMultiStaticVertexData(DeviceSystem& System) {
+	FbxNode* RootNode = MeshPtr->Scene->GetRootNode();
+
+	if (RootNode) {
+		for (int i = 0; i < RootNode->GetChildCount(); ++i)
+			ProcessMultiStaticNode(RootNode->GetChild(i), System);
+	}
+}
+
+void FBXUtil::ProcessMultiStaticNode(FbxNode* Node, DeviceSystem& System) {
+	FbxMesh* FMesh = Node->GetMesh();
+	if (FMesh) {
+		ParsedVertices.clear();
+
+		FbxVector4* ControlPoints = FMesh->GetControlPoints();
+		int PolygonCount = FMesh->GetPolygonCount();
+		int NumControlPoint{};
+		int VertexIndex{};
+
+		Mesh* NewMesh = new Mesh();
+		NewMesh->MeshType = FBX_STATIC;
+		NewMesh->FbxNodePtr = Node;
+
+		FbxAMatrix GlobalTransform = Node->EvaluateGlobalTransform();                         // 위치 변환용
+		FbxAMatrix NormalTransform = GlobalTransform.Inverse().Transpose();                   // 노멀 회전용
+
+		for (int PolyIndex = 0; PolyIndex < PolygonCount; PolyIndex++) {
+			int VertexCountInPolygon = FMesh->GetPolygonSize(PolyIndex);
+
+			for (int V = 0; V < VertexCountInPolygon; V++) {
+				int ControlPointIndex = FMesh->GetPolygonVertex(PolyIndex, V);
+				if (ControlPointIndex < 0) continue;
+
+				NumControlPoint = ControlPointIndex;
+				VertexIndex = ParsedVertices.size();
+
+				FbxVector4 LocalPosition = ControlPoints[ControlPointIndex];
+				FbxVector4 WorldPosition = GlobalTransform.MultT(LocalPosition);              // 위치 변환
+
+				FbxVector4 Normal(0, 0, 0, 0);
+				bool HasNormal = FMesh->GetPolygonVertexNormal(PolyIndex, V, Normal);
+				
+				if (HasNormal) {
+					FbxVector4 row0 = GlobalTransform.GetRow(0);
+					FbxVector4 row1 = GlobalTransform.GetRow(1);
+					FbxVector4 row2 = GlobalTransform.GetRow(2);
+
+					FbxVector4 RotatedNormal;
+					RotatedNormal[0] = Normal[0] * row0[0] + Normal[1] * row0[1] + Normal[2] * row0[2];
+					RotatedNormal[1] = Normal[0] * row1[0] + Normal[1] * row1[1] + Normal[2] * row1[2];
+					RotatedNormal[2] = Normal[0] * row2[0] + Normal[1] * row2[1] + Normal[2] * row2[2];
+					RotatedNormal[3] = 0.0;
+
+					RotatedNormal.Normalize();
+					Normal = RotatedNormal;
+				}
+
+				FbxVector2 UV(0, 0);
+				const char* UVSetName = nullptr;
+				if (FMesh->GetElementUVCount() > 0) {
+					FbxLayerElementUV* UVElement = FMesh->GetElementUV(0);
+					if (UVElement) UVSetName = UVElement->GetName();
+				}
+				bool Unmapped = false;
+				bool HasUV = FMesh->GetPolygonVertexUV(PolyIndex, V, UVSetName, UV, Unmapped);
+
+				FBXVertex Vertex{};
+				Vertex.px = static_cast<float>(WorldPosition[0]);
+				Vertex.py = static_cast<float>(WorldPosition[1]);
+				Vertex.pz = static_cast<float>(WorldPosition[2]);
+				Vertex.nx = HasNormal ? static_cast<float>(Normal[0]) : 0.0f;
+				Vertex.ny = HasNormal ? static_cast<float>(Normal[1]) : 0.0f;
+				Vertex.nz = HasNormal ? static_cast<float>(Normal[2]) : 0.0f;
+				Vertex.u = HasUV ? static_cast<float>(UV[0]) : 0.0f;
+				Vertex.v = HasUV ? static_cast<float>(UV[1]) : 0.0f;
+
+				ParsedVertices.push_back(Vertex);
+				int vertexIndex = ParsedVertices.size() - 1;
+				NewMesh->ControlPointToVertexIndices[NumControlPoint].push_back(vertexIndex);
+			}
+		}
+
+		NewMesh->NodeName = Node->GetName();
+		NewMesh->CreateFBXMesh(System.Device, System.CmdList, ParsedVertices);
+		fbxUtil.ParseSkin(FMesh, NewMesh);
+		MeshPtr->MeshPart.push_back(NewMesh);
+	}
+
+	for (int i = 0; i < Node->GetChildCount(); ++i)
+		ProcessMultiStaticNode(Node->GetChild(i), System);
+}
+
+void FBXUtil::ProcessSingleStaticNode(FbxNode* Node) {
 	//std::cout << "Node Name: " << Node->GetName() << "\n";
 
 	FbxMesh* FMesh = Node->GetMesh();
@@ -357,7 +449,7 @@ void FBXUtil::ProcessStaticNode(FbxNode* Node) {
 	}
 
 	for (int i = 0; i < Node->GetChildCount(); ++i)
-		ProcessStaticNode(Node->GetChild(i));
+		ProcessSingleStaticNode(Node->GetChild(i));
 }
 
 bool FBXUtil::LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
