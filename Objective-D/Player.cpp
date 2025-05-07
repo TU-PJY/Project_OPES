@@ -7,9 +7,8 @@
 
 // 생성자에서 입력받은 맵 오브젝트 이름으로 터레인 값을 받아온다.
 Player::Player(std::string MapObjectName) {
-	mouse.StartMotionCapture(GlobalHWND);
 	target_terrain_name = MapObjectName;
-
+	mouse.StartMotionCapture(GlobalHWND);
 	// 현재 맵에서 벽 oobb를 얻어온다.
 	if (auto Map = scene.Find(MapObjectName); Map)
 		MapOOBBData = Map->GetMapWallOOBB();
@@ -28,6 +27,9 @@ void Player::InputMouse(MouseEvent& Event) {
 	// 총 발사 상태 활성화 / 비활성화
 	switch (Event.Type) {
 	case WM_LBUTTONDOWN:
+		// 마우스 모션 캡쳐 상태가 해제된 경우(윈도우 버튼 등으로 다른 윈도우에 포커싱된 경우)
+		// 원래의 윈도우에 좌클릭으로 포커싱하면 모션 캡쳐 상태가 다시 활성화 된다.
+		mouse.StartMotionCapture(GlobalHWND);
 		trigger_state = true;
 		break;
 

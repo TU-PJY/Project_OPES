@@ -2,11 +2,11 @@
 <Script>
 	<!-- 디펜스 모드 공간 -->
 	<!-- 1부터 15까지 오른쪽 방향으로 배치 -->
-	<OOBB X="-170" Z="-175" SizeX="11" SizeZ="22" Rotation="-45.0"/>
+	<OOBB X="-170" Z="-175" SizeX="11" SizeZ="26" Rotation="-45.0"/>
 	<OOBB X="-190" Z="-115" SizeX="11" SizeZ="50" Rotation="0.0"/>
 	<OOBB X="-175" Z="-55" SizeX="11" SizeZ="22" Rotation="45.0"/>
-	<OOBB X="-110" Z="-40" SizeX="11" SizeZ="45" Rotation="90.0"/>
-	<OOBB X="-50" Z="-50" SizeX="11" SizeZ="22" Rotation="135.0"/>
+	<OOBB X="-110" Z="-40" SizeX="11" SizeZ="50" Rotation="90.0"/>
+	<OOBB X="-50" Z="-50" SizeX="11" SizeZ="25" Rotation="135.0"/>
 	<OOBB X="-40" Z="-80" SizeX="11" SizeZ="22" Rotation="180.0"/>
 	<OOBB X="-40" Z="-155" SizeX="11" SizeZ="22" Rotation="180.0"/>
 	<OOBB X="-50" Z="-185" SizeX="11" SizeZ="22" Rotation="45.0"/>
@@ -21,13 +21,13 @@
 	<!-- 디펜스 공간 출구쪽 바깥쪽 벽 -->
 	<OOBB X="30" Z="-145" SizeX="11" SizeZ="80" Rotation="90.0"/>
 	<OOBB X="110" Z="-135" SizeX="11" SizeZ="22" Rotation="45.0"/>
-	<OOBB X="120" Z="-91" SizeX="11" SizeZ="36" Rotation="0.0"/>
+	<OOBB X="120" Z="-91" SizeX="11" SizeZ="38" Rotation="0.0"/>
 	<OOBB X="110" Z="-45" SizeX="11" SizeZ="22" Rotation="-45.0"/>
 	<OOBB X="80" Z="-35" SizeX="11" SizeZ="22" Rotation="-90.0"/>
 	<OOBB X="20" Z="-10" SizeX="11" SizeZ="57" Rotation="-55.0"/>
 	<!-- 통로 벽 -->
 	<OOBB X="-70" Z="10" SizeX="11" SizeZ="40" Rotation="0.0"/>
-	<OOBB X="-60" Z="55" SizeX="11" SizeZ="22" Rotation="45.0"/>
+	<OOBB X="-60" Z="55" SizeX="11" SizeZ="18" Rotation="45.0"/>
 	<OOBB X="66" Z="65" SizeX="11" SizeZ="197" Rotation="90.0"/>
 	<OOBB X="290" Z="15" SizeX="11" SizeZ="22" Rotation="45.0"/>
 	<OOBB24 X="300" Z="75" SizeX="11" SizeZ="50" Rotation="0.0"/>
@@ -47,10 +47,10 @@
 	<OOBB35 X="-280" Z="120" SizeX="11" SizeZ="22" Rotation="225.0"/>
 	<OOBB36 X="-220" Z="135" SizeX="11" SizeZ="50" Rotation="260.0"/>
 	<!-- 던전 -->
-	<OOBB37 X="130" Z="-105" SizeX="11" SizeZ="22" Rotation="135.0"/>
+	<OOBB37 X="130" Z="-105" SizeX="11" SizeZ="18" Rotation="135.0"/>
 	<OOBB38 X="190" Z="-115" SizeX="11" SizeZ="50" Rotation="90.0"/>
 	<OOBB39 X="250" Z="-105" SizeX="11" SizeZ="22" Rotation="45.0"/>
-	<OOBB40 X="260" Z="-75" SizeX="11" SizeZ="22" Rotation="0.0"/>
+	<OOBB40 X="260" Z="-75" SizeX="11" SizeZ="28" Rotation="0.0"/>
 	<OOBB41 X="250" Z="-35" SizeX="11" SizeZ="53" Rotation="-45.0"/>
 	
 	<!--누락 추가-->

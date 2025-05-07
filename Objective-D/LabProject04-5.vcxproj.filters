@@ -4,12 +4,6 @@
     <Filter Include="[1]____________[ Game Mode ]">
       <UniqueIdentifier>{453fd586-1c73-44fe-a61b-78ef8806db07}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[2]____________[ Game Object ]">
-      <UniqueIdentifier>{ff900b4e-0c5d-4b64-8b68-91350d32ea6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[2] [ Template ]">
-      <UniqueIdentifier>{03b6b546-94f5-4152-a165-f88612df9eb3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[4]____________[ Game Resource ]">
       <UniqueIdentifier>{517a4e13-9e31-4063-a3c0-0decb62883fd}</UniqueIdentifier>
     </Filter>
@@ -155,23 +149,29 @@
     <Filter Include="[1]____________[ Game Mode ]\[ Modes ]">
       <UniqueIdentifier>{64814673-b711-4547-a2fa-f83b097a05fe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]">
-      <UniqueIdentifier>{03135e75-d38d-4b93-81cb-cd9d7aad3e82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]">
-      <UniqueIdentifier>{e8466c80-c624-4454-8506-31d701736f5b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]">
-      <UniqueIdentifier>{7be1c762-6b7c-423f-8572-d6e6b2c91a13}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]">
-      <UniqueIdentifier>{80dc9e91-a10a-4628-9f0a-12ab65fb7cb9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]">
-      <UniqueIdentifier>{0e3eacd1-45f7-4761-8928-8b05d1d1d88e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]">
       <UniqueIdentifier>{feb2faa2-d67f-4a56-a6df-ded7fe1ed65a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[2]____________[ Game Object ]">
+      <UniqueIdentifier>{ff900b4e-0c5d-4b64-8b68-91350d32ea6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[2] [ Template ]">
+      <UniqueIdentifier>{03b6b546-94f5-4152-a165-f88612df9eb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]">
+      <UniqueIdentifier>{03135e75-d38d-4b93-81cb-cd9d7aad3e82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]">
+      <UniqueIdentifier>{e8466c80-c624-4454-8506-31d701736f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]">
+      <UniqueIdentifier>{80dc9e91-a10a-4628-9f0a-12ab65fb7cb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]">
+      <UniqueIdentifier>{0e3eacd1-45f7-4761-8928-8b05d1d1d88e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]">
+      <UniqueIdentifier>{7be1c762-6b7c-423f-8572-d6e6b2c91a13}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -206,7 +206,7 @@
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Picking Util ]</Filter>
     </ClInclude>
     <ClInclude Include="GameObject.h">
-      <Filter>[2]____________[ Game Object ]\[2] [ Template ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[2] [ Template ]</Filter>
     </ClInclude>
     <ClInclude Include="CollisionUtil.h">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Collision Util ]</Filter>
@@ -227,7 +227,7 @@
       <Filter>[0]____________[ Config ]\Header</Filter>
     </ClInclude>
     <ClInclude Include="Map1.h">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
     </ClInclude>
     <ClInclude Include="d3dx12.h">
       <Filter>[5]____________[ Objective-D ]\[1] - [ Header ]</Filter>
@@ -302,19 +302,19 @@
       <Filter>[3]____________[ Camera ]</Filter>
     </ClInclude>
     <ClInclude Include="Map2.h">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
     </ClInclude>
     <ClInclude Include="Map3.h">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
     </ClInclude>
     <ClInclude Include="SampleMonster.h">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]</Filter>
     </ClInclude>
     <ClInclude Include="CrossHair.h">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
     </ClInclude>
     <ClInclude Include="ClampUtil.h">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
@@ -343,7 +343,7 @@
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Shader Util ]</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
-      <Filter>[2]____________[ Game Object ]\[2] [ Template ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[2] [ Template ]</Filter>
     </ClCompile>
     <ClCompile Include="CollisionUtil.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Collision Util ]</Filter>
@@ -457,10 +457,10 @@
       <Filter>[1]____________[ Game Mode ]\[ Test bed ]</Filter>
     </ClCompile>
     <ClCompile Include="CrossHair.cpp">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
     </ClCompile>
     <ClCompile Include="ClampUtil.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
