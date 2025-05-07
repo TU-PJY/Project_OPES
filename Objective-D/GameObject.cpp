@@ -117,13 +117,22 @@ void GameObject::SetFogUse(int Flag) {
 }
 
 // 3D ·»´õ¸µ
-void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, bool DepthTestFlag) {
+void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, int DepthTestFlag) {
 	TexturePtr->Render3D(GlobalCommandList);
 
-	if(DepthTestFlag)
-		ObjectShader->RenderDefault(GlobalCommandList);
-	else
-		ObjectShader->RenderDepthNone(GlobalCommandList);
+	switch (DepthTestFlag) {
+	case DEPTH_TEST_DEFAULT:
+		ObjectShader->RenderDefault(GlobalCommandList);  
+		break;
+
+	case DEPTH_TEST_NONE:
+		ObjectShader->RenderDepthNone(GlobalCommandList); 
+		break;
+
+	case DEPTH_TEST_FPS:
+		ObjectShader->RenderFPS(GlobalCommandList);
+		break;
+	}
 
 	ObjectAlpha = AlphaValue;
 	CBVUtil::Input(GlobalCommandList, LightCBV);

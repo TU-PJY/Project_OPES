@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "Scene.h"
+#include "ScriptUtil.h"
 
 class Player : public GameObject {
 private:
@@ -51,11 +52,24 @@ private:
 	// 걷기 모션 흔들림 결과 값
 	float walk_shake_result{};
 
+
 	// 1인칭 총 오프셋 위치
 	float gun_offset{};
 
+	// 1인칭 총 회전 각 오프셋
+	float gun_rotation_offset{};
+
+	// 총이 맵에 닿는 상태
+	bool gun_collided{};
+
 	// 총 회전 각
 	XMFLOAT3 gun_rotation{};
+
+	// 총 바운드 박스
+	// gun_collided 판정을 위함
+	OOBB gun_oobb{};
+
+
 
 	// 맵 벽 oobb 데이터
 	std::vector<OOBB> MapOOBBData{};
@@ -73,6 +87,7 @@ public:
 	void UpdateGun(float FrameTime);
 	void UpdateCameraRotation();
 	void UpdateTerrainCollision(float FrameTime);
+	void UpdateGunCollision();
 	void UpdateWalkMotion(float FrameTime);
 	void Update(float FrameTime) override;
 	void Render();

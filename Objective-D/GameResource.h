@@ -41,7 +41,7 @@ public:
 	Mesh* Crystal[3]{};
 
 	// polygon scifi asset
-	FBXMesh machine_gun{};
+	Mesh* machine_gun{};
 };
 extern MeshResource MESH;
 
@@ -140,16 +140,18 @@ inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, char* D
 }
 
 // 애니메이션이 없는 다중 FBX 파일 로드용 함수
-inline void LoadMultiStaticFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory) {
-	if (fbxUtil.LoadAnimatedFBXFile(Directory, TargetMesh)) {
-		fbxUtil.TriangulateAnimatedScene();
-		fbxUtil.GetMultiStaticVertexData(System);
+inline void LoadMultiStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, char* Directory) {
+	if (fbxUtil.LoadMultiStaticFBXFile(Directory, TargetMesh)) {
+		fbxUtil.TriangulateMultiStaticScene();
+		fbxUtil.GetMultiStaticVertexData();
+		TargetMesh->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
+		LoadedMeshList.emplace_back(TargetMesh);
 		fbxUtil.ClearVertexVector();
 	}
 }
 
 // TEXTURE_TYPE_WIC, D3D12_FILTER_MIN_MAG_MIP_POINT가 디폴트
-inline void ImportTexture(DeviceSystem& System, Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_POINT) {
+inline void LoadTexture(DeviceSystem& System, Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_POINT) {
 	TexturePtr = new Texture(System.Device, System.CmdList, Directory, Type, FilterOption);
 	LoadedTextureList.emplace_back(TexturePtr);
 }

@@ -131,15 +131,17 @@ private:
 public:
 	void Init();
 	bool LoadStaticFBXFile(const char* FilePath, Mesh*& TargetMesh);
+	bool LoadMultiStaticFBXFile(std::string FilePath, Mesh*& TargetMesh);
 	bool LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh);
 	bool TriangulateAnimatedScene();
 	void GetAnimatedVertexData(DeviceSystem& System);
 	void ProcessAnimatedNode(FbxNode* Node, DeviceSystem& System);
 	bool TriangulateStaticScene();
+	bool TriangulateMultiStaticScene();
 	void GetSingleStaticVertexData();
-	void GetMultiStaticVertexData(DeviceSystem& System);\
-	void ProcessMultiStaticNode(FbxNode* Node, DeviceSystem& System);
+	void GetMultiStaticVertexData();
 	void ProcessSingleStaticNode(FbxNode* Node);
+	void ProcessMultiStaticNode(FbxNode* Node);
 	void ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLayer);
 	void ProcessAnimation();
 	void PrintAnimationStackNames();

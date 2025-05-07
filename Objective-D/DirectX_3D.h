@@ -54,6 +54,13 @@ enum RenderTypeEnum {
 	RENDER_TYPE_2D_STATIC
 };
 
+// 깊이 검사 타입 열거형
+enum DepthTestTypeEnum {
+	DEPTH_TEST_DEFAULT,
+	DEPTH_TEST_NONE,
+	DEPTH_TEST_FPS
+};
+
 // 텍스처 반전 타입 열거형
 enum FlipTypeEnum {
 	FLIP_TYPE_NONE,

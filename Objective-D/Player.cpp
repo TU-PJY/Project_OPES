@@ -4,11 +4,11 @@
 #include "CameraController.h"
 #include "ClampUtil.h"
 
-
 // 생성자에서 입력받은 맵 오브젝트 이름으로 터레인 값을 받아온다.
 Player::Player(std::string MapObjectName) {
 	target_terrain_name = MapObjectName;
 	mouse.StartMotionCapture(GlobalHWND);
+
 	// 현재 맵에서 벽 oobb를 얻어온다.
 	if (auto Map = scene.Find(MapObjectName); Map)
 		MapOOBBData = Map->GetMapWallOOBB();
@@ -54,6 +54,9 @@ void Player::Update(float FrameTime) {
 	// 총 발사 업데이트
 	UpdateFire(FrameTime);
 
+	// 총 - 맵 오브젝트 충돌 처리 업데이트
+	UpdateGunCollision();
+
 	// 총 업데이트
 	UpdateGun(FrameTime);
 
@@ -74,9 +77,13 @@ void Player::Render() {
 	// 1인칭 총 렌더링
 	BeginRender();
 	Transform::Move(TranslateMatrix, position.x, position.y, position.z);
-	Transform::Rotate(TranslateMatrix, gun_rotation);
+	Transform::Rotate(TranslateMatrix, gun_rotation.x, gun_rotation.y + gun_rotation_offset, gun_rotation.z);
 	Transform::Move(TranslateMatrix, 0.3, -0.3, 0.4 + gun_offset);
-	RenderFBX(MESH.machine_gun, TEX.scifi, 1.0, false);
+	Render3D(MESH.machine_gun, TEX.scifi, 1.0, DEPTH_TEST_FPS);
+
+	Transform::Move(TranslateMatrix, 0.0, 0.0, 0.4);
+	gun_oobb.Update(MESH.machine_gun, TranslateMatrix, RotateMatrix, ScaleMatrix, true);
+	gun_oobb.Render();
 }
 
 void Player::UpdateWalkMotion(float FrameTime) {
@@ -145,6 +152,11 @@ void Player::UpdateGun(float FrameTime) {
 	gun_rotation.x = std::lerp(gun_rotation.x, rotation.x, FrameTime * 30.0);
 	gun_rotation.y = std::lerp(gun_rotation.y, rotation.y, FrameTime * 30.0);
 	gun_rotation.z = std::lerp(gun_rotation.z, rotation.z, FrameTime * 30.0);
+
+	if (gun_collided)
+		gun_rotation_offset = std::lerp(gun_rotation_offset, -90.0, FrameTime * 3.0);
+	else
+		gun_rotation_offset = std::lerp(gun_rotation_offset, 0.0, FrameTime * 3.0);
 }
 
 void Player::UpdateCameraRotation() {
@@ -158,10 +170,20 @@ void Player::UpdateCameraRotation() {
 }
 
 void Player::UpdateTerrainCollision(float FrameTime) {
-
 	// 플레이어 높이가 항상 터레인 위에 위치하도록 한다
 	if (auto terrain = scene.Find(target_terrain_name); terrain) {
 		terr.InputPosition(position);
 		terr.ClampToTerrain(terrain->GetTerrain(), position, 3.0);
 	}
+}
+
+void Player::UpdateGunCollision() {
+	for (auto const& O : MapOOBBData) {
+		if (gun_oobb.CheckCollision(O)) {
+			gun_collided = true;
+			return;
+		}
+	}
+
+	gun_collided = false;
 }

@@ -40,3 +40,22 @@ D3D12_RASTERIZER_DESC Shader::CreateBoundboxRasterizerState() {
 
 	return(RasterizerDesc);
 }
+
+// 1인칭 오브젝트 렌더용 레스터라이저
+D3D12_RASTERIZER_DESC Shader::CreateFPSRasterizerState() {
+	D3D12_RASTERIZER_DESC RasterizerDesc;
+	::ZeroMemory(&RasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
+	RasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	RasterizerDesc.FrontCounterClockwise = FALSE;
+	RasterizerDesc.DepthBias = 10000;
+	RasterizerDesc.DepthBiasClamp = 0.0f;
+	RasterizerDesc.SlopeScaledDepthBias = 1.0f;
+	RasterizerDesc.DepthClipEnable = TRUE;
+	RasterizerDesc.MultisampleEnable = TRUE;
+	RasterizerDesc.AntialiasedLineEnable = TRUE;
+	RasterizerDesc.ForcedSampleCount = 0;
+	RasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+
+	return(RasterizerDesc);
+}
