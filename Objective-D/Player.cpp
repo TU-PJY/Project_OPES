@@ -103,7 +103,7 @@ void Player::Render() {
 	SetLightUse(DISABLE_LIGHT);
 	Render3D(MESH.dot_machine_gun, TEX.scifi, 1.0, DEPTH_TEST_FPS);
 
-	Transform::Move(TranslateMatrix, 0.0, 0.0, 0.4);
+	Transform::Move(TranslateMatrix, 0.0, 0.0, 0.2);
 	gun_oobb.Update(MESH.machine_gun, TranslateMatrix, RotateMatrix, ScaleMatrix, true);
 	gun_oobb.Render();
 }
