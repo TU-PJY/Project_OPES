@@ -190,8 +190,8 @@ void Player::UpdateGun(float FrameTime) {
 	gun_rotation.y = std::lerp(gun_rotation.y, rotation.y + gun_rotation_offset, FrameTime * 30.0);
 	gun_rotation.z = std::lerp(gun_rotation.z, rotation.z, FrameTime * 30.0);
 
-	if (!gun_collided)
-		gun_rotation_offset = std::lerp(gun_rotation_offset, -90.0, FrameTime * 3.0);
+	if (gun_collided)
+		gun_rotation_offset = std::lerp(gun_rotation_offset, 90.0, FrameTime * 3.0);
 	else 
 		gun_rotation_offset = std::lerp(gun_rotation_offset, 0.0, FrameTime * 3.0);
 }
