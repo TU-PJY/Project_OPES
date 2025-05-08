@@ -114,7 +114,6 @@ void Player::Render() {
 		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
 	}
 
-	Transform::Move(TranslateMatrix, 0.0, 0.0, 0.2);
 	gun_oobb.Update(MESH.machine_gun, TranslateMatrix, RotateMatrix, ScaleMatrix, true);
 	gun_oobb.Render();
 }
@@ -137,7 +136,7 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 		strafe_speed = std::lerp(strafe_speed, 0.0, 5.0 * FrameTime);
 
 	// 플레이어 바운딩 스페어 업데이트
-	player_sphere.Update(position, 0.6);
+	player_sphere.Update(position, 2.0);
 
 	// OOBB와 충돌을 체크하면서 이동
 	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_sphere, map_oobb_data, FrameTime);

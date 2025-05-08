@@ -206,30 +206,57 @@ XMVECTOR Math::ClosestPointOnOOBB(const OOBB& Box, FXMVECTOR& Point) {
 
 void Math::MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, BoundSphere& A, std::vector<OOBB>& B, float FrameTime) {
 	XMFLOAT3 PrevPosition = Position;
+	XMFLOAT3 Delta{ 0,0,0 };
 
-	XMFLOAT3 Delta = { 0, 0, 0 };
-	Math::MoveForward(Delta, RotationY, ForwardSpeed * FrameTime);
-	Math::MoveStrafe(Delta, RotationY, StrafeSpeed * FrameTime);
+	MoveForward(Delta, RotationY, ForwardSpeed * FrameTime);
+	MoveStrafe(Delta, RotationY, StrafeSpeed * FrameTime);
 
 	XMVECTOR PrevVector = XMLoadFloat3(&PrevPosition);
-	XMVECTOR DeltaVector = XMVectorSet(Delta.x, 0, Delta.z, 0);
-	XMVECTOR VectorTarget = PrevVector + DeltaVector;
+	XMVECTOR Movevector = XMVectorSet(Delta.x, 0, Delta.z, 0);
+	XMVECTOR TestVector = PrevVector + Movevector;
 
-	XMStoreFloat3(&A.sphere.Center, VectorTarget);
-
-	for (const auto& Box : B) {
+	XMStoreFloat3(&A.sphere.Center, TestVector);
+	bool FullOK = true;
+	for (auto& Box : B) {
 		if (A.CheckCollision(Box)) {
-			XMVECTOR ClosestPoint = ClosestPointOnOOBB(Box, VectorTarget);
-			XMVECTOR Normal = XMVector3Normalize(VectorTarget - ClosestPoint);
-			float Projection = XMVectorGetX(XMVector3Dot(DeltaVector, Normal));
-			XMVECTOR SlideDelta = DeltaVector - Normal * Projection;
-			VectorTarget = PrevVector + SlideDelta;
-			DeltaVector = SlideDelta;
-			XMStoreFloat3(&A.sphere.Center, VectorTarget);
+			FullOK = false;
+			break;
+		}
+	}
+	if (FullOK) {
+		XMStoreFloat3(&Position, TestVector);
+		return;
+	}
+
+	std::vector<XMVECTOR> Normal;
+	XMStoreFloat3(&A.sphere.Center, TestVector);
+	for (auto& Box : B) {
+		if (A.CheckCollision(Box)) {
+			XMVECTOR ClosestPoint = ClosestPointOnOOBB(Box, TestVector);
+			XMVECTOR N = XMVector3Normalize(TestVector - ClosestPoint);
+			Normal.emplace_back(N);
 		}
 	}
 
-	XMStoreFloat3(&Position, VectorTarget);
+	XMVECTOR SlideVector;
+	if (Normal.empty()) 
+		SlideVector = Movevector;
+
+	else if (Normal.size() == 1) {
+		XMVECTOR N = Normal[0];
+		float Projection = XMVectorGetX(XMVector3Dot(Movevector, N));
+		SlideVector = Movevector - N * Projection;
+	}
+	else {
+		XMVECTOR N0 = Normal[0];
+		XMVECTOR N1 = Normal[1];
+		XMVECTOR EdgeDirection = XMVector3Normalize(XMVector3Cross(N0, N1));
+		float Projection = XMVectorGetX(XMVector3Dot(Movevector, EdgeDirection));
+		SlideVector = EdgeDirection * Projection;
+	}
+
+	XMVECTOR FinalVector = PrevVector + SlideVector;
+	XMStoreFloat3(&Position, FinalVector);
 }
 
 // 2차원 거리를 계산한다.
