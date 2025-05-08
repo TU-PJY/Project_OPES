@@ -100,11 +100,19 @@ void Player::Render() {
 	Transform::Move(TranslateMatrix, position.x, position.y, position.z);
 	Transform::Rotate(TranslateMatrix, gun_rotation.x, gun_rotation.y + gun_rotation_offset, gun_rotation.z);
 	Transform::Move(TranslateMatrix, gun_position_offset.x, gun_position_offset.y, gun_position_offset.z + gun_offset);
-	Render3D(MESH.machine_gun, TEX.scifi, 1.0, DEPTH_TEST_FPS);
+	Render3D(MESH.machine_gun, TEX.scifi);
 
 	// 레드 도트 렌더링
 	SetLightUse(DISABLE_LIGHT);
-	Render3D(MESH.dot_machine_gun, TEX.scifi, 1.0, DEPTH_TEST_FPS);
+	Render3D(MESH.dot_machine_gun, TEX.scifi);
+
+	// flame_time 동안 불꽃 렌더링
+	if (flame_time > 0.0) {
+		// 불꽃 렌더링
+		SetColor(XMFLOAT3(0.4, 0.4, 0.4));
+		Render3D(MESH.gun_flame, TEX.gun_flame);
+		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
+	}
 
 	Transform::Move(TranslateMatrix, 0.0, 0.0, 0.2);
 	gun_oobb.Update(MESH.machine_gun, TranslateMatrix, RotateMatrix, ScaleMatrix, true);
@@ -141,6 +149,9 @@ void Player::UpdateFire(float FrameTime) {
 	if (current_fire_delay > 0.0)
 		current_fire_delay -= FrameTime;
 
+	if (flame_time > 0.0)
+		flame_time -= FrameTime;
+
 	// 발사 상태에서 current_fire_delay가 0.0이 되면 crosshair에 반동값 부여 -> 발사
 	if (trigger_state) {
 		if (current_fire_delay <= 0.0) {
@@ -155,6 +166,8 @@ void Player::UpdateFire(float FrameTime) {
 				dest_recoil_shake = -30.0;
 
 			rotation.x -= 2.5;
+
+			flame_time = 0.03;
 		}
 	}
 }
@@ -235,7 +248,11 @@ void Player::UpdateWalkMotion(float FrameTime) {
 void Player::UpdateShootMotion(float FrameTime) {
 	recoil_shake_num += FrameTime * 40.0;
 	recoil_shake = std::lerp(recoil_shake, sinf(recoil_shake_num) * dest_recoil_shake, FrameTime * 5.0);
-	dest_recoil_shake = std::lerp(dest_recoil_shake, 0.0, 5.0 * FrameTime);
+
+	if(trigger_state)
+		dest_recoil_shake = std::lerp(dest_recoil_shake, 0.0, 5.0 * FrameTime);
+	else
+		dest_recoil_shake = std::lerp(dest_recoil_shake, 0.0, 20.0 * FrameTime);
 }
 
 void Player::UpdateCamera(float FrameTime) {

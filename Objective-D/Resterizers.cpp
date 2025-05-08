@@ -21,6 +21,25 @@ D3D12_RASTERIZER_DESC Shader::CreateRasterizerState() {
 	return(RasterizerDesc);
 }
 
+D3D12_RASTERIZER_DESC Shader::CreateNoneDepthRasterizerState() {
+	D3D12_RASTERIZER_DESC RasterizerDesc;
+	::ZeroMemory(&RasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
+	RasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	RasterizerDesc.FrontCounterClockwise = FALSE;
+	RasterizerDesc.DepthBias = 0;
+	RasterizerDesc.DepthBiasClamp = 0.0f;
+	RasterizerDesc.SlopeScaledDepthBias = 0.0f;
+	RasterizerDesc.DepthClipEnable = FALSE;
+	RasterizerDesc.MultisampleEnable = TRUE;
+	RasterizerDesc.AntialiasedLineEnable = TRUE;
+	RasterizerDesc.ForcedSampleCount = 0;
+	RasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+
+	return(RasterizerDesc);
+}
+
+
 // 바운드박스 전용 레스터라이저
 // 와이어프레임으로 매쉬를 렌더링하고 은면 처리를 비활성화 한다.
 D3D12_RASTERIZER_DESC Shader::CreateBoundboxRasterizerState() {
@@ -42,16 +61,16 @@ D3D12_RASTERIZER_DESC Shader::CreateBoundboxRasterizerState() {
 }
 
 // 1인칭 오브젝트 렌더용 레스터라이저
-D3D12_RASTERIZER_DESC Shader::CreateFPSRasterizerState() {
+D3D12_RASTERIZER_DESC Shader::CreateNoneCullingRasterizerState() {
 	D3D12_RASTERIZER_DESC RasterizerDesc;
 	::ZeroMemory(&RasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
 	RasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-	RasterizerDesc.CullMode = D3D12_CULL_MODE_BACK;
+	RasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 	RasterizerDesc.FrontCounterClockwise = FALSE;
-	RasterizerDesc.DepthBias = 10000;
+	RasterizerDesc.DepthBias = 0;
 	RasterizerDesc.DepthBiasClamp = 0.0f;
-	RasterizerDesc.SlopeScaledDepthBias = 1.0f;
-	RasterizerDesc.DepthClipEnable = TRUE;
+	RasterizerDesc.SlopeScaledDepthBias = 0.0f;
+	RasterizerDesc.DepthClipEnable = FALSE;
 	RasterizerDesc.MultisampleEnable = TRUE;
 	RasterizerDesc.AntialiasedLineEnable = TRUE;
 	RasterizerDesc.ForcedSampleCount = 0;

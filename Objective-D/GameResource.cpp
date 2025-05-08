@@ -72,6 +72,10 @@ void LoadMesh(DeviceSystem& System) {
 	// polygon scifi asset
 	LoadMultiStaticFBX(System, MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
 	LoadMultiStaticFBX(System, MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
+
+	// gun flame
+	LoadMultiStaticFBX(System, MESH.gun_flame, "Resources//Models//weapon//flame.fbx");\
+	LoadMultiStaticFBX(System, MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -97,6 +101,10 @@ void LoadTexture(DeviceSystem& System) {
 
 	// polygon scifi asset
 	LoadTexture(System, TEX.scifi, L"Resources//Image//scifi//polygon_scifi.png", TEXTURE_TYPE_WIC);
+
+	// gun flame
+	LoadTexture(System, TEX.gun_flame, L"Resources//Image//weapon//flame.png", TEXTURE_TYPE_WIC);
+	LoadTexture(System, TEX.gun_flame_back, L"Resources//Image//weapon//flame-back.png", TEXTURE_TYPE_WIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -114,7 +122,7 @@ void InitObjectShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) 
 	// 깊이 검사 미포함 파이프라인 생성
 	ObjectShader->CreateNoneDepthPS(Device, RootSignature);
 	// 1인칭 파이프라인 생성
-	ObjectShader->CreateFPSPS(Device, RootSignature);
+	ObjectShader->CreateNoneCullingPS(Device, RootSignature);
 }
 
 // 이미지 출력용 쉐이더 생성

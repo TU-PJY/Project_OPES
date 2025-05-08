@@ -34,8 +34,8 @@ void Shader::CreateDefaultPS(ID3D12Device* Device, ID3D12RootSignature* RootSign
 		delete[] PipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
-// 1인칭 오브젝트용 파이프라인
-void Shader::CreateFPSPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
+// 총 불꽃 오브젝트용 파이프라인
+void Shader::CreateNoneCullingPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
 	ID3DBlob* VertexShaderBlob = NULL, * PixelShaderBlob = NULL;
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC PipelineStateDesc;
@@ -43,9 +43,11 @@ void Shader::CreateFPSPS(ID3D12Device* Device, ID3D12RootSignature* RootSignatur
 	PipelineStateDesc.pRootSignature = RootSignature;
 	PipelineStateDesc.VS = CreateVertexShader(&VertexShaderBlob);
 	PipelineStateDesc.PS = CreatePixelShader(&PixelShaderBlob);
-	PipelineStateDesc.RasterizerState = CreateFPSRasterizerState();
+	PipelineStateDesc.RasterizerState = CreateNoneCullingRasterizerState();
 	PipelineStateDesc.BlendState = CreateBlendState();
-	PipelineStateDesc.DepthStencilState = CreateDepthStencilState();
+
+	// 깊이 검사 하지 않는 스텐실 사용
+	PipelineStateDesc.DepthStencilState = CreateNoneDepthStencilState();
 	PipelineStateDesc.InputLayout = CreateInputLayout();
 	PipelineStateDesc.SampleMask = UINT_MAX;
 	PipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
@@ -54,7 +56,7 @@ void Shader::CreateFPSPS(ID3D12Device* Device, ID3D12RootSignature* RootSignatur
 	PipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	PipelineStateDesc.SampleDesc.Count = 1;
 	PipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
-	Device->CreateGraphicsPipelineState(&PipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)&PSFPS);
+	Device->CreateGraphicsPipelineState(&PipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)&PSCullingNone);
 
 	if (VertexShaderBlob)
 		VertexShaderBlob->Release();
@@ -75,11 +77,11 @@ void Shader::CreateNoneDepthPS(ID3D12Device* Device, ID3D12RootSignature* RootSi
 	PipelineStateDesc.pRootSignature = RootSignature;
 	PipelineStateDesc.VS = CreateVertexShader(&VertexShaderBlob);
 	PipelineStateDesc.PS = CreatePixelShader(&PixelShaderBlob);
-	PipelineStateDesc.RasterizerState = CreateRasterizerState();
+	PipelineStateDesc.RasterizerState = CreateNoneDepthRasterizerState();
 	PipelineStateDesc.BlendState = CreateBlendState();
 
 	// 깊이 검사를 비활성화한 스텐실을 생성한다.
-	PipelineStateDesc.DepthStencilState = CreateImageDepthStencilState();
+	PipelineStateDesc.DepthStencilState = CreateNoneDepthStencilState();
 
 	PipelineStateDesc.InputLayout = CreateInputLayout();
 	PipelineStateDesc.SampleMask = UINT_MAX;

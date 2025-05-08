@@ -129,8 +129,8 @@ void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, 
 		ObjectShader->RenderDepthNone(GlobalCommandList); 
 		break;
 
-	case DEPTH_TEST_FPS:
-		ObjectShader->RenderFPS(GlobalCommandList);
+	case DEPTH_TEST_NO_CULLING:
+		ObjectShader->RenderCullingNone(GlobalCommandList);
 		break;
 	}
 
