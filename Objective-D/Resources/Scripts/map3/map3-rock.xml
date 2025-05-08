@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<Script>
+    <!-- 디펜스 모드 공간 -->
+    <Object1 X="-150" Y="0.0" Z="-150" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" Index="0" />
+	<Object2 X="-100" Y="0.0" Z="-150" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" Index="0" />
+	<Object3 X="-125" Y="0.0" Z="-100" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="60.0" Index="0" />
+	
+	<!-- 디펜스 공간과 첫 번째 지형 잇는 길 -->
+	<Object4 X="-125" Y="-0.3" Z="-80" SizeX="0.01" SizeY="0.1" SizeZ="0.2" Rotation="-30.0" Index="0" />
+	
+	<!-- 첫 번째 지형 -->
+	<Object5 X="-180" Y="0.0" Z="40" SizeX="0.15" SizeY="0.1" SizeZ="0.15" Rotation="120.0" Index="0" />
+	
+	<!-- 첫 번째 지형과 두 번째 지형 잇는 길 -->
+	<Object6 X="-135" Y="-0.3" Z="110" SizeX="0.01" SizeY="0.1" SizeZ="0.13" Rotation="30.0" Index="0" />
+		
+	<!-- 두 번째 지형 -->
+	<Object7 X="-110" Y="0.0" Z="200" SizeX="0.2" SizeY="0.1" SizeZ="0.15" Rotation="0.0" Index="0" />
+	
+	<!-- 두 번째 지형과 도착 지점 잇는 길 -->
+	<Object8 X="-40" Y="-0.3" Z="200" SizeX="0.01" SizeY="0.1" SizeZ="0.15" Rotation="90.0" Index="0" />
+	<Object9 X="25" Y="0.0" Z="200" SizeX="0.05" SizeY="0.05" SizeZ="0.05" Rotation="90.0" Index="0" />
+	<Object10 X="80" Y="-0.3" Z="180" SizeX="0.01" SizeY="0.1" SizeZ="0.15" Rotation="120.0" Index="0" />
+	
+	<!-- 도착 지점 -->
+	<Object11 X="200" Y="0.0" Z="150" SizeX="0.25" SizeY="0.25" SizeZ="0.25" Rotation="-20.0" Index="0" />
+</Script>

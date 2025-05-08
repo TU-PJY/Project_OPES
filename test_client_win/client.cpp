@@ -32,12 +32,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
     PacketType* type = reinterpret_cast<PacketType*>(recv_buffer);
     if (*type == PacketType::CHAT) {
         //ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(recv_buffer);
-        ChatPacket_R* chatPacket = reinterpret_cast<ChatPacket_R*>(recv_buffer);
+        ChatPacket_StoC* chatPacket = reinterpret_cast<ChatPacket_StoC*>(recv_buffer);
         std::string msg{ chatPacket->message,num_bytes - sizeof(PacketType) - sizeof(unsigned int) };
         std::cout << "[서버]  " << chatPacket->id << ":" << msg << std::endl;
     }
     else if (*type == PacketType::MOVE) {
-        MovePacket_R* movePacket = reinterpret_cast<MovePacket_R*>(recv_buffer);
+        MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
         std::cout << "[서버]  " << movePacket->id << ":" << movePacket->x << "," << movePacket->y << std::endl;
     }
     else if (*type == PacketType::ENTER) {
@@ -81,13 +81,13 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 // 이동 패킷 전송 함수
 void SendMovePacket(char direction) {
     if (enter_room) {
-        MovePacket_S movePacket = {};
+        MovePacket_CtoS movePacket = {};
         movePacket.type = PacketType::MOVE;
         movePacket.direction = direction;
 
         WSABUF wsaBuf;
         wsaBuf.buf = reinterpret_cast<char*>(&movePacket);
-        wsaBuf.len = sizeof(MovePacket_S);
+        wsaBuf.len = sizeof(MovePacket_CtoS);
 
         // WSAOVERLAPPED 구조체를 동적 할당
         WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
@@ -109,7 +109,7 @@ void SendMovePacket(char direction) {
 // 채팅 패킷 전송 함수
 void SendChatPacket(const char* message) {
     if (enter_room) {
-        ChatPacket_S chatPacket = {};
+        ChatPacket_CtoS chatPacket = {};
         chatPacket.type = PacketType::CHAT;
         int msg_size = strlen(message);
         memcpy(chatPacket.message, message, msg_size);

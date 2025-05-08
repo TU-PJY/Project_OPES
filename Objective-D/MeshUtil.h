@@ -2,17 +2,38 @@
 #include "DirectX_3D.h"
 #include <fstream>
 #include <unordered_map>
+#include <set>
 
-struct MyVertex
-{
+struct FBXVertex {
 	float px, py, pz;   // Position
 	float nx, ny, nz;   // Normal
 	float u, v;         // UV
-	int boneIndices[4]; // 영향을 받는 본 인덱스 (최대 4개)
-	float boneWeights[4]; // 본 가중치 (최대 4개)
 };
-extern std::vector<MyVertex> parsedVertices;
-extern std::unordered_map<int, std::vector<std::pair<int, float>>> skinningData;
+
+struct AnimationKeyFrame {
+	float time;
+	float translation[3];
+	float rotation[3];
+	float scale[3];
+};
+
+struct AnimationChannel {
+	std::string NodeName;
+	std::vector<AnimationKeyFrame> KeyFrames;
+};
+
+class Mesh;
+typedef struct {
+	FbxScene* Scene;
+	std::vector<Mesh*> MeshPart;
+	std::vector<AnimationChannel> AnimationChannel;
+	float CurrentTime;
+	float TotalTime;
+
+	std::vector<std::string> AnimationStackNames; // 전체 스택 이름들
+	std::string CurrentAnimationStackName;        // 현재 선택된 스택 이름
+	int CurrentAnimationStackIndex;          // 현재 선택된 스택 인덱스
+}FBXMesh;
 
 class Mesh {
 private:
@@ -22,15 +43,30 @@ public:
 	void AddRef();
 	void Release();
 
-protected:
+	int MeshType{};
+
+	std::unordered_map<int, std::vector<int>> ControlPointToVertexIndices{};
+
+	XMUINT4* BoneIndices{};                      // 정점당 본 인덱스 (최대 4개)
+	XMFLOAT4* BoneWeights{};                     // 정점당 본 가중치 (최대 4개)
+
+	std::vector<XMMATRIX> BoneOffsetMatrices{};    // 각 본의 inverse bind pose
+	std::vector<int> BoneParentIndices{};          // 각 본의 부모 인덱스
+	std::vector<FbxNode*> BoneNodes{};
+	FbxNode* FbxNodePtr{};
+
+	std::string NodeName{};
+
 	UINT Vertices{};
 	XMFLOAT3* Position{};
 	ID3D12Resource* PositionBuffer{};
 	ID3D12Resource* PositionUploadBuffer{};
+	XMFLOAT3* OriginalPosition{};
 
 	XMFLOAT3* Normal{};
 	ID3D12Resource* NormalBuffer{};
 	ID3D12Resource* NormalUploadBuffer{};
+	XMFLOAT3* OriginalNormal{};
 
 	XMFLOAT2* TextureCoords{};
 	ID3D12Resource* TextureCoordBuffer{};
@@ -38,11 +74,9 @@ protected:
 
 	ID3D12Resource* BoneIndexBuffer{};
 	ID3D12Resource* BoneIndexUploadBuffer{};
-	XMUINT4* BoneIndices{};
 
 	ID3D12Resource* BoneWeightBuffer{};
 	ID3D12Resource* BoneWeightUploadBuffer{};
-	XMFLOAT4* BoneWeights{};
 
 	UINT Indices{};
 	UINT* PnIndices{};
@@ -54,13 +88,14 @@ protected:
 
 	D3D12_INDEX_BUFFER_VIEW	IndexBufferView{};
 
-	D3D12_PRIMITIVE_TOPOLOGY PromitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	D3D12_PRIMITIVE_TOPOLOGY PrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	UINT Slot{};
 	UINT Stride{};
 	UINT Offset{};
 
 	bool HeightCacheSaved{};
 	std::vector<XMFLOAT3> HeightCache;
+
 
 public:
 	BoundingOrientedBox	OOBB = BoundingOrientedBox();
@@ -78,24 +113,46 @@ public:
 	void CreateImagePannelMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList);
 	void CreateBoundboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList);
 	void ImportMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, char* Directory, bool TextMode);
-	void CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, std::vector<MyVertex>& VertexData);
+	void CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, std::vector<FBXVertex>& VertexData);
 	float GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix);
 	bool IsPointInTriangle(XMFLOAT2& pt, XMFLOAT2& v0, XMFLOAT2& v1, XMFLOAT2& v2);
 	float ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XMFLOAT3& v2);
+	void UpdateSkinning(float Time);
 };
 
 class FBXUtil {
-public:
-	FbxManager* manager{};
-	FbxScene* scene{};
+private:
+	FbxManager* Manager{};
+	std::vector<FBXVertex> ParsedVertices{};
+	FBXMesh* MeshPtr{};
 
-	void InitializeFBX(FbxManager*& manager, FbxScene*& scene);
-	bool LoadFBXFile(FbxManager* manager, FbxScene* scene, const char* filePath);
-	void ProcessSkin(FbxMesh* mesh, std::vector<std::vector<int>>& boneIndices, std::vector<std::vector<float>>& boneWeights);
-	void PrintVertexData(const std::vector<MyVertex>& VertexVec);
-	bool TriangulateScene(FbxManager* pManager, FbxScene* pScene);
-	void GetVertexData(FbxScene* scene, std::vector<MyVertex>& VertexVec);
-	void ProcessNode(FbxNode* node, std::vector<MyVertex>& VertexVec);
+	FbxScene* StaticScene{};
+
+public:
+	void Init();
+	bool LoadStaticFBXFile(const char* FilePath, Mesh*& TargetMesh);
+	bool LoadMultiStaticFBXFile(std::string FilePath, Mesh*& TargetMesh);
+	bool LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh);
+	bool TriangulateAnimatedScene();
+	void GetAnimatedVertexData(DeviceSystem& System);
+	void ProcessAnimatedNode(FbxNode* Node, DeviceSystem& System);
+	bool TriangulateStaticScene();
+	bool TriangulateMultiStaticScene();
+	void GetSingleStaticVertexData();
+	void GetMultiStaticVertexData();
+	void ProcessSingleStaticNode(FbxNode* Node);
+	void ProcessMultiStaticNode(FbxNode* Node);
+	void ProcessNodeForAnimation(FbxNode* Node, FbxAnimLayer* AnimationLayer);
+	void ProcessAnimation();
+	void PrintAnimationStackNames();
+	void ParseSkin(FbxMesh* FMesh, Mesh* MeshPtr);
+	void GetBoneMatricesFromScene(Mesh* MeshPtr, float TimeInSeconds, std::vector<XMMATRIX>& OutBoneMatrices);
+	void EnumerateAnimationStacks();
+	void SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName);
+	void GetAnimationPlayTime(FBXMesh& TargetMesh, const std::string& AnimationName);
+	void ResetCurrentTime(FBXMesh& TargetMesh);
+	std::vector<FBXVertex> GetVertexVector();
+	void ClearVertexVector();
 };
 
 extern FBXUtil fbxUtil;

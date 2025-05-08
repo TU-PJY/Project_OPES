@@ -41,6 +41,9 @@
 #define FBXSDK_SHARED
 #include <fbxsdk.h>
 
+using DigitDataVec = std::vector<float>;
+using StringDataVec = std::vector<std::string>;
+
 
 // 렌더링 타입 열거형
 enum RenderTypeEnum {
@@ -49,6 +52,13 @@ enum RenderTypeEnum {
 	RENDER_TYPE_2D,
 	RENDER_TYPE_3D_STATIC,
 	RENDER_TYPE_2D_STATIC
+};
+
+// 깊이 검사 타입 열거형
+enum DepthTestTypeEnum {
+	DEPTH_TEST_DEFAULT,
+	DEPTH_TEST_NONE,
+	DEPTH_TEST_FPS
 };
 
 // 텍스처 반전 타입 열거형
@@ -74,13 +84,38 @@ enum UseFogenum {
 // 매쉬 파일 타입 열거형
 enum MeshTypeEnum {
 	MESH_TYPE_TEXT,
-	MESH_TYPE_BIN
+	MESH_TYPE_BIN,
+	MESH_TYPE_FBX
 };
 
 // 텍스처 파일 타입 열거형
 enum TextureTypeEnum {
 	TEXTURE_TYPE_WIC,
 	TEXTURE_TYPE_DDS
+};
+
+// FBX 힙타입 열거형
+enum FBXTypeEnum {
+	FBX_ANIMATED,
+	FBX_STATIC
+};
+
+// Bool Switch 동작 타입
+enum BoolSwitchFlagEnum {
+	KEY_DOWN_TRUE,
+	KEY_UP_TRUE
+};
+
+// 클램프 플래그 타입
+enum ClampFlagTypeEnum {
+	CLAMP_FIX,
+	CLAMP_RETURN
+};
+
+// 클램프 값 변화 방향 타입
+enum ClampDirectionEnum {
+	CLAMP_DIR_LESS,
+	CLAMP_DIR_GREATER
 };
 
 // 오브젝트 벡터 구조체
@@ -119,10 +154,22 @@ typedef struct {
 }DeviceSystem;
 
 // 오브젝트에서 공용으로 사용하는 커맨트 리스트
-extern ID3D12GraphicsCommandList* ObjectCmdList;
+extern ID3D12GraphicsCommandList* GlobalCommandList;
 
-// 기본 루트 시그니처
-extern ID3D12RootSignature* DefaultRootSignature;
+// 오브젝트 쉐이더 루트 시그니처
+extern ID3D12RootSignature* ObjectShaderRootSignature;
+
+// 이미지 쉐이더 루트 시그니처
+extern ID3D12RootSignature* ImageShaderRootSignature;
+
+// 선 쉐이더 루트 시그니처
+extern ID3D12RootSignature* LineShaderRootSignature;
+
+// 바운드박스 루트 시그니처
+extern ID3D12RootSignature* BoundboxShaderRootSignature;
+
+// 전역 HWND
+extern HWND GlobalHWND;
 
 // screen size
 extern int SCREEN_WIDTH, SCREEN_HEIGHT;

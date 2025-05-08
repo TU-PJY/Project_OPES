@@ -4,21 +4,6 @@
     <Filter Include="[1]____________[ Game Mode ]">
       <UniqueIdentifier>{453fd586-1c73-44fe-a61b-78ef8806db07}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[1]____________[ Game Mode ]\[ Mode1 ]">
-      <UniqueIdentifier>{64814673-b711-4547-a2fa-f83b097a05fe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[2]____________[ Game Object ]">
-      <UniqueIdentifier>{ff900b4e-0c5d-4b64-8b68-91350d32ea6d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]">
-      <UniqueIdentifier>{03135e75-d38d-4b93-81cb-cd9d7aad3e82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[2] [ Template ]">
-      <UniqueIdentifier>{03b6b546-94f5-4152-a165-f88612df9eb3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[3]____________[ Camera ]">
-      <UniqueIdentifier>{2a8bb781-cc47-466a-bc74-8a9e1cea7d74}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[4]____________[ Game Resource ]">
       <UniqueIdentifier>{517a4e13-9e31-4063-a3c0-0decb62883fd}</UniqueIdentifier>
     </Filter>
@@ -143,6 +128,51 @@
     <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Constant Buffer Util ]">
       <UniqueIdentifier>{8a9a0685-ce18-4df7-bf17-ba13635518e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[5]____________[ Objective-D ]\[7] - [ Matrix ]">
+      <UniqueIdentifier>{7febbad7-710f-4a0c-805a-07807e8ae6e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[0] - [ Pack ]">
+      <UniqueIdentifier>{82e1b461-5d00-4430-aea1-ac6ac2a9bd4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]">
+      <UniqueIdentifier>{b84f0431-ea49-4f41-b36c-053a095d6794}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]">
+      <UniqueIdentifier>{bd01ab33-a63e-4b22-80c1-1431bd110cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[3]____________[ Camera ]">
+      <UniqueIdentifier>{2a8bb781-cc47-466a-bc74-8a9e1cea7d74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[ Test bed ]">
+      <UniqueIdentifier>{5b0c4a43-72da-4e28-acb1-2d94578fe541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[1]____________[ Game Mode ]\[ Modes ]">
+      <UniqueIdentifier>{64814673-b711-4547-a2fa-f83b097a05fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]">
+      <UniqueIdentifier>{feb2faa2-d67f-4a56-a6df-ded7fe1ed65a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]">
+      <UniqueIdentifier>{ff900b4e-0c5d-4b64-8b68-91350d32ea6d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[2] [ Template ]">
+      <UniqueIdentifier>{03b6b546-94f5-4152-a165-f88612df9eb3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]">
+      <UniqueIdentifier>{03135e75-d38d-4b93-81cb-cd9d7aad3e82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]">
+      <UniqueIdentifier>{e8466c80-c624-4454-8506-31d701736f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]">
+      <UniqueIdentifier>{80dc9e91-a10a-4628-9f0a-12ab65fb7cb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]">
+      <UniqueIdentifier>{0e3eacd1-45f7-4761-8928-8b05d1d1d88e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]">
+      <UniqueIdentifier>{7be1c762-6b7c-423f-8572-d6e6b2c91a13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -172,9 +202,6 @@
     <ClInclude Include="Objective-D.h">
       <Filter>[5]____________[ Objective-D ]\[5] - [ System ]\[ WinAPI ]\[ Header ]</Filter>
     </ClInclude>
-    <ClInclude Include="Mode1.h">
-      <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
-    </ClInclude>
     <ClInclude Include="PickingUtil.h">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Picking Util ]</Filter>
     </ClInclude>
@@ -199,7 +226,7 @@
     <ClInclude Include="StartMode.h">
       <Filter>[0]____________[ Config ]\Header</Filter>
     </ClInclude>
-    <ClInclude Include="TestObject.h">
+    <ClInclude Include="Map1.h">
       <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
     </ClInclude>
     <ClInclude Include="d3dx12.h">
@@ -256,6 +283,43 @@
     <ClInclude Include="SettingRootSignature.h">
       <Filter>[5]____________[ Objective-D ]\[2] - [ Root Signature ]</Filter>
     </ClInclude>
+    <ClInclude Include="Matrix.h">
+      <Filter>[5]____________[ Objective-D ]\[7] - [ Matrix ]</Filter>
+    </ClInclude>
+    <ClInclude Include="ModePack.h">
+      <Filter>[1]____________[ Game Mode ]\[0] - [ Pack ]</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptUtil.h">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml\tinystr.h">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml\tinyxml.h">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
+    </ClInclude>
+    <ClInclude Include="CameraController.h">
+      <Filter>[3]____________[ Camera ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Map2.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Map3.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]</Filter>
+    </ClInclude>
+    <ClInclude Include="SampleMonster.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ sample monster ]</Filter>
+    </ClInclude>
+    <ClInclude Include="CrossHair.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
+    </ClInclude>
+    <ClInclude Include="ClampUtil.h">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Server_OPES\Packet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -290,9 +354,6 @@
     </ClCompile>
     <ClCompile Include="TerrainUtil.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Terrain Util ]</Filter>
-    </ClCompile>
-    <ClCompile Include="Mode1.cpp">
-      <Filter>[1]____________[ Game Mode ]\[ Mode1 ]</Filter>
     </ClCompile>
     <ClCompile Include="TransformUtil.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Transform Util ]</Filter>
@@ -365,6 +426,45 @@
     </ClCompile>
     <ClCompile Include="WinMain.cpp">
       <Filter>[5]____________[ Objective-D ]\[5] - [ System ]\[ WinAPI ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>[5]____________[ Objective-D ]\[7] - [ Matrix ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level1.cpp">
+      <Filter>[1]____________[ Game Mode ]\[ Modes ]</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptUtil.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinystr.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxml.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxmlerror.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxmlparser.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level2.cpp">
+      <Filter>[1]____________[ Game Mode ]\[ Modes ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level3.cpp">
+      <Filter>[1]____________[ Game Mode ]\[ Modes ]</Filter>
+    </ClCompile>
+    <ClCompile Include="TestMode.cpp">
+      <Filter>[1]____________[ Game Mode ]\[ Test bed ]</Filter>
+    </ClCompile>
+    <ClCompile Include="CrossHair.cpp">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ CrossHair ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>[2]____________[ Game Object ]\[1] [ CustomObject ]\[ 1st Player ]\[ Player ]</Filter>
+    </ClCompile>
+    <ClCompile Include="ClampUtil.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

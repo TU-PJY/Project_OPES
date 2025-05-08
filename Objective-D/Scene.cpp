@@ -31,21 +31,43 @@ void Scene::ReleaseDestructor() {
 	DestructorBuffer = nullptr;
 }
 
+
+//void Scene::Routine(float FT, ID3D12GraphicsCommandList* CmdList) {
+//	ObjectCmdList = CmdList;
+//	for (int i = 0; i < Layers; ++i) {
+//		for (auto const& Object : ObjectList[i]) {
+//			Object->Update(FT);
+//			Object->Render();
+//
+//			if (Object->DeleteCommand) 
+//				AddLocation(i, CurrentReferPosition);
+//			
+//			++CurrentReferPosition;
+//		}
+//		CurrentReferPosition = 0;
+//	}
+//}
+
 // 현재 존재하는 모든 객체들을 업데이트하고 렌더링한다.
 // 삭제 예약이 활성화된 객체들은 삭제 커맨드 활성화 후 프레임이 끝난 후 일괄 삭제된다.
-void Scene::Routine(float FT, ID3D12GraphicsCommandList* CmdList) {
-	ObjectCmdList = CmdList;
-	for (int i = 0; i < Layers; ++i) {
+void Scene::Update(float Delta, ID3D12GraphicsCommandList* CmdList) {
+	GlobalCommandList = CmdList;
+	for (int i = 0; i < Layers; i++) {
 		for (auto const& Object : ObjectList[i]) {
-			Object->Update(FT);
-			Object->Render();
-
-			if (Object->DeleteCommand) 
+			if (!Object->DeleteCommand) 
+				Object->Update(Delta);
+			else
 				AddLocation(i, CurrentReferPosition);
-			
-			++CurrentReferPosition;
 		}
-		CurrentReferPosition = 0;
+	}
+}
+
+void Scene::Render() {
+	for (int i = 0; i < Layers; i++) {
+		for (auto const& Object : ObjectList[i]) {
+			if (!Object->DeleteCommand)
+				Object->Render();
+		}
 	}
 }
 
@@ -155,13 +177,13 @@ void Scene::InputMouseMotionMessage(HWND hWnd) {
 
 // 루트 시그니처를 리턴한다
 ID3D12RootSignature* Scene::GetGraphicsRootSignature() {
-	return(DefaultRootSignature);
+	return(ObjectShaderRootSignature);
 }
 
 // 루트시그니처를 릴리즈한다
 void Scene::ReleaseObjects() {
-	if (DefaultRootSignature)
-		DefaultRootSignature->Release();
+	if (ObjectShaderRootSignature)
+		ObjectShaderRootSignature->Release();
 }
 
 // 렌더링을 준비한다

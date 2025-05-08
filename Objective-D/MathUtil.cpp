@@ -116,7 +116,7 @@ bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const 
 }
 
 // 레이가 바운딩 박스와 충돌하는지 검사한다
-bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const Range& Other) {
+bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const BoundSphere& Other) {
 	float Distance;
 	return Other.sphere.Intersects(RayOrigin, RayDirection, Distance);
 }
@@ -156,19 +156,80 @@ void Math::Vector_MoveUp(XMFLOAT3& Position, XMFLOAT3& Up, float Distance) {
 
 // 현재 시점에서 앞으로 움직인다.
 void Math::MoveForward(XMFLOAT3& Position, float RotationY, float MoveDistance) {
-	Position.x += sin(RotationY) * MoveDistance;
-	Position.z += cos(RotationY) * MoveDistance;
+	float Radians = XMConvertToRadians(RotationY);
+	Position.x += sin(Radians) * MoveDistance;
+	Position.z += cos(Radians) * MoveDistance;
 }
 
 // 현재 시점에서 옆으로 움직인다.
 void Math::MoveStrafe(XMFLOAT3& Position, float RotationY, float MoveDistance) {
-	Position.x += cos(RotationY) * MoveDistance;
-	Position.z -= sin(RotationY) * MoveDistance;
+	float Radians = XMConvertToRadians(RotationY);
+	Position.x += cos(Radians) * MoveDistance;
+	Position.z -= sin(Radians) * MoveDistance;
 }
 
 // 현재 시점에서 위로 움직인다.
 void Math::MoveUp(XMFLOAT3& Position, float MoveDistance) {
 	Position.y += MoveDistance;
+}
+
+void Math::GetOOBBAxis(FXMVECTOR& OrientationQuaternion, XMVECTOR& AxisX, XMVECTOR& AxisY, XMVECTOR& AxisZ) {
+	AxisX = XMVector3Rotate(XMVectorSet(1, 0, 0, 0), OrientationQuaternion);
+	AxisY = XMVector3Rotate(XMVectorSet(0, 1, 0, 0), OrientationQuaternion);
+	AxisZ = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), OrientationQuaternion);
+}
+
+XMVECTOR Math::ClosestPointOnOOBB(const OOBB& Box, FXMVECTOR& Point) {
+	XMVECTOR Center = XMLoadFloat3(&Box.oobb.Center);
+	XMVECTOR Delta = Point - Center;
+
+	XMVECTOR AxisX, AxisY, AxisZ;
+	GetOOBBAxis(XMLoadFloat4(&Box.oobb.Orientation), AxisX, AxisY, AxisZ);
+
+	XMVECTOR Closest = Center;
+	float EX = Box.oobb.Extents.x, EY = Box.oobb.Extents.y, EZ = Box.oobb.Extents.z;
+
+	float ProjectionX = XMVectorGetX(XMVector3Dot(Delta, AxisX));
+	ProjectionX = std::clamp(ProjectionX, -EX, EX);
+	Closest += AxisX * ProjectionX;
+
+	float ProjectionY = XMVectorGetX(XMVector3Dot(Delta, AxisY));
+	ProjectionY = std::clamp(ProjectionY, -EY, EY);
+	Closest += AxisY * ProjectionY;
+
+	float ProjectionZ = XMVectorGetX(XMVector3Dot(Delta, AxisZ));
+	ProjectionZ = std::clamp(ProjectionZ, -EZ, EZ);
+	Closest += AxisZ * ProjectionZ;
+
+	return Closest;
+}
+
+void Math::MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, BoundSphere& A, std::vector<OOBB>& B, float FrameTime) {
+	XMFLOAT3 PrevPosition = Position;
+
+	XMFLOAT3 Delta = { 0, 0, 0 };
+	Math::MoveForward(Delta, RotationY, ForwardSpeed * FrameTime);
+	Math::MoveStrafe(Delta, RotationY, StrafeSpeed * FrameTime);
+
+	XMVECTOR PrevVector = XMLoadFloat3(&PrevPosition);
+	XMVECTOR DeltaVector = XMVectorSet(Delta.x, 0, Delta.z, 0);
+	XMVECTOR VectorTarget = PrevVector + DeltaVector;
+
+	XMStoreFloat3(&A.sphere.Center, VectorTarget);
+
+	for (const auto& Box : B) {
+		if (A.CheckCollision(Box)) {
+			XMVECTOR ClosestPoint = ClosestPointOnOOBB(Box, VectorTarget);
+			XMVECTOR Normal = XMVector3Normalize(VectorTarget - ClosestPoint);
+			float Projection = XMVectorGetX(XMVector3Dot(DeltaVector, Normal));
+			XMVECTOR SlideDelta = DeltaVector - Normal * Projection;
+			VectorTarget = PrevVector + SlideDelta;
+			DeltaVector = SlideDelta;
+			XMStoreFloat3(&A.sphere.Center, VectorTarget);
+		}
+	}
+
+	XMStoreFloat3(&Position, VectorTarget);
 }
 
 // 2차원 거리를 계산한다.

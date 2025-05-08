@@ -52,6 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -155,13 +156,17 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Server_OPES\Packet.h" />
     <ClInclude Include="BoundboxShader.h" />
+    <ClInclude Include="CameraController.h" />
     <ClInclude Include="CameraUtil.h" />
+    <ClInclude Include="ClampUtil.h" />
     <ClInclude Include="ConstantBufferData.h" />
     <ClInclude Include="ConstantBuffers.h" />
     <ClInclude Include="CBVUtil.h" />
     <ClInclude Include="CollisionUtil.h" />
     <ClInclude Include="Config.h" />
+    <ClInclude Include="CrossHair.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="Framework.h" />
@@ -169,27 +174,35 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="ImageShader.h" />
     <ClInclude Include="LineBrush.h" />
     <ClInclude Include="LineShader.h" />
+    <ClInclude Include="Map2.h" />
+    <ClInclude Include="Map3.h" />
     <ClInclude Include="MathUtil.h" />
-    <ClInclude Include="Mode1.h" />
+    <ClInclude Include="Matrix.h" />
+    <ClInclude Include="ModePack.h" />
     <ClInclude Include="MouseUtil.h" />
     <ClInclude Include="Objective-D.h" />
     <ClInclude Include="MeshUtil.h" />
     <ClInclude Include="PickingUtil.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SampleMonster.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="DirectX_3D.h" />
     <ClInclude Include="GameResource.h" />
     <ClInclude Include="RootConstants.h" />
     <ClInclude Include="RootConstantUtil.h" />
     <ClInclude Include="ObjectShader.h" />
+    <ClInclude Include="ScriptUtil.h" />
     <ClInclude Include="SettingRootSignature.h" />
     <ClInclude Include="ShaderUtil.h" />
     <ClInclude Include="StartMode.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TerrainUtil.h" />
-    <ClInclude Include="TestObject.h" />
+    <ClInclude Include="Map1.h" />
     <ClInclude Include="TextureUtil.h" />
     <ClInclude Include="TimerUtil.h" />
+    <ClInclude Include="tinyxml\tinystr.h" />
+    <ClInclude Include="tinyxml\tinyxml.h" />
     <ClInclude Include="TransformUtil.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
@@ -197,33 +210,45 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Blends.cpp" />
     <ClCompile Include="BoundboxShader.cpp" />
     <ClCompile Include="CameraUtil.cpp" />
+    <ClCompile Include="ClampUtil.cpp" />
     <ClCompile Include="ConstantBuffers.cpp" />
     <ClCompile Include="CBVUtil.cpp" />
     <ClCompile Include="CollisionUtil.cpp" />
+    <ClCompile Include="CrossHair.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="ImageShader.cpp" />
+    <ClCompile Include="Level2.cpp" />
+    <ClCompile Include="Level3.cpp" />
     <ClCompile Include="LineBrush.cpp" />
     <ClCompile Include="LineShader.cpp" />
     <ClCompile Include="MathUtil.cpp" />
+    <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Meshes.cpp" />
     <ClCompile Include="MeshUtil.cpp" />
-    <ClCompile Include="Mode1.cpp" />
+    <ClCompile Include="Level1.cpp" />
     <ClCompile Include="MouseUtil.cpp" />
     <ClCompile Include="ObjectShader.cpp" />
     <ClCompile Include="PickingUtil.cpp" />
     <ClCompile Include="GameResource.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Resterizers.cpp" />
     <ClCompile Include="RootConstants.cpp" />
     <ClCompile Include="Pipelines.cpp" />
     <ClCompile Include="RootConstantUtil.cpp" />
+    <ClCompile Include="ScriptUtil.cpp" />
     <ClCompile Include="SettingRootSignature.cpp" />
     <ClCompile Include="StartMode.cpp" />
     <ClCompile Include="Stencils.cpp" />
     <ClCompile Include="TerrainUtil.cpp" />
+    <ClCompile Include="TestMode.cpp" />
     <ClCompile Include="TextureUtil.cpp" />
     <ClCompile Include="TimerUtil.cpp" />
+    <ClCompile Include="tinyxml\tinystr.cpp" />
+    <ClCompile Include="tinyxml\tinyxml.cpp" />
+    <ClCompile Include="tinyxml\tinyxmlerror.cpp" />
+    <ClCompile Include="tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="TransformUtil.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
     <ClCompile Include="WinMain.cpp" />

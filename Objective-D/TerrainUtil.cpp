@@ -9,9 +9,13 @@
 // 한 터레인 매쉬 당 한 번만 실행하면 된다. 생성자에서 실행할 것을 권장한다.
 // 터레인이 아닌 객체는 해당 함수를 실행할 필요가 없다.
 void TerrainUtil::InputData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat, Mesh* MeshData) {
-	XMMATRIX ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&SMat), XMLoadFloat4x4(&RMat));
-	ResultMatrix = XMMatrixMultiply(ResultMatrix, XMLoadFloat4x4(&TMat));
-	XMStoreFloat4x4(&TerrainMatrix, XMMatrixTranspose(ResultMatrix));
+	XMMATRIX world = XMMatrixMultiply(
+		XMMatrixMultiply(XMLoadFloat4x4(&SMat),
+		XMLoadFloat4x4(&RMat)),
+		XMLoadFloat4x4(&TMat)
+	);
+
+	XMStoreFloat4x4(&TerrainMatrix, world);
 
 	TerrainMesh = MeshData;
 
@@ -28,9 +32,14 @@ void TerrainUtil::InputPosition(XMFLOAT3& PositionValue, float HeightOffsetValue
 	HeightOffset = HeightOffsetValue;
 }
 
-// 터레인의 높이로 객체 높이 위치를 변경한다.
+// 터레인과 충돌 시 대상 높이를 터레인 높이로 변경한다.
 void TerrainUtil::SetHeightToTerrain(XMFLOAT3& PositionValue) {
 	PositionValue.y = Position.y;
+}
+
+// 대상 높이를 터레인 높이에 고정시킨다.
+void TerrainUtil::ClampToTerrain(const TerrainUtil& Other, XMFLOAT3& PositionValue, float HeightOffsetValue) {
+	PositionValue.y = Other.TerrainMesh->GetHeightAtPosition(Other.TerrainMesh, Position.x, Position.z, Other.TerrainMatrix) + HeightOffsetValue;
 }
 
 // 입력한 높이가 터레인의 바닥 높이보다 낮은지 검사한다. 낮을 경우 true를 리턴한다.

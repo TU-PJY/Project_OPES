@@ -180,7 +180,7 @@ void IOCompletionPort::RemoveClient(stClientInfo* client) {
 void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length) {
     recvingClient->sendOverlapped.operation = IOOperation::SEND;
     ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    ChatPacket_S chatPacket = {};
+    ChatPacket_StoC chatPacket = {};
     chatPacket.type = PacketType::CHAT;
     int msg_size = length - sizeof(PacketType);
     memcpy(chatPacket.message, message, msg_size);
@@ -201,7 +201,7 @@ void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvi
 void IOCompletionPort::SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient) {
     recvingClient->sendOverlapped.operation = IOOperation::SEND;
     ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    MovePacket_S movePacket = {};
+    MovePacket_StoC movePacket = {};
     movePacket.type = PacketType::MOVE;
     movePacket.x = sendingClient->x;
     movePacket.y = sendingClient->y;
@@ -250,17 +250,19 @@ void IOCompletionPort::WorkThread() {
                 //    continue;
                 //}
 
-                MovePacket_R* movePacket = reinterpret_cast<MovePacket_R*>(pOverlappedEx->buffer);
+                MovePacket_CtoS* movePacket = reinterpret_cast<MovePacket_CtoS*>(pOverlappedEx->buffer);
 
                 // 이동 처리
-                switch (movePacket->direction) {
-                case 0: client->y -= 1; break; // UP
-                case 1: client->y += 1; break; // DOWN
-                case 2: client->x -= 1; break; // LEFT
-                case 3: client->x += 1; break; // RIGHT
-                default: continue;
-                }
+               //switch (movePacket->direction) {
+               //case 0: client->y -= 1; break; // UP
+               //case 1: client->y += 1; break; // DOWN
+               //case 2: client->x -= 1; break; // LEFT
+               //case 3: client->x += 1; break; // RIGHT
+               //default: continue;
+               //}
                 //movePacket->id = client->id;
+                client->x = movePacket->x;
+                client->y = movePacket->y;
                 std::cout << "[이동] 클라이언트 " << client->id
                     << " 위치: (" << client->x << ", " << client->y << ")\n";
 
@@ -277,7 +279,7 @@ void IOCompletionPort::WorkThread() {
                 //    continue;
                 //}
 
-                ChatPacket_R* chatPacket = reinterpret_cast<ChatPacket_R*>(pOverlappedEx->buffer);
+                ChatPacket_CtoS* chatPacket = reinterpret_cast<ChatPacket_CtoS*>(pOverlappedEx->buffer);
                 std::string msg{ chatPacket->message,bytesTransferred - sizeof(PacketType) };
 
                 std::cout << "[채팅] 클라이언트 " << client->id << ": " << msg << std::endl;

@@ -12,6 +12,7 @@ public:
 	void InputData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat, Mesh* MeshData);
 	void InputPosition(XMFLOAT3& PositionValue, float HeightOffsetValue = 0.0);
 	void SetHeightToTerrain(XMFLOAT3& PositionValue);
+	void ClampToTerrain(const TerrainUtil& Other, XMFLOAT3& PositionValue, float HeightOffsetValue);
 	bool CheckCollision(const TerrainUtil& Other);
 
 private:

@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<Script>
+	<Object1 X="-40" Y="-4.0" Z="-40" SizeX="1.5" SizeY="1" SizeZ="1" Rotation="45.0" Index="1"/>
+	<Object2 X="-10" Y="-4.0" Z="-40" SizeX="1.3" SizeY="1" SizeZ="1" Rotation="0.0" Index="1"/>
+	<Object3 X="15" Y="-2.0" Z="-45" SizeX="8" SizeY="8" SizeZ="8" Rotation="120.0" Index="0"/>
+	<Object4 X="20" Y="-5.0" Z="50" SizeX="4" SizeY="4" SizeZ="4" Rotation="120.0" Index="0"/>
+	<Object5 X="8" Y="0" Z="50" SizeX="0.5" SizeY="0.5" SizeZ="0.5" Rotation="120.0" Index="1"/>
+	<Object6 X="-45" Y="-3.0" Z="-10" SizeX="1" SizeY="1" SizeZ="1.5" Rotation="00.0" Index="1"/>
+	<Object7 X="40" Y="-4.0" Z="40" SizeX="1" SizeY="1" SizeZ="1.0" Rotation="00.0" Index="1"/>
+	<Object8 X="45" Y="-5.0" Z="24" SizeX="4" SizeY="4" SizeZ="4" Rotation="120.0" Index="0"/>
+	<Object9 X="-40" Y="-4.0" Z="20" SizeX="1.3" SizeY="1" SizeZ="1" Rotation="270.0" Index="1"/>
+	<Object10 X="-35" Y="-5.0" Z="40" SizeX="0.5" SizeY="0.5" SizeZ="0.5" Rotation="120.0" Index="1"/>
+	<Object11 X="30" Y="-4.0" Z="11" SizeX="0.75" SizeY="0.55" SizeZ="1.0" Rotation="-45.0" Index="1"/>
+	<Object12 X="15" Y="-4.0" Z="11" SizeX="0.3" SizeY="0.3" SizeZ="0.3" Rotation="-45.0" Index="1"/>
+	<Object13 X="-30" Y="-4" Z="50" SizeX="0.8" SizeY="0.3" SizeZ="0.5" Rotation="0.0" Index="1"/>
+	<Object14 X="-10" Y="-4" Z="50" SizeX="0.8" SizeY="0.3" SizeZ="0.5" Rotation="0.0" Index="1"/>
+</Script>

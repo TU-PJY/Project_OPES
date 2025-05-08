@@ -34,8 +34,9 @@ struct stClientInfo {
         ZeroMemory(&sendOverlapped, sizeof(stOverlappedEx));
         socketClient = INVALID_SOCKET;
         roomID = 0;
-        x = 0; 
-        y = 0;
+        x = -130.0;
+        y = -130.0;
+        //-130.0, 20.0, -130.0 
     }
 };
 

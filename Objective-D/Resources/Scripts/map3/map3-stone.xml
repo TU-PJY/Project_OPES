@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<Script>
+	<!-- 디펜스 지점 -->
+	<Object1 X="-180" Y="-1.0" Z="-140" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="-110.0" Index="0" />
+	<Object2 X="-160" Y="-3.0" Z="-120" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="-60.0" Index="1" />
+	<Object3 X="-100" Y="-3.0" Z="-175" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="-10.0" Index="1" />
+	<Object4 X="-100" Y="-7.0" Z="-90" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="220.0" Index="0" />
+	
+	<!-- 1번 지형 -->
+	<Object5 X="-140" Y="-9.0" Z="60" SizeX="0.04" SizeY="0.04" SizeZ="0.04" Rotation="60.0" Index="0" />
+	<Object6 X="-220" Y="-7.0" Z="60" SizeX="0.04" SizeY="0.04" SizeZ="0.04" Rotation="90.0" Index="1" />
+
+	<!-- 2번 지점 -->
+	<Object7 X="-170" Y="-4.0" Z="200" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="90.0" Index="0" />
+	<Object8 X="-80" Y="-4.0" Z="240" SizeX="0.03" SizeY="0.03" SizeZ="0.03" Rotation="0.0" Index="1" />
+	
+	<!-- 도착 지점 -->
+	<Object9 X="220" Y="-25.0" Z="230" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" Index="0" />
+	<Object10 X="190" Y="-25.0" Z="90" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="0.0" Index="1" />
+</Script>

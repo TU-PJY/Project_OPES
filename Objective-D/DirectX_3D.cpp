@@ -29,8 +29,12 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* Device, ID3D12GraphicsCommand
 	ResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 
 	D3D12_RESOURCE_STATES ResourceInitialStates = D3D12_RESOURCE_STATE_COMMON;
-	//	if (HeapType == D3D12_HEAP_TYPE_UPLOAD) ResourceInitialStates = D3D12_RESOURCE_STATE_GENERIC_READ;
-	//	else if (HeapType == D3D12_HEAP_TYPE_READBACK) ResourceInitialStates = D3D12_RESOURCE_STATE_COPY_DEST;
+
+	if (HeapType == D3D12_HEAP_TYPE_UPLOAD) 
+		ResourceInitialStates = D3D12_RESOURCE_STATE_GENERIC_READ;
+
+	else if (HeapType == D3D12_HEAP_TYPE_READBACK)
+		ResourceInitialStates = D3D12_RESOURCE_STATE_COPY_DEST;
 
 	HRESULT hResult = Device->CreateCommittedResource(&HeapPropertiesDesc, D3D12_HEAP_FLAG_NONE, &ResourceDesc, ResourceInitialStates, NULL, __uuidof(ID3D12Resource), (void**)&Buffer);
 
@@ -70,6 +74,9 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* Device, ID3D12GraphicsCommand
 			Buffer->Map(0, &ReadRange, (void**)&BufferDataBegin);
 			memcpy(BufferDataBegin, Data, Byte);
 			Buffer->Unmap(0, NULL);
+
+			if (UploadBuffer)
+				*UploadBuffer = Buffer;
 		}
 		break;
 

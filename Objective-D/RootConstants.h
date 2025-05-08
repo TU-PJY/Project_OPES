@@ -4,5 +4,8 @@
 
 extern int GAME_OBJECT_INDEX;
 extern int CAMERA_INDEX;
-extern int SRV_INDEX;
-extern int SAMPLER_INDEX;
+extern int SRV_INDEX_3D;
+extern int SAMPLER_INDEX_3D;
+
+extern int SRV_INDEX_2D;
+extern int SAMPLER_INDEX_2D;

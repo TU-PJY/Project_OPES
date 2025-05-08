@@ -1,29 +1,54 @@
 // cpp code
-#include "Mode1.h"
-#include "MouseUtil.h"
+#include "ModePack.h"
 
-void Mode1::Start() {
+void Template::Start() {
+	std::vector<std::string> ControlObjectTag
+	{
+
+	};
+
+	// 필요한 작업 추가
+
+	AddControlObject(ControlObjectTag);
 	RegisterController();
-	scene.RegisterModeName("Mode1");
+	scene.RegisterModeName("Template");
 }
 
-void Mode1::Destructor() {
+void Template::Destructor() {
+	// 여기에 모드 종료 시 필요한 작업 추가 (리소스 메모리 해제 등)
 }
 
-void Mode1::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
-	if (nMessageID == WM_KEYDOWN && wParam == VK_ESCAPE)
-		scene.Exit();
+void Template::AddControlObject(std::vector<std::string> Vec) {
+	ControlObjectList.clear();
+	for (auto const& Object : Vec) {
+		if (auto FindObject = scene.Find(Object); FindObject)
+			ControlObjectList.emplace_back(FindObject);
+	}
 }
 
-void Mode1::MouseMotionController(HWND hWnd) {
+void Template::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	KeyEvent Event{ hWnd, nMessageID, wParam, lParam };
+
+	for (auto const& Object : ControlObjectList)
+		if (Object) Object->InputKey(Event);
+}
+
+void Template::MouseMotionController(HWND hWnd) {
+	MotionEvent Event{ hWnd, mouse.MotionPosition };
 	mouse.UpdateMousePosition(hWnd);
+
+	for (auto const& Object : ControlObjectList)
+		if (Object) Object->InputMouseMotion(Event);
 }
 
+void Template::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	MouseEvent Event{ hWnd, nMessageID, wParam, lParam };
 
-void Mode1::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+	for (auto const& Object : ControlObjectList)
+		if (Object) Object->InputMouse(Event);
 }
 
-void Mode1::RegisterController() {
+void Template::RegisterController() {
 	scene.RegisterKeyController(KeyboardController);
 	scene.RegisterMouseController(MouseController);
 	scene.RegisterMouseMotionController(MouseMotionController);
@@ -32,13 +57,10 @@ void Mode1::RegisterController() {
 
 
 // header code
-
-#pragma once
-#include "Scene.h"
-
-namespace Mode1 {
+namespace Template {
 	void Start();
 	void Destructor();
+	void AddControlObject(std::vector<std::string> Vec);
 	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void MouseMotionController(HWND hWnd);
 	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);

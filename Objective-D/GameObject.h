@@ -6,20 +6,13 @@
 #include "MathUtil.h"
 #include "LineBrush.h"
 #include "TerrainUtil.h"
+#include "Matrix.h"
 
 class Shader;
 typedef ID3D12GraphicsCommandList* (CommandList);
 
 class GameObject {
 public:
-	// 각 객체는 각자의 행렬을 가진다.
-	XMFLOAT4X4 TranslateMatrix{ Mat4::Identity() };
-	XMFLOAT4X4 RotateMatrix{ Mat4::Identity() };
-	XMFLOAT4X4 ScaleMatrix { Mat4::Identity() };
-	XMFLOAT4X4 ImageAspectMatrix{ Mat4::Identity() };
-	XMFLOAT4X4 AnimationMatrix{ Mat4::Identity() };
-	XMMATRIX ResultMatrix{};
-
 	// 오브젝트 피킹 될 경우 사용될 행렬
 	XMMATRIX PickMatrix{};
 
@@ -36,7 +29,7 @@ public:
 	std::string ObjectTag{};
 	bool DeleteCommand{};
 
-	void InitRenderState(int RenderTypeFlag = RENDER_TYPE_3D);
+	void BeginRender(int RenderTypeFlag = RENDER_TYPE_3D);
 	void SetColor(XMFLOAT3& Color);
 	void SetColor(float R, float G, float B);
 	void SetColorRGB(float R, float G, float B);
@@ -44,12 +37,18 @@ public:
 	void SetFogUse(int Flag);
 	void FlipTexture(int FlipType);
 	float ASP(float Value);
-	void Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue=1.0f, bool DepthTestFlag=true);
+	void UpdateFBXAnimation(FBXMesh& TargetMesh, float Time);
+	void SelectFBXAnimation(FBXMesh& TargetMesh, std::string AnimationName);
+	void ResetAnimationTime(FBXMesh& TargetMesh);
+	void RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue = 1.0, float DepthTestFlag = true);
+	int PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance);
+	void Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue=1.0f, int DepthTestFlag=DEPTH_TEST_DEFAULT);
 	void Render2D(Texture* TexturePtr, float AlphaValue=1.0f, bool EnableAspect=true);
 	void UpdateMotionRotation(float& RotationX, float& RotationY, float DeltaX, float DeltaY);
 	void UpdateMotionRotation(XMFLOAT3& Rotation, float DeltaX, float DeltaY);
 	void UpdatePickMatrix();
 	int PickRayInter(Mesh* MeshPtr, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance);
+	void InputBoolSwitch(int SwitchFlag, KeyEvent& Event, WPARAM Key, bool& BoolValue);
 
 private:
 	void PrepareRender();
@@ -75,4 +74,14 @@ public:
 	virtual TerrainUtil GetTerrain() { return {}; }
 
 	// 사용자 정의 리턴 함수는 아래에 정의한다.
+	
+	// 크로스헤어 반동 부여 함수
+	virtual void InputRecoil(float Value) {}
+
+	// 크로스헤어 렌더링 활성화/비활성화
+	virtual void EnableRender() {}
+	virtual void DisableRender() {}
+
+	// 맵 벽 oobb 얻는 함수
+	virtual std::vector<OOBB> GetMapWallOOBB() { return{}; }
 };
