@@ -92,10 +92,14 @@ private:
 	float fov_dest{};
 
 	// 맵 벽 oobb 데이터
-	std::vector<OOBB> MapOOBBData{};
+	std::vector<OOBB> map_oobb_data{};
 
 	// 플레이어 충돌 범위
 	BoundSphere player_sphere{};
+
+
+	// 크로스헤어 오브젝트 포인터
+	GameObject* crosshair_ptr{};
 
 public:
 	Player(std::string MapObjectName);

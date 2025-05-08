@@ -15,7 +15,11 @@ Player::Player(std::string MapObjectName) {
 
 	// 현재 맵에서 벽 oobb를 얻어온다.
 	if (auto Map = scene.Find(MapObjectName); Map)
-		MapOOBBData = Map->GetMapWallOOBB();
+		map_oobb_data = Map->GetMapWallOOBB();
+
+	// 오버헤드 감소를 위해 미리 크로스헤어 오브젝트 포인터를 저장한다.
+	if (auto Object = scene.Find("crosshair"))
+		crosshair_ptr = Object;
 }
 
 void Player::InputMouseMotion(MotionEvent& Event) {
@@ -23,6 +27,7 @@ void Player::InputMouseMotion(MotionEvent& Event) {
 		mouse.HideCursor();
 		GetCapture();
 
+		// 정조준 시 감도를 절반으로 낮춘다
 		float sensivity = 0.08;
 		if (gun_zoomed)  sensivity = 0.04;
 		XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, sensivity);
@@ -46,16 +51,14 @@ void Player::InputMouse(MouseEvent& Event) {
 
 	case WM_RBUTTONDOWN:
 		gun_zoomed = true;
-		if (auto crosshair = scene.Find("crosshair"); crosshair)
-			crosshair->DisableRender();
 		fov_dest = -20.0;
+		crosshair_ptr->DisableRender();
 		break;
 
 	case WM_RBUTTONUP:
 		gun_zoomed = false;
-		if (auto crosshair = scene.Find("crosshair"); crosshair)
-			crosshair->EnableRender();
 		fov_dest = 0.0;
+		crosshair_ptr->EnableRender();
 		break;
 	}
 }
@@ -108,44 +111,6 @@ void Player::Render() {
 	gun_oobb.Render();
 }
 
-void Player::UpdateCamera(float FrameTime) {
-	// 카메라 회전 업데이트
-	UpdateCameraRotation();
-
-	// 걷기 모션 업데이트
-	UpdateWalkMotion(FrameTime);
-
-	// 총 반동 연출 업데이트
-	UpdateShootMotion(FrameTime);
-	
-	// 카메라 최종 회전
-	camera.Rotate(rotation.x, rotation.y, rotation.z + walk_shake_result + recoil_shake);
-
-	// 정조준 시 fov 업데이트
-	global_fov_offset = std::lerp(global_fov_offset, fov_dest, FrameTime * 20.0);
-}
-
-void Player::UpdateWalkMotion(float FrameTime) {
-	walk_shake_num += FrameTime * 10.0;
-
-	// 걷기 상태 활성화 시 카메라가 흔들리는 연출을 준다.
-	if (move_front || move_back || move_right || move_left) 
-		walk_shake_value = std::lerp(walk_shake_value, 1.5, FrameTime * 5.0);
-	
-	// 걷기 상태가 비활성화된 상태라면 점차 흔들림을 줄인다.
-	else 
-		walk_shake_value = std::lerp(walk_shake_value, 0.0, FrameTime * 5.0);
-
-	// 최종 흔들림 값 계산
-	walk_shake_result = sinf(walk_shake_num) * walk_shake_value;
-}
-
-void Player::UpdateShootMotion(float FrameTime) {
-	recoil_shake_num += FrameTime * 40.0;
-	recoil_shake = std::lerp(recoil_shake, sinf(recoil_shake_num) * dest_recoil_shake, FrameTime * 5.0);
-	dest_recoil_shake = std::lerp(dest_recoil_shake, 0.0, 5.0 * FrameTime);
-}
-
 void Player::UpdateMoveSpeed(float FrameTime) {
 	// 움직임 활성화 시 해당 방향으로 가속
 	if (move_front && !move_back)
@@ -167,7 +132,7 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 	player_sphere.Update(position, 0.6);
 
 	// OOBB와 충돌을 체크하면서 이동
-	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_sphere, MapOOBBData, FrameTime);
+	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_sphere, map_oobb_data, FrameTime);
 }
 
 void Player::UpdateFire(float FrameTime) {
@@ -180,8 +145,7 @@ void Player::UpdateFire(float FrameTime) {
 	if (trigger_state) {
 		if (current_fire_delay <= 0.0) {
 			current_fire_delay = dest_fire_delay;
-			if (auto crosshair = scene.Find("crosshair"); crosshair)
-				crosshair->InputRecoil(0.1);
+			crosshair_ptr->InputRecoil(0.1);
 
 			gun_offset -= 0.1;
 			int randnum = dist(gen);
@@ -224,6 +188,25 @@ void Player::UpdateGun(float FrameTime) {
 
 }
 
+void Player::UpdateTerrainCollision(float FrameTime) {
+	// 플레이어 높이가 항상 터레인 위에 위치하도록 한다
+	if (auto terrain = scene.Find(target_terrain_name); terrain) {
+		terr.InputPosition(position);
+		terr.ClampToTerrain(terrain->GetTerrain(), position, 3.0);
+	}
+}
+
+void Player::UpdateGunCollision() {
+	for (auto const& O : map_oobb_data) {
+		if (gun_oobb.CheckCollision(O)) {
+			gun_collided = true;
+			return;
+		}
+	}
+
+	gun_collided = false;
+}
+
 void Player::UpdateCameraRotation() {
 	// 상하 카메라 회전 제한
 	Clamp::ClampValue(rotation.x, -90.0, 90.0, CLAMP_FIX);
@@ -234,21 +217,40 @@ void Player::UpdateCameraRotation() {
 	camera.Track(position, vec, 0);
 }
 
-void Player::UpdateTerrainCollision(float FrameTime) {
-	// 플레이어 높이가 항상 터레인 위에 위치하도록 한다
-	if (auto terrain = scene.Find(target_terrain_name); terrain) {
-		terr.InputPosition(position);
-		terr.ClampToTerrain(terrain->GetTerrain(), position, 3.0);
-	}
+void Player::UpdateWalkMotion(float FrameTime) {
+	walk_shake_num += FrameTime * 10.0;
+
+	// 걷기 상태 활성화 시 카메라가 흔들리는 연출을 준다.
+	if (move_front || move_back || move_right || move_left)
+		walk_shake_value = std::lerp(walk_shake_value, 1.5, FrameTime * 5.0);
+
+	// 걷기 상태가 비활성화된 상태라면 점차 흔들림을 줄인다.
+	else
+		walk_shake_value = std::lerp(walk_shake_value, 0.0, FrameTime * 5.0);
+
+	// 최종 흔들림 값 계산
+	walk_shake_result = sinf(walk_shake_num) * walk_shake_value;
 }
 
-void Player::UpdateGunCollision() {
-	for (auto const& O : MapOOBBData) {
-		if (gun_oobb.CheckCollision(O)) {
-			gun_collided = true;
-			return;
-		}
-	}
+void Player::UpdateShootMotion(float FrameTime) {
+	recoil_shake_num += FrameTime * 40.0;
+	recoil_shake = std::lerp(recoil_shake, sinf(recoil_shake_num) * dest_recoil_shake, FrameTime * 5.0);
+	dest_recoil_shake = std::lerp(dest_recoil_shake, 0.0, 5.0 * FrameTime);
+}
 
-	gun_collided = false;
+void Player::UpdateCamera(float FrameTime) {
+	// 카메라 회전 업데이트
+	UpdateCameraRotation();
+
+	// 걷기 모션 업데이트
+	UpdateWalkMotion(FrameTime);
+
+	// 총 반동 연출 업데이트
+	UpdateShootMotion(FrameTime);
+
+	// 카메라 최종 회전
+	camera.Rotate(rotation.x, rotation.y, rotation.z + walk_shake_result + recoil_shake);
+
+	// 정조준 시 fov 업데이트
+	global_fov_offset = std::lerp(global_fov_offset, fov_dest, FrameTime * 20.0);
 }

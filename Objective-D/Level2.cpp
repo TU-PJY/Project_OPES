@@ -20,19 +20,18 @@ void Level2::Start() {
 	// 플레이어 객체 생성자에서 맵 데이터를 받아야 하기 때문
 	scene.AddObject(new Map2, "map2", LAYER1);
 
+	// 크로스헤어는 항상 보여야 하므로 상위 레이어에 추가
+	scene.AddObject(new CrossHair, "crosshair", LAYER2);
+
 	// 맵 편집 모드를 실행하려면 dev_mode_enabled를 활성화 한다.
 	// 게임 모드를 실행하려면 dev_mode_enabled 비활성화 한다.
 	bool dev_mode_enabled = false;
-
 	if(!dev_mode_enabled)
 		scene.AddObject(new Player("map2"), "player", LAYER2);
 	else
 		scene.AddObject(new CameraController, "camera_controller", LAYER1);
 
 	scene.AddObject(new SampleMonster, "monster", LAYER1);
-
-	// 크로스헤어는 항상 보여야 하므로 상위 레이어에 추가
-	scene.AddObject(new CrossHair, "crosshair", LAYER2);
 
 	AddControlObject(ControlObjectTag);
 	RegisterController();
