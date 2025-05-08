@@ -46,6 +46,10 @@ public:
 	// polygon scifi asset
 	Mesh* machine_gun{};
 	Mesh* dot_machine_gun{};
+
+	// gun flame
+	Mesh* gun_flame{};
+	Mesh* gun_flame_back{};
 };
 extern MeshResource MESH;
 
@@ -78,6 +82,10 @@ public:
 
 	// polyson scifi asset
 	Texture* scifi{};
+
+	// gun flame texture
+	Texture* gun_flame{};
+	Texture* gun_flame_back{};
 };
 extern TextureResource TEX;
 

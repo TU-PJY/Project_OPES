@@ -24,12 +24,12 @@ D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState() {
 	return(DepthStencilDesc);
 }
 
-// 깊이 검사를 비활성화한 스텐실을 생성한다. 이미지 렌더링용으로 사용된다.
-D3D12_DEPTH_STENCIL_DESC Shader::CreateImageDepthStencilState() {
+// 깊이 검사를 비활성화한 스텐실을 생성한다.
+D3D12_DEPTH_STENCIL_DESC Shader::CreateNoneDepthStencilState() {
 	D3D12_DEPTH_STENCIL_DESC DepthStencilDesc;
 	::ZeroMemory(&DepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
 	DepthStencilDesc.DepthEnable = FALSE;
-	DepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	DepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 	DepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	DepthStencilDesc.StencilEnable = FALSE;
 	DepthStencilDesc.StencilReadMask = 0x00;

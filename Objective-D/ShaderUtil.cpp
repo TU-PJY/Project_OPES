@@ -85,9 +85,9 @@ void Shader::RenderDefault(ID3D12GraphicsCommandList* CmdList) {
 	OnPrepareRender(CmdList, PSDefault);
 }
 
-// 1인칭 오브젝트용 파이프라인 적용
-void Shader::RenderFPS(ID3D12GraphicsCommandList* CmdList) {
-	OnPrepareRender(CmdList, PSFPS);
+// 총 불꽃 오브젝트용 파이프라인 적용
+void Shader::RenderCullingNone(ID3D12GraphicsCommandList* CmdList) {
+	OnPrepareRender(CmdList, PSCullingNone);
 }
 
 void Shader::RenderParticle(ID3D12GraphicsCommandList* CmdList) {

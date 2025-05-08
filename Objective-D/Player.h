@@ -44,6 +44,7 @@ private:
 	// 플레이어 이동 속도
 	float dest_move_speed{ 15.0 };
 
+
 	// 걷기 모션 흔들림 업데이트 값
 	float walk_shake_num{};
 
@@ -52,6 +53,21 @@ private:
 
 	// 걷기 모션 흔들림 결과 값
 	float walk_shake_result{};
+
+	// 총 발사 시 흔들림 값
+	float recoil_shake{};
+
+	// 흔들림 업데이트 값
+	float recoil_shake_num{};
+
+	// 총 발사 시 목표 흔들림 값
+	float dest_recoil_shake{};
+
+	// 반동으로 인한 카메라 올라감
+	float recoil_rotation{};
+
+	// 정조준 시 카메라 fov 목표 값
+	float fov_dest{};
 
 
 	// 1인칭 총 오프셋 위치
@@ -76,20 +92,9 @@ private:
 	// gun_collided 판정을 위함
 	OOBB gun_oobb{};
 
-	// 총 발사 시 흔들림 값
-	float recoil_shake{};
+	// 불꽃이 보이는 시간
+	float flame_time{};
 
-	// 흔들림 업데이트 값
-	float recoil_shake_num{};
-
-	// 총 발사 시 목표 흔들림 값
-	float dest_recoil_shake{};
-
-	// 반동으로 인한 카메라 올라감
-	float recoil_rotation{};
-
-	// 정조준 시 카메라 fov 목표 값
-	float fov_dest{};
 
 	// 맵 벽 oobb 데이터
 	std::vector<OOBB> map_oobb_data{};

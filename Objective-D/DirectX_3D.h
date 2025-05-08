@@ -58,7 +58,7 @@ enum RenderTypeEnum {
 enum DepthTestTypeEnum {
 	DEPTH_TEST_DEFAULT,
 	DEPTH_TEST_NONE,
-	DEPTH_TEST_FPS
+	DEPTH_TEST_NO_CULLING
 };
 
 // 텍스처 반전 타입 열거형
