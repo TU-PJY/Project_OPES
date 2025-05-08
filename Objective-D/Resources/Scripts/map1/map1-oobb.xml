@@ -1,0 +1,132 @@
+<?xml version="1.0" ?>
+<Script>
+	<!--map1-wall-rock.xml->
+	<!-- 디펜스 모드 공간 -->
+	<OOBB X="-170" Z="-175" SizeX="30.0" SizeZ="21.0" Rotation="45.0" />
+	<OOBB X="-190" Z="-125" SizeX="22.0" SizeZ="30.0" Rotation="180.0" />
+	<OOBB X="-190" Z="-90" SizeX="22.0" SizeZ="20.0" Rotation="180.0" />
+	<OOBB X="-170" Z="-60" SizeX="22.0" SizeZ="20.0" Rotation="-60.0" />
+	<OOBB X="-140" Z="-50" SizeX="22.0" SizeZ="23.0" Rotation="-10.0" />
+	<OOBB X="-130" Z="-190" SizeX="20.0" SizeZ="21.0" Rotation="0.0" />
+	<OOBB X="-100" Z="-190" SizeX="20.0" SizeZ="21.0" Rotation="0.0" />
+	<OOBB X="-60" Z="-180" SizeX="23.0" SizeZ="21.0" Rotation="45.0" />
+	<OOBB X="-50" Z="-150" SizeX="21.0" SizeZ="23.0" Rotation="-90.0" />
+	<OOBB X="-50" Z="-120" SizeX="20.0" SizeZ="23.0" Rotation="-90.0" />
+
+
+	<!-- 도착 지점 공간 -->
+
+	<!-- 중앙 공간 -->
+	<!-- 오른쪽 벽 -->
+	<OOBB X="-45" Z="-95" SizeX="7.0" SizeZ="13.0" Rotation="-270.0" />
+	<OOBB X="-10" Z="-110" SizeX="22.0" SizeZ="44.0" Rotation="-270.0" />
+	<OOBB X="60" Z="-110" SizeX="22.0" SizeZ="44.0" Rotation="-290.0" />
+	<OOBB X="130" Z="0" SizeX="22.0" SizeZ="66.0" Rotation="-165.0" />
+
+
+	<!-- 왼쪽 벽 -->
+	<OOBB X="-140" Z="-10" SizeX="22.0" SizeZ="44.0" Rotation="-180.0" />
+	<OOBB X="-120" Z="60" SizeX="22.0" SizeZ="44.0" Rotation="25.0" />
+	<OOBB X="-80" Z="100" SizeX="22.0" SizeZ="44.0" Rotation="65.0" />
+	<OOBB X="-20" Z="100" SizeX="22.0" SizeZ="44.0" Rotation="90.0" />
+	<OOBB X="40" Z="100" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+
+	<!-- 던전 -->
+	<OOBB X="120" Z="-130" SizeX="22.0" SizeZ="44.0" Rotation="120.0" />
+	<OOBB X="150" Z="-80" SizeX="22.0" SizeZ="44.0" Rotation="130.0" />
+	<OOBB X="170" Z="-170" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="180" Z="-200" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="210" Z="-220" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="240" Z="-220" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="270" Z="-200" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="280" Z="-180" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="280" Z="-160" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="260" Z="-130" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="220" Z="-120" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="190" Z="-110" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+
+
+	<!--map1-lake-rock.xml->
+	<!-- lake rock -->
+	<OOBB X="-40" Z="-40" SizeX="21.0" SizeZ="14.0" Rotation="45.0" />
+	<OOBB X="-10" Z="-40" SizeX="18.2" SizeZ="14.0" Rotation="0.0" />
+	<OOBB X="15" Z="-45" SizeX="14" SizeZ="14" Rotation="90.0" />
+	<OOBB X="20" Z="50" SizeX="6" SizeZ="6" Rotation="90.0" />
+	<OOBB X="8" Z="50" SizeX="7.0" SizeZ="7.0" Rotation="120.0" />
+	<OOBB X="-45" Z="-10" SizeX="14.0" SizeZ="21.0" Rotation="00.0" />
+	<OOBB X="40" Z="40" SizeX="14.0" SizeZ="14.0" Rotation="00.0" />
+	<OOBB X="45" Z="24" SizeX="7" SizeZ="7" Rotation="90.0" />
+	<OOBB X="-40" Z="20" SizeX="18.2" SizeZ="14.0" Rotation="270.0" />
+	<OOBB X="-35" Z="40" SizeX="7.0" SizeZ="7.0" Rotation="120.0" />
+	<OOBB X="-30" Z="50" SizeX="11.2" SizeZ="7.0" Rotation="0.0" />
+	<OOBB X="-10" Z="50" SizeX="11.2" SizeZ="7.0" Rotation="0.0" />
+
+
+	<!--map1-object.xml-->
+	<!-- 호수 부근 오브젝트 -->
+
+
+	<!-- 디펜스 지점 오브젝트 -->
+	<OOBB X="-70" Z="-100" SizeX="1.0" SizeZ="1.0" Rotation="0.0" />
+	<OOBB X="-75" Z="-120" SizeX="1.0" SizeZ="1.0" Rotation="0.0" />
+	<OOBB X="-80" Z="-130" SizeX="1.0" SizeZ="1.0" Rotation="0.0" />
+	<OOBB X="-80" Z="-150" SizeX="1.0" SizeZ="1.0" Rotation="-45.0" />
+	<OOBB X="-100" Z="-160" SizeX="1.0" SizeZ="1.0" Rotation="-45.0" />
+	<OOBB X="-110" Z="-164" SizeX="1.0" SizeZ="1.0" Rotation="-20.0" />
+	<OOBB X="-120" Z="-162" SizeX="1.3" SizeZ="1.3" Rotation="-180.0" />
+	<OOBB X="-130" Z="-164" SizeX="1.0" SizeZ="1.0" Rotation="-180.0" />
+	<OOBB X="-150" Z="-155" SizeX="1.7" SizeZ="1.7" Rotation="-180.0" />
+	<OOBB X="-165" Z="-140" SizeX="1.7" SizeZ="1.7" Rotation="-180.0" />
+	<OOBB X="-160" Z="-120" SizeX="2.0" SizeZ="2.0" Rotation="-90.0" />
+	<OOBB X="-160" Z="-110" SizeX="1.0" SizeZ="1.0" Rotation="0.0" />
+	<OOBB X="-160" Z="-90" SizeX="1.3" SizeZ="1.3" Rotation="0.0" />
+	<OOBB X="-140" Z="-80" SizeX="1.3" SizeZ="1.3" Rotation="0.0" />
+
+
+	<!-- 수풀 -->
+	<OOBB X="-72" Z="-107" SizeX="5.5" SizeZ="5.5" Rotation="80.0" />
+	<OOBB X="-73" Z="-115" SizeX="5.5" SizeZ="5.5" Rotation="90.0" />
+	<OOBB X="-75" Z="-140" SizeX="6.9" SizeZ="6.9" Rotation="20.0" />
+	<OOBB X="-90" Z="-160" SizeX="6.9" SizeZ="6.9" Rotation="280.0" />
+	<OOBB X="-140" Z="-160" SizeX="6.9" SizeZ="6.9" Rotation="0.0" />
+	<OOBB X="-155" Z="-150" SizeX="4.1" SizeZ="4.1" Rotation="0.0" />
+	<OOBB X="-160" Z="-145" SizeX="4.1" SizeZ="4.1" Rotation="180.0" />
+	<OOBB X="-130" Z="-75" SizeX="8.3" SizeZ="8.3" Rotation="120.0" />
+
+
+	<!-- 왼쪽 벽 -->
+	<OOBB X="-70" Z="-40" SizeX="2.0" SizeZ="2.0" Rotation="0.0" />
+	<OOBB X="-110" Z="0" SizeX="2.0" SizeZ="2.0" Rotation="-90.0" />
+	<OOBB X="-63" Z="-40" SizeX="5.0" SizeZ="5.0" Rotation="0.0" />
+	<OOBB X="-102" Z="0" SizeX="6.7" SizeZ="6.7" Rotation="-45.0" />
+	<OOBB X="-115" Z="0" SizeX="5.0" SizeZ="5.0" Rotation="-45.0" />
+	<OOBB X="-57" Z="35" SizeX="2.0" SizeZ="2.0" Rotation="-135.0" />
+	<OOBB X="-48" Z="43" SizeX="10.3" SizeZ="10.3" Rotation="0.0" />
+
+
+	<!-- 오른쪽 벽 -->
+	<OOBB X="-55" Z="-55" SizeX="2.0" SizeZ="2.0" Rotation="45.0" />
+	<OOBB X="0" Z="-83" SizeX="2.0" SizeZ="2.0" Rotation="50.0" />
+	<OOBB X="30" Z="-50" SizeX="2.0" SizeZ="2.0" Rotation="45.0" />
+	<OOBB X="38" Z="-50" SizeX="6" SizeZ="6" Rotation="0.0" />
+	<OOBB X="48" Z="-45" SizeX="6" SizeZ="6" Rotation="0.0" />
+	<OOBB X="60" Z="-77" SizeX="2.7" SizeZ="2.7" Rotation="0.0" />
+	<OOBB X="70" Z="-77" SizeX="1.7" SizeZ="1.7" Rotation="0.0" />
+	<OOBB X="90" Z="-40" SizeX="3.3" SizeZ="3.3" Rotation="0.0" />
+	<OOBB X="105" Z="-65" SizeX="5" SizeZ="5" Rotation="0.0" />
+	<OOBB X="109" Z="-72" SizeX="3.3" SizeZ="3.3" Rotation="0.0" />
+	<OOBB X="85" Z="-50" SizeX="8" SizeZ="2" Rotation="30.0" />
+	<OOBB X="60" Z="30" SizeX="3.3" SizeZ="3.3" Rotation="30.0" />
+	<OOBB X="60" Z="50" SizeX="1.7" SizeZ="1.7" Rotation="30.0" />
+	<OOBB X="45" Z="56" SizeX="2.0" SizeZ="2.0" Rotation="30.0" />
+
+
+	<!-- 도착 지점 -->
+
+	<!-- 호숫가 땜빵 -->
+	<OOBB X="50" Z="1.2" SizeX="20" SizeZ="3" Rotation="90.0" />
+	<OOBB X="50" Z="-30" SizeX="5" SizeZ="11" Rotation="0.0" />
+
+
+
+</Script>

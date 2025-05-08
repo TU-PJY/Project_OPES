@@ -18,6 +18,9 @@ private:
 	std::vector<ObjectStruct> SmallObjectPosition{};
 	ScriptUtil SmallObjectPositionScript{};
 
+	ScriptUtil OOBBDataScript{};
+	std::vector<OOBB> OOBBVec{};
+
 public:
 	Map1() {
 		Load();
@@ -131,6 +134,10 @@ public:
 			}
 		}
 
+		// oobb 렌더링
+		for (auto& O : OOBBVec)
+			O.Render();
+
 		//// 테스트용 플레이어 모델
 		//BeginRender();
 		//SetColor(0.0, 0.0, 0.0);
@@ -222,5 +229,34 @@ public:
 
 			SmallObjectPosition.emplace_back(rockStruct);
 		}
+
+		OOBBVec.clear();
+		OOBBDataScript.Release();
+		OOBBDataScript.Load("Resources//Scripts//map1//map1-oobb.xml");
+
+		auto LoadOOBBData = [&](CategoryPtr Category) {
+			OOBB oobb;
+			XMFLOAT3 Position;
+			XMFLOAT3 Size;
+			float Degree;
+
+			Position.y = 3.0;
+			Position.x = OOBBDataScript.GetDigitData(Category, "X");
+			Position.z = OOBBDataScript.GetDigitData(Category, "Z");
+			Size.y = 20.0;
+			Size.x = OOBBDataScript.GetDigitData(Category, "SizeX");
+			Size.z = OOBBDataScript.GetDigitData(Category, "SizeZ");
+			Degree = OOBBDataScript.GetDigitData(Category, "Rotation");
+
+			oobb.Update(Position, Size, XMFLOAT3(0.0, Degree, 0.0));
+			OOBBVec.emplace_back(oobb);
+			};
+
+		OOBBDataScript.LoadAllData(LoadOOBBData);
+	}
+
+	// 맵의 벽 oobb를 얻는다
+	std::vector<OOBB> GetMapWallOOBB() {
+		return OOBBVec;
 	}
 };
