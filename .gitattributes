@@ -1,0 +1,2 @@
+Objective-D/FBXSDK/lib/x64/release/libfbxsdk-mt.lib filter=lfs diff=lfs merge=lfs -text
+Objective-D/FBXSDK/lib/x64/release/libfbxsdk-md.lib filter=lfs diff=lfs merge=lfs -text
