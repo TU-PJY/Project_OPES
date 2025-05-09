@@ -404,3 +404,4 @@ FodyWeavers.xsd
 !dll/**
 !Objective-D/Resources/**
 !Script Tool/**
+!Objective-D/FBXSDK/**
