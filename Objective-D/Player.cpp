@@ -8,6 +8,11 @@ std::default_random_engine rd;
 std::mt19937 gen(rd());
 std::uniform_int_distribution<int> dist(0, 1);
 
+void SendMovePacket(float x, float y,float z);
+void SendViewingAnglePacket(float x, float y, float z);
+
+
+
 // 생성자에서 입력받은 맵 오브젝트 이름으로 터레인 값을 받아온다.
 Player::Player(std::string MapObjectName) {
 	target_terrain_name = MapObjectName;
@@ -92,6 +97,14 @@ void Player::Update(float FrameTime) {
 
 	// 총 - 맵 오브젝트 충돌 처리 업데이트
 	UpdateGunCollision();
+	if (move_front || move_back || move_left || move_right) {
+		SendMovePacket(GetPosition().x, GetPosition().y,GetPosition().z);
+	}
+	
+	if (old_rotation.x != rotation.x|| old_rotation.y != rotation.y|| old_rotation.z != rotation.z) {
+		SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
+		old_rotation = rotation;
+	}
 }
 
 void Player::Render() {

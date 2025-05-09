@@ -12,6 +12,9 @@ private:
 	// 각도 (바라보는 각도)
 	XMFLOAT3 rotation{};
 
+	// 각도 (이전 바라보는 각도)
+	XMFLOAT3 old_rotation{};
+
 	// 플레이어가 받아올 대상 터레인의 이름
 	std::string target_terrain_name{};
 
@@ -122,4 +125,10 @@ public:
 	void Update(float FrameTime) override;
 	void Render();
 	void UpdateCamera(float FrameTime);
+	XMFLOAT3 GetPosition() {
+		return  position;
+	};
+	XMFLOAT3 GetRotation() {
+		return  rotation;
+	};
 };

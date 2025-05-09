@@ -316,6 +316,7 @@
     <ClInclude Include="Map3.h">
       <Filter>[2]____________[ Game Object ]\[ Maps ]</Filter>
     </ClInclude>
+    <ClInclude Include="..\Server_OPES\Packet.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">

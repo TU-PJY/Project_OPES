@@ -156,6 +156,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Manifest>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Server_OPES\Packet.h" />
     <ClInclude Include="BoundboxShader.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="CameraUtil.h" />

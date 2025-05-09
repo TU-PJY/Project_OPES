@@ -180,7 +180,7 @@ void IOCompletionPort::RemoveClient(stClientInfo* client) {
 void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length) {
     recvingClient->sendOverlapped.operation = IOOperation::SEND;
     ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    ChatPacket_S chatPacket = {};
+    ChatPacket_StoC chatPacket = {};
     chatPacket.type = PacketType::CHAT;
     int msg_size = length - sizeof(PacketType);
     memcpy(chatPacket.message, message, msg_size);
@@ -201,14 +201,37 @@ void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvi
 void IOCompletionPort::SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient) {
     recvingClient->sendOverlapped.operation = IOOperation::SEND;
     ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    MovePacket_S movePacket = {};
+    MovePacket_StoC movePacket = {};
     movePacket.type = PacketType::MOVE;
     movePacket.x = sendingClient->x;
     movePacket.y = sendingClient->y;
+    movePacket.z = sendingClient->z;
     movePacket.id = sendingClient->id;
 
     recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&movePacket);
     recvingClient->sendOverlapped.wsaBuf.len = sizeof(movePacket);
+
+    DWORD size_sent = 0;
+    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
+        closesocket(recvingClient->socketClient);
+        RemoveClient(recvingClient);
+    }
+
+}
+void IOCompletionPort::SendData_ViewAngle(stClientInfo* sendingClient, stClientInfo* recvingClient) {
+    recvingClient->sendOverlapped.operation = IOOperation::SEND;
+    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
+    ViewingAnglePacket_StoC viewAnglePacket = {};
+    viewAnglePacket.type = PacketType::VIEW_ANGLE;
+    viewAnglePacket.x = sendingClient->angle_x;
+    viewAnglePacket.y = sendingClient->angle_y;
+    viewAnglePacket.z = sendingClient->angle_z;
+    viewAnglePacket.id = sendingClient->id;
+
+    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&viewAnglePacket);
+    recvingClient->sendOverlapped.wsaBuf.len = sizeof(viewAnglePacket);
 
     DWORD size_sent = 0;
     int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
@@ -250,24 +273,48 @@ void IOCompletionPort::WorkThread() {
                 //    continue;
                 //}
 
-                MovePacket_R* movePacket = reinterpret_cast<MovePacket_R*>(pOverlappedEx->buffer);
+                MovePacket_CtoS* movePacket = reinterpret_cast<MovePacket_CtoS*>(pOverlappedEx->buffer);
 
                 // 이동 처리
-                switch (movePacket->direction) {
-                case 0: client->y -= 1; break; // UP
-                case 1: client->y += 1; break; // DOWN
-                case 2: client->x -= 1; break; // LEFT
-                case 3: client->x += 1; break; // RIGHT
-                default: continue;
-                }
+               //switch (movePacket->direction) {
+               //case 0: client->y -= 1; break; // UP
+               //case 1: client->y += 1; break; // DOWN
+               //case 2: client->x -= 1; break; // LEFT
+               //case 3: client->x += 1; break; // RIGHT
+               //default: continue;
+               //}
                 //movePacket->id = client->id;
+                client->x = movePacket->x;
+                client->y = movePacket->y;
+                client->z = movePacket->z;
                 std::cout << "[이동] 클라이언트 " << client->id
-                    << " 위치: (" << client->x << ", " << client->y << ")\n";
+                    << " 위치: (" << client->x << ", " << client->y << ", " << client->z<<")\n";
 
                 // 이동 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (otherClient != client && client->roomID == otherClient->roomID) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_Move(client, otherClient);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::VIEW_ANGLE) {
+                //if (bytesTransferred < sizeof(MovePacket)) {
+                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+                //    continue;
+                //}
+
+                ViewingAnglePacket_CtoS* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_CtoS*>(pOverlappedEx->buffer);
+
+                client->angle_x = viewAnglePacket->x;
+                client->angle_y = viewAnglePacket->y;
+                client->angle_z = viewAnglePacket->z;
+                std::cout << "[시선] 클라이언트 " << client->id
+                    << " 시선각도: (" << client->angle_x << ", " << client->angle_y << ", " << client->angle_z << ")\n";
+
+                // 이동 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (otherClient != client && client->roomID == otherClient->roomID) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_ViewAngle(client, otherClient);
                     }
                 }
             }
@@ -277,7 +324,7 @@ void IOCompletionPort::WorkThread() {
                 //    continue;
                 //}
 
-                ChatPacket_R* chatPacket = reinterpret_cast<ChatPacket_R*>(pOverlappedEx->buffer);
+                ChatPacket_CtoS* chatPacket = reinterpret_cast<ChatPacket_CtoS*>(pOverlappedEx->buffer);
                 std::string msg{ chatPacket->message,bytesTransferred - sizeof(PacketType) };
 
                 std::cout << "[채팅] 클라이언트 " << client->id << ": " << msg << std::endl;

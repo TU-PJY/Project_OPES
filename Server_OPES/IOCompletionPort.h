@@ -24,7 +24,8 @@ struct stOverlappedEx {
 struct stClientInfo {
     SOCKET socketClient;
     int id;
-    int x, y;  
+    float x, y,z;  
+    float angle_x, angle_y, angle_z;
     stOverlappedEx recvOverlapped;
     stOverlappedEx sendOverlapped;
     int roomID;
@@ -34,8 +35,11 @@ struct stClientInfo {
         ZeroMemory(&sendOverlapped, sizeof(stOverlappedEx));
         socketClient = INVALID_SOCKET;
         roomID = 0;
-        x = 0; 
-        y = 0;
+        x = -130.0;
+        y = 20;
+        z = -130.0;
+        angle_x=0, angle_y=0, angle_z=0;
+        //-130.0, 20.0, -130.0 
     }
 };
 
@@ -54,6 +58,7 @@ public:
     void RegisterRecv(stClientInfo* client);
     void SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length);
     void SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient);
+    void SendData_ViewAngle(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_EnterRoom(stClientInfo* recvingClient);
     void RemoveClient(stClientInfo* client);
     //
