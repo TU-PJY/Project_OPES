@@ -399,3 +399,8 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# not ignored
+!dll/**
+!Objective-D/Resources/**
+!Script Tool/**
