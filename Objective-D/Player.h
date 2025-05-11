@@ -109,6 +109,9 @@ private:
 	// 크로스헤어 오브젝트 포인터
 	GameObject* crosshair_ptr{};
 
+
+	float rotation_packet_send_delay{};
+
 public:
 	Player(std::string MapObjectName);
 	void InputMouseMotion(MotionEvent& Event) override;
