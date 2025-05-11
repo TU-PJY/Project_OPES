@@ -7,6 +7,7 @@
 #include <thread>
 #include <unordered_map>
 #define MAX_SOCKBUF 1024  
+#define SERVER_PORT 9000
 //#define MAX_WORKERTHREAD 4  
 
 enum class IOOperation {
@@ -52,7 +53,7 @@ public:
     IOCompletionPort();
     ~IOCompletionPort();
     bool InitSocket();
-    bool BindandListen(int nBindPort);
+    bool BindandListen();
     bool StartServer();
     void DestroyThread();
     void RegisterRecv(stClientInfo* client);

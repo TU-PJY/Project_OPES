@@ -16,6 +16,7 @@
 #include <winsock2.h>
 //#include <windows.h>
 #include <Ws2tcpip.h>  
+#include <atlconv.h>
 //#include <iostream>
 //#include <conio.h>
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
@@ -25,7 +26,7 @@
 #pragma comment(lib, "msimg32.lib")
 
 #define SERVER_IP "127.0.0.1"
-#define SERVER_PORT 3000
+#define SERVER_PORT 9000
 
 SOCKET clientSocket;
 bool isRunning = true;
@@ -33,7 +34,7 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 
 
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
@@ -230,6 +231,21 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	AccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT045));
 
 	if (useServer) {
+
+		if (lpCmdLine == NULL || _tcslen(lpCmdLine) == 0) {
+			MessageBox(NULL, _T("서버 IP 주소를 인자로 입력하세요.\n예: program.exe 127.0.0.1"), _T("오류"), MB_OK);
+			return -1;
+		}
+
+		char ipStr[64] = { 0 };
+
+#ifdef UNICODE
+		// 유니코드 → 멀티바이트 변환
+		WideCharToMultiByte(CP_ACP, 0, lpCmdLine, -1, ipStr, sizeof(ipStr), NULL, NULL);
+#else
+		// 멀티바이트는 바로 복사
+		strncpy(ipStr, lpCmdLine, sizeof(ipStr) - 1);
+#endif
 		// 윈속 초기화
 		WSADATA wsaData;
 		WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -239,8 +255,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		SOCKADDR_IN serverAddr;
 		serverAddr.sin_family = AF_INET;
 		serverAddr.sin_port = htons(SERVER_PORT);
-		inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);
-
+		//inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//한 컴퓨터에서 실행할때
+		inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);
+		std::cout << ipStr << std::endl;
 		if (WSAConnect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
 			std::cerr << "[클라이언트] 서버 연결 실패\n";
 			return -1;

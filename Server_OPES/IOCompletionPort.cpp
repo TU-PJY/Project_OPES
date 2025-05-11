@@ -25,10 +25,10 @@ bool IOCompletionPort::InitSocket() {
     return true;
 }
 
-bool IOCompletionPort::BindandListen(int nBindPort) {
+bool IOCompletionPort::BindandListen() {
     SOCKADDR_IN serverAddr = {};
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_port = htons(nBindPort);
+    serverAddr.sin_port = htons(SERVER_PORT);
     serverAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 
     if (bind(listenSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
