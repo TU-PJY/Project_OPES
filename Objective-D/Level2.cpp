@@ -46,14 +46,12 @@ void Level2::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARA
 void Level2::MouseMotionController(HWND hWnd) {
 	MotionEvent Event{ hWnd, mouse.MotionPosition };
 	mouse.UpdateMousePosition(hWnd);
-
 	for (auto const& Object : ControlObjectList)
 		if (Object && !Object->DeleteCommand) Object->InputMouseMotion(Event);
 }
 
 void Level2::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	MouseEvent Event{ hWnd, nMessageID, wParam, lParam };
-
 	for (auto const& Object : ControlObjectList)
 		if (Object && !Object->DeleteCommand) Object->InputMouse(Event);
 }
