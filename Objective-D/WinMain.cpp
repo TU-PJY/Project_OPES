@@ -39,7 +39,7 @@ bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
 	if (err != 0 || num_bytes == 0) {
-		std::cout << "[클라이언트] 서버 연결 종료\n";
+		//std::cout << "[클라이언트] 서버 연결 종료\n";
 		isRunning = false;
 		return;
 	}
@@ -51,24 +51,40 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(recv_buffer);
 		ChatPacket_StoC* chatPacket = reinterpret_cast<ChatPacket_StoC*>(recv_buffer);
 		std::string msg{ chatPacket->message,num_bytes - sizeof(PacketType) - sizeof(unsigned int) };
-		std::cout << "[서버]  " << chatPacket->id << ":" << msg << std::endl;
+		std::cout << "[서버]채팅-" << chatPacket->id << ":" << msg << std::endl;
 	}
 	else if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
-		std::cout << "[서버]  " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
+		std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 	}
 	else if (*type == PacketType::VIEW_ANGLE) {
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
-		std::cout << "[서버]  " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
+		std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 	}
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
-		std::cout << "[서버]  " << EnterPacket->roomID << std::endl;
+		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
 		if (0 != EnterPacket->roomID) {
 			enter_room = true;
 		}
 		else {
 			std::cout << "대기중.." << std::endl;
+		}
+	}
+	else if (*type == PacketType::NEW_CLIENT) {
+		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(recv_buffer);
+		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
+	}
+	else if (*type == PacketType::EXISTING_CLIENTS) { 
+		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(recv_buffer);
+		for (unsigned int i = 0; i < pkt->count; ++i) {
+			auto& info = pkt->clients[i];
+			std::cout << "[초기화] 클라이언트 " << info.id
+				<< " 위치: " << info.x << "," << info.y << "," << info.z
+				<< " 시선: " << info.angle_x << "," << info.angle_y << "," << info.angle_z
+				<< std::endl;
+
+			// TODO: ID에 해당하는 게임 객체 생성 또는 초기화
 		}
 	}
 
@@ -232,10 +248,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	if (useServer) {
 
-		if (lpCmdLine == NULL || _tcslen(lpCmdLine) == 0) {
-			MessageBox(NULL, _T("서버 IP 주소를 인자로 입력하세요.\n예: program.exe 127.0.0.1"), _T("오류"), MB_OK);
-			return -1;
-		}
+		//if (lpCmdLine == NULL || _tcslen(lpCmdLine) == 0) {
+		//	MessageBox(NULL, _T("서버 IP 주소를 인자로 입력하세요.\n예: program.exe 127.0.0.1"), _T("오류"), MB_OK);
+		//	return -1;
+		//}
 
 		char ipStr[64] = { 0 };
 
@@ -255,9 +271,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		SOCKADDR_IN serverAddr;
 		serverAddr.sin_family = AF_INET;
 		serverAddr.sin_port = htons(SERVER_PORT);
-		//inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//한 컴퓨터에서 실행할때
-		inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);
-		std::cout << ipStr << std::endl;
+		inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//한 컴퓨터에서 실행할때
+		//inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);//cmd에서 ip입력할때 
+		//std::cout << ipStr << std::endl;
 		if (WSAConnect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
 			std::cerr << "[클라이언트] 서버 연결 실패\n";
 			return -1;

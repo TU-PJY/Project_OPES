@@ -3,6 +3,8 @@ enum class PacketType {
     CHAT,
     MOVE,
     VIEW_ANGLE,
+    NEW_CLIENT,
+    EXISTING_CLIENTS,
     ENTER
 };
 
@@ -40,7 +42,7 @@ struct ViewingAnglePacket_CtoS {
     float z;
 };
 struct ViewingAnglePacket_StoC {
-    PacketType type;  
+    PacketType type;
     unsigned int id;
     float x;
     float y;
@@ -50,4 +52,19 @@ struct ViewingAnglePacket_StoC {
 struct EnterRoomPacket {
     PacketType type;
     unsigned int roomID;
+    unsigned int myID;
+};
+struct NewClientPacket {
+    PacketType type;
+    unsigned int id;
+};
+
+struct ExistingClientsDataPacket {
+    PacketType type;
+    unsigned int count; // 클라이언트 수
+    struct {
+        unsigned int id;
+        float x, y, z;
+        float angle_x, angle_y, angle_z;
+    } clients[1024]; // 또는 동적 크기로 관리
 };

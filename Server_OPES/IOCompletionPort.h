@@ -62,6 +62,8 @@ public:
     void SendData_ViewAngle(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_EnterRoom(stClientInfo* recvingClient);
     void RemoveClient(stClientInfo* client);
+    void NotifyOthersAboutNewClient(stClientInfo* newClient);
+    void SendExistingClientsToNewClient(stClientInfo* newClient);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 private:
