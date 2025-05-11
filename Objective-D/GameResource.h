@@ -134,8 +134,8 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 }
 
 // 애니메이션 FBX 파일 로드용 함수
-inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Directory) {
-	if (fbxUtil.LoadAnimatedFBXFile(Directory, TargetMesh)) {
+inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::string Directory, std::string jsonFile="") {
+	if (fbxUtil.LoadAnimatedFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateAnimatedScene();
 		fbxUtil.GetAnimatedVertexData(System);
 		fbxUtil.ProcessAnimation();
@@ -143,11 +143,17 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Dir
 		fbxUtil.EnumerateAnimationStacks();
 		fbxUtil.ClearVertexVector();
 	}
+
+	// 직렬화 애니메이션 데이터를 가진 경우 별도로 애니메이션 키프레임을 생성한다.
+	if (!jsonFile.empty()) {
+		TargetMesh.SerilaizedFlag = true;
+		fbxUtil.CreateAnimationStacksFromJSON(jsonFile, TargetMesh);
+	}
 }
 
 // 애니메이션이 없는 FBX 파일 로드용 함수
-inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, char* Directory) {
-	if (fbxUtil.LoadStaticFBXFile(Directory, TargetMesh)) {
+inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::string Directory) {
+	if (fbxUtil.LoadStaticFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateStaticScene();
 		fbxUtil.GetSingleStaticVertexData();
 		TargetMesh->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
@@ -157,8 +163,8 @@ inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, char* D
 }
 
 // 애니메이션이 없는 다중 FBX 파일 로드용 함수
-inline void LoadMultiStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, char* Directory) {
-	if (fbxUtil.LoadMultiStaticFBXFile(Directory, TargetMesh)) {
+inline void LoadMultiStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::string Directory) {
+	if (fbxUtil.LoadMultiStaticFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateMultiStaticScene();
 		fbxUtil.GetMultiStaticVertexData();
 		TargetMesh->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());

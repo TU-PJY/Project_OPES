@@ -2,6 +2,7 @@
 #include "DirectX_3D.h"
 #include <fstream>
 #include <unordered_map>
+#include <map>
 #include <set>
 
 struct FBXVertex {
@@ -22,17 +23,27 @@ struct AnimationChannel {
 	std::vector<AnimationKeyFrame> KeyFrames;
 };
 
+typedef struct {
+	float StartTime;
+	float EndTime;
+} SerializedAnimationInfo;
+
 class Mesh;
 typedef struct {
 	FbxScene* Scene;
 	std::vector<Mesh*> MeshPart;
 	std::vector<AnimationChannel> AnimationChannel;
+	float StartTime;
 	float CurrentTime;
 	float TotalTime;
 
 	std::vector<std::string> AnimationStackNames; // 전체 스택 이름들
 	std::string CurrentAnimationStackName;        // 현재 선택된 스택 이름
 	int CurrentAnimationStackIndex;          // 현재 선택된 스택 인덱스
+
+	// 직렬화 애니메이션 데이터를 가진 경우 해당 컨테이너를 사용한다.
+	bool SerilaizedFlag;
+	std::map<std::string, SerializedAnimationInfo> SerializedAnimationStacks;
 }FBXMesh;
 
 class Mesh {
@@ -153,6 +164,7 @@ public:
 	void ResetCurrentTime(FBXMesh& TargetMesh);
 	std::vector<FBXVertex> GetVertexVector();
 	void ClearVertexVector();
+	void CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& TargetMesh);
 };
 
 extern FBXUtil fbxUtil;

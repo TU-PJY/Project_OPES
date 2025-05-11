@@ -6,6 +6,8 @@
 #include <algorithm>
 #include "Framework.h"
 
+#include <json.hpp>
+
 FBXUtil fbxUtil;
 
 // ResourList에서 해당 함수를 사용하여 매쉬를 로드하도록 한다
@@ -785,16 +787,26 @@ void FBXUtil::EnumerateAnimationStacks() {
 }
 
 void FBXUtil::SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName) {
-	int Count = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
+	if (!TargetMesh.SerilaizedFlag) {
+		int Count = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
 
-	for (int i = 0; i < Count; ++i) {
-		FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
+		for (int i = 0; i < Count; ++i) {
+			FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
 
-		if (Stack && AnimationName == Stack->GetName()) {
-			TargetMesh.Scene->SetCurrentAnimationStack(Stack);
+			if (Stack && AnimationName == Stack->GetName()) {
+				TargetMesh.Scene->SetCurrentAnimationStack(Stack);
+				TargetMesh.CurrentAnimationStackName = AnimationName;
+				TargetMesh.CurrentAnimationStackIndex = i;
+				GetAnimationPlayTime(TargetMesh, AnimationName);
+			}
+		}
+	}
+	else {
+		auto Found = TargetMesh.SerializedAnimationStacks.find(AnimationName);
+		if (Found != TargetMesh.SerializedAnimationStacks.end()) {
 			TargetMesh.CurrentAnimationStackName = AnimationName;
-			TargetMesh.CurrentAnimationStackIndex = i;
-			GetAnimationPlayTime(TargetMesh, AnimationName);
+			TargetMesh.StartTime = Found->second.StartTime;
+			TargetMesh.TotalTime = Found->second.EndTime;
 		}
 	}
 }
@@ -821,4 +833,34 @@ std::vector<FBXVertex> FBXUtil::GetVertexVector() {
 
 void FBXUtil::ClearVertexVector() {
 	ParsedVertices.clear();
+}
+
+void FBXUtil::CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& TargetMesh) {
+	std::ifstream File(jsonFile, std::ios::binary);
+	if (!File) {
+		std::cerr << "파일을 열 수 없습니다." << std::endl;
+		return;
+	}
+	nlohmann::json JSON;
+
+	File >> JSON;
+
+	SerializedAnimationInfo Info{};
+	std::string KeyFrameName{};
+
+	bool FirstLoad = true;
+
+	for (const auto& clip : JSON["clips"]) {
+		KeyFrameName = clip["name"].get<std::string>();
+		Info.StartTime = clip["startTime"].get<float>();
+		Info.EndTime = clip["endTime"].get<float>();
+		TargetMesh.SerializedAnimationStacks.emplace(std::pair(KeyFrameName, Info));
+
+		std::cout << KeyFrameName << " [" << Info.StartTime << " - " << Info.EndTime << "] @ \n";
+
+		if (FirstLoad) {
+			SelectAnimation(TargetMesh, KeyFrameName);
+			FirstLoad = false;
+		}
+	}
 }

@@ -13,6 +13,19 @@ public:
 		// 시연용 임시 조작키
 		if(Event.Type == WM_KEYDOWN && Event.Key == VK_LEFT)
 			scene.SwitchMode(Level3::Start);
+
+		if (Event.Type == WM_KEYDOWN) {
+			switch (Event.Key) {
+			case 'I':
+				SelectFBXAnimation(MESH.gazer, "Idle"); break;
+
+			case 'T':
+				SelectFBXAnimation(MESH.gazer, "Taunt"); break;
+
+			case 'B':
+				SelectFBXAnimation(MESH.gazer, "Bash01"); break;
+			}
+		}
 	}
 	void Update(float Delta) {
 		UpdateFBXAnimation(MESH.gazer, Delta);

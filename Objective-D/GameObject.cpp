@@ -179,23 +179,39 @@ float GameObject::ASP(float Value) {
 // FBX 애니메이션을 업데이트 한다. 프레임 시간을 넣어주면 자동으로 재생된다.
 // HEAP_TYPE_DEFAULT로 지정된 FBX는 애니메이션 업데이트를 할 수 없다.
 void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
-	TargetMesh.CurrentTime += FrameTime;
-	if (TargetMesh.CurrentTime >= TargetMesh.TotalTime) {
-		float OverTime = TargetMesh.CurrentTime - TargetMesh.TotalTime;
-		TargetMesh.CurrentTime = OverTime;
+	if (!TargetMesh.SerilaizedFlag) {
+		TargetMesh.CurrentTime += FrameTime;
+		if (TargetMesh.CurrentTime >= TargetMesh.TotalTime) {
+			float OverTime = TargetMesh.CurrentTime - TargetMesh.TotalTime;
+			TargetMesh.CurrentTime = OverTime;
+		}
+		for (auto const& M : TargetMesh.MeshPart)
+			M->UpdateSkinning(TargetMesh.CurrentTime);
 	}
-	for (auto const& M : TargetMesh.MeshPart)
-		M->UpdateSkinning(TargetMesh.CurrentTime);
+	else {
+		TargetMesh.CurrentTime += FrameTime;
+
+		if (TargetMesh.CurrentTime >= TargetMesh.TotalTime) {
+			float OverTime = TargetMesh.CurrentTime - TargetMesh.TotalTime;
+			TargetMesh.CurrentTime = TargetMesh.StartTime + OverTime;
+		}
+		for (auto const& M : TargetMesh.MeshPart)
+			M->UpdateSkinning(TargetMesh.CurrentTime);
+	}
 }
 
 // 여러 애니메이션 중 하나를 선택한다.
 void GameObject::SelectFBXAnimation(FBXMesh& TargetMesh, std::string AnimationName) {
 	fbxUtil.SelectAnimation(TargetMesh, AnimationName);
+	ResetAnimationTime(TargetMesh);
 }
 
 // 현재 애니메이션 재생 시간을 초기화 한다.
 void GameObject::ResetAnimationTime(FBXMesh& TargetMesh) {
-	TargetMesh.CurrentTime = 0.0;
+	if(!TargetMesh.SerilaizedFlag)
+		TargetMesh.CurrentTime = 0.0;
+	else
+		TargetMesh.CurrentTime = TargetMesh.StartTime;
 }
 
 // FBX 렌더용 함수이다. 앞으로 FBX 모델 렌더링 시 이 함수를 쓰도록 한다.
