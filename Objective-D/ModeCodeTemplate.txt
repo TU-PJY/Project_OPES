@@ -2,9 +2,7 @@
 
 #include "ModePack.h"
 
-namespace TemplateMode {
-	std::deque<GameObject*> ControlObjectList;
-}
+namespace TemplateMode { std::deque<GameObject*> ControlObjectList; }
 
 void TemplateMode::Start() {
 	RegisterController();

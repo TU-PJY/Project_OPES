@@ -25,9 +25,7 @@ public:
 	}
 };
 
-namespace TestMode {
-	std::deque<GameObject*> ControlObjectList;
-}
+namespace TestMode { std::deque<GameObject*> ControlObjectList; }
 
 void TestMode::Start() {
 	RegisterController();

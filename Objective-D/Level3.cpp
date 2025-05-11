@@ -4,9 +4,7 @@
 #include "Map3.h"
 #include "CameraController.h"
 
-namespace Level3 {
-	std::deque<GameObject*> ControlObjectList;
-}
+namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
 void Level3::Start() {
 	RegisterController();

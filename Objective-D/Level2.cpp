@@ -6,9 +6,7 @@
 #include "SampleMonster.h"
 #include "CrossHair.h"
 
-namespace Level2 {
-	std::deque<GameObject*> ControlObjectList;
-}
+namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
 void Level2::Start() {
 	RegisterController();

@@ -4,9 +4,7 @@
 #include "CameraController.h"
 
 
-namespace Level1 {
-	std::deque<GameObject*> ControlObjectList;
-}
+namespace Level1 { std::deque<GameObject*> ControlObjectList; }
 
 void Level1::Start() {
 	RegisterController();
