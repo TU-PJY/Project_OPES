@@ -14,7 +14,6 @@ constexpr int Layers = static_cast<int>(EOL);
 class Scene {
 private:
 	std::array<std::deque<GameObject*>, Layers> ObjectList{};
-	std::multimap<std::string, GameObject*> ObjectIndex{};
 	std::array<std::vector<int>, Layers> DeleteLocation{};
 	int CurrentReferPosition{};
 	int SceneCommandCount{};
@@ -24,8 +23,10 @@ private:
 	void (*MouseControllerPtr)(HWND, UINT, WPARAM, LPARAM) {};
 	void (*MouseMotionControllerPtr)(HWND) {};
 	void (*KeyboardControllerPtr)(HWND, UINT, WPARAM, LPARAM) {};
+	std::deque<GameObject*>* ControlObjectListPtr{};
 
 	Function DestructorBuffer{};
+	bool LoopEscapeCommand{};
 	
 public:
 	std::string GetMode();
@@ -38,33 +39,33 @@ public:
 	void RegisterMouseController(void(*FunctionPtr)(HWND, UINT, WPARAM, LPARAM));
 	void RegisterMouseMotionController(void(*FunctionPtr)(HWND));
 
+	void RegisterControlObjectList(std::deque<GameObject*>& ControlObjectList);
+
+
 	void InputKeyMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void InputMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void InputMouseMotionMessage(HWND hWnd);
-	void InputMouse(std::string ObjectTag, MouseEvent& Event);
-	void InputKey(std::string ObjectTag, KeyEvent& Event);
-	void InputMouseMotion(std::string ObjectTag, MotionEvent& Event);
-	//void Routine(float FT, ID3D12GraphicsCommandList* CmdList);
 	void Update(float Delta, ID3D12GraphicsCommandList* CmdList);
 	void Render();
-	void AddObject(GameObject*&& Object, std::string Tag, int InputLayer);
+	void AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController=false);
 	void DeleteObject(GameObject* Object);
+	void DeleteObject(std::string Tag, int DeleteRangeFlag);
 	GameObject* Find(std::string Tag);
-	std::pair<ObjectRange, ObjectRange> EqualRange(std::string Tag);
+	GameObject* FindMulti(std::string Tag, int Layer, int Index);
 	void CompleteCommand();
+
 	ID3D12RootSignature* CreateObjectShaderSignature(ID3D12Device* Device);
 	ID3D12RootSignature* CreateImageShaderSignature(ID3D12Device* Device);
 	ID3D12RootSignature* CreateBoundboxShaderSignature(ID3D12Device* Device);
 	ID3D12RootSignature* CreateLineShaderSignature(ID3D12Device* Device);
 	ID3D12RootSignature* GetGraphicsRootSignature();
-	void PrepareRender(ID3D12GraphicsCommandList* CmdList);
 	void ReleaseObjects();
 	void Exit();
 
 private:
-	void AddLocation(int Layer, int Position);
+	void CheckHasController(GameObject* Object);
+	void AddDeleteLocation(int Layer, int Position);
 	void ProcessObjectCommand();
-	void UpdateIndex();
 	void ClearAll();
 };
 

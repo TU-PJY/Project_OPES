@@ -118,6 +118,12 @@ enum ClampDirectionEnum {
 	CLAMP_DIR_GREATER
 };
 
+// 오브젝트 삭제 범위 타입
+enum ObjectDeleteRangeTypeEnum {
+	DELETE_RANGE_SINGLE,
+	DELETE_RANGE_ALL
+};
+
 // 오브젝트 벡터 구조체
 typedef struct Vector {
 	DirectX::XMFLOAT3 Look;

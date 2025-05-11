@@ -31,6 +31,12 @@ public:
 			switch (Event.Key) {
 			case 'R':
 				Load();
+				break;
+
+			// 시연용 임시 조작키
+			case VK_RIGHT:
+				scene.SwitchMode(Level2::Start);
+				break;
 			break;
 			}
 		}

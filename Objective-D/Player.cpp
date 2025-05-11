@@ -98,14 +98,14 @@ void Player::Update(float FrameTime) {
 	// 총 - 맵 오브젝트 충돌 처리 업데이트
 	UpdateGunCollision();
 
-	if (move_front || move_back || move_left || move_right)
-		SendMovePacket(position.x, position.y, position.z);
+	//if (move_front || move_back || move_left || move_right)
+		//SendMovePacket(position.x, position.y, position.z);
 	
 	
-	if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
-		SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
-		old_rotation = rotation;
-	}
+	//if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
+		//SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
+		//old_rotation = rotation;
+	//}
 }
 
 void Player::Render() {
@@ -201,11 +201,11 @@ void Player::UpdateGun(float FrameTime) {
 	}
 
 	gun_rotation.x = std::lerp(gun_rotation.x, rotation.x, FrameTime * 30.0);
-	gun_rotation.y = std::lerp(gun_rotation.y, rotation.y + gun_rotation_offset, FrameTime * 30.0);
+	gun_rotation.y = std::lerp(gun_rotation.y, rotation.y, FrameTime * 30.0);
 	gun_rotation.z = std::lerp(gun_rotation.z, rotation.z, FrameTime * 30.0);
 
 	if (gun_collided)
-		gun_rotation_offset = std::lerp(gun_rotation_offset, 90.0, FrameTime * 3.0);
+		gun_rotation_offset = std::lerp(gun_rotation_offset, -90.0, FrameTime * 3.0);
 	else 
 		gun_rotation_offset = std::lerp(gun_rotation_offset, 0.0, FrameTime * 3.0);
 }

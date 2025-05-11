@@ -33,6 +33,16 @@ public:
 			case 'R':
 				Load();
 				break;
+
+				// 시연용 임시 조작키
+			case VK_RIGHT:
+				scene.SwitchMode(TestMode::Start);
+				break;
+
+				// 시연용 임시 조작키
+			case VK_LEFT:
+				scene.SwitchMode(Level2::Start);
+				break;
 			}
 		}
 	}

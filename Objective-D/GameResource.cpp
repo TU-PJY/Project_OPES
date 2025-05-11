@@ -74,8 +74,10 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(System, MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
 
 	// gun flame
-	LoadMultiStaticFBX(System, MESH.gun_flame, "Resources//Models//weapon//flame.fbx");\
+	LoadMultiStaticFBX(System, MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
 	LoadMultiStaticFBX(System, MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
+
+	LoadAnimatedFBX(System, MESH.gazer, "Resources//TestMesh//Gazer_LP.fbx");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -105,6 +107,8 @@ void LoadTexture(DeviceSystem& System) {
 	// gun flame
 	LoadTexture(System, TEX.gun_flame, L"Resources//Image//weapon//flame.png", TEXTURE_TYPE_WIC);
 	LoadTexture(System, TEX.gun_flame_back, L"Resources//Image//weapon//flame-back.png", TEXTURE_TYPE_WIC);
+
+	LoadTexture(System, TEX.gazer, L"Resources//TestMesh//Gazer.png", TEXTURE_TYPE_WIC);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

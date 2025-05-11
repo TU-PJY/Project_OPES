@@ -1,66 +1,56 @@
-// cpp code
+###################################################### CPP
+
 #include "ModePack.h"
 
-void Template::Start() {
-	std::vector<std::string> ControlObjectTag
-	{
+namespace TemplateMode {
+	std::deque<GameObject*> ControlObjectList;
+}
 
-	};
-
-	// 필요한 작업 추가
-
-	AddControlObject(ControlObjectTag);
+void TemplateMode::Start() {
 	RegisterController();
-	scene.RegisterModeName("Template");
+	scene.RegisterModeName("TemplateMode");
 }
 
-void Template::Destructor() {
-	// 여기에 모드 종료 시 필요한 작업 추가 (리소스 메모리 해제 등)
+void TemplateMode::Destructor() {
+
 }
 
-void Template::AddControlObject(std::vector<std::string> Vec) {
-	ControlObjectList.clear();
-	for (auto const& Object : Vec) {
-		if (auto FindObject = scene.Find(Object); FindObject)
-			ControlObjectList.emplace_back(FindObject);
-	}
-}
-
-void Template::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+void TemplateMode::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	KeyEvent Event{ hWnd, nMessageID, wParam, lParam };
-
+	if (DEV_EXIT && Event.Type == WM_KEYDOWN && Event.Key == VK_ESCAPE)
+		scene.Exit();
 	for (auto const& Object : ControlObjectList)
 		if (Object) Object->InputKey(Event);
 }
 
-void Template::MouseMotionController(HWND hWnd) {
+void TemplateMode::MouseMotionController(HWND hWnd) {
 	MotionEvent Event{ hWnd, mouse.MotionPosition };
 	mouse.UpdateMousePosition(hWnd);
-
 	for (auto const& Object : ControlObjectList)
 		if (Object) Object->InputMouseMotion(Event);
 }
 
-void Template::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
+void TemplateMode::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	MouseEvent Event{ hWnd, nMessageID, wParam, lParam };
-
 	for (auto const& Object : ControlObjectList)
 		if (Object) Object->InputMouse(Event);
 }
 
-void Template::RegisterController() {
+void TemplateMode::RegisterController() {
+	ControlObjectList.clear();
+	scene.RegisterControlObjectList(ControlObjectList);
 	scene.RegisterKeyController(KeyboardController);
 	scene.RegisterMouseController(MouseController);
 	scene.RegisterMouseMotionController(MouseMotionController);
 	scene.RegisterDestructor(Destructor);
 }
 
+######################################################
+###################################################### Header
 
-// header code
-namespace Template {
+namespace TemplateMode {
 	void Start();
 	void Destructor();
-	void AddControlObject(std::vector<std::string> Vec);
 	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void MouseMotionController(HWND hWnd);
 	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);

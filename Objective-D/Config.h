@@ -13,6 +13,9 @@ constexpr int START_UP_HEIGHT = 1000;
 // 풀스크린 모드로 시작할 지를 설정한다.
 constexpr bool START_WITH_FULL_SCREEN = false;
 
+// 즉시 나가기 기능을 활성화 한다. ESC를 누르면 즉시 종료한다.
+constexpr bool DEV_EXIT = true;
+
 // 최대 프레임 제한을 설정한다. 0으로 설정 시 최대 프레임으로 동작한다.
 constexpr float FRAME_LIMITS = 0;
 

@@ -4,6 +4,8 @@
 #include "RootConstants.h"
 #include "MouseUtil.h"
 
+#include "ModePack.h"
+
 // 이 프로젝트의 핵심 유틸이다. 프로그램의 모든 객체의 업데이트 및 렌더링은 모두 이 프레임워크를 거친다.
 
 // 프레임워크를 초기화 한다. 실행 시 단 한 번만 실행되는 함수로, 더미 객체를 추가한 후 모드를 시작한다.
@@ -31,42 +33,37 @@ void Scene::ReleaseDestructor() {
 	DestructorBuffer = nullptr;
 }
 
-
-//void Scene::Routine(float FT, ID3D12GraphicsCommandList* CmdList) {
-//	ObjectCmdList = CmdList;
-//	for (int i = 0; i < Layers; ++i) {
-//		for (auto const& Object : ObjectList[i]) {
-//			Object->Update(FT);
-//			Object->Render();
-//
-//			if (Object->DeleteCommand) 
-//				AddLocation(i, CurrentReferPosition);
-//			
-//			++CurrentReferPosition;
-//		}
-//		CurrentReferPosition = 0;
-//	}
-//}
-
 // 현재 존재하는 모든 객체들을 업데이트하고 렌더링한다.
 // 삭제 예약이 활성화된 객체들은 삭제 커맨드 활성화 후 프레임이 끝난 후 일괄 삭제된다.
 void Scene::Update(float Delta, ID3D12GraphicsCommandList* CmdList) {
 	GlobalCommandList = CmdList;
-	for (int i = 0; i < Layers; i++) {
-		for (auto const& Object : ObjectList[i]) {
-			if (!Object->DeleteCommand) 
-				Object->Update(Delta);
-			else
-				AddLocation(i, CurrentReferPosition);
+	for (int L = 0; L < Layers; L++) {
+		for (auto const& O : ObjectList[L]) {
+			if (!O->DeleteCommand) 
+				O->Update(Delta);
+			
+			// 모드 전환 이벤트가 발생할 경우 곧바로 루프를 건너뛴다
+			// 오브젝트 삭제 위치의 무결성을 모장하기 위함
+			if (LoopEscapeCommand) {
+				LoopEscapeCommand = false;
+				CurrentReferPosition = 0;
+				return;
+			}
+
+			if (O->DeleteCommand)
+				AddDeleteLocation(L, CurrentReferPosition);
+
+			CurrentReferPosition++;
 		}
+		CurrentReferPosition = 0;
 	}
 }
 
 void Scene::Render() {
-	for (int i = 0; i < Layers; i++) {
-		for (auto const& Object : ObjectList[i]) {
-			if (!Object->DeleteCommand)
-				Object->Render();
+	for (int L = 0; L < Layers; L++) {
+		for (auto const& O : ObjectList[L]) {
+			if (!O->DeleteCommand)
+				O->Render();
 		}
 	}
 }
@@ -83,7 +80,6 @@ void Scene::SwitchMode(Function ModeFunction) {
 void Scene::RegisterModeName(std::string ModeName) {
 	RunningMode = ModeName;
 }
-
 // 컨트롤러 설정 함수이다. 이 함수를 직접 작성할 일은 없다,
 void Scene::RegisterKeyController(void (*FunctionPtr)(HWND, UINT, WPARAM, LPARAM)) {
 	KeyboardControllerPtr = FunctionPtr;
@@ -94,31 +90,18 @@ void Scene::RegisterMouseController(void (*FunctionPtr)(HWND, UINT, WPARAM, LPAR
 void Scene::RegisterMouseMotionController(void (*FunctionPtr)(HWND)) {
 	MouseMotionControllerPtr = FunctionPtr;
 }
-
-// 객체를 찾아 컨트롤러 함수로 메시지를 전달한다. 다수로 존재하는 객체에 사용하지 않도록 유의한다.
-void Scene::InputMouse(std::string ObjectTag, MouseEvent& Event) {
-	auto Object = ObjectIndex.find(ObjectTag);
-	if (Object != end(ObjectIndex))
-		Object->second->InputMouse(Event);
-}
-void Scene::InputKey(std::string ObjectTag, KeyEvent& Event) {
-	auto Object = ObjectIndex.find(ObjectTag);
-	if (Object != end(ObjectIndex))
-		Object->second->InputKey(Event);
-}
-void Scene::InputMouseMotion(std::string ObjectTag, MotionEvent& Event) {
-	auto Object = ObjectIndex.find(ObjectTag);
-	if (Object != end(ObjectIndex))
-		Object->second->InputMouseMotion(Event);
+void Scene::RegisterControlObjectList(std::deque<GameObject*>& ControlObjectList) {
+	ControlObjectListPtr = &ControlObjectList;
 }
 
 // 객체를 추가한다. 원하는 객체와 태그, 레이어를 설정할 수 있다.
 // 이 함수에서 입력한 태그는 Find()함수에서 사용된다.
-void Scene::AddObject(GameObject*&& Object, std::string Tag, int InputLayer) {
+void Scene::AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController) {
 	ObjectList[InputLayer].emplace_back(Object);
-	ObjectIndex.insert(std::make_pair(Tag, Object));
 	Object->ObjectTag = Tag;
 	Object->ObjectLayer = InputLayer;
+	if (UseController)
+		ControlObjectListPtr->emplace_back(Object);
 }
 
 // 포인터를 사용하여 객체를 삭제한다. 객체에 삭제 마크를 표시한다.
@@ -127,22 +110,47 @@ void Scene::AddObject(GameObject*&& Object, std::string Tag, int InputLayer) {
 // 클래스 내부에서 this 포인터로도 자신을 삭제할 수 있다.
 void Scene::DeleteObject(GameObject* Object) {
 	Object->DeleteCommand = true;
+
+	// 컨트롤러를 가지고 있을 경우 컨트롤러 목록에서 제거한다.
+	CheckHasController(Object);
+}
+
+void Scene::DeleteObject(std::string Tag, int DeleteRangeFlag) {
+	if (DeleteRangeFlag == DELETE_RANGE_SINGLE) {
+		if (auto Found = Find(Tag); Found)
+			DeleteObject(Found);
+	}
+
+	else if (DeleteRangeFlag == DELETE_RANGE_ALL) {
+		for (int L = 0; L < Layers; L++) {
+			size_t Size = ObjectList[L].size();
+			for (int O = 0; O < Size; O++) {
+				if (auto Found = FindMulti(Tag, L, O); Found)
+					DeleteObject(Found);
+			}
+		}
+	}
 }
 
 // 현재 존재하는 객체들 중 특정 객체의 포인터를 얻어 접근할 때 사용한다.
 // 이진 탐색을 사용하여 검색하므로 매우 빠르다.
 GameObject* Scene::Find(std::string Tag) {
-	auto Object = ObjectIndex.find(Tag);
-	if (Object != std::end(ObjectIndex))
-		return Object->second;
-	else
-		return nullptr;
+	for (int L = 0; L < Layers; L++) {
+		for (auto& O : ObjectList[L]) {
+			if (O->ObjectTag.compare(Tag) == 0 && !O->DeleteCommand)
+				return O;
+		}
+	}
+
+	return nullptr;
 }
 
-// 특정 태그를 가진 오브젝트들의 포인터 범위를 리턴한다.
-// 해당 함수로 equal range를 얻어 for문으로 접근하면 된다.
-std::pair<ObjectRange, ObjectRange> Scene::EqualRange(std::string Tag) {
-	return ObjectIndex.equal_range(Tag);
+// for문을 사용해 특정 레이어에 있는 다수의 동일 객체들에 접근한다.
+GameObject* Scene::FindMulti(std::string Tag, int Layer, int Index) {
+	if(ObjectList[Layer][Index]->ObjectTag.compare(Tag) == 0 && !ObjectList[Layer][Index]->DeleteCommand)
+		return ObjectList[Layer][Index];
+	
+	return false;
 }
 
 // 삭제 마크가 표시된 객체를 메모리에서 제거한다.
@@ -151,7 +159,6 @@ void Scene::CompleteCommand() {
 		return;
 
 	ProcessObjectCommand();
-	UpdateIndex();
 	CommandExist = false;
 }
 
@@ -159,7 +166,6 @@ void Scene::CompleteCommand() {
 void Scene::Exit() {
 	PostQuitMessage(1);
 }
-
 
 // 키보드, 마우스, 마우스 움직임을 WinMain으로부터 받아온다. 직접 쓸 일은 없다.
 void Scene::InputKeyMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
@@ -186,15 +192,16 @@ void Scene::ReleaseObjects() {
 		ObjectShaderRootSignature->Release();
 }
 
-// 렌더링을 준비한다
-void Scene::PrepareRender(ID3D12GraphicsCommandList* CmdList) {
-	
-}
-
 /////////////// private
 
+void Scene::CheckHasController(GameObject* Object) {
+	auto Found = std::find(ControlObjectListPtr->begin(), ControlObjectListPtr->end(), Object);
+	if (Found != ControlObjectListPtr->end())
+		ControlObjectListPtr->erase(Found);
+}
+
 // 삭제 위치를 저장한다.
-void Scene::AddLocation(int Layer, int Position) {
+void Scene::AddDeleteLocation(int Layer, int Position) {
 	DeleteLocation[Layer].emplace_back(Position);
 	CommandExist = true;
 }
@@ -203,40 +210,38 @@ void Scene::AddLocation(int Layer, int Position) {
 void Scene::ProcessObjectCommand() {
 	int Offset{};
 
-	for (int Layer = 0; Layer < Layers; ++Layer) {
-		size_t Size = DeleteLocation[Layer].size();
+	for (int L = 0; L < Layers; ++L) {
+		size_t Size = DeleteLocation[L].size();
 		if (Size == 0)
 			continue;
 
-		for (int i = 0; i < Size; ++i) {
-			auto Object = begin(ObjectList[Layer]) + DeleteLocation[Layer][i] - Offset;
-			ObjectList[Layer].erase(Object);
+		for (int O = 0; O < Size; ++O) {
+			auto Object = begin(ObjectList[L]) + DeleteLocation[L][O] - Offset;
+			*Object = nullptr;
+			Object = ObjectList[L].erase(Object);
 			++SceneCommandCount;
 			++Offset;
 		}
 
-		DeleteLocation[Layer].clear();
+		DeleteLocation[L].clear();
 		Offset = 0;
 	}
 }
 
-// 삭제 마크가 표시된 객체들을 실제로 삭제한다.
-void Scene::UpdateIndex() {
-	auto Object = begin(ObjectIndex);
-	while (Object != end(ObjectIndex) && SceneCommandCount != 0) {
-		if (Object->second->DeleteCommand) {
-			delete Object->second;
-			Object->second = nullptr;
-			Object = ObjectIndex.erase(Object);
-			--SceneCommandCount;
-			continue;
-		}
-		++Object;
-	}
-}
-
-// 현재 존재하는 모든 객체들을 삭제한다.
+// 현재 존재하는 모든 객체들을 삭제 대기 상태로 변경한다.
 void Scene::ClearAll() {
-	for (auto const& Object : ObjectIndex)
-		Object.second->DeleteCommand = true;
+	for (int L = 0; L < Layers; L++) {
+		DeleteLocation[L].clear();
+		size_t Size = ObjectList[L].size();
+
+		for (int O = 0; O < Size; O++) {
+			ObjectList[L][O]->DeleteCommand = true;
+			AddDeleteLocation(L, O);
+		}
+	}
+
+	// 모션 탭쳐 상태를 강제로 해제한다.
+	mouse.EndMotionCapture();
+
+	LoopEscapeCommand = true;
 }

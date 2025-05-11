@@ -50,6 +50,9 @@ public:
 	// gun flame
 	Mesh* gun_flame{};
 	Mesh* gun_flame_back{};
+
+	// animation test
+	FBXMesh gazer{};
 };
 extern MeshResource MESH;
 
@@ -86,6 +89,8 @@ public:
 	// gun flame texture
 	Texture* gun_flame{};
 	Texture* gun_flame_back{};
+
+	Texture* gazer{};
 };
 extern TextureResource TEX;
 
@@ -134,7 +139,7 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, char* Dir
 		fbxUtil.TriangulateAnimatedScene();
 		fbxUtil.GetAnimatedVertexData(System);
 		fbxUtil.ProcessAnimation();
-		//fbxUtil.PrintAnimationStackNames();
+		fbxUtil.PrintAnimationStackNames();
 		fbxUtil.EnumerateAnimationStacks();
 		fbxUtil.ClearVertexVector();
 	}
