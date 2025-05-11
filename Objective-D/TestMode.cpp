@@ -1,16 +1,7 @@
 #include "ModePack.h"
 #include "CameraController.h"
 
-//FBX 애니메이션 구현을 위한 테스트 모드.
-
-//Animation stack[0]: HoodDown
-//Animation stack[1] : HoodUp
-//Animation stack[2] : Armature | ArmatureAction
-//Animation stack[3] : Armature | HoodDown
-//Animation stack[4] : Armature | HoodUp
-//Animation stack[5] : Armature | SpinAction
-
-
+//테스트 작업을 위한 모드.
 
 class TestObject : public GameObject {
 public:
