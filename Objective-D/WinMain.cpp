@@ -38,6 +38,7 @@ char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 
+std::set<unsigned int> ID_List;
 
 class OtherPlayer : public GameObject {
 public:
@@ -89,16 +90,28 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
+		
+		if (!ID_List.contains(movePacket->id)) {
+			ID_List.insert(movePacket->id);
+			scene.AddObject(new OtherPlayer, std::to_string(movePacket->id), LAYER1);
+		}
 
-		if (auto Found = scene.Find(std::to_string(movePacket->id)); Found)
-			Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
+		else
+			if (auto Found = scene.Find(std::to_string(movePacket->id)); Found)
+				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 	}
 	else if (*type == PacketType::VIEW_ANGLE) {
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
-	
-		if (auto Found = scene.Find(std::to_string(viewAnglePacket->id)); Found)
-			Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
+		
+		if (!ID_List.contains(viewAnglePacket->id)) {
+			ID_List.insert(viewAnglePacket->id);
+			scene.AddObject(new OtherPlayer, std::to_string(viewAnglePacket->id), LAYER1);
+		}
+
+		else
+			if (auto Found = scene.Find(std::to_string(viewAnglePacket->id)); Found)
+				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
 	}
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
@@ -114,8 +127,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(recv_buffer);
 		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
 
-		std::cout << "ID: " << newClientPacket->id << std::endl;
-		scene.AddObject(new OtherPlayer, std::to_string(newClientPacket->id), LAYER1);
+	//	std::cout << "ID: " << newClientPacket->id << std::endl;
+	
 		//player_enter = true;
 		//enter_player_id = newClientPacket->id;
 	}
