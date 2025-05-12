@@ -42,6 +42,7 @@ public:
 		if (player_enter) {
 			scene.AddObject(new OtherPlayer, std::to_string(enter_player_id), LAYER1);
 			player_enter = false;
+			std::cout << "PLAYER ENTERED +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
 		}
 	}
 };
