@@ -96,7 +96,7 @@ void Player::Update(float FrameTime) {
 	UpdateGunCollision();
 
 	if (move_front || move_back || move_left || move_right)
-		SendMovePacket(position.x, position.y, position.z);
+		SendMovePacket(position.x, position.y - 3.0, position.z);
 	
 	if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
 		SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
