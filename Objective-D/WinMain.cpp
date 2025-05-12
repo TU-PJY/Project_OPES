@@ -48,24 +48,35 @@ public:
 
 	XMFLOAT3 position{};
 	XMFLOAT3 rotation{};
+	XMFLOAT3 dest_position{};
+	XMFLOAT3 dest_rotation{};
 	Vector vec{};
 
 	void InputPosition(XMFLOAT3& value) override {
-		position = value;
+		dest_position = value;
 	}
 
 	void InputRotation(XMFLOAT3& value) override {
-		rotation = value;
+		dest_rotation = value;
 	}
 
 	void Update(float FrameTime) {
 		UpdateFBXAnimation(MESH.cop, FrameTime);
+
+		position.x = std::lerp(position.x, dest_position.x, 15.0 * FrameTime);
+		position.y = std::lerp(position.y, dest_position.y, 15.0 * FrameTime);
+		position.z = std::lerp(position.z, dest_position.z, 15.0 * FrameTime);
+
+		rotation.x = std::lerp(rotation.x, dest_rotation.x, 15.0 * FrameTime);
+		rotation.y = std::lerp(rotation.y, dest_rotation.y, 15.0 * FrameTime);
+		rotation.z = std::lerp(rotation.z, dest_rotation.z, 15.0 * FrameTime);
 	}
 
 	void Render() {
 		BeginRender();
 		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
+		Transform::Scale(ScaleMatrix, 3.0, 3.0, 3.0);
 		RenderFBX(MESH.cop, TEX.scifi);
 	}
 };

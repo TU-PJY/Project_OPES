@@ -110,7 +110,7 @@ private:
 	GameObject* crosshair_ptr{};
 
 
-	float rotation_packet_send_delay{};
+	float send_delay{};
 
 public:
 	Player(std::string MapObjectName);

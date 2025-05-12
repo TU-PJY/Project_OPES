@@ -95,12 +95,23 @@ void Player::Update(float FrameTime) {
 	// 총 - 맵 오브젝트 충돌 처리 업데이트
 	UpdateGunCollision();
 
-	if (move_front || move_back || move_left || move_right)
-		SendMovePacket(position.x, position.y - 3.0, position.z);
+	send_delay += FrameTime;
+
+	if (move_front || move_back || move_left || move_right) {
+		if (send_delay >= 0.1)
+			SendMovePacket(position.x, position.y - 3.0, position.z);
+	}
 	
 	if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
-		SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
-		old_rotation = rotation;
+		if (send_delay >= 0.1) {
+			SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
+			old_rotation = rotation;
+		}
+	}
+
+	if (send_delay >= 0.1) {
+		float over_time = send_delay - 0.1;
+		send_delay = over_time;
 	}
 }
 
