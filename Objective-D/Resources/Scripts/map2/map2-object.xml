@@ -80,19 +80,19 @@
 	<Object40 X="-15" Y="30" Z="-55" SizeX="10.0" SizeY="10.0" SizeZ="10.0" Rotation="210.0" Index="1" />
 
 	<!--적 스팟 위치-->
-	<Object41 X="-45" Y="0" Z="-110" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object42 X="55" Y="-0" Z="-125" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object43 X="45" Y="-0" Z="-45" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object44 X="-30" Y="-0" Z="5" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object45 X="75" Y="-0" Z="-10" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object46 X="200" Y="-0" Z="-60" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object47 X="120" Y="-0" Z="25" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object48 X="190" Y="-0" Z="45" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object49 X="185" Y="-0" Z="85" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object50 X="200" Y="-0" Z="150" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object51 X="150" Y="-0" Z="185" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object52 X="70" Y="-0" Z="150" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object53 X="-55" Y="-0" Z="120" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object54 X="-10" Y="-0" Z="80" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
-	<Object55 X="-135" Y="-0" Z="90" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" />
+	<!-- <Object41 X="-45" Y="0" Z="-110" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object42 X="55" Y="-0" Z="-125" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object43 X="45" Y="-0" Z="-45" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object44 X="-30" Y="-0" Z="5" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object45 X="75" Y="-0" Z="-10" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object46 X="200" Y="-0" Z="-60" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object47 X="120" Y="-0" Z="25" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object48 X="190" Y="-0" Z="45" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object49 X="185" Y="-0" Z="85" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object50 X="200" Y="-0" Z="150" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object51 X="150" Y="-0" Z="185" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object52 X="70" Y="-0" Z="150" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object53 X="-55" Y="-0" Z="120" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object54 X="-10" Y="-0" Z="80" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
+	<!-- <Object55 X="-135" Y="-0" Z="90" SizeX="0.8" SizeY="1.0" SizeZ="0.8" Rotation="135.0" Index="5" /> -->
 </Script>

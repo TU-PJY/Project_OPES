@@ -21,6 +21,8 @@ private:
 	ScriptUtil OOBBDataScript{};
 	std::vector<OOBB> OOBBVec{};
 
+	bool RenderOOBB{};
+
 public:
 	Map1() {
 		Load();
@@ -37,7 +39,11 @@ public:
 			case VK_RIGHT:
 				scene.SwitchMode(Level2::Start);
 				break;
-			break;
+
+			case VK_F1:
+				if (!RenderOOBB) RenderOOBB = true;
+				else RenderOOBB = false;
+				break;
 			}
 		}
 	}
@@ -141,8 +147,9 @@ public:
 		}
 
 		// oobb 렌더링
-		for (auto& O : OOBBVec)
-			O.Render();
+		if(RenderOOBB)
+			for (auto& O : OOBBVec)
+				O.Render();
 
 		//// 테스트용 플레이어 모델
 		//BeginRender();

@@ -20,6 +20,8 @@ private:
 
 	TerrainUtil terrain{};
 
+	bool RenderOOBB{};
+
 public:
 	Map2() {
 		Load();
@@ -58,6 +60,11 @@ public:
 				scene.DeleteObject("camera_controller", DELETE_RANGE_ALL);
 				scene.AddObject(new CrossHair, "crosshair", LAYER3);
 				scene.AddObject(new Player("map2"), "player", LAYER1, true);
+				break;
+
+			case VK_F1:
+				if (!RenderOOBB) RenderOOBB = true;
+				else RenderOOBB = false;
 				break;
 			}
 		}
@@ -99,9 +106,9 @@ public:
 			case 5: Render3D(MESH.Mushroom[0], TEX.Palette3);      break;
 			}
 		}
-
-		for (auto& O : OOBBVec)
-			O.Render();
+		if (RenderOOBB)
+			for (auto& O : OOBBVec)
+				O.Render();
 	}
 
 	void Load() {
