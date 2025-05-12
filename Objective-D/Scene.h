@@ -20,9 +20,6 @@ private:
 	bool CommandExist{};
 
 	std::string RunningMode{};
-	void (*MouseControllerPtr)(HWND, UINT, WPARAM, LPARAM) {};
-	void (*MouseMotionControllerPtr)(HWND) {};
-	void (*KeyboardControllerPtr)(HWND, UINT, WPARAM, LPARAM) {};
 	std::deque<GameObject*>* ControlObjectListPtr{};
 
 	Function DestructorBuffer{};
@@ -30,18 +27,11 @@ private:
 	
 public:
 	std::string GetMode();
-	void RegisterDestructor(Function Destructor);
 	void ReleaseDestructor();
 	void Init(Function ModeFunction);
 	void SwitchMode(Function ModeFunction);
-	void RegisterModeName(std::string ModeName);
-	void RegisterKeyController(void(*FunctionPtr)(HWND, UINT, WPARAM, LPARAM));
-	void RegisterMouseController(void(*FunctionPtr)(HWND, UINT, WPARAM, LPARAM));
-	void RegisterMouseMotionController(void(*FunctionPtr)(HWND));
-
+	void SetupMode(std::string ModeName, Function Destructor, std::deque<GameObject*>& ControlObjectList);
 	void RegisterControlObjectList(std::deque<GameObject*>& ControlObjectList);
-
-
 	void InputKeyMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void InputMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void InputMouseMotionMessage(HWND hWnd);

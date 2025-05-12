@@ -23,11 +23,6 @@ std::string Scene::GetMode() {
 	return RunningMode;
 }
 
-// 모드 소멸자를 등록한다.
-void Scene::RegisterDestructor(Function Destructor) {
-	DestructorBuffer = Destructor;
-}
-
 // 모드 소멸자 포인터를 끊는다.
 void Scene::ReleaseDestructor() {
 	DestructorBuffer = nullptr;
@@ -76,20 +71,16 @@ void Scene::SwitchMode(Function ModeFunction) {
 	ModeFunction();
 }
 
-// 모드 이름을 등록한다. 중복되는 모드 이름을 등록하지 않도록 유의한다.
-void Scene::RegisterModeName(std::string ModeName) {
+// 모드구동에 필요한 데이터들을 Scene에 등록한다.
+void Scene::SetupMode(std::string ModeName, Function Destructor, std::deque<GameObject*>& ControlObjectList) {
 	RunningMode = ModeName;
+	DestructorBuffer = Destructor;
+	ControlObjectList.clear();
+	ControlObjectListPtr = &ControlObjectList;
+
+	std::cout << "Mode Switched to [ " << ModeName << " ] Mode.\n";
 }
-// 컨트롤러 설정 함수이다. 이 함수를 직접 작성할 일은 없다,
-void Scene::RegisterKeyController(void (*FunctionPtr)(HWND, UINT, WPARAM, LPARAM)) {
-	KeyboardControllerPtr = FunctionPtr;
-}
-void Scene::RegisterMouseController(void (*FunctionPtr)(HWND, UINT, WPARAM, LPARAM)) {
-	MouseControllerPtr = FunctionPtr;
-}
-void Scene::RegisterMouseMotionController(void (*FunctionPtr)(HWND)) {
-	MouseMotionControllerPtr = FunctionPtr;
-}
+
 void Scene::RegisterControlObjectList(std::deque<GameObject*>& ControlObjectList) {
 	ControlObjectListPtr = &ControlObjectList;
 }
@@ -169,16 +160,24 @@ void Scene::Exit() {
 
 // 키보드, 마우스, 마우스 움직임을 WinMain으로부터 받아온다. 직접 쓸 일은 없다.
 void Scene::InputKeyMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
-	if (KeyboardControllerPtr)
-		KeyboardControllerPtr(hWnd, nMessageID, wParam, lParam);
+	KeyEvent Event{ hWnd, nMessageID, wParam, lParam };
+	if (DEV_EXIT && Event.Type == WM_KEYDOWN && Event.Key == VK_ESCAPE)
+		scene.Exit();
+	for (auto const& C : *ControlObjectListPtr)
+		if (C && !C->DeleteCommand) C->InputKey(Event);
 }
+
 void Scene::InputMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
-	if (MouseControllerPtr)
-		MouseControllerPtr(hWnd, nMessageID, wParam, lParam);
+	MouseEvent Event{ hWnd, nMessageID, wParam, lParam };
+	for (auto const& C : *ControlObjectListPtr)
+		if (C && !C->DeleteCommand) C->InputMouse(Event);
 }
+
 void Scene::InputMouseMotionMessage(HWND hWnd) {
-	if (MouseMotionControllerPtr)
-		MouseMotionControllerPtr(hWnd);
+	MotionEvent Event{ hWnd, mouse.MotionPosition };
+	mouse.UpdateMousePosition(hWnd);
+	for (auto const& C : *ControlObjectListPtr)
+		if (C && !C->DeleteCommand) C->InputMouseMotion(Event);
 }
 
 // 루트 시그니처를 리턴한다

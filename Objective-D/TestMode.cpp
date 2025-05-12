@@ -41,40 +41,11 @@ public:
 namespace TestMode { std::deque<GameObject*> ControlObjectList; }
 
 void TestMode::Start() {
-	RegisterController();
-	scene.RegisterModeName("test_mode");
+	scene.SetupMode("TestMode", Destructor, ControlObjectList);
 
 	scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 	scene.AddObject(new TestObject, "test_object", LAYER1, true);
 }
 
 void TestMode::Destructor() {
-}
-
-void TestMode::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
-	KeyEvent Event{ hWnd, nMessageID, wParam, lParam };
-	for (auto const& Object : ControlObjectList)
-		if (Object) Object->InputKey(Event);
-}
-
-void TestMode::MouseMotionController(HWND hWnd) {
-	MotionEvent Event{ hWnd, mouse.MotionPosition };
-	mouse.UpdateMousePosition(hWnd);
-	for (auto const& Object : ControlObjectList)
-		if (Object) Object->InputMouseMotion(Event);
-}
-
-void TestMode::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
-	MouseEvent Event{ hWnd, nMessageID, wParam, lParam };
-	for (auto const& Object : ControlObjectList)
-		if (Object) Object->InputMouse(Event);
-}
-
-void TestMode::RegisterController() {
-	ControlObjectList.clear();
-	scene.RegisterControlObjectList(ControlObjectList);
-	scene.RegisterKeyController(KeyboardController);
-	scene.RegisterMouseController(MouseController);
-	scene.RegisterMouseMotionController(MouseMotionController);
-	scene.RegisterDestructor(Destructor);
 }

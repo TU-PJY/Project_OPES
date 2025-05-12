@@ -5,42 +5,11 @@
 namespace TemplateMode { std::deque<GameObject*> ControlObjectList; }
 
 void TemplateMode::Start() {
-	RegisterController();
-	scene.RegisterModeName("TemplateMode");
+	scene.SetupMode("TemplateMode", Destructor, ControlObjectList);
+	// add works here
 }
 
 void TemplateMode::Destructor() {
-
-}
-
-void TemplateMode::KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
-	KeyEvent Event{ hWnd, nMessageID, wParam, lParam };
-	if (DEV_EXIT && Event.Type == WM_KEYDOWN && Event.Key == VK_ESCAPE)
-		scene.Exit();
-	for (auto const& Object : ControlObjectList)
-		if (Object) Object->InputKey(Event);
-}
-
-void TemplateMode::MouseMotionController(HWND hWnd) {
-	MotionEvent Event{ hWnd, mouse.MotionPosition };
-	mouse.UpdateMousePosition(hWnd);
-	for (auto const& Object : ControlObjectList)
-		if (Object) Object->InputMouseMotion(Event);
-}
-
-void TemplateMode::MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
-	MouseEvent Event{ hWnd, nMessageID, wParam, lParam };
-	for (auto const& Object : ControlObjectList)
-		if (Object) Object->InputMouse(Event);
-}
-
-void TemplateMode::RegisterController() {
-	ControlObjectList.clear();
-	scene.RegisterControlObjectList(ControlObjectList);
-	scene.RegisterKeyController(KeyboardController);
-	scene.RegisterMouseController(MouseController);
-	scene.RegisterMouseMotionController(MouseMotionController);
-	scene.RegisterDestructor(Destructor);
 }
 
 ######################################################
@@ -49,8 +18,4 @@ void TemplateMode::RegisterController() {
 namespace TemplateMode {
 	void Start();
 	void Destructor();
-	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void MouseMotionController(HWND hWnd);
-	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void RegisterController();
 }

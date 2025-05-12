@@ -6,38 +6,21 @@
 namespace Level1 {
 	void Start();
 	void Destructor();
-	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void MouseMotionController(HWND hWnd);
-	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void RegisterController();
 }
 
 namespace Level2 {
 	void Start();
 	void Destructor();
-	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void MouseMotionController(HWND hWnd);
-	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void RegisterController();
 }
 
 namespace Level3 {
 	void Start();
 	void Destructor();
-	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void MouseMotionController(HWND hWnd);
-	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void RegisterController();
 }
-
 
 // FBX 애니메이션 구현을 위한 테스트 모드. 실제 개발 시 비활성화한다.
 namespace TestMode {
 	void Start();
 	void Destructor();
-	void KeyboardController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void MouseMotionController(HWND hWnd);
-	void MouseController(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-	void RegisterController();
 }
 
