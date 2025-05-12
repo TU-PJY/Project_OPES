@@ -12,6 +12,8 @@
 
 #include <locale>
 
+#include <string>
+
 //서버
 #include <winsock2.h>
 //#include <windows.h>
@@ -34,7 +36,7 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 
 
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
@@ -56,10 +58,16 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
+
+		if (auto Found = scene.Find(std::to_string(movePacket->id)); Found)
+			Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 	}
 	else if (*type == PacketType::VIEW_ANGLE) {
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
+	
+		if (auto Found = scene.Find(std::to_string(viewAnglePacket->id)); Found)
+			Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
 	}
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
@@ -76,6 +84,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
 
 		player_enter = true;
+		enter_player_id = newClientPacket->id;
 	}
 	else if (*type == PacketType::EXISTING_CLIENTS) { 
 		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(recv_buffer);

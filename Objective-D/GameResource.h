@@ -17,6 +17,8 @@ struct ObjectStruct {
 extern float global_fov_offset;
 
 extern bool player_enter;
+extern unsigned int enter_player_id;
+
 
 /////////////////////////////////////////////////////////////////////////////////
 // 매쉬 리소스는 해당 클래스 안에 선언

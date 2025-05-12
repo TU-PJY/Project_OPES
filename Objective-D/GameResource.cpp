@@ -12,6 +12,7 @@ SystemResource SysRes;
 float global_fov_offset;
 
 bool player_enter;
+unsigned int enter_player_id;
 
 
 // 매쉬를 여기서 로드한다.

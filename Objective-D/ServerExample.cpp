@@ -17,13 +17,21 @@ public:
 	XMFLOAT3 rotation{};
 	Vector vec{};
 
+	void InputPosition(XMFLOAT3& value) {
+		position = value;
+	}
+
+	void InputRotation(XMFLOAT3& value) {
+		rotation = value;
+	}
+
 	void Update(float FrameTime) {
 		UpdateFBXAnimation(MESH.gazer, FrameTime);
 	}
 
 	void Render() {
 		BeginRender();
-		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
+		Transform::Rotate(RotateMatrix, 0.0, 180.0 + rotation.y, 0.0);
 		RenderFBX(MESH.gazer, TEX.gazer);
 	}
 };
@@ -32,7 +40,7 @@ class EnterEvent : public GameObject {
 public:
 	void Update(float FrameTime) {
 		if (player_enter) {
-			scene.AddObject(new OtherPlayer, "other", LAYER1);
+			scene.AddObject(new OtherPlayer, std::to_string(enter_player_id), LAYER1);
 			player_enter = false;
 		}
 	}
@@ -43,6 +51,7 @@ namespace ServerTestMode { std::deque<GameObject*> ControlObjectList; }
 void ServerTestMode::Start() {
 	scene.SetupMode("ServerTestMode", Destructor, ControlObjectList);
 	
+	scene.AddObject(new EnterEvent, "enter_event", LAYER1);
 	scene.AddObject(new Map2, "map2", LAYER1);
 	scene.AddObject(new CrossHair, "crosshair", LAYER3);
 	scene.AddObject(new Player("map2"), "player", LAYER1, true);
