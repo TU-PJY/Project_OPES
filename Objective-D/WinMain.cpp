@@ -39,6 +39,37 @@ WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 
 
+class OtherPlayer : public GameObject {
+public:
+	OtherPlayer() {
+		SelectFBXAnimation(MESH.gazer, "Idle");
+	}
+
+	XMFLOAT3 position{};
+	XMFLOAT3 rotation{};
+	Vector vec{};
+
+	void InputPosition(XMFLOAT3& value) override {
+		position = value;
+	}
+
+	void InputRotation(XMFLOAT3& value) override {
+		rotation = value;
+	}
+
+	void Update(float FrameTime) {
+		UpdateFBXAnimation(MESH.gazer, FrameTime);
+	}
+
+	void Render() {
+		BeginRender();
+		Transform::Move(TranslateMatrix, position);
+		Transform::Rotate(RotateMatrix, 0.0, 180.0 + rotation.y, 0.0);
+		RenderFBX(MESH.gazer, TEX.gazer);
+	}
+};
+
+
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
 	if (err != 0 || num_bytes == 0) {
 		//std::cout << "[클라이언트] 서버 연결 종료\n";
@@ -84,8 +115,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
 
 		std::cout << "ID: " << newClientPacket->id << std::endl;
-		player_enter = true;
-		enter_player_id = newClientPacket->id;
+		scene.AddObject(new OtherPlayer, std::to_string(newClientPacket->id), LAYER1);
+		//player_enter = true;
+		//enter_player_id = newClientPacket->id;
 	}
 	else if (*type == PacketType::EXISTING_CLIENTS) { 
 		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(recv_buffer);
