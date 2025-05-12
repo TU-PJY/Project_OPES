@@ -183,7 +183,7 @@ Framework::Framework() {
 	DsvDescriptorIncrementSize = 0;
 
 	FenceEvent = NULL;
-	m_pd3dFence = NULL;
+	Fence = NULL;
 
 	for (int i = 0; i < SwapChainBuffers; i++)
 		FenceValues[i] = 0;
@@ -316,7 +316,7 @@ void Framework::CreateDirect3DDevice() {
 	MSAA_4x_QualityLevels = MSAA_QualityLevels.NumQualityLevels;
 	MSAA_4x_Option = (MSAA_4x_QualityLevels > 1) ? true : false;
 
-	hResult = Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void**)&m_pd3dFence);
+	hResult = Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void**)&Fence);
 
 	for (UINT i = 0; i < SwapChainBuffers; i++)
 		FenceValues[i] = 0;
@@ -484,7 +484,7 @@ void Framework::Destroy() {
 	if (CmdAllocator) CmdAllocator->Release();
 	if (CmdQueue) CmdQueue->Release();
 	if (CmdList) CmdList->Release();
-	if (m_pd3dFence) m_pd3dFence->Release();
+	if (Fence) Fence->Release();
 
 	DxgiSwapChain->SetFullscreenState(FALSE, NULL);
 
@@ -503,10 +503,10 @@ void Framework::ReleaseObjects() {
 
 void Framework::WaitForGpuComplete() {
 	UINT64 FenceValue = ++FenceValues[SwapChainBufferIndex];
-	HRESULT hResult = CmdQueue->Signal(m_pd3dFence, FenceValue);
+	HRESULT hResult = CmdQueue->Signal(Fence, FenceValue);
 
-	if (m_pd3dFence->GetCompletedValue() < FenceValue) {
-		hResult = m_pd3dFence->SetEventOnCompletion(FenceValue, FenceEvent);
+	if (Fence->GetCompletedValue() < FenceValue) {
+		hResult = Fence->SetEventOnCompletion(FenceValue, FenceEvent);
 		::WaitForSingleObject(FenceEvent, INFINITE);
 	}
 }
@@ -515,10 +515,10 @@ void Framework::MoveToNextFrame() {
 	SwapChainBufferIndex = DxgiSwapChain->GetCurrentBackBufferIndex();
 
 	UINT64 FenceValue = ++FenceValues[SwapChainBufferIndex];
-	HRESULT hResult = CmdQueue->Signal(m_pd3dFence, FenceValue);
+	HRESULT hResult = CmdQueue->Signal(Fence, FenceValue);
 
-	if (m_pd3dFence->GetCompletedValue() < FenceValue) {
-		hResult = m_pd3dFence->SetEventOnCompletion(FenceValue, FenceEvent);
+	if (Fence->GetCompletedValue() < FenceValue) {
+		hResult = Fence->SetEventOnCompletion(FenceValue, FenceEvent);
 		::WaitForSingleObject(FenceEvent, INFINITE);
 	}
 }
