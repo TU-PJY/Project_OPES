@@ -74,9 +74,6 @@ void Player::InputKey(KeyEvent& Event) {
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'S', move_back);
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'A', move_left);
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'D', move_right);
-
-	if (Event.Type == WM_KEYDOWN && Event.Key == VK_ESCAPE)
-		scene.Exit();
 }
 
 void Player::Update(float FrameTime) {
@@ -98,14 +95,13 @@ void Player::Update(float FrameTime) {
 	// 총 - 맵 오브젝트 충돌 처리 업데이트
 	UpdateGunCollision();
 
-	//if (move_front || move_back || move_left || move_right)
-		//SendMovePacket(position.x, position.y, position.z);
+	if (move_front || move_back || move_left || move_right)
+		SendMovePacket(position.x, position.y, position.z);
 	
-	
-	//if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
-		//SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
-		//old_rotation = rotation;
-	//}
+	if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
+		SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
+		old_rotation = rotation;
+	}
 }
 
 void Player::Render() {

@@ -74,6 +74,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::NEW_CLIENT) {
 		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(recv_buffer);
 		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
+
+		player_enter = true;
 	}
 	else if (*type == PacketType::EXISTING_CLIENTS) { 
 		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(recv_buffer);

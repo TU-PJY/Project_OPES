@@ -24,3 +24,9 @@ namespace TestMode {
 	void Destructor();
 }
 
+// 서버 시연용 모드
+namespace ServerTestMode {
+	void Start();
+	void Destructor();
+}
+

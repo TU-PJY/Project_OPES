@@ -463,6 +463,9 @@
     <ClCompile Include="ClampUtil.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
     </ClCompile>
+    <ClCompile Include="ServerExample.cpp">
+      <Filter>[1]____________[ Game Mode ]\[ Test bed ]</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LabProject04-5.rc">

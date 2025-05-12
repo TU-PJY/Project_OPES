@@ -7,6 +7,7 @@
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
 void Level3::Start() {
+	global_fov_offset = 0.0;
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
 
 	scene.AddObject(new CameraController, "camera_controller", LAYER1, true);

@@ -16,6 +16,8 @@ struct ObjectStruct {
 // 전역 카메라 fov 값 오프셋
 extern float global_fov_offset;
 
+extern bool player_enter;
+
 /////////////////////////////////////////////////////////////////////////////////
 // 매쉬 리소스는 해당 클래스 안에 선언
 class MeshResource {

@@ -11,6 +11,8 @@ SystemResource SysRes;
 // 전역 카메라 fov 값 오프셋
 float global_fov_offset;
 
+bool player_enter;
+
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {

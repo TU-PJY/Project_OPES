@@ -9,6 +9,7 @@
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
 void Level2::Start() {
+	global_fov_offset = 0.0;
 	scene.SetupMode("Level2", Destructor, ControlObjectList);
 
 	// 맵이 반드시 Player보다 먼저 추가되어야 한다
