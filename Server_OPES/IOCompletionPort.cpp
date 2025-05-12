@@ -351,7 +351,7 @@ void IOCompletionPort::WorkThread() {
 
                 // 이동 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
-                    if (otherClient != client && client->roomID == otherClient->roomID) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_Move(client, otherClient);
                     }
                 }
@@ -372,7 +372,7 @@ void IOCompletionPort::WorkThread() {
 
                 // 이동 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
-                    if (otherClient != client && client->roomID == otherClient->roomID) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_ViewAngle(client, otherClient);
                     }
                 }

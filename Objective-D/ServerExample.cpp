@@ -39,11 +39,11 @@ public:
 
 class EnterEvent : public GameObject {
 public:
-	void Update(float FrameTime) {
+	void Update(float FrameTime) override {
 		if (player_enter) {
 			scene.AddObject(new OtherPlayer, std::to_string(enter_player_id), LAYER1);
-			player_enter = false;
 			std::cout << "PLAYER ENTERED +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n";
+			player_enter = false;
 		}
 	}
 };
