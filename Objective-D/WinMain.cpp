@@ -89,7 +89,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 	else if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
-		std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
+		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
 		if (!ID_List.contains(movePacket->id)) {
 			ID_List.insert(movePacket->id);
@@ -102,7 +102,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 	else if (*type == PacketType::VIEW_ANGLE) {
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
-		std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
+		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 		
 		if (!ID_List.contains(viewAnglePacket->id)) {
 			ID_List.insert(viewAnglePacket->id);
@@ -164,7 +164,7 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cerr << "[클라이언트] 데이터 전송 실패\n";
 		isRunning = false;
 	}
-	std::cout << "send\n";
+//	std::cout << "send\n";
 	recv_wsabuf[0].len = sizeof(recv_buffer);
 	recv_wsabuf[0].buf = recv_buffer;
 	DWORD recv_flag = 0;
