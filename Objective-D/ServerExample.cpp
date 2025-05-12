@@ -17,11 +17,11 @@ public:
 	XMFLOAT3 rotation{};
 	Vector vec{};
 
-	void InputPosition(XMFLOAT3& value) {
+	void InputPosition(XMFLOAT3& value) override {
 		position = value;
 	}
 
-	void InputRotation(XMFLOAT3& value) {
+	void InputRotation(XMFLOAT3& value) override {
 		rotation = value;
 	}
 
@@ -31,6 +31,7 @@ public:
 
 	void Render() {
 		BeginRender();
+		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, 180.0 + rotation.y, 0.0);
 		RenderFBX(MESH.gazer, TEX.gazer);
 	}
