@@ -43,7 +43,7 @@ std::set<unsigned int> ID_List;
 class OtherPlayer : public GameObject {
 public:
 	OtherPlayer() {
-		SelectFBXAnimation(MESH.gazer, "Idle");
+		//SelectFBXAnimation(MESH.gazer, "Idle");
 	}
 
 	XMFLOAT3 position{};
@@ -59,14 +59,14 @@ public:
 	}
 
 	void Update(float FrameTime) {
-		UpdateFBXAnimation(MESH.gazer, FrameTime);
+		UpdateFBXAnimation(MESH.cop, FrameTime);
 	}
 
 	void Render() {
 		BeginRender();
 		Transform::Move(TranslateMatrix, position);
-		Transform::Rotate(RotateMatrix, 0.0, 180.0 + rotation.y, 0.0);
-		RenderFBX(MESH.gazer, TEX.gazer);
+		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
+		RenderFBX(MESH.cop, TEX.scifi);
 	}
 };
 
@@ -77,8 +77,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		isRunning = false;
 		return;
 	}
-	std::cout << "recv\n";
-	std::cout << "[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
+	//std::cout << "recv\n";
+	//std::cout << "[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
 
 	PacketType* type = reinterpret_cast<PacketType*>(recv_buffer);
 	if (*type == PacketType::CHAT) {

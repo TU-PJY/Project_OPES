@@ -57,6 +57,7 @@ public:
 
 	// animation test
 	FBXMesh gazer{};
+	FBXMesh cop{};
 };
 extern MeshResource MESH;
 
@@ -143,7 +144,7 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::stri
 		fbxUtil.TriangulateAnimatedScene();
 		fbxUtil.GetAnimatedVertexData(System);
 		fbxUtil.ProcessAnimation();
-		fbxUtil.PrintAnimationStackNames();
+		//fbxUtil.PrintAnimationStackNames();
 		fbxUtil.EnumerateAnimationStacks();
 		fbxUtil.ClearVertexVector();
 	}

@@ -80,7 +80,10 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(System, MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
 	LoadMultiStaticFBX(System, MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
+
+	// for test
 	LoadAnimatedFBX(System, MESH.gazer, "Resources//TestMesh//Gazer_LP.fbx", "Resources//TestMesh//Gazer_LP.json");
+	LoadAnimatedFBX(System, MESH.cop, "Resources//TestMesh//Walk.fbx");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
