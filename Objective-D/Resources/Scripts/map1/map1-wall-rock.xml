@@ -38,8 +38,8 @@
 	<Object28 X="40" Y="-4.0" Z="100" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
 
 	<!-- 던전 -->
-	<Object29 X="120" Y="-4.0" Z="-130" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="120.0" />
-	<Object30 X="150" Y="-4.0" Z="-80" SizeX="0.1" SizeY="0.1" SizeZ="0.2" Rotation="130.0" />
+	<Object29 X="120" Y="-4.0" Z="-130" SizeX="0.075" SizeY="0.1" SizeZ="0.2" Rotation="120.0" />
+	<Object30 X="150" Y="-4.0" Z="-80" SizeX="0.075" SizeY="0.1" SizeZ="0.2" Rotation="130.0" />
 	<Object31 X="170" Y="-4.0" Z="-170" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
 	<Object32 X="180" Y="-4.0" Z="-200" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
 	<Object33 X="210" Y="-4.0" Z="-220" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
@@ -49,6 +49,6 @@
 	<Object37 X="280" Y="-5.0" Z="-160" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
 	<Object38 X="260" Y="-5.0" Z="-130" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
 	<Object39 X="220" Y="-4.0" Z="-120" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
-	<Object40 X="190" Y="-4.0" Z="-110" SizeX="0.1" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
+	<Object40 X="190" Y="-4.0" Z="-110" SizeX="0.075" SizeY="0.1" SizeZ="0.1" Rotation="120.0" />
 
 </Script>

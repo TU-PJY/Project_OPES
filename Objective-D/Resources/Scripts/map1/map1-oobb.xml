@@ -19,31 +19,34 @@
 	<!-- 중앙 공간 -->
 	<!-- 오른쪽 벽 -->
 	<OOBB X="-45" Z="-95" SizeX="7.0" SizeZ="13.0" Rotation="-270.0" />
-	<OOBB X="-10" Z="-110" SizeX="22.0" SizeZ="44.0" Rotation="-270.0" />
-	<OOBB X="60" Z="-110" SizeX="22.0" SizeZ="44.0" Rotation="-290.0" />
-	<OOBB X="130" Z="0" SizeX="22.0" SizeZ="66.0" Rotation="-165.0" />
+	<OOBB X="-10" Z="-110" SizeX="23.5" SizeZ="44.0" Rotation="-270.0" />
+	<OOBB X="60" Z="-110" SizeX="22.0" SizeZ="45.0" Rotation="-290.0" />
+	<OOBB X="130" Z="0" SizeX="25.0" SizeZ="66.0" Rotation="-165.0" />
 
 
 	<!-- 왼쪽 벽 -->
-	<OOBB X="-140" Z="-10" SizeX="22.0" SizeZ="44.0" Rotation="-180.0" />
-	<OOBB X="-120" Z="60" SizeX="22.0" SizeZ="44.0" Rotation="25.0" />
-	<OOBB X="-80" Z="100" SizeX="22.0" SizeZ="44.0" Rotation="65.0" />
-	<OOBB X="-20" Z="100" SizeX="22.0" SizeZ="44.0" Rotation="90.0" />
-	<OOBB X="40" Z="100" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="-140" Z="-10" SizeX="24.4" SizeZ="44.0" Rotation="-180.0" />
+	<OOBB X="-120" Z="60" SizeX="25.0" SizeZ="44.0" Rotation="25.0" />
+	<OOBB X="-80" Z="100" SizeX="25.0" SizeZ="44.0" Rotation="65.0" />
+	<OOBB X="-20" Z="100" SizeX="25.0" SizeZ="44.0" Rotation="90.0" />
+	<OOBB X="40" Z="100" SizeX="25.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="70" Z="100" SizeX="22.0" SizeZ="26.0" Rotation="0.0" />
+	<OOBB X="120" Z="105" SizeX="35.0" SizeZ="12.0" Rotation="0.0" />
+	<OOBB X="160" Z="80" SizeX="28.0" SizeZ="12.0" Rotation="0.0" />
 
 	<!-- 던전 -->
-	<OOBB X="120" Z="-130" SizeX="22.0" SizeZ="44.0" Rotation="120.0" />
-	<OOBB X="150" Z="-80" SizeX="22.0" SizeZ="44.0" Rotation="130.0" />
-	<OOBB X="170" Z="-170" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="180" Z="-200" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="210" Z="-220" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="240" Z="-220" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="270" Z="-200" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="280" Z="-180" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="280" Z="-160" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="260" Z="-130" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="220" Z="-120" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
-	<OOBB X="190" Z="-110" SizeX="22.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="120" Z="-130" SizeX="18.0" SizeZ="44.0" Rotation="120.0" />
+	<OOBB X="150" Z="-80" SizeX="19.0" SizeZ="44.0" Rotation="130.0" />
+	<OOBB X="170" Z="-170" SizeX="23.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="180" Z="-200" SizeX="23.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="210" Z="-220" SizeX="23.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="240" Z="-220" SizeX="23.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="270" Z="-200" SizeX="23.0" SizeZ="24.0" Rotation="120.0" />
+	<OOBB X="280" Z="-180" SizeX="23.0" SizeZ="26.0" Rotation="120.0" />
+	<OOBB X="280" Z="-160" SizeX="23.0" SizeZ="25.0" Rotation="120.0" />
+	<OOBB X="260" Z="-130" SizeX="24.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="220" Z="-120" SizeX="20.0" SizeZ="22.0" Rotation="120.0" />
+	<OOBB X="190" Z="-110" SizeX="18.8" SizeZ="22.0" Rotation="120.0" />
 
 
 	<!--map1-lake-rock.xml->
@@ -75,23 +78,23 @@
 	<OOBB X="-110" Z="-164" SizeX="1.0" SizeZ="1.0" Rotation="-20.0" />
 	<OOBB X="-120" Z="-162" SizeX="1.3" SizeZ="1.3" Rotation="-180.0" />
 	<OOBB X="-130" Z="-164" SizeX="1.0" SizeZ="1.0" Rotation="-180.0" />
-	<OOBB X="-150" Z="-155" SizeX="1.7" SizeZ="1.7" Rotation="-180.0" />
-	<OOBB X="-165" Z="-140" SizeX="1.7" SizeZ="1.7" Rotation="-180.0" />
+	<OOBB X="-150" Z="-155" SizeX="2.0" SizeZ="2.0" Rotation="-180.0" />
+	<OOBB X="-165" Z="-140" SizeX="2.0" SizeZ="2.0" Rotation="-180.0" />
 	<OOBB X="-160" Z="-120" SizeX="2.0" SizeZ="2.0" Rotation="-90.0" />
 	<OOBB X="-160" Z="-110" SizeX="1.0" SizeZ="1.0" Rotation="0.0" />
-	<OOBB X="-160" Z="-90" SizeX="1.3" SizeZ="1.3" Rotation="0.0" />
-	<OOBB X="-140" Z="-80" SizeX="1.3" SizeZ="1.3" Rotation="0.0" />
+	<OOBB X="-160" Z="-90" SizeX="1.7" SizeZ="1.7" Rotation="0.0" />
+	<OOBB X="-140" Z="-80" SizeX="1.7" SizeZ="1.7" Rotation="0.0" />
 
 
 	<!-- 수풀 -->
-	<OOBB X="-72" Z="-107" SizeX="5.5" SizeZ="5.5" Rotation="80.0" />
-	<OOBB X="-73" Z="-115" SizeX="5.5" SizeZ="5.5" Rotation="90.0" />
-	<OOBB X="-75" Z="-140" SizeX="6.9" SizeZ="6.9" Rotation="20.0" />
-	<OOBB X="-90" Z="-160" SizeX="6.9" SizeZ="6.9" Rotation="280.0" />
-	<OOBB X="-140" Z="-160" SizeX="6.9" SizeZ="6.9" Rotation="0.0" />
-	<OOBB X="-155" Z="-150" SizeX="4.1" SizeZ="4.1" Rotation="0.0" />
-	<OOBB X="-160" Z="-145" SizeX="4.1" SizeZ="4.1" Rotation="180.0" />
-	<OOBB X="-130" Z="-75" SizeX="8.3" SizeZ="8.3" Rotation="120.0" />
+	<OOBB X="-72" Z="-107" SizeX="6.3" SizeZ="6.3" Rotation="80.0" />
+	<OOBB X="-73" Z="-115" SizeX="6.3" SizeZ="6.3" Rotation="90.0" />
+	<OOBB X="-75" Z="-140" SizeX="7.5" SizeZ="7.5" Rotation="20.0" />
+	<OOBB X="-90" Z="-160" SizeX="7.5" SizeZ="6.9" Rotation="280.0" />
+	<OOBB X="-140" Z="-160" SizeX="7.3" SizeZ="7.3" Rotation="0.0" />
+	<OOBB X="-155" Z="-150" SizeX="4.5" SizeZ="4.5" Rotation="0.0" />
+	<OOBB X="-160" Z="-145" SizeX="4.5" SizeZ="4.5" Rotation="180.0" />
+	<OOBB X="-130" Z="-75" SizeX="8.7" SizeZ="8.7" Rotation="120.0" />
 
 
 	<!-- 왼쪽 벽 -->
@@ -108,13 +111,13 @@
 	<OOBB X="-55" Z="-55" SizeX="2.0" SizeZ="2.0" Rotation="45.0" />
 	<OOBB X="0" Z="-83" SizeX="2.0" SizeZ="2.0" Rotation="50.0" />
 	<OOBB X="30" Z="-50" SizeX="2.0" SizeZ="2.0" Rotation="45.0" />
-	<OOBB X="38" Z="-50" SizeX="6" SizeZ="6" Rotation="0.0" />
-	<OOBB X="48" Z="-45" SizeX="6" SizeZ="6" Rotation="0.0" />
-	<OOBB X="60" Z="-77" SizeX="2.7" SizeZ="2.7" Rotation="0.0" />
-	<OOBB X="70" Z="-77" SizeX="1.7" SizeZ="1.7" Rotation="0.0" />
-	<OOBB X="90" Z="-40" SizeX="3.3" SizeZ="3.3" Rotation="0.0" />
-	<OOBB X="105" Z="-65" SizeX="5" SizeZ="5" Rotation="0.0" />
-	<OOBB X="109" Z="-72" SizeX="3.3" SizeZ="3.3" Rotation="0.0" />
+	<OOBB X="38" Z="-50" SizeX="7" SizeZ="7" Rotation="0.0" />
+	<OOBB X="48" Z="-45" SizeX="7" SizeZ="7" Rotation="0.0" />
+	<OOBB X="60" Z="-77" SizeX="6" SizeZ="6" Rotation="0.0" />
+	<OOBB X="70" Z="-77" SizeX="3.5" SizeZ="3.5" Rotation="0.0" />
+	<OOBB X="90" Z="-40" SizeX="8" SizeZ="8" Rotation="0.0" />
+	<OOBB X="105" Z="-65" SizeX="5.5" SizeZ="5.5" Rotation="0.0" />
+	<OOBB X="109" Z="-72" SizeX="3.7" SizeZ="3.7" Rotation="0.0" />
 	<OOBB X="85" Z="-50" SizeX="8" SizeZ="2" Rotation="30.0" />
 	<OOBB X="60" Z="30" SizeX="3.3" SizeZ="3.3" Rotation="30.0" />
 	<OOBB X="60" Z="50" SizeX="1.7" SizeZ="1.7" Rotation="30.0" />
