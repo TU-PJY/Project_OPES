@@ -36,7 +36,7 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 
 std::set<unsigned int> ID_List;
 
@@ -76,7 +76,7 @@ public:
 		BeginRender();
 		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
-		Transform::Scale(ScaleMatrix, 3.0, 3.0, 3.0);
+		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
 		RenderFBX(MESH.cop, TEX.scifi);
 	}
 };

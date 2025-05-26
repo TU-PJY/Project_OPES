@@ -856,7 +856,7 @@ void FBXUtil::CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& Targe
 		Info.EndTime = clip["endTime"].get<float>();
 		TargetMesh.SerializedAnimationStacks.emplace(std::pair(KeyFrameName, Info));
 
-		std::cout << KeyFrameName << " [" << Info.StartTime << " - " << Info.EndTime << "] @ \n";
+		//std::cout << KeyFrameName << " [" << Info.StartTime << " - " << Info.EndTime << "] @ \n";
 
 		if (FirstLoad) {
 			SelectAnimation(TargetMesh, KeyFrameName);

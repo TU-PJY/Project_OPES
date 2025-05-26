@@ -34,7 +34,7 @@ void TerrainUtil::InputPosition(XMFLOAT3& PositionValue, float HeightOffsetValue
 
 // 터레인과 충돌 시 대상 높이를 터레인 높이로 변경한다.
 void TerrainUtil::SetHeightToTerrain(XMFLOAT3& PositionValue) {
-	PositionValue.y = Position.y;
+	PositionValue.y = Position.y + HeightOffset;
 }
 
 // 대상 높이를 터레인 높이에 고정시킨다.

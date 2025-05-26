@@ -51,6 +51,8 @@ public:
 	Mesh* machine_gun{};
 	Mesh* dot_machine_gun{};
 
+	Mesh* center_building{};
+
 	// gun flame
 	Mesh* gun_flame{};
 	Mesh* gun_flame_back{};

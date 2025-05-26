@@ -160,6 +160,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="BoundboxShader.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="CameraUtil.h" />
+    <ClInclude Include="CenterBuilding.h" />
     <ClInclude Include="ClampUtil.h" />
     <ClInclude Include="ConstantBufferData.h" />
     <ClInclude Include="ConstantBuffers.h" />
@@ -210,6 +211,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Blends.cpp" />
     <ClCompile Include="BoundboxShader.cpp" />
     <ClCompile Include="CameraUtil.cpp" />
+    <ClCompile Include="CenterBuilding.cpp" />
     <ClCompile Include="ClampUtil.cpp" />
     <ClCompile Include="ConstantBuffers.cpp" />
     <ClCompile Include="CBVUtil.cpp" />

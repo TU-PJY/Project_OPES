@@ -35,15 +35,15 @@ public:
 				Load();
 				break;
 
-			// 시연용 임시 조작키
-			case VK_RIGHT:
-				scene.SwitchMode(Level2::Start);
-				break;
+			//// 시연용 임시 조작키
+			//case VK_RIGHT:
+			//	scene.SwitchMode(Level2::Start);
+			//	break;
 
-			case VK_F1:
-				if (!RenderOOBB) RenderOOBB = true;
-				else RenderOOBB = false;
-				break;
+			//case VK_F1:
+			//	if (!RenderOOBB) RenderOOBB = true;
+			//	else RenderOOBB = false;
+			//	break;
 			}
 		}
 	}

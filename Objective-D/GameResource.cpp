@@ -75,6 +75,7 @@ void LoadMesh(DeviceSystem& System) {
 	// polygon scifi asset
 	LoadMultiStaticFBX(System, MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
 	LoadMultiStaticFBX(System, MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
+	LoadSingleStaticFBX(System, MESH.center_building, "Resources//Models//building//center.fbx");
 
 	// gun flame
 	LoadMultiStaticFBX(System, MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
@@ -82,8 +83,8 @@ void LoadMesh(DeviceSystem& System) {
 
 
 	// for test
-	LoadAnimatedFBX(System, MESH.gazer, "Resources//TestMesh//Gazer_LP.fbx", "Resources//TestMesh//Gazer_LP.json");
-	LoadAnimatedFBX(System, MESH.cop, "Resources//TestMesh//Walk.fbx");
+	//LoadAnimatedFBX(System, MESH.gazer, "Resources//TestMesh//Gazer_LP.fbx", "Resources//TestMesh//Gazer_LP.json");
+	//LoadAnimatedFBX(System, MESH.cop, "Resources//TestMesh//Walk.fbx");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

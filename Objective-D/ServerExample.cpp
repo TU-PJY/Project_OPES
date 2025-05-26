@@ -21,12 +21,12 @@
 
 namespace ServerTestMode { std::deque<GameObject*> ControlObjectList; }
 void ServerTestMode::Start() {
-	scene.SetupMode("ServerTestMode", Destructor, ControlObjectList);
+	//scene.SetupMode("ServerTestMode", Destructor, ControlObjectList);
 	
 //scene.AddObject(new EnterEvent, "enter_event", LAYER1);
-	scene.AddObject(new Map2, "map2", LAYER1);
-	scene.AddObject(new CrossHair, "crosshair", LAYER3);
-	scene.AddObject(new Player("map2"), "player", LAYER1, true);
+	//scene.AddObject(new Map2, "map2", LAYER1);
+	//scene.AddObject(new CrossHair, "crosshair", LAYER3);
+	//scene.AddObject(new Player("map2"), "player", LAYER1, true);
 }
 
 void ServerTestMode::Destructor() {

@@ -10,31 +10,15 @@ public:
 	}
 
 	void InputKey(KeyEvent& Event) {
-		// 시연용 임시 조작키
-		if(Event.Type == WM_KEYDOWN && Event.Key == VK_LEFT)
-			scene.SwitchMode(Level3::Start);
 
 		if (Event.Type == WM_KEYDOWN) {
-			switch (Event.Key) {
-			case 'I':
-				SelectFBXAnimation(MESH.gazer, "Idle"); break;
 
-			case 'T':
-				SelectFBXAnimation(MESH.gazer, "Taunt"); break;
-
-			case 'B':
-				SelectFBXAnimation(MESH.gazer, "Bash01"); break;
-			}
 		}
 	}
 	void Update(float Delta) {
-		UpdateFBXAnimation(MESH.gazer, Delta);
 	}
 
 	void Render() {
-		BeginRender();
-		Transform::Rotate(RotateMatrix, 0.0, 180.0, 0.0);
-		RenderFBX(MESH.gazer, TEX.gazer);
 	}
 };
 

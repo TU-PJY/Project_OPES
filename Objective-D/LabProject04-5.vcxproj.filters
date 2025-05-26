@@ -170,6 +170,9 @@
     <Filter Include="[2]____________[ Game Object ]\[0] - [ Template ]">
       <UniqueIdentifier>{03b6b546-94f5-4152-a165-f88612df9eb3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[ Building ]">
+      <UniqueIdentifier>{e6e3b9ee-fca5-4be6-8fe4-2d497973ff62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -317,6 +320,9 @@
       <Filter>[2]____________[ Game Object ]\[ Maps ]</Filter>
     </ClInclude>
     <ClInclude Include="..\Server_OPES\Packet.h" />
+    <ClInclude Include="CenterBuilding.h">
+      <Filter>[2]____________[ Game Object ]\[ Building ]</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -465,6 +471,9 @@
     </ClCompile>
     <ClCompile Include="ServerExample.cpp">
       <Filter>[1]____________[ Game Mode ]\[ Test bed ]</Filter>
+    </ClCompile>
+    <ClCompile Include="CenterBuilding.cpp">
+      <Filter>[2]____________[ Game Object ]\[ Building ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
