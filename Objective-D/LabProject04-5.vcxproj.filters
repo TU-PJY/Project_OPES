@@ -173,6 +173,12 @@
     <Filter Include="[2]____________[ Game Object ]\[ Monster ]">
       <UniqueIdentifier>{8ad5e691-61cd-47df-802d-0e799c051bec}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[ Monster ]\[ Scorpion ]">
+      <UniqueIdentifier>{1884997c-80d6-41ff-b441-4866a032b012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[ Monster Manager ]">
+      <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -319,6 +325,12 @@
     <ClInclude Include="..\Server_OPES\Packet.h" />
     <ClInclude Include="CenterBuilding.h">
       <Filter>[2]____________[ Game Object ]\[ Building ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Scorpion.h">
+      <Filter>[2]____________[ Game Object ]\[ Monster ]\[ Scorpion ]</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterSpawner.h">
+      <Filter>[2]____________[ Game Object ]\[ Monster Manager ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -471,6 +483,12 @@
     </ClCompile>
     <ClCompile Include="CenterBuilding.cpp">
       <Filter>[2]____________[ Game Object ]\[ Building ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Scorpion.cpp">
+      <Filter>[2]____________[ Game Object ]\[ Monster ]\[ Scorpion ]</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterSpawner.cpp">
+      <Filter>[2]____________[ Game Object ]\[ Monster Manager ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -99,6 +99,7 @@ void Camera::SetViewMatrix() {
 	InverseView._41 = Position.x; InverseView._42 = Position.y; InverseView._43 = Position.z;
 
 	FrustumView.Transform(FrustumWorld, XMLoadFloat4x4(&InverseView));
+	CalculateFrustumPlanes();
 }
 
 // 원근 투영 행렬을 초기화한다. 윈도우 사이즈 변경 시 이 함수가 실행된다.
@@ -109,6 +110,7 @@ void Camera::GeneratePerspectiveMatrix(float NearPlane, float FarPlane, float As
 
 #ifdef _WITH_DIERECTX_MATH_FRUSTUM
 	BoundingFrustum::CreateFromMatrix(FrustumView, Projection);
+	//FrustumView.Transform(FrustumWorld, XMLoadFloat4x4(&InverseView));
 #endif
 }
 
@@ -119,7 +121,7 @@ void Camera::GenerateOrthoMatrix(float Width, float Height, float AspRatio, floa
 	XMStoreFloat4x4(&ProjectionMatrix, Projection);
 
 #ifdef _WITH_DIERECTX_MATH_FRUSTUM
-	BoundingFrustum::CreateFromMatrix(FrustumView, Projection);
+	//BoundingFrustum::CreateFromMatrix(FrustumView, Projection);
 #endif
 }
 
@@ -400,8 +402,9 @@ void Camera::SetLookAt(XMFLOAT3& ObjectPosition, XMFLOAT3& UpVec) {
 	Look = XMFLOAT3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
 }
 
-
-
+bool Camera::CheckFrustum(OOBB& Other) {
+	return IsInFrustum(Other.oobb);
+}
 
 // 프러스텀 관련 함수들
 void Camera::CalculateFrustumPlanes() {

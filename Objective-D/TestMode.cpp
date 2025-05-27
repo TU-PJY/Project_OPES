@@ -6,7 +6,7 @@
 
 class TestObject : public GameObject {
 public:
-	OOBB oobb;
+	OOBB frustum_oobb;
 	bool picked{};
 
 	TestObject() {
@@ -51,6 +51,7 @@ public:
 
 	void Update(float Delta) {
 		UpdateFBXAnimation(MESH.scorpion, Delta * 2);
+		frustum_oobb.Update(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3(0.0, 0.0, 0.0));
 	}
 
 	void Render() {
@@ -59,7 +60,9 @@ public:
 			SetColor(0.0, 1.0, 0.0);
 		XMFLOAT3 pos = fbxUtil.GetRootMoveDelta(MESH.scorpion, true);
 		Transform::InPlace(TranslateMatrix, MESH.scorpion, false, false, true);
+		
 		RenderFBX(MESH.scorpion, TEX.scorpion);
+		frustum_oobb.Render();
 		UpdatePickMatrix();
 	}
 };

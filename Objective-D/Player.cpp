@@ -130,7 +130,6 @@ void Player::Render() {
 	// flame_time 동안 불꽃 렌더링
 	if (flame_time > 0.0) {
 		// 불꽃 렌더링
-		SetColor(XMFLOAT3(0.4, 0.4, 0.4));
 		Render3D(MESH.gun_flame, TEX.gun_flame);
 		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
 	}
@@ -275,11 +274,13 @@ void Player::UpdateCamera(float FrameTime) {
 	// 카메라 회전 업데이트
 	UpdateCameraRotation();
 
+
+	// 카메라 워킹은 임시로 비활성화
 	// 걷기 모션 업데이트
-	UpdateWalkMotion(FrameTime);
+	//UpdateWalkMotion(FrameTime);
 
 	// 총 반동 연출 업데이트
-	UpdateShootMotion(FrameTime);
+	//UpdateShootMotion(FrameTime);
 
 	// 카메라 최종 회전
 	camera.Rotate(rotation.x, rotation.y, rotation.z + walk_shake_result + recoil_shake);

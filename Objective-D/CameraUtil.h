@@ -1,6 +1,7 @@
 #pragma once
 #include "Config.h"
 #include "DirectX_3D.h"
+#include "CollisionUtil.h"
 
 class Camera {
 protected:
@@ -101,6 +102,7 @@ public:
 	void Track(XMFLOAT3& ObjectPosition, Vector& VectorStruct, float fTimeElapsed);
 	void TrackOffset(XMFLOAT3& ObjectPosition, Vector& VectorStruct, XMFLOAT3& OffsetValue, float fTimeElapsed);
 	void SetLookAt(XMFLOAT3& ObjectPosition, XMFLOAT3& UpVec);
+	bool CheckFrustum(OOBB& Other);
 	void CalculateFrustumPlanes();
 	bool IsInFrustum(BoundingBox& BoundingBox);
 	bool IsInFrustum(BoundingOrientedBox& BoundingBox);

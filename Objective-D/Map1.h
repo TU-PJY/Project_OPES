@@ -3,6 +3,7 @@
 #include "MouseUtil.h"
 #include "CameraUtil.h"
 #include "ScriptUtil.h"
+#include "TerrainUtil.h"
 
 class Map1 : public GameObject {
 private:
@@ -21,11 +22,26 @@ private:
 	ScriptUtil OOBBDataScript{};
 	std::vector<OOBB> OOBBVec{};
 
+	TerrainUtil terrainUT{};
+
 	bool RenderOOBB{};
 
 public:
 	Map1() {
 		Load();
+
+		Transform::Identity(TranslateMatrix);
+		Transform::Identity(ScaleMatrix);
+		Transform::Identity(RotateMatrix);
+
+		Transform::Move(TranslateMatrix, 0.0, -50.0, 0.0);
+		Transform::Scale(ScaleMatrix, 0.3, 0.2, 0.3);
+
+		terrainUT.InputData(TranslateMatrix, RotateMatrix, ScaleMatrix, MESH.TerrainMesh1);
+	}
+
+	TerrainUtil GetTerrain() override {
+		return terrainUT;
 	}
 
 	void InputKey(KeyEvent& Event) override {

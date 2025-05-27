@@ -85,6 +85,9 @@ public:
 	// 맵 벽 oobb 얻는 함수
 	virtual std::vector<OOBB> GetMapWallOOBB() { return{}; }
 
+	// 몬스터 함수
+	virtual bool CheckHit(XMFLOAT2& checkPosition) { return{}; }
+
 	// 서버 테스트
 	virtual void InputPosition(XMFLOAT3& value) {}
 	virtual void InputRotation(XMFLOAT3& value) {}

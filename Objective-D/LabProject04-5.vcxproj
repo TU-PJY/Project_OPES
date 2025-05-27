@@ -180,6 +180,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModePack.h" />
+    <ClInclude Include="MonsterSpawner.h" />
     <ClInclude Include="MouseUtil.h" />
     <ClInclude Include="Objective-D.h" />
     <ClInclude Include="MeshUtil.h" />
@@ -192,6 +193,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="RootConstants.h" />
     <ClInclude Include="RootConstantUtil.h" />
     <ClInclude Include="ObjectShader.h" />
+    <ClInclude Include="Scorpion.h" />
     <ClInclude Include="ScriptUtil.h" />
     <ClInclude Include="SettingRootSignature.h" />
     <ClInclude Include="ShaderUtil.h" />
@@ -229,6 +231,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Meshes.cpp" />
     <ClCompile Include="MeshUtil.cpp" />
     <ClCompile Include="Level1.cpp" />
+    <ClCompile Include="MonsterSpawner.cpp" />
     <ClCompile Include="MouseUtil.cpp" />
     <ClCompile Include="ObjectShader.cpp" />
     <ClCompile Include="PickingUtil.cpp" />
@@ -238,6 +241,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="RootConstants.cpp" />
     <ClCompile Include="Pipelines.cpp" />
     <ClCompile Include="RootConstantUtil.cpp" />
+    <ClCompile Include="Scorpion.cpp" />
     <ClCompile Include="ScriptUtil.cpp" />
     <ClCompile Include="ServerExample.cpp" />
     <ClCompile Include="SettingRootSignature.cpp" />
