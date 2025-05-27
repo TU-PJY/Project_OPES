@@ -3,7 +3,6 @@
 #include "Map2.h"
 #include "CameraController.h"
 #include "Player.h"
-#include "SampleMonster.h"
 #include "CrossHair.h"
 
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
@@ -26,8 +25,6 @@ void Level2::Start() {
 	}
 	else
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
-
-	scene.AddObject(new SampleMonster, "monster", LAYER1);
 
 	SetBackgroundColorRGB(135, 206, 235);
 }

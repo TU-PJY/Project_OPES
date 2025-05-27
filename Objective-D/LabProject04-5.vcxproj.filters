@@ -164,14 +164,14 @@
     <Filter Include="[2]____________[ Game Object ]\[ Maps ]">
       <UniqueIdentifier>{550d21be-fc6e-447d-bbf5-ec552f5ecbae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[ sample monster ]">
-      <UniqueIdentifier>{7be1c762-6b7c-423f-8572-d6e6b2c91a13}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[2]____________[ Game Object ]\[0] - [ Template ]">
       <UniqueIdentifier>{03b6b546-94f5-4152-a165-f88612df9eb3}</UniqueIdentifier>
     </Filter>
     <Filter Include="[2]____________[ Game Object ]\[ Building ]">
       <UniqueIdentifier>{e6e3b9ee-fca5-4be6-8fe4-2d497973ff62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[ Monster ]">
+      <UniqueIdentifier>{8ad5e691-61cd-47df-802d-0e799c051bec}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -297,9 +297,6 @@
     </ClInclude>
     <ClInclude Include="CameraController.h">
       <Filter>[3]____________[ Camera ]</Filter>
-    </ClInclude>
-    <ClInclude Include="SampleMonster.h">
-      <Filter>[2]____________[ Game Object ]\[ sample monster ]</Filter>
     </ClInclude>
     <ClInclude Include="CrossHair.h">
       <Filter>[2]____________[ Game Object ]\[ CrossHair ]</Filter>

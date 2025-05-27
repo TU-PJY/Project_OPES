@@ -218,6 +218,8 @@ void Mesh::UpdateSkinning(float Time) {
 		}
 	}
 
+	BoundingOrientedBox::CreateFromPoints(OOBB, Vertices, Position, sizeof(XMFLOAT3));
+
 	void* Mapped = nullptr;
 	D3D12_RANGE Read{ 0, 0 };
 	PositionBuffer->Map(0, &Read, &Mapped);
