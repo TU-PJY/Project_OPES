@@ -318,6 +318,14 @@ bool FBXUtil::LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh) {
 	FbxSystemUnit::m.ConvertScene(Scene);
 	Importer->Destroy();
 
+	FbxNode* RootNode = Scene->GetRootNode();
+	for (int i = 0; i < RootNode->GetChildCount(); ++i) {
+		if (RootNode->GetChild(i)->GetSkeleton()) {
+			TargetMesh.GlobalRootNode = RootNode->GetChild(i);
+			break;
+		}
+	}
+
 	return true;
 }
 
@@ -863,4 +871,16 @@ void FBXUtil::CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& Targe
 			FirstLoad = false;
 		}
 	}
+}
+
+XMFLOAT3 FBXUtil::GetRootMoveDelta(FBXMesh& TargetMesh, bool InPlace) {
+	if (!TargetMesh.GlobalRootNode) 
+		return XMFLOAT3(0.0, 0.0, 0.0);
+
+	FbxTime Time;
+	Time.SetSecondDouble(TargetMesh.CurrentTime);
+	FbxAMatrix Matrix = TargetMesh.GlobalRootNode->EvaluateGlobalTransform(Time);
+	FbxVector4 T = Matrix.GetT();
+
+	return XMFLOAT3(T[0], T[1], T[2]);
 }

@@ -6,19 +6,37 @@
 class TestObject : public GameObject {
 public:
 	TestObject() {
-		camera.Move(0.0, 2.0, -6.0);
+		SelectFBXAnimation(MESH.scorpion, "Walk");
 	}
 
 	void InputKey(KeyEvent& Event) {
-
 		if (Event.Type == WM_KEYDOWN) {
-
+			switch (Event.Key) {
+			case '1':
+				SelectFBXAnimation(MESH.scorpion, "Got Hit");
+				break;
+			case '2':
+				SelectFBXAnimation(MESH.scorpion, "Walk");
+				break;
+			case '3':
+				SelectFBXAnimation(MESH.scorpion, "Attack 1");
+				break;
+			case '4':
+				SelectFBXAnimation(MESH.scorpion, "Death");
+				break;
+			}
 		}
 	}
+
 	void Update(float Delta) {
+		UpdateFBXAnimation(MESH.scorpion, Delta * 2);
 	}
 
 	void Render() {
+		BeginRender();
+		XMFLOAT3 pos = fbxUtil.GetRootMoveDelta(MESH.scorpion, true);
+		Transform::InPlace(TranslateMatrix, MESH.scorpion, false, false, true);
+		RenderFBX(MESH.scorpion, TEX.scorpion);
 	}
 };
 

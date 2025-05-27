@@ -108,3 +108,18 @@ void Transform::Scale2D(XMFLOAT4X4& Matrix, float X, float Y) {
 	XMMATRIX ScaleMat = XMMatrixScaling(X, Y, 1.0);
 	Matrix = Mat4::Multiply(ScaleMat, Matrix);
 }
+
+// FBX 애니메이션으로 인한 위치 이동을 비활성화 한다.
+// true가 된 축에 대해서만 위치 이동을 제거한다.
+void Transform::InPlace(XMFLOAT4X4& Matrix, FBXMesh& TargetMesh, bool AxisX, bool AxisY, bool AxisZ) {
+	if (!TargetMesh.GlobalRootNode)
+		return;
+
+	XMFLOAT3 Delta = fbxUtil.GetRootMoveDelta(TargetMesh, true);
+	if (AxisX)
+		Move(Matrix, -Delta.x, 0.0, 0.0);
+	if (AxisY)
+		Move(Matrix, 0.0, -Delta.y, 0.0);
+	if (AxisZ)
+		Move(Matrix, 0.0, 0.0, -Delta.z);
+}

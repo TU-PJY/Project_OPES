@@ -22,57 +22,48 @@ extern unsigned int enter_player_id;
 
 /////////////////////////////////////////////////////////////////////////////////
 // 매쉬 리소스는 해당 클래스 안에 선언
-class MeshResource {
-public:
+typedef struct {
 	// Map1 매쉬
 	Mesh* RockMesh;
 	Mesh* LakeMesh;
-	Mesh* LakeRockMesh[3]{};
-	Mesh* TerrainMesh1{};
-	Mesh* MapObjectMesh[5]{};
-	Mesh* Mushroom[2]{};
-	Mesh* Grass[2]{};
-	Mesh* Flower[2]{};
+	Mesh* LakeRockMesh[3];
+	Mesh* TerrainMesh1;
+	Mesh* MapObjectMesh[5];
+	Mesh* Mushroom[2];
+	Mesh* Grass[2];
+	Mesh* Flower[2];
 
 	// Map2 매쉬
-	Mesh* WinterWall{};
-	Mesh* WinterIce[2]{};
-	Mesh* WinterRock[3]{};
+	Mesh* WinterWall;
+	Mesh* WinterIce[2];
+	Mesh* WinterRock[3];
 
 	// Map3  매쉬
-	Mesh* FloatingRock{};
-	Mesh* Volcano{};
-	Mesh* SmallVolcano{};
-	Mesh* DeadTree{};
-	Mesh* Map3Stone[2]{};
-	Mesh* Crystal[3]{};
+	Mesh* FloatingRock;
+	Mesh* Volcano;
+	Mesh* SmallVolcano;
+	Mesh* DeadTree;
+	Mesh* Map3Stone[2];
+	Mesh* Crystal[3];
 
 	// polygon scifi asset
-	Mesh* machine_gun{};
-	Mesh* dot_machine_gun{};
+	Mesh* machine_gun;
+	Mesh* dot_machine_gun;
 
-	Mesh* center_building{};
+	Mesh* center_building;
 
 	// gun flame
-	Mesh* gun_flame{};
-	Mesh* gun_flame_back{};
+	Mesh* gun_flame;
+	Mesh* gun_flame_back;
 
-	// animation test
-	FBXMesh gazer{};
-	FBXMesh cop{};
-};
+	// map1 monster
+	FBXMesh scorpion;
+}MeshResource;
 extern MeshResource MESH;
 
 /////////////////////////////////////////////////////////////////////////////////
 // 텍스처 리소스는 해당 클래스 안에 선언
-class TextureResource {
-public:
-	//// FBX 테스트용 매쉬 텍스처
-	Texture* man{};
-	Texture* Lain{};
-	Texture* steve{};
-	Texture* muscleMan{};
-
+typedef struct {
 	// map1
 	Texture* Palette1;
 	Texture* Palette2;
@@ -80,25 +71,26 @@ public:
 	Texture* ColorTex;
 	
 	// map2
-	Texture* Map2Palette{};
-	Texture* Map2TerrainTex{};
+	Texture* Map2Palette;
+	Texture* Map2TerrainTex;
 	Texture* IceTex;
 
 	//map3
-	Texture* Magma{};
-	Texture* Map3RockColor{};
-	Texture* Map3Palette{};
-	Texture* Volcano{};
+	Texture* Magma;
+	Texture* Map3RockColor;
+	Texture* Map3Palette;
+	Texture* Volcano;
 
 	// polyson scifi asset
-	Texture* scifi{};
+	Texture* scifi;
 
 	// gun flame texture
-	Texture* gun_flame{};
-	Texture* gun_flame_back{};
+	Texture* gun_flame;
+	Texture* gun_flame_back;
 
-	Texture* gazer{};
-};
+	// map1 monster
+	Texture* scorpion;
+}TextureResource;
 extern TextureResource TEX;
 
 /////////////////////////////////////////////////////////////////////////////////

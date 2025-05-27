@@ -1,0 +1,82 @@
+{
+    "clips": [
+        {
+            "name": "Idle",
+            "startTime": 0.0,
+            "endTime": 8.300000190734864,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Idle Break",
+            "startTime": 8.466666221618653,
+            "endTime": 14.600000381469727,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Taunt",
+            "startTime": 14.800000190734864,
+            "endTime": 19.299999237060548,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Walk",
+            "startTime": 19.46666717529297,
+            "endTime": 20.799999237060548,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Walk Backward",
+            "startTime": 20.96666717529297,
+            "endTime": 22.266666412353517,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack Idle",
+            "startTime": 22.5,
+            "endTime": 29.133333206176759,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Got Hit",
+            "startTime": 29.5,
+            "endTime": 31.899999618530275,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Dodge",
+            "startTime": 32.16666793823242,
+            "endTime": 34.53333282470703,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Death",
+            "startTime": 34.83333206176758,
+            "endTime": 37.56666564941406,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack 1",
+            "startTime": 38.5,
+            "endTime": 40.36666488647461,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack 1B",
+            "startTime": 40.66666793823242,
+            "endTime": 42.53333282470703,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack 2",
+            "startTime": 47.33333206176758,
+            "endTime": 49.06666564941406,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack 3",
+            "startTime": 42.83333206176758,
+            "endTime": 47.13333511352539,
+            "frameRate": 30.0
+        }
+    ]
+}

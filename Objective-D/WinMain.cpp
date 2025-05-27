@@ -61,7 +61,7 @@ public:
 	}
 
 	void Update(float FrameTime) {
-		UpdateFBXAnimation(MESH.cop, FrameTime);
+	/*	UpdateFBXAnimation(MESH.cop, FrameTime);
 
 		position.x = std::lerp(position.x, dest_position.x, 15.0 * FrameTime);
 		position.y = std::lerp(position.y, dest_position.y, 15.0 * FrameTime);
@@ -69,15 +69,15 @@ public:
 
 		rotation.x = std::lerp(rotation.x, dest_rotation.x, 15.0 * FrameTime);
 		rotation.y = std::lerp(rotation.y, dest_rotation.y, 15.0 * FrameTime);
-		rotation.z = std::lerp(rotation.z, dest_rotation.z, 15.0 * FrameTime);
+		rotation.z = std::lerp(rotation.z, dest_rotation.z, 15.0 * FrameTime);*/
 	}
 
 	void Render() {
-		BeginRender();
+		/*BeginRender();
 		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
-		RenderFBX(MESH.cop, TEX.scifi);
+		RenderFBX(MESH.cop, TEX.scifi);*/
 	}
 };
 

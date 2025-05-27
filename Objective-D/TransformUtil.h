@@ -1,5 +1,6 @@
 #pragma once
 #include "DirectX_3D.h"
+#include "MeshUtil.h"
 
 namespace Transform {
 	void Identity(XMFLOAT4X4& Matrix);
@@ -15,4 +16,5 @@ namespace Transform {
 	void Move2D(XMFLOAT4X4& Matrix, float X, float Y);
 	void Rotate2D(XMFLOAT4X4& Matrix, float Rotation);
 	void Scale2D(XMFLOAT4X4& Matrix, float X, float Y);
+	void InPlace(XMFLOAT4X4& Matrix, FBXMesh& TargetMesh, bool AxisX, bool AxisY, bool AxisZ);
 }

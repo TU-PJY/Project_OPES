@@ -44,6 +44,8 @@ typedef struct {
 	// 직렬화 애니메이션 데이터를 가진 경우 해당 컨테이너를 사용한다.
 	bool SerilaizedFlag;
 	std::map<std::string, SerializedAnimationInfo> SerializedAnimationStacks;
+
+	FbxNode* GlobalRootNode;
 }FBXMesh;
 
 class Mesh {
@@ -165,6 +167,7 @@ public:
 	std::vector<FBXVertex> GetVertexVector();
 	void ClearVertexVector();
 	void CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& TargetMesh);
+	XMFLOAT3 GetRootMoveDelta(FBXMesh& TargetMesh, bool InPlace=false);
 };
 
 extern FBXUtil fbxUtil;

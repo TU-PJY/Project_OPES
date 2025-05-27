@@ -81,10 +81,8 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(System, MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
 	LoadMultiStaticFBX(System, MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
-
-	// for test
-	//LoadAnimatedFBX(System, MESH.gazer, "Resources//TestMesh//Gazer_LP.fbx", "Resources//TestMesh//Gazer_LP.json");
-	//LoadAnimatedFBX(System, MESH.cop, "Resources//TestMesh//Walk.fbx");
+	// monster
+	LoadAnimatedFBX(System, MESH.scorpion, "Resources//Models//monster//scorpion.fbx", "Resources//Models//monster//scorpion_animation.json");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -115,7 +113,8 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(System, TEX.gun_flame, L"Resources//Image//weapon//flame.png", TEXTURE_TYPE_WIC);
 	LoadTexture(System, TEX.gun_flame_back, L"Resources//Image//weapon//flame-back.png", TEXTURE_TYPE_WIC);
 
-	LoadTexture(System, TEX.gazer, L"Resources//TestMesh//Gazer.png", TEXTURE_TYPE_WIC);
+	// map1 monster
+	LoadTexture(System, TEX.scorpion, L"Resources//Image//monster//scorpion.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
