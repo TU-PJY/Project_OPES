@@ -163,9 +163,8 @@ public:
 		}
 
 		// oobb 렌더링
-		if(RenderOOBB)
-			for (auto& O : OOBBVec)
-				O.Render();
+		for (auto& O : OOBBVec)
+			O.Render();
 
 		//// 테스트용 플레이어 모델
 		//BeginRender();

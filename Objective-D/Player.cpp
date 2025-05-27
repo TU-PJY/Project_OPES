@@ -118,7 +118,7 @@ void Player::Update(float FrameTime) {
 void Player::Render() {
 	// 1ÀÎÄª ÃÑ ·»´õ¸µ
 	BeginRender();
-	Transform::Move(TranslateMatrix, position.x, position.y, position.z);
+	Transform::Move(TranslateMatrix, position);
 	Transform::Rotate(TranslateMatrix, gun_rotation.x, gun_rotation.y + gun_rotation_offset, gun_rotation.z);
 	Transform::Move(TranslateMatrix, gun_position_offset.x, gun_position_offset.y, gun_position_offset.z + gun_offset);
 	Render3D(MESH.machine_gun, TEX.scifi);
@@ -209,7 +209,7 @@ void Player::UpdateGun(float FrameTime) {
 	gun_rotation.x = std::lerp(gun_rotation.x, rotation.x, FrameTime * 30.0);
 	gun_rotation.y = std::lerp(gun_rotation.y, rotation.y, FrameTime * 30.0);
 	gun_rotation.z = std::lerp(gun_rotation.z, rotation.z, FrameTime * 30.0);
-
+;
 	if (gun_collided)
 		gun_rotation_offset = std::lerp(gun_rotation_offset, -90.0, FrameTime * 3.0);
 	else 
