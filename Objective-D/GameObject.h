@@ -86,7 +86,12 @@ public:
 	virtual std::vector<OOBB> GetMapWallOOBB() { return{}; }
 
 	// 몬스터 함수
-	virtual bool CheckHit(XMFLOAT2& checkPosition) { return{}; }
+	virtual bool CheckHit(XMFLOAT2& checkPosition, int damage) { return{}; }
+
+	// HP 인디케이터 함수
+	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
+	virtual void InputHP(int fullHP, int currentHP) {}
+
 
 	// 서버 테스트
 	virtual void InputPosition(XMFLOAT3& value) {}

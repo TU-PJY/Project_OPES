@@ -179,6 +179,9 @@
     <Filter Include="[2]____________[ Game Object ]\[ Monster Manager ]">
       <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[2]____________[ Game Object ]\[ UI ]">
+      <UniqueIdentifier>{46f16f0b-7ed7-4aab-be95-cb89a115c514}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -331,6 +334,9 @@
     </ClInclude>
     <ClInclude Include="MonsterSpawner.h">
       <Filter>[2]____________[ Game Object ]\[ Monster Manager ]</Filter>
+    </ClInclude>
+    <ClInclude Include="HP_Indicator.h">
+      <Filter>[2]____________[ Game Object ]\[ UI ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -489,6 +495,9 @@
     </ClCompile>
     <ClCompile Include="MonsterSpawner.cpp">
       <Filter>[2]____________[ Game Object ]\[ Monster Manager ]</Filter>
+    </ClCompile>
+    <ClCompile Include="HP_Indicator.cpp">
+      <Filter>[2]____________[ Game Object ]\[ UI ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

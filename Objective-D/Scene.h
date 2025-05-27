@@ -37,11 +37,12 @@ public:
 	void InputMouseMotionMessage(HWND hWnd);
 	void Update(float Delta, ID3D12GraphicsCommandList* CmdList);
 	void Render();
-	void AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController=false);
+	GameObject* AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController=false);
 	void DeleteObject(GameObject* Object);
 	void DeleteObject(std::string Tag, int DeleteRangeFlag);
 	GameObject* Find(std::string Tag);
 	GameObject* FindMulti(std::string Tag, int Layer, int Index);
+	size_t LayerSize(int Layer);
 	void CompleteCommand();
 
 	ID3D12RootSignature* CreateObjectShaderSignature(ID3D12Device* Device);

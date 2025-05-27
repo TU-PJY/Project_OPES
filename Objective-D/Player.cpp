@@ -97,7 +97,7 @@ void Player::Update(float FrameTime) {
 
 	send_delay += FrameTime;
 
-	if (move_front || move_back || move_left || move_right) {
+	/*if (move_front || move_back || move_left || move_right) {
 		if (send_delay >= 0.1)
 			SendMovePacket(position.x, position.y - 3.0, position.z);
 	}
@@ -112,7 +112,7 @@ void Player::Update(float FrameTime) {
 	if (send_delay >= 0.1) {
 		float over_time = send_delay - 0.1;
 		send_delay = over_time;
-	}
+	}*/
 }
 
 void Player::Render() {
@@ -174,6 +174,19 @@ void Player::UpdateFire(float FrameTime) {
 	// 발사 상태에서 current_fire_delay가 0.0이 되면 crosshair에 반동값 부여 -> 발사
 	if (trigger_state) {
 		if (current_fire_delay <= 0.0) {
+
+			// LAYER1에 존재하는 모든 몬스터들에 대한 피격 검사
+			// 관통이 아닌 총의 경우 한 마리라도 피격이 발생하면 검사 조기 종료
+			size_t size = scene.LayerSize(LAYER1);
+			for (int i = 0; i < size; i++) {
+				if (auto target = scene.FindMulti("scorpion", LAYER1, i); target) {
+
+					// 피격 대상과 피격 대상에게 입힐 대미지를 입력한 후, true리턴 시 해당 대상은 입력한 대미지를 입게 된다.
+					if(target->CheckHit(XMFLOAT2(0.0, 0.0), 10))
+						break;
+				}
+			}
+
 			current_fire_delay = dest_fire_delay;
 			crosshair_ptr->InputRecoil(0.1);
 

@@ -172,6 +172,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="HP_Indicator.h" />
     <ClInclude Include="ImageShader.h" />
     <ClInclude Include="LineBrush.h" />
     <ClInclude Include="LineShader.h" />
@@ -221,6 +222,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="HP_Indicator.cpp" />
     <ClCompile Include="ImageShader.cpp" />
     <ClCompile Include="Level2.cpp" />
     <ClCompile Include="Level3.cpp" />

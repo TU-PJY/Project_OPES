@@ -87,12 +87,14 @@ void Scene::RegisterControlObjectList(std::deque<GameObject*>& ControlObjectList
 
 // 객체를 추가한다. 원하는 객체와 태그, 레이어를 설정할 수 있다.
 // 이 함수에서 입력한 태그는 Find()함수에서 사용된다.
-void Scene::AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController) {
+GameObject* Scene::AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController) {
 	ObjectList[InputLayer].emplace_back(Object);
 	Object->ObjectTag = Tag;
 	Object->ObjectLayer = InputLayer;
 	if (UseController)
 		ControlObjectListPtr->emplace_back(Object);
+
+	return Object;
 }
 
 // 포인터를 사용하여 객체를 삭제한다. 객체에 삭제 마크를 표시한다.
@@ -141,7 +143,11 @@ GameObject* Scene::FindMulti(std::string Tag, int Layer, int Index) {
 	if(ObjectList[Layer][Index]->ObjectTag.compare(Tag) == 0 && !ObjectList[Layer][Index]->DeleteCommand)
 		return ObjectList[Layer][Index];
 	
-	return false;
+	return nullptr;
+}
+
+size_t Scene::LayerSize(int Layer) {
+	return ObjectList[Layer].size();
 }
 
 // 삭제 마크가 표시된 객체를 메모리에서 제거한다.
