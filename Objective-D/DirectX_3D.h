@@ -159,6 +159,9 @@ typedef struct {
 	ID3D12GraphicsCommandList* CmdList;
 }DeviceSystem;
 
+// 전역 시스템
+extern DeviceSystem GlobalSystem;
+
 // 오브젝트에서 공용으로 사용하는 커맨트 리스트
 extern ID3D12GraphicsCommandList* GlobalCommandList;
 

@@ -271,6 +271,9 @@ Scene scene;
 Camera camera;
 MouseUtil mouse;
 
+// 전역 시스템
+DeviceSystem GlobalSystem;
+
 // 전역 커맨드 리스트
 ID3D12GraphicsCommandList* GlobalCommandList;
 
