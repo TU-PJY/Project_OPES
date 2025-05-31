@@ -430,4 +430,16 @@ void Mesh::CreateFBXMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdLis
 	IndexBufferView.BufferLocation = IndexBuffer->GetGPUVirtualAddress();
 	IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	IndexBufferView.SizeInBytes = sizeof(UINT) * Indices;
+
+
+	if (MeshType == FBX_ANIMATED) {
+		D3D12_RANGE Read{ 0, 0 };
+		PositionBuffer->Map(0, &Read, &PositionMapped);
+		memcpy(PositionMapped, Position, sizeof(XMFLOAT3) * Vertices);
+
+		NormalBuffer->Map(0, &Read, &NormalMapped);
+		memcpy(NormalMapped, Normal, sizeof(XMFLOAT3) * Vertices);
+
+		UpdateSkinning(0.0);
+	}
 }

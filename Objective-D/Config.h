@@ -17,10 +17,10 @@ constexpr bool START_WITH_FULL_SCREEN = false;
 constexpr bool DEV_EXIT = true;
 
 // 최대 프레임 제한을 설정한다. 0으로 설정 시 최대 프레임으로 동작한다.
-constexpr float FRAME_LIMITS = 0;
+constexpr float FRAME_LIMITS = 60;
 
 // 바운드박스 표시 여부를 설정한다.
-#define SHOW_BOUND_BOX
+//#define SHOW_BOUND_BOX
 
 // 게임 월드에 사용할 레이어를 설정한다. 끝 부분에는 반드시 EOL(End Of Layer)표기를 해야한다.
 // UI의 경우 가장 최상단 레이어에 추가하는 것을 권장한다.

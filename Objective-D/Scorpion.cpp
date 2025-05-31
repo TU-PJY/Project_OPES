@@ -4,14 +4,19 @@
 #include "HP_Indicator.h"
 #include "ClampUtil.h"
 
-Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition) {
+Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay) {
 	if (auto terrain = scene.Find(mapName); terrain)
 		terrainUT = terrain->GetTerrain();
-	SelectFBXAnimation(MESH.scorpion, keyframe);
+	//SelectFBXAnimation(MESH.scorpion, keyframe);
 	position = createPosition;
 
 	// 몬스터 객체에 hp 인디케이터 할당
 	hp_ind = scene.AddObject(new HP_Indicator, "hp_ind", LAYER2);
+
+	fbx.SelectFBXMesh(GlobalSystem, MESH.scorpion);
+	fbx.SelectAnimation("Idle");
+
+	start_delay = Delay;
 }
 
 // 몬스터가 총알에 맞으면 이벤트 발생
@@ -33,7 +38,12 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 }
 
 void Scorpion::Update(float Delta) {
-	UpdateFBXAnimation(MESH.scorpion, Delta);
+	if(start_delay <= curr)
+		fbx.UpdateAnimation(Delta);
+
+	else
+		curr += Delta;
+
 	terrainUT.InputPosition(position);
 	terrainUT.ClampToTerrain(terrainUT, position, 0.0);
 
@@ -45,7 +55,8 @@ void Scorpion::Update(float Delta) {
 
 	// hp가 0이 될 경우 죽는 애니메이션을 재생한다.
 	if (current_hp == 0 && !death_keyframe_selected) {
-		SelectFBXAnimation(MESH.scorpion, "Death");
+		//SelectFBXAnimation(MESH.scorpion, "Death");
+		fbx.SelectAnimation("Death");
 		death_keyframe_selected = true;
 	}
 
@@ -63,10 +74,7 @@ void Scorpion::Update(float Delta) {
 void Scorpion::Render() {
 	BeginRender();
 	Transform::Move(TranslateMatrix, position);
-	// 걷기 모션일때는 Inplace(위치고정)를 시킨다.
-	if (keyframe.compare("Walk") == 0)
-		Transform::InPlace(TranslateMatrix, MESH.scorpion, false, false, true);
 	Transform::Rotate(RotateMatrix, rotation);
-	RenderFBX(MESH.scorpion, TEX.scorpion);
+	RenderFBX(fbx, TEX.scorpion);
 	UpdatePickMatrix();
 }

@@ -221,6 +221,35 @@ void GameObject::RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float Alpha
 		Render3D(M, TexturePtr, AlphaValue, DepthTestFlag);
 }
 
+void GameObject::RenderFBX(FBX& TargetFBX, Texture* TexturePtr, float AlphaValue, int DepthTestFlag) {
+	size_t Size = TargetFBX.GetMeshCount();
+
+	for (int M = 0; M < Size; M++) {
+		TexturePtr->Render3D(GlobalCommandList);
+
+		switch (DepthTestFlag) {
+		case DEPTH_TEST_DEFAULT:
+			ObjectShader->RenderDefault(GlobalCommandList);
+			break;
+
+		case DEPTH_TEST_NONE:
+			ObjectShader->RenderDepthNone(GlobalCommandList);
+			break;
+
+		case DEPTH_TEST_NO_CULLING:
+			ObjectShader->RenderCullingNone(GlobalCommandList);
+			break;
+		}
+
+		ObjectAlpha = AlphaValue;
+		CBVUtil::Input(GlobalCommandList, LightCBV);
+		CBVUtil::Input(GlobalCommandList, FogCBV);
+
+		PrepareRender();
+		TargetFBX.Render(GlobalCommandList, M);
+	}
+}
+
 // FBX 매쉬전용 피킹 검사 함수이다. 대부분의 스키닝 애니메이션을 사용하는 FBX 파일들은 1~2개의 매쉬를 가지고 있을 것이므로 성능 상 큰 오버헤드는 없을것이다. (많다면 있겠지만...)
 int GameObject::PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance) {
 	int TotelInterSected{};

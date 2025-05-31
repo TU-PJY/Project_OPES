@@ -41,6 +41,7 @@ public:
 	void SelectFBXAnimation(FBXMesh& TargetMesh, std::string AnimationName);
 	void ResetAnimationTime(FBXMesh& TargetMesh);
 	void RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue = 1.0, int DepthTestFlag = DEPTH_TEST_DEFAULT);
+	void RenderFBX(FBX& TargetFBX, Texture* TexturePtr, float AlphaValue = 1.0, int DepthTestFlag = DEPTH_TEST_DEFAULT);
 	int PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance);
 	void Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue=1.0f, int DepthTestFlag=DEPTH_TEST_DEFAULT);
 	void Render2D(Texture* TexturePtr, float AlphaValue=1.0f, bool EnableAspect=true);

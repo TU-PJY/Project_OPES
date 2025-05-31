@@ -13,6 +13,7 @@ void Framework::Init() {
 
 	// 루트 시그니처를 생성한다.
 	DeviceSystem System{ Device, CmdList };
+	GlobalSystem = { Device, CmdList };
 	ObjectShaderRootSignature = scene.CreateObjectShaderSignature(System.Device);
 	ImageShaderRootSignature = scene.CreateImageShaderSignature(System.Device);
 	BoundboxShaderRootSignature = scene.CreateBoundboxShaderSignature(System.Device);
