@@ -13,9 +13,6 @@ Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay) {
 	// 몬스터 객체에 hp 인디케이터 할당
 	hp_ind = scene.AddObject(new HP_Indicator, "hp_ind", LAYER2);
 
-	fbx.SelectFBXMesh(GlobalSystem, MESH.scorpion);
-	fbx.SelectAnimation("Idle");
-
 	start_delay = Delay;
 }
 

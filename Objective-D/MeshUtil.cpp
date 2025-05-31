@@ -918,8 +918,8 @@ void FBXUtil::CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& Targe
 
 	File >> JSON;
 
-	SerializedAnimationInfo Info{};
 	std::string KeyFrameName{};
+	SerializedAnimationInfo Info{};
 
 	bool FirstLoad = true;
 
@@ -950,7 +950,20 @@ XMFLOAT3 FBXUtil::GetRootMoveDelta(FBXMesh& TargetMesh, bool InPlace) {
 	return XMFLOAT3(T[0], T[1], T[2]);
 }
 
+FBX::FBX(DeviceSystem& System, FBXMesh& TargetFBX, bool StopState) {
+	if (InitState)
+		return;
 
+	FBXPtr = &TargetFBX;
+	Serialized = FBXPtr->SerilaizedFlag;
+	SelectAnimation(FBXPtr->CurrentAnimationStackName);
+	CreateBuffer(System);
+
+	if (StopState)
+		StopAnimationUpdate();
+}
+
+FBX::FBX(){}
 
 FBX::~FBX() {
 	ReleaseBuffer();
@@ -962,7 +975,7 @@ void FBX::SelectFBXMesh(DeviceSystem& System, FBXMesh& TargetFBX) {
 
 	FBXPtr = &TargetFBX;
 	Serialized = FBXPtr->SerilaizedFlag;
-	CurrentAnimationName = FBXPtr->CurrentAnimationStackName;
+	SelectAnimation(FBXPtr->CurrentAnimationStackName);
 	CreateBuffer(System);
 }
 
@@ -994,6 +1007,14 @@ void FBX::SelectAnimation(std::string AnimationName) {
 			CurrentTime = StartTime;
 		}
 	}
+}
+
+void FBX::StopAnimationUpdate() {
+	Running = false;
+}
+
+void FBX::ResumeAnimationUpdate() {
+	Running = true;
 }
 
 void FBX::UpdateAnimation(float Delta) {
@@ -1114,8 +1135,6 @@ void FBX::CreateBuffer(DeviceSystem& System) {
 
 		NormalBuffer[M]->Map(0, &Read, &NormalMapped[M]);
 		memcpy(NormalMapped[M],Curr->Normal, sizeof(XMFLOAT3) * Curr->Vertices);
-
-		Curr->UpdateSkinning(PositionMapped[M], NormalMapped[M], 0.0);
 	}
 }
 

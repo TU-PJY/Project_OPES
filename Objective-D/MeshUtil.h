@@ -26,6 +26,7 @@ struct AnimationChannel {
 typedef struct {
 	float StartTime;
 	float EndTime;
+	std::string Name;
 } SerializedAnimationInfo;
 
 class Mesh;
@@ -186,7 +187,7 @@ private:
 	size_t MeshCount{};
 	bool Serialized{};
 
-	// 버퍼를 FBX 매쉬와 동일 사양으로 맞추가 위한 버퍼
+	// 버퍼를 원본 FBX 매쉬와 동일 사양으로 맞추가 위한 버퍼
 	std::vector<ID3D12Resource*> PositionBuffer{};
 	std::vector<ID3D12Resource*> PositionUploadBuffer{};
 	std::vector<ID3D12Resource*> NormalBuffer{};
@@ -207,12 +208,16 @@ private:
 	float TotalTime{};
 	float StartTime{};
 	float CurrentDelay{};
-	float UpdateLimit{ 0 }; // 40FPS가 기본 제한 값
+	float UpdateLimit{ 0 };
 
 public:
+	FBX(DeviceSystem& System, FBXMesh& TargetFBX, bool StopState=false);
+	FBX();
 	~FBX();
 	void SelectFBXMesh(DeviceSystem& System, FBXMesh& TargetFBX);
 	void SelectAnimation(std::string AnimationName);
+	void StopAnimationUpdate();
+	void ResumeAnimationUpdate();
 	void UpdateAnimation(float Delta);
 	void ResetAnimation();
 	size_t GetMeshCount();
