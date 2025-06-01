@@ -78,7 +78,7 @@ void Player::InputKey(KeyEvent& Event) {
 void Player::SendPacket(float Delta) {
 	send_delay += Delta;
 
-	if (send_delay >= 0.05) {
+	if (send_delay >= 0.1) {
 		if (player_state == STATE_MOVE || player_state == STATE_MOVE_SHOOT)
 			SendMovePacket(position.x, position.y - 3.0, position.z);
 
@@ -87,12 +87,11 @@ void Player::SendPacket(float Delta) {
 			old_rotation = rotation;
 		}
 
-		if (prev_state != current_state) {
-			SendAnimaionPacket(current_state);
-			prev_state = current_state;
-		}
+		//if (prev_state != current_state) {
+		SendAnimaionPacket(current_state);
+		//}
 		
-		float over_time = 0.05 - send_delay;
+		float over_time = 0.1 - send_delay;
 		send_delay = over_time;
 	}
 }

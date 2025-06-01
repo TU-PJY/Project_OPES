@@ -97,6 +97,14 @@ GameObject* Scene::AddObject(GameObject* Object, std::string Tag, int InputLayer
 	return Object;
 }
 
+GameObject* Scene::SearchLayer(int LayerNum, std::string Tag) {
+	for (auto const& O : ObjectList[LayerNum])
+		if (!O->DeleteCommand && O->ObjectTag.compare(Tag) == 0)
+			return O;
+
+	return nullptr;
+}
+
 // 포인터를 사용하여 객체를 삭제한다. 객체에 삭제 마크를 표시한다.
 // 이 코드가 실행되는 시점에 즉시 삭제되지 않음에 유의한다.
 // 삭제 마크가 표시된 객체는 UpdateObjectIndex()에서 최종적으로 삭제된다.

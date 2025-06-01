@@ -20,6 +20,7 @@
 //#include <windows.h>
 #include <Ws2tcpip.h>  
 #include <atlconv.h>
+#include <typeinfo>
 //#include <iostream>
 //#include <conio.h>
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
@@ -49,10 +50,10 @@ public:
 	XMFLOAT3 dest_position{};
 	XMFLOAT3 dest_rotation{};
 
-	//FBX heavy_idle{ GlobalSystem, MESH.heavy_idle, false };
-	//FBX heavy_move{ GlobalSystem, MESH.heavy_move, false };
-	//FBX heavy_shoot{ GlobalSystem, MESH.heavy_shoot, false };
-	//FBX heavy_death{ GlobalSystem, MESH.heavy_death, false };
+	FBX heavy_idle{ GlobalSystem, MESH.heavy_idle, false };
+	FBX heavy_move{ GlobalSystem, MESH.heavy_move, false };
+	FBX heavy_shoot{ GlobalSystem, MESH.heavy_shoot, false };
+	FBX heavy_death{ GlobalSystem, MESH.heavy_death, false };
 
 	int current_state = STATE_IDLE;
 	int prev_state = STATE_IDLE;
@@ -76,7 +77,7 @@ public:
 	}
 
 	void Update(float FrameTime) {
-		/*if (prev_state != current_state) {
+		if (prev_state != current_state) {
 			prev_state = current_state;
 			switch (current_state) {
 			case STATE_IDLE:
@@ -88,9 +89,9 @@ public:
 			case STATE_DEATH:
 				heavy_death.ResetAnimation(); break;
 			}
-		}*/
+		}
 
-		/*switch (current_state) {
+		switch (current_state) {
 		case STATE_IDLE:
 			heavy_idle.UpdateAnimation(FrameTime); break;
 		case STATE_MOVE: case STATE_MOVE_SHOOT:
@@ -99,14 +100,14 @@ public:
 			heavy_shoot.UpdateAnimation(FrameTime * 8.0); break;
 		case STATE_DEATH:
 			heavy_death.UpdateAnimation(FrameTime); break;
-		}*/
+		}
 
 		Math::LerpXMFLOAT3(position, dest_position, 5.0, FrameTime);
 		Math::LerpXMFLOAT3(rotation, dest_rotation, 5.0, FrameTime);
 	}
 
 	void Render() {
-		/*BeginRender();
+		BeginRender();
 		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
@@ -119,14 +120,14 @@ public:
 			RenderFBX(heavy_shoot, TEX.scifi); break;
 		case STATE_DEATH:
 			RenderFBX(heavy_death, TEX.scifi); break;
-		}*/
+		}
 	}
 };
 
 bool IsNewPlayer(unsigned int ID) {
 	if (!ID_List.contains(ID)) {
 		ID_List.insert(ID);
-		scene.AddObject(new OtherPlayer(ID), std::to_string(ID), LAYER1);
+		scene.AddObject(new OtherPlayer(ID), std::to_string(ID), LAYER_PLAYER);
 
 		return true;
 	}
@@ -144,12 +145,13 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	//std::cout << "[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
 
 	PacketType* type = reinterpret_cast<PacketType*>(recv_buffer);
+//	std::cout << typeid(type).name() << std::endl;
 
 	if (*type == PacketType::CHAT) {
 		//ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(recv_buffer);
 		ChatPacket_StoC* chatPacket = reinterpret_cast<ChatPacket_StoC*>(recv_buffer);
 		std::string msg{ chatPacket->message,num_bytes - sizeof(PacketType) - sizeof(unsigned int) };
-		std::cout << "[서버]채팅-" << chatPacket->id << ":" << msg << std::endl;
+		//std::cout << "[서버]채팅: " << chatPacket->id << ":" << msg << std::endl;
 	}
 
 	else if (*type == PacketType::MOVE) {
@@ -157,7 +159,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
 		if (!IsNewPlayer(movePacket->id)) {
-			if (auto Found = scene.Find(std::to_string(movePacket->id)); Found)
+			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 		}
 	}
@@ -167,16 +169,17 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
 		if (!IsNewPlayer(viewAnglePacket->id)) {
-			if (auto Found = scene.Find(std::to_string(viewAnglePacket->id)); Found)
+			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
 				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
 		}
 	}
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
+		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->anymationType << std::endl;
 
 		if (!IsNewPlayer(aniPacket->id)) {
-			if (auto Found = scene.Find(std::to_string(aniPacket->id)); Found) 
+			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
 				Found->InputState((unsigned int)aniPacket->anymationType);
 		}
 	}
@@ -235,8 +238,8 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		isRunning = false;
 	}
 //	std::cout << "send\n";
-	recv_wsabuf[0].len = sizeof(recv_buffer);
 	recv_wsabuf[0].buf = recv_buffer;
+	recv_wsabuf[0].len = sizeof(recv_buffer);
 	DWORD recv_flag = 0;
 	ZeroMemory(&recv_over, sizeof(recv_over));
 	WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
