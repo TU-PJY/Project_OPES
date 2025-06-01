@@ -14,7 +14,7 @@
 
 #include <string>
 #include <unordered_set>
-
+#include<thread>
 //서버
 #include <winsock2.h>
 //#include <windows.h>
@@ -350,6 +350,19 @@ void SendChatPacket(const char* message) {
 	}
 }
 
+void IOThreadFunction() {
+	// 이 스레드는 무한히 alertable sleep 상태로 유지
+	while (isRunning) {
+		DWORD result = SleepEx(INFINITE, TRUE);  // APC 콜백(=RecvCallback) 실행됨
+		if (result == WAIT_IO_COMPLETION) {
+			// 정상적으로 콜백 실행됨
+		}
+		else {
+			// 예: 종료 요청 등 처리 가능
+		}
+	}
+}
+
 
 int SCREEN_WIDTH = GetSystemMetrics(SM_CXSCREEN);
 int SCREEN_HEIGHT = GetSystemMetrics(SM_CYSCREEN);
@@ -456,6 +469,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			std::cerr << "[클라이언트] 첫 번째 데이터 수신 오류\n";
 			return -1;
 		}
+
+		std::thread ioThread(IOThreadFunction);
 	}
 	int sleepCounter = 0;
 	while (true) {
@@ -472,12 +487,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		else {
 			framework.Update();
 		}
-		// 비동기 I/O 콜백 실행
 		
-		if (++sleepCounter >= 3) {
-			SleepEx(0, TRUE);  // alertable wait
-			sleepCounter = 0;
-		}
 	}
 
 	framework.Destroy();
