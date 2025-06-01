@@ -198,7 +198,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->anymationType << std::endl;
 
 		if (!IsNewPlayer(aniPacket->id)) {
-			PacketWork work{ PACKET_ROTATE, aniPacket->id, XMFLOAT3((float)aniPacket->animationType, 0.0, 0.0) };
+			PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3((float)aniPacket->animationType, 0.0, 0.0) };
 			PacketProcessList.emplace(work);
 		}
 	}
