@@ -29,6 +29,8 @@ private:
 
 	float start_delay{};
 	float curr{};
+
+	XMFLOAT3 destination{ -120.0, 0.0, -120.0 };
 	
 public:
 	Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay);

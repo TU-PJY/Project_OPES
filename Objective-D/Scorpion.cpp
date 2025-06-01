@@ -35,11 +35,7 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 }
 
 void Scorpion::Update(float Delta) {
-	if(start_delay <= curr)
-		fbx.UpdateAnimation(Delta);
-
-	else
-		curr += Delta;
+	fbx.UpdateAnimation(Delta);
 
 	terrainUT.InputPosition(position);
 	terrainUT.ClampToTerrain(terrainUT, position, 0.0);

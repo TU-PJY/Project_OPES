@@ -12,4 +12,5 @@ private:
 public:
 	CenterBuilding(std::string map_name, float height_offset);
 	void Render();
+	OOBB GetOOBB() override;
 };

@@ -20,6 +20,9 @@ Player::Player(std::string MapObjectName) {
 	if (auto Map = scene.Find(MapObjectName); Map)
 		map_oobb_data = Map->GetMapWallOOBB();
 
+	if (auto building = scene.Find("center_building"); building)
+		map_oobb_data.emplace_back(building->GetOOBB());
+
 	// 오버헤드 감소를 위해 미리 크로스헤어 오브젝트 포인터를 저장한다.
 	if (auto Object = scene.Find("crosshair"))
 		crosshair_ptr = Object;

@@ -75,7 +75,7 @@ void LoadMesh(DeviceSystem& System) {
 	// polygon scifi asset
 	LoadMultiStaticFBX(System, MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
 	LoadMultiStaticFBX(System, MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
-	LoadSingleStaticFBX(System, MESH.center_building, "Resources//Models//building//center.fbx");
+	LoadMultiStaticFBX(System, MESH.center_building, "Resources//Models//building//center.fbx");
 
 	// polygon scifi asset - heavy
 	LoadAnimatedFBX(System, MESH.heavy_idle, "Resources//Models//player//heavy//heavy_idle.fbx");

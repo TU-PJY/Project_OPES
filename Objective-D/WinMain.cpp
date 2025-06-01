@@ -15,6 +15,8 @@
 #include <string>
 #include <unordered_set>
 
+#include "MonsterSpawner.h"
+
 //¼­¹ö
 #include <winsock2.h>
 //#include <windows.h>
@@ -47,7 +49,8 @@ std::unordered_set<unsigned int> ID_List;
 enum PacketProcessEnum {
 	PACKET_MOVE,
 	PACKET_ROTATE,
-	PACKET_ANIMATION
+	PACKET_ANIMATION,
+	PACKET_MONSTER_SPAWN
 };
 
 typedef struct {
@@ -502,6 +505,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				case PACKET_ANIMATION:
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputState((unsigned int)work.Value.x);
+					break;
+
+				case PACKET_MONSTER_SPAWN:
+					scene.AddObject(new MonsterSpawner("map1"), "spawner", LAYER1);
 					break;
 				}
 

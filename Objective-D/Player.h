@@ -7,7 +7,7 @@
 class Player : public GameObject {
 private:
 	// 위치
-	XMFLOAT3 position{ -130.0, 20.0, -130.0 };
+	XMFLOAT3 position{ -140.0, 20.0, -130.0 };
 
 	// 각도 (바라보는 각도)
 	XMFLOAT3 rotation{};
