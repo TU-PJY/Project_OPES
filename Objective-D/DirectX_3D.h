@@ -44,6 +44,13 @@
 using DigitDataVec = std::vector<float>;
 using StringDataVec = std::vector<std::string>;
 
+enum PlayerState {
+	STATE_IDLE,
+	STATE_MOVE,
+	STATE_IDLE_SHOOT,
+	STATE_MOVE_SHOOT,
+	STATE_DEATH
+};
 
 // 렌더링 타입 열거형
 enum RenderTypeEnum {

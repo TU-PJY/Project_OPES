@@ -9,60 +9,51 @@ public:
 	OOBB frustum_oobb;
 	bool picked{};
 
+	int state = 1;
+
 	TestObject() {
-		SelectFBXAnimation(MESH.scorpion, "Walk");
 	}
 
 	void InputKey(KeyEvent& Event) {
 		if (Event.Type == WM_KEYDOWN) {
 			switch (Event.Key) {
 			case '1':
-				SelectFBXAnimation(MESH.scorpion, "Got Hit");
-				break;
+				state = 1; break;
 			case '2':
-				SelectFBXAnimation(MESH.scorpion, "Walk");
-				break;
+				state = 2; break;
 			case '3':
-				SelectFBXAnimation(MESH.scorpion, "Attack 1");
-				break;
+				state = 3; break;
 			case '4':
-				SelectFBXAnimation(MESH.scorpion, "Death");
-				break;
+				state = 4; break;
 			}
 		}
 	}
 
 	void InputMouse(MouseEvent& Event) {
-		if (Event.Type == WM_LBUTTONDOWN) {
-			bool pick{};
-			std::cout << MESH.scorpion.MeshPart.size() << std::endl;
-			for (auto const& M : MESH.scorpion.MeshPart) {
-				if (PickingUtil::PickByViewport(mouse.x, mouse.y, this, M)) {
-					pick = true;
-					break;
-				}
-			}
-			if(!pick)
-				picked = false;
-			else
-				picked = true;
-		}
+		
 	}
 
 	void Update(float Delta) {
-		UpdateFBXAnimation(MESH.scorpion, Delta * 2);
-		frustum_oobb.Update(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.0, 1.0, 1.0), XMFLOAT3(0.0, 0.0, 0.0));
+		if(state == 1)
+			UpdateFBXAnimation(MESH.heavy_idle, Delta);
+		else if(state == 2)
+			UpdateFBXAnimation(MESH.heavy_move, Delta);
+		else if(state == 3)
+			UpdateFBXAnimation(MESH.heavy_shoot, Delta * 10.0);
+		else if(state == 4)
+			UpdateFBXAnimation(MESH.heavy_death, Delta);
 	}
 
 	void Render() {
 		BeginRender();
-		if(picked)
-			SetColor(0.0, 1.0, 0.0);
-		XMFLOAT3 pos = fbxUtil.GetRootMoveDelta(MESH.scorpion, true);
-		Transform::InPlace(TranslateMatrix, MESH.scorpion, false, false, true);
-		
-		RenderFBX(MESH.scorpion, TEX.scorpion);
-		frustum_oobb.Render();
+		if (state == 1)
+			RenderFBX(MESH.heavy_idle, TEX.scifi);
+		else if (state == 2)
+			RenderFBX(MESH.heavy_move, TEX.scifi);
+		else if (state == 3)
+			RenderFBX(MESH.heavy_shoot, TEX.scifi);
+		else if (state == 4)
+			RenderFBX(MESH.heavy_death, TEX.scifi);
 		UpdatePickMatrix();
 	}
 };

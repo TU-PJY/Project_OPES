@@ -97,4 +97,5 @@ public:
 	// 서버 테스트
 	virtual void InputPosition(XMFLOAT3& value) {}
 	virtual void InputRotation(XMFLOAT3& value) {}
+	virtual void InputState(unsigned int state) {}
 };

@@ -27,4 +27,5 @@ namespace Math {
 	float CalcDegree2D(float FromX, float FromY, float ToX, float ToY);
 	float CalcRadians2D(float FromX, float FromY, float ToX, float ToY);
 	void Normalize2DAngleTo360(float& Degree);
+	void LerpXMFLOAT3(XMFLOAT3& Value, XMFLOAT3& Dest, float Speed, float Delta);
 }

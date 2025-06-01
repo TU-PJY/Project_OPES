@@ -4,14 +4,6 @@
 #include "ScriptUtil.h"
 #include <random>
 
-enum PlayerState {
-	STATE_IDLE,
-	STATE_MOVE,
-	STATE_IDLE_SHOOT,
-	STATE_MOVE_SHOOT,
-	STATE_DEATH
-};
-
 class Player : public GameObject {
 private:
 	// 위치
@@ -24,10 +16,10 @@ private:
 	XMFLOAT3 old_rotation{};
 
 	// 애니메이션 (현재)
-	PlayerState animation{};
+	int current_state{STATE_IDLE};
 
 	// 애니메이션 (이전 애니메이션)
-	PlayerState old_animation{};
+	int prev_state{ STATE_IDLE };
 
 	// 플레이어가 받아올 대상 터레인의 이름
 	std::string target_terrain_name{};

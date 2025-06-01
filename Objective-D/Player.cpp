@@ -87,8 +87,10 @@ void Player::SendPacket(float Delta) {
 			old_rotation = rotation;
 		}
 
-		if (old_animation != animation) 
-			SendAnimaionPacket(animation);
+		if (prev_state != current_state) {
+			SendAnimaionPacket(current_state);
+			prev_state = current_state;
+		}
 		
 		float over_time = 0.05 - send_delay;
 		send_delay = over_time;
@@ -178,7 +180,7 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 			player_state = STATE_IDLE;
 	}
 
-	std::cout << player_state << "\n";
+	current_state = player_state;
 }
 
 void Player::UpdateFire(float FrameTime) {

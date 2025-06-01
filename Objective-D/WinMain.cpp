@@ -13,6 +13,7 @@
 #include <locale>
 
 #include <string>
+#include <unordered_set>
 
 //서버
 #include <winsock2.h>
@@ -36,21 +37,30 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 
-std::set<unsigned int> ID_List;
+std::unordered_set<unsigned int> ID_List;
 
 class OtherPlayer : public GameObject {
 public:
-	OtherPlayer() {
-		//SelectFBXAnimation(MESH.gazer, "Idle");
-	}
-
 	XMFLOAT3 position{};
 	XMFLOAT3 rotation{};
 	XMFLOAT3 dest_position{};
 	XMFLOAT3 dest_rotation{};
-	Vector vec{};
+
+	FBX heavy_idle{ GlobalSystem, MESH.heavy_idle, false };
+	FBX heavy_move{ GlobalSystem, MESH.heavy_move, false };
+	FBX heavy_shoot{ GlobalSystem, MESH.heavy_shoot, false };
+	FBX heavy_death{ GlobalSystem, MESH.heavy_death, false };
+
+	int current_state = STATE_IDLE;
+	int prev_state = STATE_IDLE;
+
+	unsigned int player_id{};
+
+	OtherPlayer(unsigned int ID) {
+		player_id = ID;
+	}
 
 	void InputPosition(XMFLOAT3& value) override {
 		dest_position = value;
@@ -60,27 +70,68 @@ public:
 		dest_rotation = value;
 	}
 
+	void InputState(unsigned int state) override {
+		current_state = state;
+	}
+
 	void Update(float FrameTime) {
-	/*	UpdateFBXAnimation(MESH.cop, FrameTime);
+		if (prev_state != current_state) {
+			prev_state = current_state;
+			switch (current_state) {
+			case STATE_IDLE:
+				heavy_idle.ResetAnimation(); break;
+			case STATE_MOVE: case STATE_MOVE_SHOOT:
+				heavy_move.ResetAnimation(); break;
+			case STATE_IDLE_SHOOT:
+				heavy_shoot.ResetAnimation(); break;
+			case STATE_DEATH:
+				heavy_death.ResetAnimation(); break;
+			}
+		}
 
-		position.x = std::lerp(position.x, dest_position.x, 15.0 * FrameTime);
-		position.y = std::lerp(position.y, dest_position.y, 15.0 * FrameTime);
-		position.z = std::lerp(position.z, dest_position.z, 15.0 * FrameTime);
+		switch (current_state) {
+		case STATE_IDLE:
+			heavy_idle.UpdateAnimation(FrameTime); break;
+		case STATE_MOVE: case STATE_MOVE_SHOOT:
+			heavy_move.UpdateAnimation(FrameTime); break;
+		case STATE_IDLE_SHOOT:
+			heavy_shoot.UpdateAnimation(FrameTime * 8.0); break;
+		case STATE_DEATH:
+			heavy_death.UpdateAnimation(FrameTime); break;
+		}
 
-		rotation.x = std::lerp(rotation.x, dest_rotation.x, 15.0 * FrameTime);
-		rotation.y = std::lerp(rotation.y, dest_rotation.y, 15.0 * FrameTime);
-		rotation.z = std::lerp(rotation.z, dest_rotation.z, 15.0 * FrameTime);*/
+		Math::LerpXMFLOAT3(position, dest_position, 5.0, FrameTime);
+		Math::LerpXMFLOAT3(rotation, dest_rotation, 5.0, FrameTime);
 	}
 
 	void Render() {
-		/*BeginRender();
+		BeginRender();
 		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
-		RenderFBX(MESH.cop, TEX.scifi);*/
+		switch (current_state) {
+		case STATE_IDLE:
+			RenderFBX(heavy_idle, TEX.scifi); break;
+		case STATE_MOVE: case STATE_MOVE_SHOOT:
+			RenderFBX(heavy_move, TEX.scifi); break;
+		case STATE_IDLE_SHOOT:
+			RenderFBX(heavy_shoot, TEX.scifi); break;
+		case STATE_DEATH:
+			RenderFBX(heavy_death, TEX.scifi); break;
+		}
 	}
 };
 
+bool IsNewPlayer(unsigned int ID) {
+	if (!ID_List.contains(ID)) {
+		ID_List.insert(ID);
+		scene.AddObject(new OtherPlayer(ID), std::to_string(ID), LAYER1);
+
+		return true;
+	}
+
+	return false;
+}
 
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
 	if (err != 0 || num_bytes == 0) {
@@ -92,51 +143,43 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	//std::cout << "[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
 
 	PacketType* type = reinterpret_cast<PacketType*>(recv_buffer);
+
 	if (*type == PacketType::CHAT) {
 		//ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(recv_buffer);
 		ChatPacket_StoC* chatPacket = reinterpret_cast<ChatPacket_StoC*>(recv_buffer);
 		std::string msg{ chatPacket->message,num_bytes - sizeof(PacketType) - sizeof(unsigned int) };
 		std::cout << "[서버]채팅-" << chatPacket->id << ":" << msg << std::endl;
 	}
+
 	else if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
-		if (!ID_List.contains(movePacket->id)) {
-			ID_List.insert(movePacket->id);
-			scene.AddObject(new OtherPlayer, std::to_string(movePacket->id), LAYER1);
-		}
-
-		else
+		if (!IsNewPlayer(movePacket->id)) {
 			if (auto Found = scene.Find(std::to_string(movePacket->id)); Found)
 				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
+		}
 	}
+
 	else if (*type == PacketType::VIEW_ANGLE) {
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
-		
-		if (!ID_List.contains(viewAnglePacket->id)) {
-			ID_List.insert(viewAnglePacket->id);
-			scene.AddObject(new OtherPlayer, std::to_string(viewAnglePacket->id), LAYER1);
-		}
 
-		else
+		if (!IsNewPlayer(viewAnglePacket->id)) {
 			if (auto Found = scene.Find(std::to_string(viewAnglePacket->id)); Found)
 				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
+		}
 	}
+
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
 
-		if (!ID_List.contains(aniPacket->id)) {
-			ID_List.insert(aniPacket->id);
-			scene.AddObject(new OtherPlayer, std::to_string(aniPacket->id), LAYER1);
+		if (!IsNewPlayer(aniPacket->id)) {
+			if (auto Found = scene.Find(std::to_string(aniPacket->id)); Found) 
+				Found->InputState((unsigned int)aniPacket->anymationType);
 		}
-
-		else
-			if (auto Found = scene.Find(std::to_string(aniPacket->id)); Found)
-				//Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
-				std::cout << "애니메이션 정보 넣어줘야함!\n";
 	}
+
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
 		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
@@ -147,6 +190,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			std::cout << "대기중.." << std::endl;
 		}
 	}
+
 	else if (*type == PacketType::NEW_CLIENT) {
 		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(recv_buffer);
 		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
@@ -156,6 +200,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//player_enter = true;
 		//enter_player_id = newClientPacket->id;
 	}
+
 	else if (*type == PacketType::EXISTING_CLIENTS) { 
 		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(recv_buffer);
 		for (unsigned int i = 0; i < pkt->count; ++i) {

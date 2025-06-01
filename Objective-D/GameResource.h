@@ -50,6 +50,12 @@ typedef struct {
 	Mesh* machine_gun;
 	Mesh* dot_machine_gun;
 
+	// polygon scifi asset - heavy
+	FBXMesh heavy_idle;
+	FBXMesh heavy_move;
+	FBXMesh heavy_shoot;
+	FBXMesh heavy_death;
+
 	Mesh* center_building;
 
 	// gun flame

@@ -282,3 +282,9 @@ void Math::Normalize2DAngleTo360(float& Degree) {
 	if (Degree < 0.0f)
 		Degree += 360.0f;
 }
+
+void Math::LerpXMFLOAT3(XMFLOAT3& Value, XMFLOAT3& Dest, float Speed, float Delta) {
+	Value.x = std::lerp(Value.x, Dest.x, Speed * Delta);
+	Value.y = std::lerp(Value.y, Dest.y, Speed * Delta);
+	Value.z = std::lerp(Value.z, Dest.z, Speed * Delta);
+}
