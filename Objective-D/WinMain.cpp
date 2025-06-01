@@ -58,6 +58,7 @@ typedef struct {
 	int PacketType;
 	unsigned int ID;
 	XMFLOAT3 Value;
+	int IntValue;
 } PacketWork;
 
 std::queue<PacketWork> PacketProcessList;
@@ -177,7 +178,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
-		PacketWork work{ PACKET_MOVE, movePacket->id, XMFLOAT3(movePacket->x, movePacket->y, movePacket->z)};
+		PacketWork work{ PACKET_MOVE, movePacket->id, XMFLOAT3(movePacket->x, movePacket->y, movePacket->z), 0};
 		PacketProcessList.emplace(work);
 			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));*/
@@ -187,7 +188,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
-		PacketWork work{ PACKET_ROTATE, viewAnglePacket->id, XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z) };
+		PacketWork work{ PACKET_ROTATE, viewAnglePacket->id, XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z), 0 };
 		PacketProcessList.emplace(work);
 			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
 				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));*/
@@ -198,14 +199,14 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->anymationType << std::endl;
 
-		PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3((float)aniPacket->animationType, 0.0, 0.0) };
+		PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3(0.0, 0.0, 0.0), aniPacket->animationType };
 		PacketProcessList.emplace(work);
 	}
 
 	else if (*type == PacketType::PLAYER_TO_MOSTER) {
 		Player2Monster* p2m_packet = reinterpret_cast<Player2Monster*>(recv_buffer);
 
-		PacketWork work{ PACKET_MONSTER_DAMAGE, p2m_packet->monsterId, XMFLOAT3((float)p2m_packet->damage, 0.0, 0.0) };
+		PacketWork work{ PACKET_MONSTER_DAMAGE, p2m_packet->monsterId, XMFLOAT3(0.0, 0.0, 0.0), p2m_packet->damage };
 		PacketProcessList.emplace(work);
 		//피해입은 몬스터 id,피해량 얻는 부분을 처리해야함
 	}
@@ -542,7 +543,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				case PACKET_ANIMATION:
 					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
-						Object->InputState((unsigned int)work.Value.x);
+						Object->InputState(work.IntValue);
 					break;
 
 			/*	case PACKET_MONSTER_SPAWN:
@@ -555,7 +556,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 					for (int i = 0; i < Size; i++) {
 						if (auto Object = scene.FindMulti("scorpion", LAYER1, i); Object) {
 							if (Object->GetID() == work.ID)
-								Object->ChangeHP((int)work.Value.x);
+								Object->ChangeHP(work.IntValue);
 						}
 					}
 				}

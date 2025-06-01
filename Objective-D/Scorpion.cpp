@@ -132,7 +132,6 @@ void Scorpion::Update(float Delta) {
 			}
 		}
 
-		SendPacket(Delta);
 
 		fbx.UpdateAnimation(Delta);
 
@@ -144,6 +143,7 @@ void Scorpion::Update(float Delta) {
 
 		// hp 인디케이터에 자신의 hp전달
 		hp_ind->InputHP(full_hp, current_hp);
+
 
 		// hp가 0이 될 경우 죽는 애니메이션을 재생한다.
 		if (current_hp == 0 && !death_keyframe_selected) {
@@ -161,6 +161,8 @@ void Scorpion::Update(float Delta) {
 				scene.DeleteObject(this);
 			}
 		}
+
+		SendPacket(Delta);
 	}
 }
 
