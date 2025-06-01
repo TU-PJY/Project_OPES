@@ -43,10 +43,12 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 void Scorpion::SendPacket(float Delta) {
 	send_delay += Delta;
 
-	if (send_delay >= 0.025) {
-		SendPlayer2MonsterPacket(ID, current_hp);
-		float over_time = send_delay - 0.025;
-		send_delay = over_time;
+	if (current_hp < full_hp) {
+		if (send_delay >= 0.025) {
+			SendPlayer2MonsterPacket(ID, current_hp);
+			float over_time = send_delay - 0.025;
+			send_delay = over_time;
+		}
 	}
 }
 
