@@ -22,6 +22,7 @@ private:
 
 	int full_hp = 100;
 	int current_hp = 100;
+	int prev_hp = 100;
 	int hit_damage{};
 
 	bool death_keyframe_selected{};
@@ -31,10 +32,14 @@ private:
 	float curr{};
 
 	XMFLOAT3 destination{ -120.0, 0.0, -120.0 };
+
+	float send_delay{};
 	
 public:
 	Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay);
 	bool CheckHit(XMFLOAT2& checkPosition, int Damage);
+	void SendPacket();
+	void GiveDamage(int damage);
 	void Update(float Delta);
 	void Render();
 };

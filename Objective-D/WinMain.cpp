@@ -50,7 +50,8 @@ enum PacketProcessEnum {
 	PACKET_MOVE,
 	PACKET_ROTATE,
 	PACKET_ANIMATION,
-	PACKET_MONSTER_SPAWN
+	PACKET_MONSTER_SPAWN,
+	PACKET_MONSTER_DAMAGE,
 };
 
 typedef struct {
@@ -541,6 +542,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				case PACKET_MONSTER_SPAWN:
 					scene.AddObject(new MonsterSpawner("map1"), "spawner", LAYER1);
 					break;
+
+				case PACKET_MONSTER_DAMAGE:
+					if (auto Object = scene.Find(std::to_string(work.ID)); Object)
+						Object->GiveDamage((int)work.Value.x);
+					break;
+
 				}
 
 				PacketProcessList.pop();

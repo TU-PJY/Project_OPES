@@ -34,6 +34,22 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 	return false;
 }
 
+void Scorpion::SendPacket() {
+	if (prev_hp != current_hp) {
+		// send hp
+		prev_hp = current_hp;
+	}
+
+	if (current_hp == 0) {
+		// send death
+	}
+}
+
+void Scorpion::GiveDamage(int damage) {
+	current_hp -= damage;
+	Clamp::LimitValue(current_hp, 0.0, CLAMP_DIR_LESS);
+}
+
 void Scorpion::Update(float Delta) {
 	fbx.UpdateAnimation(Delta);
 

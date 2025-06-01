@@ -17,7 +17,7 @@ void MonsterSpawner::Update(float Delta) {
 	XMFLOAT3 spawn_pos2 = XMFLOAT3(-80.0, 20.0, -60.0);
 	XMFLOAT3 spawn_pos3 = XMFLOAT3(-100.0, 20.0, -60.0);
 
-	//for (int i = 0; i < 5; i++) {
+	//for (int i = 0; i < 10; i++) {
 		if (map_name.compare("map1") == 0) {
 			scene.AddObject(new Scorpion(map_name, spawn_pos1, 0.0), "scorpion", LAYER1);
 			scene.AddObject(new Scorpion(map_name, spawn_pos2, 0.0), "scorpion", LAYER1);

@@ -88,6 +88,7 @@ public:
 
 	// 몬스터 함수
 	virtual bool CheckHit(XMFLOAT2& checkPosition, int damage) { return{}; }
+	virtual void GiveDamage(int damage) {}
 
 	// HP 인디케이터 함수
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
