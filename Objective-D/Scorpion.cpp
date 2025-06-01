@@ -39,16 +39,18 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 	return false;
 }
 
-void Scorpion::SendPacket() {
-	if (current_hp > 0 && prev_hp != current_hp) {
+void Scorpion::SendPacket(float Delta) {
+	send_delay += Delta;
+
+	if (send_delay >= 0.025) {
 		SendPlayer2MonsterPacket(ID, hit_damage);
-		prev_hp = current_hp;
+		float over_time = send_delay - 0.025;
+		send_delay = over_time;
 	}
 }
 
-void Scorpion::GiveDamage(int damage) {
-	current_hp -= damage;
-	Clamp::LimitValue(current_hp, 0.0, CLAMP_DIR_LESS);
+void Scorpion::ChangeHP(int HP) {
+	current_hp = HP;
 }
 
 int Scorpion::GetID() {
@@ -56,7 +58,7 @@ int Scorpion::GetID() {
 }
 
 void Scorpion::Update(float Delta) {
-	SendPacket();
+	SendPacket(Delta);
 
 	fbx.UpdateAnimation(Delta);
 

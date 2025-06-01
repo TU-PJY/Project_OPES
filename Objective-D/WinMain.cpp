@@ -553,7 +553,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 					for (int i = 0; i < Size; i++) {
 						if (auto Object = scene.FindMulti("scorpion", LAYER1, i); Object) {
 							if (Object->GetID() == work.ID)
-								Object->GiveDamage((int)work.Value.x);
+								Object->ChangeHP((int)work.Value.x);
 						}
 					}
 				}
