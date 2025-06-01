@@ -41,6 +41,8 @@ WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false;
 
+bool thread_running;
+
 std::unordered_set<unsigned int> ID_List;
 
 class OtherPlayer : public GameObject {
@@ -353,12 +355,13 @@ void SendChatPacket(const char* message) {
 void IOThreadFunction() {
 	// 이 스레드는 무한히 alertable sleep 상태로 유지
 	while (isRunning) {
-		DWORD result = SleepEx(INFINITE, TRUE);  // APC 콜백(=RecvCallback) 실행됨
+		DWORD result = SleepEx(10, TRUE);  // APC 콜백(=RecvCallback) 실행됨
 		if (result == WAIT_IO_COMPLETION) {
-			// 정상적으로 콜백 실행됨
+			std::cout << "success\n";
 		}
 		else {
 			// 예: 종료 요청 등 처리 가능
+			std::cout << "fail\n";
 		}
 	}
 }
@@ -470,8 +473,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			return -1;
 		}
 
-		std::thread ioThread(IOThreadFunction);
+		//std::thread ioThread(IOThreadFunction);
+		//ioThread.detach();
 	}
+
 	int sleepCounter = 0;
 	while (true) {
 		if (::PeekMessage(&Messege, NULL, 0, 0, PM_REMOVE)) {
@@ -486,8 +491,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 		else {
 			framework.Update();
+			SleepEx(0, TRUE);
 		}
-		
 	}
 
 	framework.Destroy();

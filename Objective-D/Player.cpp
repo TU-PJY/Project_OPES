@@ -91,13 +91,13 @@ void Player::SendPacket(float Delta) {
 			}
 		}
 
-		//if (prev_state != current_state) {
 		else if (send_order == 3)
 			SendAnimaionPacket(current_state);
-		//}
+
 		send_order += 1;
 		if (send_order > 3)
 			send_order = 1;
+
 		float over_time = 0.025 - send_delay;
 		send_delay = over_time;
 	}
@@ -172,8 +172,7 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 	// OOBB와 충돌을 체크하면서 이동
 	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_sphere, map_oobb_data, FrameTime);
 
-	if ((move_front && !move_back) || (move_back && !move_front) || 
-		(move_right && !move_left) || (move_left && !move_right)) {
+	if (fabs(forward_speed) > 0.0 || fabs(strafe_speed) > 0.0) {
 		if (trigger_state)
 			player_state = STATE_MOVE_SHOOT;
 		else

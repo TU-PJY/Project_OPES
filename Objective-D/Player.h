@@ -51,7 +51,7 @@ private:
 	float forward_speed{}, strafe_speed{};
 
 	// 플레이어 이동 속도
-	float dest_move_speed{ 15.0 };
+	float dest_move_speed{ 8.0 };
 
 
 	// 걷기 모션 흔들림 업데이트 값
