@@ -525,27 +525,29 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		else {
 			while (!PacketProcessList.empty()) {
 				PacketWork work = PacketProcessList.front();
-				IsNewPlayer(work.ID);
 
 				switch (work.PacketType) {
 				case PACKET_MOVE:
+					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputPosition(work.Value);
 					break;
 
 				case PACKET_ROTATE:
+					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputRotation(work.Value);
 					break;
 
 				case PACKET_ANIMATION:
+					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputState((unsigned int)work.Value.x);
 					break;
 
-				case PACKET_MONSTER_SPAWN:
+			/*	case PACKET_MONSTER_SPAWN:
 					scene.AddObject(new MonsterSpawner("map1"), "spawner", LAYER1);
-					break;
+					break;*/
 
 				case PACKET_MONSTER_DAMAGE:
 				{
