@@ -36,7 +36,7 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 
 std::set<unsigned int> ID_List;
 
@@ -342,8 +342,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		SOCKADDR_IN serverAddr;
 		serverAddr.sin_family = AF_INET;
 		serverAddr.sin_port = htons(SERVER_PORT);
-		//inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//한 컴퓨터에서 실행할때
-		inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);//cmd에서 ip입력할때 
+		inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//한 컴퓨터에서 실행할때
+		//inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);//cmd에서 ip입력할때 
 		//std::cout << ipStr << std::endl;
 		if (WSAConnect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
 			std::cerr << "[클라이언트] 서버 연결 실패\n";

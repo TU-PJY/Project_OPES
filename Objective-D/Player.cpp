@@ -10,7 +10,7 @@ std::uniform_int_distribution<int> dist(0, 1);
 
 void SendMovePacket(float x, float y,float z);
 void SendViewingAnglePacket(float x, float y, float z);
-
+void SendAnimaionPacket(unsigned short playerState);
 // 생성자에서 입력받은 맵 오브젝트 이름으로 터레인 값을 받아온다.
 Player::Player(std::string MapObjectName) {
 	target_terrain_name = MapObjectName;
@@ -87,6 +87,9 @@ void Player::SendPacket(float Delta) {
 			old_rotation = rotation;
 		}
 
+		if (old_animation != animation) 
+			SendAnimaionPacket(animation);
+		
 		float over_time = 0.05 - send_delay;
 		send_delay = over_time;
 	}

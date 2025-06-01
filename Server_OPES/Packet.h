@@ -5,7 +5,8 @@ enum class PacketType {
     VIEW_ANGLE,
     NEW_CLIENT,
     EXISTING_CLIENTS,
-    ENTER
+    ENTER,
+    ANIMATION,
 };
 
 // 채팅 패킷 구조체
@@ -48,7 +49,15 @@ struct ViewingAnglePacket_StoC {
     float y;
     float z;
 };
-
+struct AnimationPacket_CtoS {
+    PacketType type;
+    unsigned short anymationType;
+};
+struct AnimationPacket_StoC {
+    PacketType type;
+    unsigned int id;
+    unsigned short anymationType;
+};
 struct EnterRoomPacket {
     PacketType type;
     unsigned int roomID;

@@ -6,6 +6,7 @@
 #include <mutex>
 #include <thread>
 #include <unordered_map>
+#include"Packet.h"
 #define MAX_SOCKBUF 1024  
 #define SERVER_PORT 9000
 //#define MAX_WORKERTHREAD 4  
@@ -27,6 +28,7 @@ struct stClientInfo {
     int id;
     float x, y,z;  
     float angle_x, angle_y, angle_z;
+    unsigned short animationType;
     stOverlappedEx recvOverlapped;
     stOverlappedEx sendOverlapped;
     int roomID;
@@ -40,6 +42,7 @@ struct stClientInfo {
         y = 20;
         z = -130.0;
         angle_x=0, angle_y=0, angle_z=0;
+        animationType = 0;
         //-130.0, 20.0, -130.0 
     }
 };
@@ -58,8 +61,8 @@ public:
     void DestroyThread();
     void RegisterRecv(stClientInfo* client);
     void SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length);
-    void SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient);
-    void SendData_ViewAngle(stClientInfo* sendingClient, stClientInfo* recvingClient);
+    
+    void SendData_Player(stClientInfo* sendingClient, stClientInfo* recvingClient,PacketType pType);
     void SendData_EnterRoom(stClientInfo* recvingClient);
     void RemoveClient(stClientInfo* client);
     void NotifyOthersAboutNewClient(stClientInfo* newClient);
