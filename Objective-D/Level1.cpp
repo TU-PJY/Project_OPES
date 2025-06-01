@@ -21,7 +21,7 @@ void Level1::Start() {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 	else {
 		scene.AddObject(new CrossHair, "crosshair", LAYER3);
-		scene.AddObject(new Player("map1"), "player", LAYER1, true);
+		scene.AddObject(new Player("map1"), "player", LAYER_PLAYER, true);
 	}
 	scene.AddObject(new CenterBuilding("map1", -2.0), "center_building", LAYER1);
 	scene.AddObject(new MonsterSpawner("map1"), "spawner", LAYER1);
