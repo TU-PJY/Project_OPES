@@ -152,25 +152,20 @@ void Player::Render() {
 void Player::UpdateMoveSpeed(float FrameTime) {
 	// 움직임 활성화 시 해당 방향으로 가속
 	if (move_front && !move_back)
-		forward_speed = std::lerp(forward_speed, dest_move_speed, 5.0 * FrameTime);
+		forward_speed = std::lerp(forward_speed, dest_move_speed, 10.0 * FrameTime);
 	if (move_back && !move_front)
-		forward_speed = std::lerp(forward_speed, -dest_move_speed, 5.0 * FrameTime);
+		forward_speed = std::lerp(forward_speed, -dest_move_speed, 10.0 * FrameTime);
 	if (move_right && !move_left)
-		strafe_speed = std::lerp(strafe_speed, dest_move_speed, 5.0 * FrameTime);
+		strafe_speed = std::lerp(strafe_speed, dest_move_speed, 10.0 * FrameTime);
 	if (move_left && !move_right)
-		strafe_speed = std::lerp(strafe_speed, -dest_move_speed, 5.0 * FrameTime);
+		strafe_speed = std::lerp(strafe_speed, -dest_move_speed, 10.0 * FrameTime);
 
 	// 움직임 비활성화 또는 서로 반대 방향 이동 활성화 시 감속
-	if ((!move_front && !move_back) || (move_front && move_back)) {
-		forward_speed = std::lerp(forward_speed, 0.0, 5.0 * FrameTime);
-		if (fabs(forward_speed) <= 0.001)
-			forward_speed = 0.0;
-	}
-	if ((!move_right && !move_left) || (move_right && move_left)) {
-		strafe_speed = std::lerp(strafe_speed, 0.0, 5.0 * FrameTime);
-		if (fabs(strafe_speed) <= 0.001)
-			strafe_speed = 0.0;
-	}
+	if ((!move_front && !move_back) || (move_front && move_back)) 
+		forward_speed = std::lerp(forward_speed, 0.0, 10.0 * FrameTime);
+	
+	if ((!move_right && !move_left) || (move_right && move_left)) 
+		strafe_speed = std::lerp(strafe_speed, 0.0, 10.0 * FrameTime);
 
 	// 플레이어 바운딩 스페어 업데이트
 	player_sphere.Update(position, 2.0);
@@ -178,7 +173,8 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 	// OOBB와 충돌을 체크하면서 이동
 	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_sphere, map_oobb_data, FrameTime);
 
-	if (fabs(forward_speed) > 0.0 || fabs(strafe_speed) > 0.0) {
+	if ((move_front && !move_back) || (move_back && !move_front) || 
+		(move_right && !move_left) || (move_left && !move_right)) {
 		if (trigger_state)
 			player_state = STATE_MOVE_SHOOT;
 		else
