@@ -236,27 +236,7 @@ void IOCompletionPort::RemoveClient(stClientInfo* client) {
         }), waitingClients.end());
 }
 
-void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length) {
-    recvingClient->sendOverlapped.operation = IOOperation::SEND;
-    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    ChatPacket_StoC chatPacket = {};
-    chatPacket.type = PacketType::CHAT;
-    int msg_size = length - sizeof(PacketType);
-    memcpy(chatPacket.message, message, msg_size);
-    chatPacket.id = sendingClient->id;
 
-    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&chatPacket);
-    recvingClient->sendOverlapped.wsaBuf.len = length + sizeof(unsigned int);
-
-    DWORD size_sent = 0;
-    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
-        closesocket(recvingClient->socketClient);
-        RemoveClient(recvingClient);
-    }
-
-}
 //void IOCompletionPort::SendData_Player(stClientInfo* sendingClient, stClientInfo* recvingClient,PacketType pType) {
 //    recvingClient->sendOverlapped.operation = IOOperation::SEND;
 //    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
