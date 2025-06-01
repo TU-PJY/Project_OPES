@@ -173,34 +173,29 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
-		if (!IsNewPlayer(movePacket->id)) {
-			PacketWork work{ PACKET_MOVE, movePacket->id, XMFLOAT3(movePacket->x, movePacket->y, movePacket->z)};
-			PacketProcessList.emplace(work);
+		PacketWork work{ PACKET_MOVE, movePacket->id, XMFLOAT3(movePacket->x, movePacket->y, movePacket->z)};
+		PacketProcessList.emplace(work);
 			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));*/
-		}
 	}
 
 	else if (*type == PacketType::VIEW_ANGLE) {
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
-		if (!IsNewPlayer(viewAnglePacket->id)) {
-			PacketWork work{ PACKET_ROTATE, viewAnglePacket->id, XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z) };
-			PacketProcessList.emplace(work);
+		PacketWork work{ PACKET_ROTATE, viewAnglePacket->id, XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z) };
+		PacketProcessList.emplace(work);
 			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
 				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));*/
-		}
+		
 	}
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->anymationType << std::endl;
 
-		if (!IsNewPlayer(aniPacket->id)) {
-			PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3((float)aniPacket->animationType, 0.0, 0.0) };
-			PacketProcessList.emplace(work);
-		}
+		PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3((float)aniPacket->animationType, 0.0, 0.0) };
+		PacketProcessList.emplace(work);
 	}
 
 	else if (*type == PacketType::ENTER) {
