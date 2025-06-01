@@ -7,6 +7,7 @@ enum class PacketType {
     EXISTING_CLIENTS,
     ENTER,
     ANIMATION,
+    PLAYER_TO_MOSTER,
 };
 
 // 채팅 패킷 구조체
@@ -76,4 +77,9 @@ struct ExistingClientsDataPacket {
         float x, y, z;
         float angle_x, angle_y, angle_z;
     } clients[1024]; // 또는 동적 크기로 관리
+};
+struct Player2Monster {
+    PacketType type;
+    unsigned int monsterId;
+    unsigned int damage;
 };
