@@ -357,7 +357,7 @@ void IOCompletionPort::SendData_Animaion(stClientInfo* sendingClient, stClientIn
     ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
     AnimationPacket_StoC aniPacket = {};
     aniPacket.type = PacketType::ANIMATION;
-    aniPacket.anymationType = sendingClient->animationType;
+    aniPacket.animationType = sendingClient->animationType;
     aniPacket.id = sendingClient->id;
 
     recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&aniPacket);
