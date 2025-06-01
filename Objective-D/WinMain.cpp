@@ -14,7 +14,7 @@
 
 #include <string>
 #include <unordered_set>
-#include<thread>
+
 //서버
 #include <winsock2.h>
 //#include <windows.h>
@@ -38,13 +38,8 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-// WSAOVERLAPPED 구조체를 동적 할당
-WSAOVERLAPPED send_over;
-
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false;
-
-bool thread_running;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -266,17 +261,17 @@ void SendMovePacket(float x, float y,float z) {
 		wsaBuf.len = sizeof(MovePacket_CtoS);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
-		//WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(&send_over, sizeof(WSAOVERLAPPED));
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &send_over, SendCallback);//비동기io
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
 				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
-				delete &send_over;  // 오류 발생 시 할당 해제
+				delete send_over;  // 오류 발생 시 할당 해제
 			}
 		}
 	}
@@ -293,17 +288,17 @@ void SendViewingAnglePacket(float x, float y, float z) {
 		wsaBuf.len = sizeof(ViewingAnglePacket_CtoS);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
-		//WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(&send_over, sizeof(WSAOVERLAPPED));
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &send_over, SendCallback);//비동기io
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
 				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
-				delete &send_over;  // 오류 발생 시 할당 해제
+				delete send_over;  // 오류 발생 시 할당 해제
 			}
 		}
 	}
@@ -319,17 +314,17 @@ void SendAnimaionPacket(unsigned short playerState) {
 		wsaBuf.len = sizeof(AnimationPacket_CtoS);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
-		//WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(&send_over, sizeof(WSAOVERLAPPED));
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &send_over, SendCallback);//비동기io
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
 				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
-				delete &send_over;  // 오류 발생 시 할당 해제
+				delete send_over;  // 오류 발생 시 할당 해제
 			}
 		}
 	}
@@ -351,20 +346,6 @@ void SendChatPacket(const char* message) {
 		int result = WSASend(clientSocket, wsaBuf, 1, NULL, 0, &send_over, SendCallback);//동기 io
 		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
 			std::cerr << "[클라이언트] 채팅 패킷 전송 오류\n";
-		}
-	}
-}
-
-void IOThreadFunction() {
-	// 이 스레드는 무한히 alertable sleep 상태로 유지
-	while (isRunning) {
-		DWORD result = SleepEx(10, TRUE);  // APC 콜백(=RecvCallback) 실행됨
-		if (result == WAIT_IO_COMPLETION) {
-			std::cout << "success\n";
-		}
-		else {
-			// 예: 종료 요청 등 처리 가능
-			std::cout << "fail\n";
 		}
 	}
 }
@@ -475,12 +456,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			std::cerr << "[클라이언트] 첫 번째 데이터 수신 오류\n";
 			return -1;
 		}
-
-		//std::thread ioThread(IOThreadFunction);
-		//ioThread.detach();
 	}
 
-	int sleepCounter = 0;
 	while (true) {
 		if (::PeekMessage(&Messege, NULL, 0, 0, PM_REMOVE)) {
 			if (Messege.message == WM_QUIT)
@@ -496,6 +473,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			framework.Update();
 			SleepEx(0, TRUE);
 		}
+		// 비동기 I/O 콜백 실행
+		
 	}
 
 	framework.Destroy();
