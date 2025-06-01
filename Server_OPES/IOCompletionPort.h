@@ -62,7 +62,10 @@ public:
     void RegisterRecv(stClientInfo* client);
     void SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length);
     
-    void SendData_Player(stClientInfo* sendingClient, stClientInfo* recvingClient,PacketType pType);
+    //void SendData_Player(stClientInfo* sendingClient, stClientInfo* recvingClient,PacketType pType);
+    void SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient);
+    void SendData_ViewAngle(stClientInfo* sendingClient, stClientInfo* recvingClient);
+    void SendData_Animaion(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_EnterRoom(stClientInfo* recvingClient);
     void RemoveClient(stClientInfo* client);
     void NotifyOthersAboutNewClient(stClientInfo* newClient);
