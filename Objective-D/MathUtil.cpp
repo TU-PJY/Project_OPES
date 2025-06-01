@@ -159,15 +159,15 @@ void Math::Vector_MoveUp(XMFLOAT3& Position, XMFLOAT3& Up, float Distance) {
 // 현재 시점에서 앞으로 움직인다.
 void Math::MoveForward(XMFLOAT3& Position, float RotationY, float MoveDistance) {
 	float Radians = XMConvertToRadians(RotationY);
-	Position.x += sin(Radians) * MoveDistance;
-	Position.z += cos(Radians) * MoveDistance;
+	Position.x += sinf(Radians) * MoveDistance;
+	Position.z += cosf(Radians) * MoveDistance;
 }
 
 // 현재 시점에서 옆으로 움직인다.
 void Math::MoveStrafe(XMFLOAT3& Position, float RotationY, float MoveDistance) {
 	float Radians = XMConvertToRadians(RotationY);
-	Position.x += cos(Radians) * MoveDistance;
-	Position.z -= sin(Radians) * MoveDistance;
+	Position.x += cosf(Radians) * MoveDistance;
+	Position.z -= sinf(Radians) * MoveDistance;
 }
 
 // 현재 시점에서 위로 움직인다.

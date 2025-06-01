@@ -208,7 +208,7 @@ private:
 	float TotalTime{};
 	float StartTime{};
 	float CurrentDelay{};
-	float UpdateLimit{ 0 };
+	float UpdateLimit{ 0.033 };
 
 public:
 	FBX(DeviceSystem& System, FBXMesh& TargetFBX, bool StopState=false);

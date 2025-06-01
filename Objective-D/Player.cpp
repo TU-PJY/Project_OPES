@@ -213,7 +213,7 @@ void Player::UpdateFire(float FrameTime) {
 				if (auto target = scene.FindMulti("scorpion", LAYER1, i); target) {
 
 					// 피격 대상과 피격 대상에게 입힐 대미지를 입력한 후, true리턴 시 해당 대상은 입력한 대미지를 입게 된다.
-					if(target->CheckHit(XMFLOAT2(0.0, 0.0), 10))
+					if(!target->GetDeathState() && target->CheckHit(XMFLOAT2(0.0, 0.0), 25))
 						break;
 				}
 			}

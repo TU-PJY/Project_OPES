@@ -1035,22 +1035,24 @@ void FBX::UpdateAnimation(float Delta) {
 			CurrentTime = StartTime + OverTime;
 	}
 
-	if (UpdateLimit > 0 && CurrentDelay >= UpdateLimit) {
-		float OverTime = CurrentDelay - UpdateLimit;
-		CurrentDelay = OverTime;
+	if (UpdateLimit > 0) {
+		if (CurrentDelay >= UpdateLimit) {
+			float OverTime = CurrentDelay - UpdateLimit;
+			CurrentDelay = OverTime;
 
-		if (!Serialized) {
-			if (CurrentAnimationName.compare(FBXPtr->CurrentAnimationStackName) != 0) {
-				FbxAnimStack* Stack = FBXPtr->Scene->FindMember<FbxAnimStack>(CurrentAnimationName.c_str());
-				if (Stack) {
-					FBXPtr->Scene->SetCurrentAnimationStack(Stack);
-					FBXPtr->CurrentAnimationStackName = CurrentAnimationName;
+			if (!Serialized) {
+				if (CurrentAnimationName.compare(FBXPtr->CurrentAnimationStackName) != 0) {
+					FbxAnimStack* Stack = FBXPtr->Scene->FindMember<FbxAnimStack>(CurrentAnimationName.c_str());
+					if (Stack) {
+						FBXPtr->Scene->SetCurrentAnimationStack(Stack);
+						FBXPtr->CurrentAnimationStackName = CurrentAnimationName;
+					}
 				}
 			}
-		}
 
-		for (int M = 0; M < MeshCount; M++)
-			FBXPtr->MeshPart[M]->UpdateSkinning(PositionMapped[M], NormalMapped[M], CurrentTime);
+			for (int M = 0; M < MeshCount; M++)
+				FBXPtr->MeshPart[M]->UpdateSkinning(PositionMapped[M], NormalMapped[M], CurrentTime);
+		}
 	}
 
 	else {

@@ -5,7 +5,8 @@
 class Scorpion : public GameObject {
 private:
 	XMFLOAT3 position{};
-	XMFLOAT3 rotation{};
+	float rotation{};
+	float dest_rotation{};
 	std::string keyframe{ "Idle" };
 
 	TerrainUtil terrainUT{};
@@ -14,7 +15,7 @@ private:
 	// 각 몬스터마다 1:1로 배정된다.
 	GameObject* hp_ind{};
 
-	FBX fbx{GlobalSystem, MESH.scorpion};
+	FBX fbx{ GlobalSystem, MESH.scorpion };
 
 	// 총알에 피격되었다면 true가 되어 이벤트 발생
 	// 이벤트 발생 직후 다시 false로 전환
@@ -29,12 +30,22 @@ private:
 	float delete_delay{};
 
 	float start_delay{};
-	float curr{};
+	float current_delay{};
 
 	XMFLOAT3 destination{ -120.0, 0.0, -120.0 };
 
 	float send_delay{};
 	int ID{};
+
+	bool activate_state{};
+	bool move_state{ true };
+	bool avoid_state{};
+	float avoid_time{};
+	int avoid_dir{};
+
+	OOBB oobb{};
+
+	Vector vec{};
 	
 public:
 	Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay, int ID);
@@ -42,6 +53,9 @@ public:
 	void SendPacket(float Delta);
 	void ChangeHP(int damage);
 	int GetID();
+	OOBB GetOOBB();
+	XMFLOAT3 GetPosition();
+	bool GetDeathState();
 	void Update(float Delta);
 	void Render();
 };

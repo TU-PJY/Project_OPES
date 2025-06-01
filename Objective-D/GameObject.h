@@ -90,6 +90,7 @@ public:
 	virtual bool CheckHit(XMFLOAT2& checkPosition, int damage) { return{}; }
 	virtual void ChangeHP(int hp) {}
 	virtual int GetID() { return {}; }
+	virtual bool GetDeathState() { return {}; }
 
 	// HP 인디케이터 함수
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
