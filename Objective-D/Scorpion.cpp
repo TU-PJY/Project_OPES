@@ -31,7 +31,6 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 			hit_damage = Damage;
 			current_hp -= hit_damage;
 			Clamp::LimitValue(current_hp, 0.0, CLAMP_DIR_LESS);
-			SendPlayer2MonsterPacket(ID, hit_damage);
 			hit_state = true;
 
 			return true;
