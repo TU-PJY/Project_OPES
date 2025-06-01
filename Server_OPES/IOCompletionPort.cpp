@@ -393,8 +393,8 @@ void IOCompletionPort::WorkThread() {
 
             PacketType* packetType = reinterpret_cast<PacketType*>(pOverlappedEx->buffer);
 
-            std::cout << "[디버깅] 수신된 패킷 타입: " << static_cast<int>(*packetType)
-                << ", 받은 바이트: " << bytesTransferred << std::endl;
+           // std::cout << "[디버깅] 수신된 패킷 타입: " << static_cast<int>(*packetType)
+           //     << ", 받은 바이트: " << bytesTransferred << std::endl;
 
             if (*packetType == PacketType::MOVE) {
                 //if (bytesTransferred < sizeof(MovePacket)) {
@@ -416,8 +416,8 @@ void IOCompletionPort::WorkThread() {
                 client->x = movePacket->x;
                 client->y = movePacket->y;
                 client->z = movePacket->z;
-                std::cout << "[이동] 클라이언트 " << client->id
-                    << " 위치: (" << client->x << ", " << client->y << ", " << client->z<<")\n";
+               // std::cout << "[이동] 클라이언트 " << client->id
+                //    << " 위치: (" << client->x << ", " << client->y << ", " << client->z<<")\n";
 
                 // 이동 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
@@ -437,8 +437,8 @@ void IOCompletionPort::WorkThread() {
                 client->angle_x = viewAnglePacket->x;
                 client->angle_y = viewAnglePacket->y;
                 client->angle_z = viewAnglePacket->z;
-                std::cout << "[시선] 클라이언트 " << client->id
-                    << " 시선각도: (" << client->angle_x << ", " << client->angle_y << ", " << client->angle_z << ")\n";
+               // std::cout << "[시선] 클라이언트 " << client->id
+                //    << " 시선각도: (" << client->angle_x << ", " << client->angle_y << ", " << client->angle_z << ")\n";
 
                 // 이동 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
@@ -457,7 +457,7 @@ void IOCompletionPort::WorkThread() {
 
                 client->animationType = anyPacket->anymationType;
                 
-                std::cout << "[애니매이션] 클라이언트 " << client->animationType << " \n";
+                //std::cout << "[애니매이션] 클라이언트 " << client->animationType << " \n";
 
                 // 이동 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {

@@ -457,7 +457,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			return -1;
 		}
 	}
-
+	int sleepCounter = 0;
 	while (true) {
 		if (::PeekMessage(&Messege, NULL, 0, 0, PM_REMOVE)) {
 			if (Messege.message == WM_QUIT)
@@ -473,7 +473,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			framework.Update();
 		}
 		// 비동기 I/O 콜백 실행
-		SleepEx(0, TRUE);
+		
+		if (++sleepCounter >= 3) {
+			SleepEx(0, TRUE);  // alertable wait
+			sleepCounter = 0;
+		}
 	}
 
 	framework.Destroy();
