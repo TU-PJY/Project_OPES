@@ -41,6 +41,7 @@ public:
 	bool CheckHit(XMFLOAT2& checkPosition, int Damage);
 	void SendPacket();
 	void GiveDamage(int damage);
+	int GetID();
 	void Update(float Delta);
 	void Render();
 };

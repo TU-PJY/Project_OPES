@@ -51,6 +51,10 @@ void Scorpion::GiveDamage(int damage) {
 	Clamp::LimitValue(current_hp, 0.0, CLAMP_DIR_LESS);
 }
 
+int Scorpion::GetID() {
+	return ID;
+}
+
 void Scorpion::Update(float Delta) {
 	SendPacket();
 

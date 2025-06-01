@@ -548,8 +548,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 					break;
 
 				case PACKET_MONSTER_DAMAGE:
-					if (auto Object = scene.Find(std::to_string(work.ID)); Object)
-						Object->GiveDamage((int)work.Value.x);
+				{
+					size_t Size = scene.LayerSize(LAYER1);
+					for (int i = 0; i < Size; i++) {
+						if (auto Object = scene.FindMulti("scorpion", LAYER1, i); Object) {
+							if (Object->GetID() == work.ID)
+								Object->GiveDamage((int)work.Value.x);
+						}
+					}
+				}
 					break;
 
 				}
