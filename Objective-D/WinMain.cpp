@@ -38,6 +38,9 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
+// WSAOVERLAPPED 구조체를 동적 할당
+WSAOVERLAPPED send_over;
+
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false;
 
@@ -263,17 +266,17 @@ void SendMovePacket(float x, float y,float z) {
 		wsaBuf.len = sizeof(MovePacket_CtoS);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
-		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+		//WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(&send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
 				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
-				delete send_over;  // 오류 발생 시 할당 해제
+				delete &send_over;  // 오류 발생 시 할당 해제
 			}
 		}
 	}
@@ -290,17 +293,17 @@ void SendViewingAnglePacket(float x, float y, float z) {
 		wsaBuf.len = sizeof(ViewingAnglePacket_CtoS);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
-		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+		//WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(&send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
 				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
-				delete send_over;  // 오류 발생 시 할당 해제
+				delete &send_over;  // 오류 발생 시 할당 해제
 			}
 		}
 	}
@@ -316,17 +319,17 @@ void SendAnimaionPacket(unsigned short playerState) {
 		wsaBuf.len = sizeof(AnimationPacket_CtoS);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
-		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+		//WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(&send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
 				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
-				delete send_over;  // 오류 발생 시 할당 해제
+				delete &send_over;  // 오류 발생 시 할당 해제
 			}
 		}
 	}
