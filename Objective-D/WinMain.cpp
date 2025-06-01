@@ -483,6 +483,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 		// 소켓 생성 및 서버 연결
 		clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
+
+		// NAGLE 비활성화
+		BOOL bNoDelay = TRUE;
+		int result = setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
+		if (result == SOCKET_ERROR) {
+			std::cerr << "[클라이언트] setsockopt(TCP_NODELAY) 실패: " << WSAGetLastError() << std::endl;
+		}
+		///
+
 		SOCKADDR_IN serverAddr;
 		serverAddr.sin_family = AF_INET;
 		serverAddr.sin_port = htons(SERVER_PORT);
@@ -505,8 +514,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		DWORD recv_flag = 0;
 		ZeroMemory(&recv_over, sizeof(recv_over));
 
-		int result = WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
-		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+		int __result = WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
+		if (__result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
 			std::cerr << "[클라이언트] 첫 번째 데이터 수신 오류\n";
 			return -1;
 		}
@@ -532,26 +541,19 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputPosition(work.Value);
-					PacketProcessList.pop();
 					break;
 
 				case PACKET_ROTATE:
 					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputRotation(work.Value);
-					PacketProcessList.pop();
 					break;
 
 				case PACKET_ANIMATION:
 					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputState(work.IntValue);
-					PacketProcessList.pop();
 					break;
-
-			/*	case PACKET_MONSTER_SPAWN:
-					scene.AddObject(new MonsterSpawner("map1"), "spawner", LAYER1);
-					break;*/
 
 				case PACKET_MONSTER_DAMAGE:
 				{
@@ -559,14 +561,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 					for (int i = 0; i < Size; i++) {
 						if (auto Object = scene.FindMulti("scorpion", LAYER1, i); Object) {
 							if (Object->GetID() == work.ID)
-								if(Object->ChangeHP(work.IntValue))
-									PacketProcessList.pop();
+								Object->ChangeHP(work.IntValue);
 						}
 					}
 				}
 					break;
 
 				}
+
+				PacketProcessList.pop();
 			}
 
 			framework.Update();

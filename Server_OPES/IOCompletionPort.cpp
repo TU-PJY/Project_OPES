@@ -76,6 +76,14 @@ void IOCompletionPort::AcceptThread() {
             continue;
         }
 
+        // NAGLE 비활성화
+        BOOL bNoDelay = TRUE;
+        int result = setsockopt(newClient->socketClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
+        if (result == SOCKET_ERROR) {
+            std::cerr << "[에러] setsockopt(TCP_NODELAY) 실패: " << WSAGetLastError() << std::endl;
+        }
+        ///
+
         CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
 
         idCount++;
