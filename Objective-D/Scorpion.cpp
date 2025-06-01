@@ -52,9 +52,13 @@ void Scorpion::SendPacket(float Delta) {
 	}
 }
 
-void Scorpion::ChangeHP(int HP) {
-	if(current_hp > HP)
+bool Scorpion::ChangeHP(int HP) {
+	if (current_hp > HP) {
 		current_hp = HP;
+		return true;
+	}
+
+	return false;
 }
 
 int Scorpion::GetID() {

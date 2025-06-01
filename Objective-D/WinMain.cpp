@@ -532,18 +532,21 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputPosition(work.Value);
+					PacketProcessList.pop();
 					break;
 
 				case PACKET_ROTATE:
 					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputRotation(work.Value);
+					PacketProcessList.pop();
 					break;
 
 				case PACKET_ANIMATION:
 					IsNewPlayer(work.ID);
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
 						Object->InputState(work.IntValue);
+					PacketProcessList.pop();
 					break;
 
 			/*	case PACKET_MONSTER_SPAWN:
@@ -556,15 +559,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 					for (int i = 0; i < Size; i++) {
 						if (auto Object = scene.FindMulti("scorpion", LAYER1, i); Object) {
 							if (Object->GetID() == work.ID)
-								Object->ChangeHP(work.IntValue);
+								if(Object->ChangeHP(work.IntValue))
+									PacketProcessList.pop();
 						}
 					}
 				}
 					break;
 
 				}
-
-				PacketProcessList.pop();
 			}
 
 			framework.Update();

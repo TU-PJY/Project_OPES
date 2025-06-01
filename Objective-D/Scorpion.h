@@ -51,7 +51,7 @@ public:
 	Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay, int ID);
 	bool CheckHit(XMFLOAT2& checkPosition, int Damage);
 	void SendPacket(float Delta);
-	void ChangeHP(int damage);
+	bool ChangeHP(int damage);
 	int GetID();
 	OOBB GetOOBB();
 	XMFLOAT3 GetPosition();
