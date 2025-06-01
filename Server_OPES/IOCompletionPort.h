@@ -66,6 +66,7 @@ public:
     void SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_ViewAngle(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_Animaion(stClientInfo* sendingClient, stClientInfo* recvingClient);
+    void SendData_Player2Monster(unsigned int monsterID, unsigned int damage, stClientInfo* recvingClient);
     void SendData_EnterRoom(stClientInfo* recvingClient);
     void RemoveClient(stClientInfo* client);
     void NotifyOthersAboutNewClient(stClientInfo* newClient);

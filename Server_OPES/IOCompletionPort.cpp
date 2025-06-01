@@ -371,6 +371,26 @@ void IOCompletionPort::SendData_Animaion(stClientInfo* sendingClient, stClientIn
         RemoveClient(recvingClient);
     }
 }
+
+void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID,unsigned int damage,stClientInfo* recvingClient) {
+    recvingClient->sendOverlapped.operation = IOOperation::SEND;
+    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
+    Player2Monster damagePacket = {};
+    damagePacket.type = PacketType::PLAYER_TO_MOSTER;
+    damagePacket.damage = damage;
+    damagePacket.monsterId = monsterID;
+
+    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&damagePacket);
+    recvingClient->sendOverlapped.wsaBuf.len = sizeof(damagePacket);
+
+    DWORD size_sent = 0;
+    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
+        closesocket(recvingClient->socketClient);
+        RemoveClient(recvingClient);
+    }
+}
 void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
@@ -463,6 +483,21 @@ void IOCompletionPort::WorkThread() {
                 for (stClientInfo* otherClient : clients) {
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_Animaion(client, otherClient);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::PLAYER_TO_MOSTER) {
+                //if (bytesTransferred < sizeof(MovePacket)) {
+                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+                //    continue;
+                //}
+
+                Player2Monster* damagePacket = reinterpret_cast<Player2Monster*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_Player2Monster(damagePacket->monsterId, damagePacket->damage, otherClient);
                     }
                 }
             }
