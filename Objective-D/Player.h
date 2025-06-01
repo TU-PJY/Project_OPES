@@ -23,6 +23,12 @@ private:
 	// 각도 (이전 바라보는 각도)
 	XMFLOAT3 old_rotation{};
 
+	// 애니메이션 (현재)
+	PlayerState animation{};
+
+	// 애니메이션 (이전 애니메이션)
+	PlayerState old_animation{};
+
 	// 플레이어가 받아올 대상 터레인의 이름
 	std::string target_terrain_name{};
 

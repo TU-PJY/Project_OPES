@@ -124,6 +124,19 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			if (auto Found = scene.Find(std::to_string(viewAnglePacket->id)); Found)
 				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
 	}
+	else if (*type == PacketType::ANIMATION) {
+		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
+
+		if (!ID_List.contains(aniPacket->id)) {
+			ID_List.insert(aniPacket->id);
+			scene.AddObject(new OtherPlayer, std::to_string(aniPacket->id), LAYER1);
+		}
+
+		else
+			if (auto Found = scene.Find(std::to_string(aniPacket->id)); Found)
+				//Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
+				std::cout << "애니메이션 정보 넣어줘야함!\n";
+	}
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
 		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
@@ -222,6 +235,32 @@ void SendViewingAnglePacket(float x, float y, float z) {
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&viewAnglePacket);
 		wsaBuf.len = sizeof(ViewingAnglePacket_CtoS);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendAnimaionPacket(unsigned short playerState) {
+	if (enter_room) {
+		AnimationPacket_CtoS animationPacket = {};
+		animationPacket.type = PacketType::ANIMATION;
+		
+		animationPacket.anymationType = playerState;
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&animationPacket);
+		wsaBuf.len = sizeof(AnimationPacket_CtoS);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
