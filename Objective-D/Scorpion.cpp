@@ -44,7 +44,7 @@ void Scorpion::SendPacket(float Delta) {
 	send_delay += Delta;
 
 	if (send_delay >= 0.025) {
-		SendPlayer2MonsterPacket(ID, hit_damage);
+		SendPlayer2MonsterPacket(ID, current_hp);
 		float over_time = send_delay - 0.025;
 		send_delay = over_time;
 	}
