@@ -37,7 +37,8 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+bool localServer = false;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -48,10 +49,10 @@ public:
 	XMFLOAT3 dest_position{};
 	XMFLOAT3 dest_rotation{};
 
-	FBX heavy_idle{ GlobalSystem, MESH.heavy_idle, false };
-	FBX heavy_move{ GlobalSystem, MESH.heavy_move, false };
-	FBX heavy_shoot{ GlobalSystem, MESH.heavy_shoot, false };
-	FBX heavy_death{ GlobalSystem, MESH.heavy_death, false };
+	//FBX heavy_idle{ GlobalSystem, MESH.heavy_idle, false };
+	//FBX heavy_move{ GlobalSystem, MESH.heavy_move, false };
+	//FBX heavy_shoot{ GlobalSystem, MESH.heavy_shoot, false };
+	//FBX heavy_death{ GlobalSystem, MESH.heavy_death, false };
 
 	int current_state = STATE_IDLE;
 	int prev_state = STATE_IDLE;
@@ -75,7 +76,7 @@ public:
 	}
 
 	void Update(float FrameTime) {
-		if (prev_state != current_state) {
+		/*if (prev_state != current_state) {
 			prev_state = current_state;
 			switch (current_state) {
 			case STATE_IDLE:
@@ -87,9 +88,9 @@ public:
 			case STATE_DEATH:
 				heavy_death.ResetAnimation(); break;
 			}
-		}
+		}*/
 
-		switch (current_state) {
+		/*switch (current_state) {
 		case STATE_IDLE:
 			heavy_idle.UpdateAnimation(FrameTime); break;
 		case STATE_MOVE: case STATE_MOVE_SHOOT:
@@ -98,14 +99,14 @@ public:
 			heavy_shoot.UpdateAnimation(FrameTime * 8.0); break;
 		case STATE_DEATH:
 			heavy_death.UpdateAnimation(FrameTime); break;
-		}
+		}*/
 
 		Math::LerpXMFLOAT3(position, dest_position, 5.0, FrameTime);
 		Math::LerpXMFLOAT3(rotation, dest_rotation, 5.0, FrameTime);
 	}
 
 	void Render() {
-		BeginRender();
+		/*BeginRender();
 		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
@@ -118,7 +119,7 @@ public:
 			RenderFBX(heavy_shoot, TEX.scifi); break;
 		case STATE_DEATH:
 			RenderFBX(heavy_death, TEX.scifi); break;
-		}
+		}*/
 	}
 };
 
@@ -426,8 +427,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		SOCKADDR_IN serverAddr;
 		serverAddr.sin_family = AF_INET;
 		serverAddr.sin_port = htons(SERVER_PORT);
-		inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//한 컴퓨터에서 실행할때
-		//inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);//cmd에서 ip입력할때 
+
+		if(!localServer)
+			inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);//cmd에서 ip입력할때 
+		else
+			inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//한 컴퓨터에서 실행할때
+
 		//std::cout << ipStr << std::endl;
 		if (WSAConnect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
 			std::cerr << "[클라이언트] 서버 연결 실패\n";
