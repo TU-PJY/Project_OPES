@@ -11,8 +11,6 @@ std::uniform_int_distribution<int> dist(0, 1);
 void SendMovePacket(float x, float y,float z);
 void SendViewingAnglePacket(float x, float y, float z);
 
-
-
 // 생성자에서 입력받은 맵 오브젝트 이름으로 터레인 값을 받아온다.
 Player::Player(std::string MapObjectName) {
 	target_terrain_name = MapObjectName;
@@ -76,6 +74,24 @@ void Player::InputKey(KeyEvent& Event) {
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'D', move_right);
 }
 
+// 서버 부하를 방지하기 위해 0.05초 간격으로 패킷 전송 
+void Player::SendPacket(float Delta) {
+	send_delay += Delta;
+
+	if (send_delay >= 0.05) {
+		if (player_state == STATE_MOVE || player_state == STATE_MOVE_SHOOT)
+			SendMovePacket(position.x, position.y - 3.0, position.z);
+
+		if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
+			SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
+			old_rotation = rotation;
+		}
+
+		float over_time = 0.05 - send_delay;
+		send_delay = over_time;
+	}
+}
+
 void Player::Update(float FrameTime) {
 	// 총 발사 업데이트
 	UpdateFire(FrameTime);
@@ -95,24 +111,8 @@ void Player::Update(float FrameTime) {
 	// 총 - 맵 오브젝트 충돌 처리 업데이트
 	UpdateGunCollision();
 
-	send_delay += FrameTime;
-
-	/*if (move_front || move_back || move_left || move_right) {
-		if (send_delay >= 0.1)
-			SendMovePacket(position.x, position.y - 3.0, position.z);
-	}
-	
-	if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
-		if (send_delay >= 0.1) {
-			SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
-			old_rotation = rotation;
-		}
-	}
-
-	if (send_delay >= 0.1) {
-		float over_time = send_delay - 0.1;
-		send_delay = over_time;
-	}*/
+	// 서버로 패킷 전송
+	SendPacket(FrameTime);
 }
 
 void Player::Render() {
@@ -160,6 +160,22 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 
 	// OOBB와 충돌을 체크하면서 이동
 	Math::MoveWithSlide(position, rotation.y, forward_speed, strafe_speed, player_sphere, map_oobb_data, FrameTime);
+
+	if ((move_front && !move_back) || (move_back && !move_front) || 
+		(move_right && !move_left) || (move_left && !move_right)) {
+		if (trigger_state)
+			player_state = STATE_MOVE_SHOOT;
+		else
+			player_state = STATE_MOVE;
+	}
+	else {
+		if (trigger_state)
+			player_state = STATE_IDLE_SHOOT;
+		else
+			player_state = STATE_IDLE;
+	}
+
+	std::cout << player_state << "\n";
 }
 
 void Player::UpdateFire(float FrameTime) {

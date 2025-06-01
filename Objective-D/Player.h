@@ -4,6 +4,14 @@
 #include "ScriptUtil.h"
 #include <random>
 
+enum PlayerState {
+	STATE_IDLE,
+	STATE_MOVE,
+	STATE_IDLE_SHOOT,
+	STATE_MOVE_SHOOT,
+	STATE_DEATH
+};
+
 class Player : public GameObject {
 private:
 	// 위치
@@ -98,25 +106,28 @@ private:
 	// 불꽃이 보이는 시간
 	float flame_time{};
 
-
 	// 맵 벽 oobb 데이터
 	std::vector<OOBB> map_oobb_data{};
 
 	// 플레이어 충돌 범위
 	BoundSphere player_sphere{};
 
-
 	// 크로스헤어 오브젝트 포인터
 	GameObject* crosshair_ptr{};
 
-
+	/////////////서버용 변수
+	// 패킷 전송 딜레이
 	float send_delay{};
+
+	// 서버로 전송하기 위한 플레이어 상태
+	int player_state{ STATE_IDLE };
 
 public:
 	Player(std::string MapObjectName);
 	void InputMouseMotion(MotionEvent& Event) override;
 	void InputMouse(MouseEvent& Event);
 	void InputKey(KeyEvent& Event);
+	void SendPacket(float Delta);
 	void UpdateMoveSpeed(float FrameTime);
 	void UpdateFire(float FrameTime);
 	void UpdateGun(float FrameTime);
