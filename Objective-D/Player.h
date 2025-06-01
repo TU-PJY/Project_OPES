@@ -120,6 +120,9 @@ private:
 	// 서버로 전송하기 위한 플레이어 상태
 	int player_state{ STATE_IDLE };
 
+	// 서버 패킷 전송 순서
+	int send_order = 1;
+
 public:
 	Player(std::string MapObjectName);
 	void InputMouseMotion(MotionEvent& Event) override;

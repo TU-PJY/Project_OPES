@@ -78,20 +78,27 @@ void Player::InputKey(KeyEvent& Event) {
 void Player::SendPacket(float Delta) {
 	send_delay += Delta;
 
-	if (send_delay >= 0.1) {
-		if (player_state == STATE_MOVE || player_state == STATE_MOVE_SHOOT)
-			SendMovePacket(position.x, position.y - 3.0, position.z);
+	if (send_delay >= 0.025) {
+		if (send_order == 1) {
+			if (player_state == STATE_MOVE || player_state == STATE_MOVE_SHOOT)
+				SendMovePacket(position.x, position.y - 3.0, position.z);
+		}
 
-		if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
-			SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
-			old_rotation = rotation;
+		else if (send_order == 2) {
+			if (old_rotation.x != rotation.x || old_rotation.y != rotation.y || old_rotation.z != rotation.z) {
+				SendViewingAnglePacket(rotation.x, rotation.y, rotation.z);
+				old_rotation = rotation;
+			}
 		}
 
 		//if (prev_state != current_state) {
-		SendAnimaionPacket(current_state);
+		else if (send_order == 3)
+			SendAnimaionPacket(current_state);
 		//}
-		
-		float over_time = 0.1 - send_delay;
+		send_order += 1;
+		if (send_order > 3)
+			send_order = 1;
+		float over_time = 0.025 - send_delay;
 		send_delay = over_time;
 	}
 }

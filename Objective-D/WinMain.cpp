@@ -199,6 +199,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(recv_buffer);
 		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
 
+		IsNewPlayer(newClientPacket->id);
+
 	//	std::cout << "ID: " << newClientPacket->id << std::endl;
 	
 		//player_enter = true;
