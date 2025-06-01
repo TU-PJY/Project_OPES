@@ -117,12 +117,13 @@ void Scorpion::Update(float Delta) {
 					if (auto object = scene.FindMulti("scorpion", LAYER1, i)) {
 						if (object != this) {
 							if (oobb.CheckCollision(object->GetOOBB())) {
-								if (Math::IsRightOfTarget(position, vec, object->GetPosition()))
+								move_state = false;
+								/*if (Math::IsRightOfTarget(position, vec, object->GetPosition()))
 									avoid_dir = 1;
 								else
 									avoid_dir = 0;
 
-								avoid_state = true;
+								avoid_state = true;*/
 								break;
 							}
 						}
