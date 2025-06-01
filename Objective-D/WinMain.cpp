@@ -204,8 +204,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::PLAYER_TO_MOSTER) {
 		Player2Monster* p2m_packet = reinterpret_cast<Player2Monster*>(recv_buffer);
-		std::cout << "damage: " << p2m_packet->damage << std::endl;
-		PacketWork work{ PACKET_MONSTER_DAMAGE, p2m_packet->monsterId, XMFLOAT3((float)p2m_packet->damage, 0.0, 0.0) };
+		std::cout << "damage: " << p2m_packet->hp << std::endl;
+		PacketWork work{ PACKET_MONSTER_DAMAGE, p2m_packet->monsterId, XMFLOAT3((float)p2m_packet->hp, 0.0, 0.0) };
 		PacketProcessList.emplace(work);
 		//피해입은 몬스터 id,피해량 얻는 부분을 처리해야함
 	}
@@ -356,12 +356,12 @@ void SendAnimaionPacket(unsigned short playerState) {
 	}
 }
 
-void SendPlayer2MonsterPacket(unsigned int monsterID,unsigned int damage) {
+void SendPlayer2MonsterPacket(unsigned int monsterID,unsigned int hp) {
 	if (enter_room) {
 		Player2Monster damagePacket = {};
 		damagePacket.type = PacketType::PLAYER_TO_MOSTER;
 		damagePacket.monsterId = monsterID;
-		damagePacket.damage = damage;
+		damagePacket.hp = hp;
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&damagePacket);
 		wsaBuf.len = sizeof(Player2Monster);
