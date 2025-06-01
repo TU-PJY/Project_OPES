@@ -18,15 +18,19 @@ void MonsterSpawner::Update(float Delta) {
 	XMFLOAT3 spawn_pos3 = XMFLOAT3(-100.0, -20.0, -60.0);
 
 	float delay = 0.5;
+	int id = 1;
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 3; i++) {
 		if (map_name.compare("map1") == 0) {
-			scene.AddObject(new Scorpion(map_name, spawn_pos1, delay, 0), "scorpion", LAYER1);
+			scene.AddObject(new Scorpion(map_name, spawn_pos1, delay, id), "scorpion", LAYER1);
 			delay += 0.5;
-			scene.AddObject(new Scorpion(map_name, spawn_pos2, delay, 1), "scorpion", LAYER1);
+			id++;
+			scene.AddObject(new Scorpion(map_name, spawn_pos2, delay, id), "scorpion", LAYER1);
 			delay += 0.5;
-			scene.AddObject(new Scorpion(map_name, spawn_pos3, delay, 2), "scorpion", LAYER1);
+			id++;
+			scene.AddObject(new Scorpion(map_name, spawn_pos3, delay, id), "scorpion", LAYER1);
 			delay += 0.5;
+			id++;
 		}
 	}
 
