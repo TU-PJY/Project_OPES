@@ -3,6 +3,9 @@
 #include "PickingUtil.h"
 #include "HP_Indicator.h"
 #include "ClampUtil.h"
+#include <string>
+
+void SendPlayer2MonsterPacket(unsigned int monsterID, unsigned int damage);
 
 Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay) {
 	if (auto terrain = scene.Find(mapName); terrain)
@@ -35,13 +38,9 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 }
 
 void Scorpion::SendPacket() {
-	if (prev_hp != current_hp) {
-		// send hp
+	if (current_hp > 0 && prev_hp != current_hp) {
+		SendPlayer2MonsterPacket(stoi(ObjectTag), hit_damage);
 		prev_hp = current_hp;
-	}
-
-	if (current_hp == 0) {
-		// send death
 	}
 }
 
@@ -51,6 +50,8 @@ void Scorpion::GiveDamage(int damage) {
 }
 
 void Scorpion::Update(float Delta) {
+	SendPacket();
+
 	fbx.UpdateAnimation(Delta);
 
 	terrainUT.InputPosition(position);

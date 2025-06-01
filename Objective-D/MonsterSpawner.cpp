@@ -19,9 +19,9 @@ void MonsterSpawner::Update(float Delta) {
 
 	//for (int i = 0; i < 10; i++) {
 		if (map_name.compare("map1") == 0) {
-			scene.AddObject(new Scorpion(map_name, spawn_pos1, 0.0), "scorpion", LAYER1);
-			scene.AddObject(new Scorpion(map_name, spawn_pos2, 0.0), "scorpion", LAYER1);
-			scene.AddObject(new Scorpion(map_name, spawn_pos3, 0.0), "scorpion", LAYER1);
+			scene.AddObject(new Scorpion(map_name, spawn_pos1, 0.0), "0", LAYER1);
+			scene.AddObject(new Scorpion(map_name, spawn_pos2, 0.0), "1", LAYER1);
+			scene.AddObject(new Scorpion(map_name, spawn_pos3, 0.0), "2", LAYER1);
 		}
 	//}
 

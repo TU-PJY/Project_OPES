@@ -78,6 +78,7 @@ struct ExistingClientsDataPacket {
         float angle_x, angle_y, angle_z;
     } clients[1024]; // 또는 동적 크기로 관리
 };
+
 struct Player2Monster {
     PacketType type;
     unsigned int monsterId;
