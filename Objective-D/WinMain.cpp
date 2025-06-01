@@ -486,6 +486,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		else {
 			while (!PacketProcessList.empty()) {
 				PacketWork work = PacketProcessList.front();
+				IsNewPlayer(work.ID);
+
 				switch (work.PacketType) {
 				case PACKET_MOVE:
 					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
