@@ -5,7 +5,7 @@
 #include "ClampUtil.h"
 #include <string>
 
-void SendPlayer2MonsterPacket(unsigned int monsterID, unsigned int damage);
+void SendPlayer2MonsterPacket(unsigned int monsterID, unsigned int hp);
 
 Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay, int ID) {
 	if (auto terrain = scene.Find(mapName); terrain)
@@ -31,6 +31,7 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 			hit_damage = Damage;
 			current_hp -= hit_damage;
 			Clamp::LimitValue(current_hp, 0.0, CLAMP_DIR_LESS);
+			SendPlayer2MonsterPacket(ID, hit_damage);
 			hit_state = true;
 
 			return true;
