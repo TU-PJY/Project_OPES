@@ -56,7 +56,7 @@ struct AnimationPacket_CtoS {
 struct AnimationPacket_StoC {
     PacketType type;
     unsigned int id;
-    unsigned short anymationType;
+    unsigned short animationType;
 };
 struct EnterRoomPacket {
     PacketType type;

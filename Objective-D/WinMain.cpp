@@ -21,6 +21,7 @@
 #include <Ws2tcpip.h>  
 #include <atlconv.h>
 #include <typeinfo>
+#include <queue>
 //#include <iostream>
 //#include <conio.h>
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
@@ -47,6 +48,20 @@ bool localServer = false;
 bool thread_running;
 
 std::unordered_set<unsigned int> ID_List;
+
+enum PacketProcessEnum {
+	PACKET_MOVE,
+	PACKET_ROTATE,
+	PACKET_ANIMATION
+};
+
+typedef struct {
+	int PacketType;
+	unsigned int ID;
+	XMFLOAT3 Value;
+} PacketWork;
+
+std::queue<PacketWork> PacketProcessList;
 
 class OtherPlayer : public GameObject {
 public:
@@ -164,8 +179,10 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
 		if (!IsNewPlayer(movePacket->id)) {
-			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
-				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
+			PacketWork work{ PACKET_MOVE, movePacket->id, XMFLOAT3(movePacket->x, movePacket->y, movePacket->z)};
+			PacketProcessList.emplace(work);
+			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
+				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));*/
 		}
 	}
 
@@ -174,8 +191,10 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
 		if (!IsNewPlayer(viewAnglePacket->id)) {
-			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
-				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
+			PacketWork work{ PACKET_ROTATE, viewAnglePacket->id, XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z) };
+			PacketProcessList.emplace(work);
+			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
+				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));*/
 		}
 	}
 
@@ -184,8 +203,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->anymationType << std::endl;
 
 		if (!IsNewPlayer(aniPacket->id)) {
-			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
-				Found->InputState((unsigned int)aniPacket->anymationType);
+			PacketWork work{ PACKET_ROTATE, aniPacket->id, XMFLOAT3((float)aniPacket->animationType, 0.0, 0.0) };
+			PacketProcessList.emplace(work);
 		}
 	}
 
@@ -493,6 +512,28 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		}
 
 		else {
+			while (!PacketProcessList.empty()) {
+				PacketWork work = PacketProcessList.front();
+				switch (work.PacketType) {
+				case PACKET_MOVE:
+					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
+						Object->InputPosition(work.Value);
+					break;
+
+				case PACKET_ROTATE:
+					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
+						Object->InputRotation(work.Value);
+					break;
+
+				case PACKET_ANIMATION:
+					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
+						Object->InputState((unsigned int)work.Value.x);
+					break;
+				}
+
+				PacketProcessList.pop();
+			}
+
 			framework.Update();
 			SleepEx(0, TRUE);
 		}
