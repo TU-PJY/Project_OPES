@@ -161,10 +161,16 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 		strafe_speed = std::lerp(strafe_speed, -dest_move_speed, 5.0 * FrameTime);
 
 	// 움직임 비활성화 또는 서로 반대 방향 이동 활성화 시 감속
-	if ((!move_front && !move_back) || (move_front && move_back))
+	if ((!move_front && !move_back) || (move_front && move_back)) {
 		forward_speed = std::lerp(forward_speed, 0.0, 5.0 * FrameTime);
-	if ((!move_right && !move_left) || (move_right && move_left))
+		if (fabs(forward_speed) <= 0.001)
+			forward_speed = 0.0;
+	}
+	if ((!move_right && !move_left) || (move_right && move_left)) {
 		strafe_speed = std::lerp(strafe_speed, 0.0, 5.0 * FrameTime);
+		if (fabs(strafe_speed) <= 0.001)
+			strafe_speed = 0.0;
+	}
 
 	// 플레이어 바운딩 스페어 업데이트
 	player_sphere.Update(position, 2.0);
