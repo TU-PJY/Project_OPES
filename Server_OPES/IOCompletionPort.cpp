@@ -372,12 +372,12 @@ void IOCompletionPort::SendData_Animaion(stClientInfo* sendingClient, stClientIn
     }
 }
 
-void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID,unsigned int damage,stClientInfo* recvingClient) {
+void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID,unsigned int hp,stClientInfo* recvingClient) {
     recvingClient->sendOverlapped.operation = IOOperation::SEND;
     ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
     Player2Monster damagePacket = {};
     damagePacket.type = PacketType::PLAYER_TO_MOSTER;
-    damagePacket.damage = damage;
+    damagePacket.hp = hp;
     damagePacket.monsterId = monsterID;
 
     recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&damagePacket);
@@ -497,7 +497,7 @@ void IOCompletionPort::WorkThread() {
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_Player2Monster(damagePacket->monsterId, damagePacket->damage, otherClient);
+                        SendData_Player2Monster(damagePacket->monsterId, damagePacket->hp, otherClient);
                     }
                 }
             }

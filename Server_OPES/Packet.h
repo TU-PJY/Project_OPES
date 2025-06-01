@@ -82,5 +82,5 @@ struct ExistingClientsDataPacket {
 struct Player2Monster {
     PacketType type;
     unsigned int monsterId;
-    unsigned int damage;
+    unsigned int hp;
 };
