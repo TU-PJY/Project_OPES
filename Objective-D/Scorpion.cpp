@@ -7,7 +7,7 @@
 
 void SendPlayer2MonsterPacket(unsigned int monsterID, unsigned int damage);
 
-Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay) {
+Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay, int ID) {
 	if (auto terrain = scene.Find(mapName); terrain)
 		terrainUT = terrain->GetTerrain();
 	//SelectFBXAnimation(MESH.scorpion, keyframe);
@@ -17,6 +17,8 @@ Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay) {
 	hp_ind = scene.AddObject(new HP_Indicator, "hp_ind", LAYER2);
 
 	start_delay = Delay;
+
+	this->ID = ID;
 }
 
 // 몬스터가 총알에 맞으면 이벤트 발생
@@ -39,7 +41,7 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 
 void Scorpion::SendPacket() {
 	if (current_hp > 0 && prev_hp != current_hp) {
-		SendPlayer2MonsterPacket(stoi(ObjectTag), hit_damage);
+		SendPlayer2MonsterPacket(ID, hit_damage);
 		prev_hp = current_hp;
 	}
 }

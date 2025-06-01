@@ -34,9 +34,10 @@ private:
 	XMFLOAT3 destination{ -120.0, 0.0, -120.0 };
 
 	float send_delay{};
+	int ID{};
 	
 public:
-	Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay);
+	Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay, int ID);
 	bool CheckHit(XMFLOAT2& checkPosition, int Damage);
 	void SendPacket();
 	void GiveDamage(int damage);
