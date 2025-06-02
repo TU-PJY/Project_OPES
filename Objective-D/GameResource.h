@@ -93,6 +93,7 @@ typedef struct {
 	// gun flame texture
 	Texture* gun_flame;
 	Texture* gun_flame_back;
+	Texture* muzzle_particle;
 
 	// map1 monster
 	Texture* scorpion;

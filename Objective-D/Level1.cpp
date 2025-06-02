@@ -6,6 +6,7 @@
 #include "MonsterSpawner.h"
 #include "Player.h"
 #include "CrossHair.h"
+#include "MuzzleFlash.h"
 
 namespace Level1 { std::deque<GameObject*> ControlObjectList; }
 

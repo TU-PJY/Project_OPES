@@ -82,6 +82,7 @@ public:
 	// 크로스헤어 렌더링 활성화/비활성화
 	virtual void EnableRender() {}
 	virtual void DisableRender() {}
+	virtual void EnableRender(float totalTime) {}
 
 	// 맵 벽 oobb 얻는 함수
 	virtual std::vector<OOBB> GetMapWallOOBB() { return{}; }

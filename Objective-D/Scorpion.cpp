@@ -21,6 +21,9 @@ Scorpion::Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay, i
 	this->ID = ID;
 
 	Math::InitVector(vec);
+
+	fbx.SelectAnimation("Walk");
+
 }
 
 // 몬스터가 총알에 맞으면 이벤트 발생
@@ -33,6 +36,8 @@ bool Scorpion::CheckHit(XMFLOAT2& checkPosition, int Damage) {
 		current_hp -= hit_damage;
 		Clamp::LimitValue(current_hp, 0.0, CLAMP_DIR_LESS);
 		hit_state = true;
+		render_particle = true;
+		particle_alpha = 1.0;
 
 		return true;
 	}
@@ -55,8 +60,11 @@ void Scorpion::SendPacket(float Delta) {
 bool Scorpion::ChangeHP(int HP) {
 	if (current_hp > HP) {
 		current_hp = HP;
+		render_particle = true;
+		particle_alpha = 1.0;
 		return true;
 	}
+
 
 	return false;
 }
@@ -78,6 +86,14 @@ bool Scorpion::GetDeathState() {
 }
 
 void Scorpion::Update(float Delta) {
+	if (render_particle) {
+		particle_alpha -= Delta * 10.0;
+		if (particle_alpha <= 0.0) {
+			particle_alpha = 0.0;
+			render_particle = false;
+		}
+	}
+
 	current_delay += Delta;
 	if (current_delay >= start_delay)
 		activate_state = true;
@@ -104,41 +120,59 @@ void Scorpion::Update(float Delta) {
 		
 		Math::UpdateVector(vec, XMFLOAT3(0.0, rotation, 0.0));
 
-		if (move_state) {
-			Math::MoveForward(position, rotation, 8.0 * Delta);
+		if (move_state && !attack_state) {
+			Math::MoveForward(position, rotation, 6.0 * Delta);
 			oobb.Update(position, XMFLOAT3(0.5, 0.8, 0.8), XMFLOAT3(0.0, rotation, 0.0));
 
+			// 기지와 충돌하면 정지
 			if (auto building = scene.Find("center_building"); building) {
 				if (oobb.CheckCollision(building->GetOOBB())) {
 					Math::MoveForward(position, rotation, -8.0 * Delta);
-					move_state = false;
-					fbx.SelectAnimation("Attack 1");
+					attack_state = true;
 				}
 			}
 
+			// 다른 몬스터와 충돌하면 일시 정지
 			if (!avoid_state) {
 				size_t Size = scene.LayerSize(LAYER1);
 				for (int i = 0; i < Size; i++) {
 					if (auto object = scene.FindMulti("scorpion", LAYER1, i)) {
 						if (object != this) {
-							if (oobb.CheckCollision(object->GetOOBB())) {
+							if (!object->GetDeathState() && oobb.CheckCollision(object->GetOOBB())) {
 								move_state = false;
-								/*if (Math::IsRightOfTarget(position, vec, object->GetPosition()))
-									avoid_dir = 1;
-								else
-									avoid_dir = 0;
-
-								avoid_state = true;*/
 								break;
 							}
+							else
+								move_state = true;
 						}
 					}
 				}
 			}
 		}
 
+		if (attack_state && !attack_selected && !death_keyframe_selected) {
+			fbx.SelectAnimation("Attack 1");
+			attack_selected = true;
+		}
 
-		fbx.UpdateAnimation(Delta);
+		if (!move_state && !idle_selected && !attack_selected && !death_keyframe_selected) {
+			fbx.SelectAnimation("Idle");
+			idle_selected = true;
+			move_selected = false;
+		}
+
+		if (move_state && !move_selected && !attack_selected && !death_keyframe_selected) {
+			fbx.SelectAnimation("Walk");
+			idle_selected = false;
+			move_selected = true;
+		}
+
+		if (fbx.GetCurrentAnimation() == "Walk")
+			fbx.SetSpeed(5.0);
+		else
+			fbx.SetSpeed(1.0);
+
+			fbx.UpdateAnimation(Delta);
 
 		terrainUT.InputPosition(position);
 		terrainUT.ClampToTerrain(terrainUT, position, 0.0);
@@ -177,10 +211,29 @@ void Scorpion::Render() {
 		return;
 
 	BeginRender();
+	fbx.ApplyAnimation();
 	Transform::Move(TranslateMatrix, position);
-	Transform::Rotate(RotateMatrix, 0.0, rotation, 0.0);
+	Transform::Rotate(TranslateMatrix, 0.0, rotation, 0.0);
+	if (fbx.GetCurrentAnimation() == "Walk") {
+		XMFLOAT3 Delta = fbx.GetRootMoveDelta(true);
+		Transform::Move(TranslateMatrix, -Delta.x, -Delta.y, -Delta.z);
+	}
+	
 	RenderFBX(fbx, TEX.scorpion);
 	UpdatePickMatrix();
+
+	if (render_particle) {
+		std::vector<XMFLOAT3> pos = blood.GetPositions();
+		for (auto& P : pos) {
+			BeginRender();
+			Transform::Move(TranslateMatrix, position.x, position.y + 1.0, position.z - 1.0);
+			Transform::Move(TranslateMatrix, P);
+			Math::BillboardLookAt(RotateMatrix, blood.GetVector(), position, camera.GetPosition());
+			SetColor(1.0, 0.0, 0.0);
+			SetLightUse(DISABLE_LIGHT);
+			Render3D(SysRes.BillboardMesh, TEX.muzzle_particle, particle_alpha);
+		}
+	}
 
 	oobb.Render();
 }

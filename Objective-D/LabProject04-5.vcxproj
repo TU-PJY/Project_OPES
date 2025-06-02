@@ -183,6 +183,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="ModePack.h" />
     <ClInclude Include="MonsterSpawner.h" />
     <ClInclude Include="MouseUtil.h" />
+    <ClInclude Include="MuzzleFlash.h" />
     <ClInclude Include="Objective-D.h" />
     <ClInclude Include="MeshUtil.h" />
     <ClInclude Include="PickingUtil.h" />
@@ -235,6 +236,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Level1.cpp" />
     <ClCompile Include="MonsterSpawner.cpp" />
     <ClCompile Include="MouseUtil.cpp" />
+    <ClCompile Include="MuzzleFlash.cpp" />
     <ClCompile Include="ObjectShader.cpp" />
     <ClCompile Include="PickingUtil.cpp" />
     <ClCompile Include="GameResource.cpp" />

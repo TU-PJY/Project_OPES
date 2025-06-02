@@ -118,6 +118,7 @@ void LoadTexture(DeviceSystem& System) {
 	// gun flame
 	LoadTexture(System, TEX.gun_flame, L"Resources//Image//weapon//flame.png", TEXTURE_TYPE_WIC);
 	LoadTexture(System, TEX.gun_flame_back, L"Resources//Image//weapon//flame-back.png", TEXTURE_TYPE_WIC);
+	LoadTexture(System, TEX.muzzle_particle, L"Resources//Image//weapon//muzzle_particle.png", TEXTURE_TYPE_WIC);
 
 	// map1 monster
 	LoadTexture(System, TEX.scorpion, L"Resources//Image//monster//scorpion.png");

@@ -1017,14 +1017,18 @@ void FBX::ResumeAnimationUpdate() {
 	Running = true;
 }
 
+void FBX::SetSpeed(float Speed) {
+	CurrentSpeed = Speed;
+}
+
 void FBX::UpdateAnimation(float Delta) {
 	if (!Running)
 		return;
 
-	CurrentTime += Delta;
+	CurrentTime += Delta * CurrentSpeed;
 
-	if(UpdateLimit > 0)
-		CurrentDelay += Delta;
+//	if(UpdateLimit > 0)
+	CurrentDelay += Delta ;
 
 	if (CurrentTime >= TotalTime) {
 		float OverTime = CurrentTime - TotalTime;
@@ -1034,28 +1038,30 @@ void FBX::UpdateAnimation(float Delta) {
 		else 
 			CurrentTime = StartTime + OverTime;
 	}
+}
 
-	if (UpdateLimit > 0) {
-		if (CurrentDelay >= UpdateLimit) {
-			float OverTime = CurrentDelay - UpdateLimit;
-			CurrentDelay = OverTime;
+XMFLOAT3 FBX::GetRootMoveDelta(bool InPlace) {
+	if (!FBXPtr->GlobalRootNode)
+		return XMFLOAT3(0.0, 0.0, 0.0);
 
-			if (!Serialized) {
-				if (CurrentAnimationName.compare(FBXPtr->CurrentAnimationStackName) != 0) {
-					FbxAnimStack* Stack = FBXPtr->Scene->FindMember<FbxAnimStack>(CurrentAnimationName.c_str());
-					if (Stack) {
-						FBXPtr->Scene->SetCurrentAnimationStack(Stack);
-						FBXPtr->CurrentAnimationStackName = CurrentAnimationName;
-					}
-				}
-			}
+	FbxTime Time;
+	Time.SetSecondDouble(CurrentTime);
+	FbxAMatrix Matrix = FBXPtr->GlobalRootNode->EvaluateGlobalTransform(Time);
+	FbxVector4 T = Matrix.GetT();
+	
+	return XMFLOAT3(T[0], T[1], T[2]);
+}
 
-			for (int M = 0; M < MeshCount; M++)
-				FBXPtr->MeshPart[M]->UpdateSkinning(PositionMapped[M], NormalMapped[M], CurrentTime);
-		}
-	}
+std::string FBX::GetCurrentAnimation() {
+	return CurrentAnimationName;
+}
 
-	else {
+void FBX::ApplyAnimation() {
+	//if (UpdateLimit > 0) {
+	if (CurrentDelay >= UpdateLimit) {
+		float OverTime = CurrentDelay - UpdateLimit;
+		CurrentDelay = OverTime;
+
 		if (!Serialized) {
 			if (CurrentAnimationName.compare(FBXPtr->CurrentAnimationStackName) != 0) {
 				FbxAnimStack* Stack = FBXPtr->Scene->FindMember<FbxAnimStack>(CurrentAnimationName.c_str());

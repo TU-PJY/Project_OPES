@@ -208,7 +208,10 @@ private:
 	float TotalTime{};
 	float StartTime{};
 	float CurrentDelay{};
-	float UpdateLimit{ 0.033 };
+	float UpdateLimit{ 0.0 };
+
+	XMFLOAT3 PrevDelta{};
+	float CurrentSpeed = 1.0;
 
 public:
 	FBX(DeviceSystem& System, FBXMesh& TargetFBX, bool StopState=false);
@@ -218,7 +221,11 @@ public:
 	void SelectAnimation(std::string AnimationName);
 	void StopAnimationUpdate();
 	void ResumeAnimationUpdate();
+	void SetSpeed(float Speed);
 	void UpdateAnimation(float Delta);
+	XMFLOAT3 GetRootMoveDelta(bool InPlace);
+	std::string GetCurrentAnimation();
+	void ApplyAnimation();
 	void ResetAnimation();
 	size_t GetMeshCount();
 	void Render(ID3D12GraphicsCommandList* CmdList, int Index);

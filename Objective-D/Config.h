@@ -25,7 +25,7 @@ constexpr float FRAME_LIMITS = 60;
 // 게임 월드에 사용할 레이어를 설정한다. 끝 부분에는 반드시 EOL(End Of Layer)표기를 해야한다.
 // UI의 경우 가장 최상단 레이어에 추가하는 것을 권장한다.
 enum LayerEnum
-{ LAYER1, LAYER_PLAYER, LAYER2, LAYER3, EOL };
+{ LAYER1, LAYER_PARTICLE1, LAYER_PLAYER, LAYER_PARTICLE2, LAYER2, LAYER3, EOL };
 
 // 삭제 위치 버퍼 크기 지정, 기본값 200
 constexpr int DELETE_LOCATION_BUFFER_SIZE = 200;

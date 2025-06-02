@@ -1,6 +1,7 @@
 #pragma once
 #include "GameObject.h"
 #include "TerrainUtil.h"
+#include "MuzzleFlash.h"
 
 class Scorpion : public GameObject {
 private:
@@ -43,9 +44,17 @@ private:
 	float avoid_time{};
 	int avoid_dir{};
 
+	bool idle_selected{}, move_selected{}, attack_selected{};
+	bool attack_state{};
+
 	OOBB oobb{};
 
 	Vector vec{};
+
+	BloodParticle blood{};
+	float particle_alpha{};
+	float particle_time{};
+	bool render_particle{};
 	
 public:
 	Scorpion(std::string mapName, XMFLOAT3& createPosition, float Delay, int ID);
