@@ -41,7 +41,7 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false;
 
 std::unordered_set<unsigned int> ID_List;
@@ -128,6 +128,18 @@ public:
 
 	void Render() {
 		BeginRender();
+
+		switch (current_state) {
+		case STATE_IDLE:
+			heavy_idle.ApplyAnimation(); break;
+		case STATE_MOVE: case STATE_MOVE_SHOOT:
+			heavy_move.ApplyAnimation(); break;
+		case STATE_IDLE_SHOOT:
+			heavy_shoot.ApplyAnimation(); break;
+		case STATE_DEATH:
+			heavy_death.ApplyAnimation(); break;
+		}
+		
 		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
@@ -197,7 +209,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
-		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->anymationType << std::endl;
+		std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
 		PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3(0.0, 0.0, 0.0), aniPacket->animationType };
 		PacketProcessList.emplace(work);
@@ -332,6 +344,8 @@ void SendViewingAnglePacket(float x, float y, float z) {
 }
 void SendAnimaionPacket(unsigned short playerState) {
 	if (enter_room) {
+		//std::cout << playerState << std::endl;
+
 		AnimationPacket_CtoS animationPacket = {};
 		animationPacket.type = PacketType::ANIMATION;
 		
