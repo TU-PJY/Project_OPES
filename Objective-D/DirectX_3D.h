@@ -201,6 +201,10 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* Device, ID3D12GraphicsCommand
 void SetBackgroundColorRGB(int R, int G, int B);
 void SetBackgroundColor(float R, float G, float B);
 
+XMFLOAT3 operator - (const XMFLOAT3& Value);
+XMFLOAT3 operator * (const XMFLOAT3& Value, float MulValue);
+std::ostream& operator << (std::ostream& os, const XMFLOAT3& Value);
+
 namespace Vec3 {
 	inline XMFLOAT3 XMVectorToFloat3(XMVECTOR& xmvVector) {
 		XMFLOAT3 xmf3Result;

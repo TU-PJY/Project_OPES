@@ -5,6 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include "Framework.h"
+#include "Config.h"
 
 FBXUtil fbxUtil;
 
@@ -176,29 +177,51 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 	return height;
 }
 
+void Mesh::UpdateSkinning(FBXMesh& Source, std::vector<XMMATRIX>& BoneMatrices, void*& PMap, void*& NMap, float Time) {
+	if (!BoneIndices || !BoneWeights)
+		return;
+
+	for (UINT v = 0; v < Vertices; ++v) {
+		XMVECTOR SkinnedPosition = XMVectorZero();
+		XMVECTOR SkinnedNormal = XMVectorZero();
+		XMVECTOR PositionOrigin = XMLoadFloat3(&OriginalPosition[v]);
+		XMVECTOR NormalOrigin = XMLoadFloat3(&OriginalNormal[v]);
+
+		UINT BoneIndex[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
+		float BoneWeight[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
+
+		for (int i = 0; i < 4; ++i) {
+			if (BoneWeight[i] > 0.0f && BoneIndex[i] < BoneMatrices.size()) {
+				XMMATRIX transform = BoneMatrices[BoneIndex[i]];
+				SkinnedPosition += XMVector3Transform(PositionOrigin, transform) * BoneWeight[i];
+				SkinnedNormal += XMVector3TransformNormal(NormalOrigin, transform) * BoneWeight[i];
+			}
+		}
+
+		XMStoreFloat3(&Position[v], SkinnedPosition);
+		XMStoreFloat3(&Normal[v], SkinnedNormal);
+	}
+
+	memcpy(PMap, Position, sizeof(XMFLOAT3) * Vertices);
+	memcpy(NMap, Normal, sizeof(XMFLOAT3) * Vertices);
+}
+
 void Mesh::UpdateSkinning(FBXMesh& Source, float Time) {
+	if (!BoneIndices || !BoneWeights)
+		return;
+
 	std::string SearchName;
-	if (!Source.SerilaizedFlag)
+	if (!Source.SerializedFlag)
 		SearchName = Source.CurrentAnimationStackName;
 	else
 		SearchName = Source.AnimationStackNames[0];
 
 	auto FoundFrames = PrecomputedBoneMatrices.find(SearchName);
-	if (FoundFrames == PrecomputedBoneMatrices.end()) return;
+	if (FoundFrames == PrecomputedBoneMatrices.end()) 
+		return;
 
-	const std::vector<BoneFrame>& BoneFrames = FoundFrames->second;
-
-	// 시간 → 프레임 인덱스
-	float LocalTime;
-	//if (!Source.SerilaizedFlag)
-		LocalTime = Time;
-	//else
-		//LocalTime = Time - Source.StartTime;
-
-	float FPS = 120.0f;
-	int FrameIndex = std::clamp(static_cast<int>(LocalTime * FPS), 0, (int)BoneFrames.size() - 1);
-
-	const std::vector<XMMATRIX>& BoneMatrices = BoneFrames[FrameIndex];
+	int FrameIndex = std::clamp(static_cast<int>(Time * AnimationExtractFrame), 0, (int)FoundFrames->second.size() - 1);
+	const std::vector<XMMATRIX>& BoneMatrices = FoundFrames->second[FrameIndex];
 
 	for (UINT v = 0; v < Vertices; ++v) {
 		XMVECTOR SkinnedPosition = XMVectorZero();

@@ -564,7 +564,7 @@ void FBXUtil::EnumerateAnimationStacks() {
 }
 
 void FBXUtil::SelectAnimation(FBXMesh& TargetMesh, const std::string& AnimationName) {
-	if (!TargetMesh.SerilaizedFlag) {
+	if (!TargetMesh.SerializedFlag) {
 		int Count = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
 
 		for (int i = 0; i < Count; ++i) {

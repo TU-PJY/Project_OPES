@@ -40,8 +40,6 @@ typedef struct {
 
 class Mesh;
 typedef struct {
-	BoneAnimationCache PrecomputedBoneMatrices;
-
 	FbxScene* Scene;
 	std::vector<Mesh*> MeshPart;
 	std::vector<AnimationChannel> AnimationChannel;
@@ -53,7 +51,7 @@ typedef struct {
 	std::string CurrentAnimationStackName;        // 현재 선택된 스택 이름
 
 	// 직렬화 애니메이션 데이터를 가진 경우 해당 컨테이너를 사용한다.
-	bool SerilaizedFlag;
+	bool SerializedFlag;
 	std::string FirstStackName;
 	std::unordered_map<std::string, SerializedAnimationInfo> SerializedAnimationStacks;
 
@@ -148,6 +146,7 @@ public:
 	float GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix);
 	bool IsPointInTriangle(XMFLOAT2& pt, XMFLOAT2& v0, XMFLOAT2& v1, XMFLOAT2& v2);
 	float ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XMFLOAT3& v2);
+	void UpdateSkinning(FBXMesh& Source, std::vector<XMMATRIX>& BoneMatrices, void*& PMap, void*& NMap, float Time);
 	void UpdateSkinning(FBXMesh& Source, float Time);
 	void UpdateSkinning(float Time);
 	void UpdateSkinning(void*& PMap, void*& NMap, float Time);
@@ -212,38 +211,43 @@ private:
 	std::vector<D3D12_VERTEX_BUFFER_VIEW*> VertexBufferViews{};
 	std::vector<void*> PositionMapped{};
 	std::vector<void*> NormalMapped{};
+	FBXMesh* FBXPtr{};
 
 	std::vector<BoundingOrientedBox> OOBB{};
 
-	FBXMesh* FBXPtr{};
 
 	std::string CurrentAnimationName{};
 
 	float CurrentTime{};
 	float TotalTime{};
 	float StartTime{};
-	float CurrentDelay{};
-	float UpdateLimit{ 0.0 };
-
-	XMFLOAT3 PrevDelta{};
 	float CurrentSpeed = 1.0;
+	int PrevFrame{};
+	int CurrentFrame{};
+
+	std::string PrevSearchName{};
+	std::vector<BoneFrame> RootFrame{};
+	XMFLOAT3 InplaceDelta{};
+
+	bool FrameUpdateState{};
 
 public:
-	FBX(DeviceSystem& System, FBXMesh& TargetFBX, bool StopState=false);
 	FBX();
 	~FBX();
-	void SelectFBXMesh(DeviceSystem& System, FBXMesh& TargetFBX);
+	FBX(FBXMesh& TargetFBX, bool StopState=false);
+	void SelectFBXMesh(FBXMesh& TargetFBX, bool StopState=false);
 	void SelectAnimation(std::string AnimationName);
 	void StopAnimationUpdate();
 	void ResumeAnimationUpdate();
 	void SetSpeed(float Speed);
-	void UpdateAnimation(float Delta);
-	XMFLOAT3 GetRootMoveDelta(bool InPlace);
+	void UpdateAnimation(float Delta, bool Inplace=false);
+	XMFLOAT3 GetRootMoveDelta(std::vector<BoneFrame>& BoneFrame, bool InPlace);
 	std::string GetCurrentAnimation();
-	void ApplyAnimation();
 	void ResetAnimation();
 	size_t GetMeshCount();
-	void Render(ID3D12GraphicsCommandList* CmdList, int Index);
+	void Render(int Index);
+	void ApplyAnimation();
+	XMFLOAT3 GetInplaceDelta();
 
 private:
 	void CreateBuffer(DeviceSystem& System);

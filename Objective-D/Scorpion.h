@@ -16,7 +16,7 @@ private:
 	// 각 몬스터마다 1:1로 배정된다.
 	GameObject* hp_ind{};
 
-	FBX fbx{ GlobalSystem, MESH.scorpion };
+	FBX fbx{ MESH.scorpion };
 
 	// 총알에 피격되었다면 true가 되어 이벤트 발생
 	// 이벤트 발생 직후 다시 false로 전환

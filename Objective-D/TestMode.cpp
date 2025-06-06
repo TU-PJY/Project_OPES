@@ -8,8 +8,12 @@
 
 class TestObject : public GameObject {
 public:
+	FBX fbx{}, fbx2{};
+
+	bool Init{};
+
 	TestObject() {
-		SelectFBXAnimation(MESH.scorpion, "Attack 1");
+	
 	}
 
 	void InputKey(KeyEvent& Event) {
@@ -21,12 +25,26 @@ public:
 	}
 
 	void Update(float Delta) {
-		UpdateFBXAnimation(MESH.scorpion, Delta);
+		if (!Init) {
+			fbx.SelectFBXMesh(MESH.scorpion);
+			fbx.SelectAnimation("Walk");
+
+			//fbx2.SelectFBXMesh(MESH.scorpion);
+		//	fbx2.SelectAnimation("Death");
+			Init = true;
+		}
+
+		fbx.UpdateAnimation(Delta, true);
+		//std::cout << fbx.GetInplaceDelta() << std::endl;
 	}
 
 	void Render() {
 		BeginRender();
-		RenderFBX(MESH.scorpion, TEX.scorpion);
+		Transform::Move(TranslateMatrix, -fbx.GetInplaceDelta());
+		RenderFBX(fbx, TEX.scorpion);
+		//RenderFBX(MESH.scorpion, TEX.scorpion);
+
+		//Transform::Move(TranslateMatrix, 4.0, 0.0, 0.0);
 	}
 };
 

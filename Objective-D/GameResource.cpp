@@ -88,7 +88,7 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(System, MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
 	// monster
-	LoadAnimatedFBX(System, MESH.scorpion, "Resources//Models//monster//scorpion.fbx", "Resources//Models//monster//scorpion_animation.json");
+	LoadAnimatedFBX(System, MESH.scorpion, "Resources//Models//monster//scorpion.fbx", true, "Resources//Models//monster//scorpion_animation.json");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

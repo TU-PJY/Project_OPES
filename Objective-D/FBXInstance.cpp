@@ -1,13 +1,14 @@
 #include "MeshUtil.h"
+#include "Config.h"
 
-FBX::FBX(DeviceSystem& System, FBXMesh& TargetFBX, bool StopState) {
+FBX::FBX(FBXMesh& TargetFBX, bool StopState) {
 	if (InitState)
 		return;
 
 	FBXPtr = &TargetFBX;
-	Serialized = FBXPtr->SerilaizedFlag;
+	Serialized = FBXPtr->SerializedFlag;
 	SelectAnimation(FBXPtr->CurrentAnimationStackName);
-	CreateBuffer(System);
+	CreateBuffer(GlobalSystem);
 
 	if (StopState)
 		StopAnimationUpdate();
@@ -19,14 +20,19 @@ FBX::~FBX() {
 	ReleaseBuffer();
 }
 
-void FBX::SelectFBXMesh(DeviceSystem& System, FBXMesh& TargetFBX) {
+void FBX::SelectFBXMesh(FBXMesh& TargetFBX, bool StopState) {
 	if (InitState)
 		return;
 
 	FBXPtr = &TargetFBX;
-	Serialized = FBXPtr->SerilaizedFlag;
-	SelectAnimation(FBXPtr->CurrentAnimationStackName);
-	CreateBuffer(System);
+	Serialized = FBXPtr->SerializedFlag;
+	CreateBuffer(GlobalSystem);
+
+	TotalTime = FBXPtr->TotalTime;
+	StartTime = FBXPtr->StartTime;
+
+	if (!Serialized)
+		CurrentAnimationName = FBXPtr->CurrentAnimationStackName;
 }
 
 void FBX::SelectAnimation(std::string AnimationName) {
@@ -34,10 +40,7 @@ void FBX::SelectAnimation(std::string AnimationName) {
 		FbxAnimStack* Stack = FBXPtr->Scene->FindMember<FbxAnimStack>(AnimationName.c_str());
 
 		if (Stack) {
-			FBXPtr->Scene->SetCurrentAnimationStack(Stack);
-			FBXPtr->CurrentAnimationStackName = AnimationName;
 			CurrentAnimationName = AnimationName;
-
 			FbxTimeSpan span = Stack->GetLocalTimeSpan();
 			FbxTime start = span.GetStart();
 			FbxTime end = span.GetStop();
@@ -49,9 +52,7 @@ void FBX::SelectAnimation(std::string AnimationName) {
 	else {
 		auto Found = FBXPtr->SerializedAnimationStacks.find(AnimationName);
 		if (Found != FBXPtr->SerializedAnimationStacks.end()) {
-			FBXPtr->CurrentAnimationStackName = AnimationName;
 			CurrentAnimationName = AnimationName;
-
 			StartTime = Found->second.StartTime;
 			TotalTime = Found->second.EndTime;
 			CurrentTime = StartTime;
@@ -71,14 +72,11 @@ void FBX::SetSpeed(float Speed) {
 	CurrentSpeed = Speed;
 }
 
-void FBX::UpdateAnimation(float Delta) {
+void FBX::UpdateAnimation(float Delta, bool Inplace) {
 	if (!Running)
 		return;
 
 	CurrentTime += Delta * CurrentSpeed;
-
-	//	if(UpdateLimit > 0)
-	CurrentDelay += Delta;
 
 	if (CurrentTime >= TotalTime) {
 		float OverTime = CurrentTime - TotalTime;
@@ -88,43 +86,69 @@ void FBX::UpdateAnimation(float Delta) {
 		else
 			CurrentTime = StartTime + OverTime;
 	}
+
+	std::string SearchName;
+	if (!FBXPtr->SerializedFlag)
+		SearchName = CurrentAnimationName;
+	else
+		SearchName = FBXPtr->AnimationStackNames[0];
+
+	for (int M = 0; M < MeshCount; M++) {
+		auto FoundFrames = FBXPtr->MeshPart[M]->PrecomputedBoneMatrices.find(SearchName);
+		if (FoundFrames == FBXPtr->MeshPart[M]->PrecomputedBoneMatrices.end())
+			break;
+
+		if (M == 0 && Inplace)
+			RootFrame = FoundFrames->second;
+
+		CurrentFrame = std::clamp(static_cast<int>(CurrentTime * AnimationExtractFrame), 0, (int)FoundFrames->second.size() - 1);
+		
+		if (PrevFrame != CurrentFrame) {
+			FBXPtr->MeshPart[M]->UpdateSkinning(*FBXPtr, FoundFrames->second[CurrentFrame], PositionMapped[M], NormalMapped[M], CurrentTime);
+			FrameUpdateState = true;
+		}
+	}
+
+	if (FrameUpdateState) {
+		if (Inplace)
+			InplaceDelta = GetRootMoveDelta(RootFrame, true);
+		else
+			InplaceDelta = XMFLOAT3(0.0, 0.0, 0.0);
+		PrevFrame = CurrentFrame;
+		FrameUpdateState = false;
+	}
 }
 
-XMFLOAT3 FBX::GetRootMoveDelta(bool InPlace) {
-	if (!FBXPtr->GlobalRootNode)
+XMFLOAT3 FBX::GetRootMoveDelta(std::vector<BoneFrame>& BoneFrame, bool InPlace) {
+	if (BoneFrame.empty())
 		return XMFLOAT3(0.0, 0.0, 0.0);
 
-	FbxTime Time;
-	Time.SetSecondDouble(CurrentTime);
-	FbxAMatrix Matrix = FBXPtr->GlobalRootNode->EvaluateGlobalTransform(Time);
-	FbxVector4 T = Matrix.GetT();
+	int FirstFrame;
 
-	return XMFLOAT3(T[0], T[1], T[2]);
+	if (!Serialized)
+		FirstFrame = 0;
+	else
+		FirstFrame = std::clamp(static_cast<int>(StartTime * AnimationExtractFrame), 0, (int)BoneFrame.size() - 1);
+
+	// 첫 번째 본(루트 본)을 기준으로 이동량 측정
+	XMMATRIX currentMatrix = BoneFrame[CurrentFrame][0];
+	XMMATRIX previousMatrix = BoneFrame[FirstFrame][0];
+
+	XMVECTOR currentT = currentMatrix.r[3];
+	XMVECTOR previousT = previousMatrix.r[3];
+	XMVECTOR delta = currentT - previousT;
+
+	if (InPlace)
+		delta = XMVectorSet(XMVectorGetX(delta), 0.0f, XMVectorGetZ(delta), 0.0f);
+
+	XMFLOAT3 result{};
+	XMStoreFloat3(&result, delta);
+
+	return result;
 }
 
 std::string FBX::GetCurrentAnimation() {
 	return CurrentAnimationName;
-}
-
-void FBX::ApplyAnimation() {
-	//if (UpdateLimit > 0) {
-	if (CurrentDelay >= UpdateLimit) {
-		float OverTime = CurrentDelay - UpdateLimit;
-		CurrentDelay = OverTime;
-
-		if (!Serialized) {
-			if (CurrentAnimationName.compare(FBXPtr->CurrentAnimationStackName) != 0) {
-				FbxAnimStack* Stack = FBXPtr->Scene->FindMember<FbxAnimStack>(CurrentAnimationName.c_str());
-				if (Stack) {
-					FBXPtr->Scene->SetCurrentAnimationStack(Stack);
-					FBXPtr->CurrentAnimationStackName = CurrentAnimationName;
-				}
-			}
-		}
-
-		for (int M = 0; M < MeshCount; M++)
-			FBXPtr->MeshPart[M]->UpdateSkinning(PositionMapped[M], NormalMapped[M], CurrentTime);
-	}
 }
 
 void FBX::ResetAnimation() {
@@ -138,10 +162,17 @@ size_t FBX::GetMeshCount() {
 	return MeshCount;
 }
 
-void FBX::Render(ID3D12GraphicsCommandList* CmdList, int Index) {
-	FBXPtr->MeshPart[Index]->Render(CmdList, VertexBufferViews[Index]);
+void FBX::Render(int Index) {
+	FBXPtr->MeshPart[Index]->Render(GlobalCommandList, VertexBufferViews[Index]);
 }
 
+void FBX::ApplyAnimation() {
+
+}
+
+XMFLOAT3 FBX::GetInplaceDelta() {
+	return InplaceDelta;
+}
 ///////////////////////////////////////// private
 
 // 원본 FBX와 동일 사양으로 버퍼를 맞춘다.

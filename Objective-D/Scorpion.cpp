@@ -167,12 +167,15 @@ void Scorpion::Update(float Delta) {
 			move_selected = true;
 		}
 
-		if (fbx.GetCurrentAnimation() == "Walk")
+		if (fbx.GetCurrentAnimation() == "Walk") {
 			fbx.SetSpeed(5.0);
-		else
+			fbx.UpdateAnimation(Delta, true);
+		}
+		else {
 			fbx.SetSpeed(1.0);
-
 			fbx.UpdateAnimation(Delta);
+		}
+
 
 		terrainUT.InputPosition(position);
 		terrainUT.ClampToTerrain(terrainUT, position, 0.0);
@@ -211,13 +214,9 @@ void Scorpion::Render() {
 		return;
 
 	BeginRender();
-	fbx.ApplyAnimation();
 	Transform::Move(TranslateMatrix, position);
 	Transform::Rotate(TranslateMatrix, 0.0, rotation, 0.0);
-	if (fbx.GetCurrentAnimation() == "Walk") {
-		XMFLOAT3 Delta = fbx.GetRootMoveDelta(true);
-		Transform::Move(TranslateMatrix, -Delta.x, -Delta.y, -Delta.z);
-	}
+	Transform::Move(TranslateMatrix, -fbx.GetInplaceDelta());
 	
 	RenderFBX(fbx, TEX.scorpion);
 	UpdatePickMatrix();

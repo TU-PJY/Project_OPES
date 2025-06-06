@@ -70,10 +70,10 @@ public:
 	XMFLOAT3 dest_position{};
 	XMFLOAT3 dest_rotation{};
 
-	FBX heavy_idle{ GlobalSystem, MESH.heavy_idle, false };
-	FBX heavy_move{ GlobalSystem, MESH.heavy_move, false };
-	FBX heavy_shoot{ GlobalSystem, MESH.heavy_shoot, false };
-	FBX heavy_death{ GlobalSystem, MESH.heavy_death, false };
+	FBX heavy_idle{ MESH.heavy_idle, false };
+	FBX heavy_move{ MESH.heavy_move, false };
+	FBX heavy_shoot{ MESH.heavy_shoot, false };
+	FBX heavy_death{ MESH.heavy_death, false };
 
 	int current_state = STATE_IDLE;
 	int prev_state = STATE_IDLE;

@@ -1,5 +1,18 @@
 #include "DirectX_3D.h"
 
+XMFLOAT3 operator - (const XMFLOAT3& Value) {
+	return XMFLOAT3(-Value.x, -Value.y, -Value.z);
+}
+
+XMFLOAT3 operator * (const XMFLOAT3& Value, float MulValue) {
+	return XMFLOAT3(Value.x * MulValue, Value.y * MulValue, Value.z * MulValue);
+}
+
+std::ostream& operator << (std::ostream& os, const XMFLOAT3& Value) {
+	os << "[" << Value.x << ", " << Value.y << ", " << Value.z << "]";
+	return os;
+}
+
 UINT CbvSrvDescriptorIncrementSize = 0;
 
 ID3D12Resource* CreateBufferResource(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList,

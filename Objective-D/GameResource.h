@@ -5,6 +5,7 @@
 #include "ObjectShader.h"
 #include "BoundboxShader.h"
 #include "LineShader.h"
+#include "Config.h"
 
 struct ObjectStruct {
 	XMFLOAT3 Position;
@@ -140,7 +141,7 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 }
 
 // 애니메이션 FBX 파일 로드용 함수
-inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::string Directory, std::string jsonFile="") {
+inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::string Directory, bool ComputeAnimation = false, std::string jsonFile="") {
 	if (fbxUtil.LoadAnimatedFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateAnimatedScene();
 		fbxUtil.GetAnimatedVertexData(System);
@@ -152,16 +153,18 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::stri
 
 	// 직렬화 애니메이션 데이터를 가진 경우 별도로 애니메이션 키프레임을 생성한다.
 	if (!jsonFile.empty()) {
-		TargetMesh.SerilaizedFlag = true;
+		TargetMesh.SerializedFlag = true;
 		fbxUtil.CreateAnimationStacksFromJSON(jsonFile, TargetMesh);
 	}
 
-	// 최적화를 위해 애니메이션 행렬 데이터를 미리 계산한다.
-	int StackCount = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
-	for (int i = 0; i < StackCount; ++i) {
-		FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
-		if (Stack)
-			fbxUtil.PrecomputeBoneMatrices(TargetMesh, Stack->GetName());
+	if (ComputeAnimation) {
+		// 최적화를 위해 애니메이션 행렬 데이터를 미리 계산한다.
+		int StackCount = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
+		for (int i = 0; i < StackCount; ++i) {
+			FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
+			if (Stack)
+				fbxUtil.PrecomputeBoneMatrices(TargetMesh, Stack->GetName(), AnimationExtractFrame);
+		}
 	}
 }
 

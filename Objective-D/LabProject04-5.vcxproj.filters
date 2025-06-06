@@ -508,6 +508,12 @@
     <ClCompile Include="TestMode.cpp">
       <Filter>[1]____________[ Game Mode ]\[ Test bed ]</Filter>
     </ClCompile>
+    <ClCompile Include="FBXInstance.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Mesh Util ]</Filter>
+    </ClCompile>
+    <ClCompile Include="FBXUtil.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Mesh Util ]</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="LabProject04-5.rc">
