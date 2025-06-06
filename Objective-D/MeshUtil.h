@@ -230,6 +230,8 @@ private:
 	XMFLOAT3 InplaceDelta{};
 
 	bool FrameUpdateState{};
+	float CurrentDelay{};
+	float DestDelay{};
 
 public:
 	FBX();

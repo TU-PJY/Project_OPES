@@ -198,12 +198,9 @@ void Mesh::UpdateSkinning(FBXMesh& Source, std::vector<XMMATRIX>& BoneMatrices, 
 			}
 		}
 
-		XMStoreFloat3(&Position[v], SkinnedPosition);
-		XMStoreFloat3(&Normal[v], SkinnedNormal);
+		XMStoreFloat3(&reinterpret_cast<XMFLOAT3*>(PMap)[v], SkinnedPosition);
+		XMStoreFloat3(&reinterpret_cast<XMFLOAT3*>(NMap)[v], SkinnedNormal);
 	}
-
-	memcpy(PMap, Position, sizeof(XMFLOAT3) * Vertices);
-	memcpy(NMap, Normal, sizeof(XMFLOAT3) * Vertices);
 }
 
 void Mesh::UpdateSkinning(FBXMesh& Source, float Time) {

@@ -20,7 +20,7 @@ void MonsterSpawner::Update(float Delta) {
 	float delay = 0.5;
 	int id = 1;
 
-	for (int i = 0; i < 3; i++) {
+	for (int i = 0; i < 5; i++) {
 		if (map_name.compare("map1") == 0) {
 			scene.AddObject(new Scorpion(map_name, spawn_pos1, delay, id), "scorpion", LAYER1);
 			delay += 0.5;

@@ -12,6 +12,8 @@ FBX::FBX(FBXMesh& TargetFBX, bool StopState) {
 
 	if (StopState)
 		StopAnimationUpdate();
+
+	DestDelay = 1.0 / (float)AnimationExtractFrame;
 }
 
 FBX::FBX() {}
@@ -33,6 +35,8 @@ void FBX::SelectFBXMesh(FBXMesh& TargetFBX, bool StopState) {
 
 	if (!Serialized)
 		CurrentAnimationName = FBXPtr->CurrentAnimationStackName;
+
+	DestDelay = 1.0 / (float)AnimationExtractFrame;
 }
 
 void FBX::SelectAnimation(std::string AnimationName) {
@@ -87,35 +91,43 @@ void FBX::UpdateAnimation(float Delta, bool Inplace) {
 			CurrentTime = StartTime + OverTime;
 	}
 
-	std::string SearchName;
-	if (!FBXPtr->SerializedFlag)
-		SearchName = CurrentAnimationName;
-	else
-		SearchName = FBXPtr->AnimationStackNames[0];
+	CurrentDelay += Delta;
+	if (CurrentDelay >= DestDelay) {
+		CurrentDelay -= DestDelay;
 
-	for (int M = 0; M < MeshCount; M++) {
-		auto FoundFrames = FBXPtr->MeshPart[M]->PrecomputedBoneMatrices.find(SearchName);
-		if (FoundFrames == FBXPtr->MeshPart[M]->PrecomputedBoneMatrices.end())
-			break;
-
-		if (M == 0 && Inplace)
-			RootFrame = FoundFrames->second;
-
-		CurrentFrame = std::clamp(static_cast<int>(CurrentTime * AnimationExtractFrame), 0, (int)FoundFrames->second.size() - 1);
-		
-		if (PrevFrame != CurrentFrame) {
-			FBXPtr->MeshPart[M]->UpdateSkinning(*FBXPtr, FoundFrames->second[CurrentFrame], PositionMapped[M], NormalMapped[M], CurrentTime);
-			FrameUpdateState = true;
-		}
-	}
-
-	if (FrameUpdateState) {
-		if (Inplace)
-			InplaceDelta = GetRootMoveDelta(RootFrame, true);
+		std::string SearchName;
+		if (!FBXPtr->SerializedFlag)
+			SearchName = CurrentAnimationName;
 		else
-			InplaceDelta = XMFLOAT3(0.0, 0.0, 0.0);
-		PrevFrame = CurrentFrame;
-		FrameUpdateState = false;
+			SearchName = FBXPtr->AnimationStackNames[0];
+
+		for (int M = 0; M < MeshCount; M++) {
+			auto FoundFrames = FBXPtr->MeshPart[M]->PrecomputedBoneMatrices.find(SearchName);
+			if (FoundFrames == FBXPtr->MeshPart[M]->PrecomputedBoneMatrices.end())
+				break;
+
+			CurrentFrame = std::clamp(static_cast<int>(CurrentTime * AnimationExtractFrame), 0, (int)FoundFrames->second.size() - 1);
+
+			if (PrevFrame != CurrentFrame) {
+				if (M == 0 && Inplace)
+					RootFrame = FoundFrames->second;
+
+				FBXPtr->MeshPart[M]->UpdateSkinning(*FBXPtr, FoundFrames->second[CurrentFrame], PositionMapped[M], NormalMapped[M], CurrentTime);
+				FrameUpdateState = true;
+			}
+
+			else
+				break;
+		}
+
+		if (FrameUpdateState) {
+			if (Inplace)
+				InplaceDelta = GetRootMoveDelta(RootFrame, true);
+			else
+				InplaceDelta = XMFLOAT3(0.0, 0.0, 0.0);
+			PrevFrame = CurrentFrame;
+			FrameUpdateState = false;
+		}
 	}
 }
 
