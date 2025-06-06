@@ -506,7 +506,7 @@
       <Filter>[2]____________[ Game Object ]\[ Particle ]</Filter>
     </ClCompile>
     <ClCompile Include="TestMode.cpp">
-      <Filter>[1]____________[ Game Mode ]\[0] - [ Pack ]</Filter>
+      <Filter>[1]____________[ Game Mode ]\[ Test bed ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

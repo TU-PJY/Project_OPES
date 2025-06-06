@@ -8,26 +8,21 @@
 
 class TestObject : public GameObject {
 public:
-	GameObject* obj{};
-	TestObject() {
-		//obj = scene.AddObject(new MuzzleFlash(), "flash", LAYER3);
-	}
-
 	void InputKey(KeyEvent& Event) {
 		
 	}
 
 	void InputMouse(MouseEvent& Event) {
-		if (Event.Type == WM_LBUTTONDOWN)
-			obj->EnableRender(0.1);
+
 	}
 
 	void Update(float Delta) {
-		
+		UpdateFBXAnimation(MESH.scorpion, Delta);
 	}
 
 	void Render() {
-		
+		BeginRender();
+		RenderFBX(MESH.scorpion, TEX.scorpion);
 	}
 };
 

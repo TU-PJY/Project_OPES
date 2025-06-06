@@ -178,6 +178,49 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 	return height;
 }
 
+void Mesh::UpdateSkinning(FBXMesh& Source, float Time) {
+	
+
+	////BoundingOrientedBox::CreateFromPoints(OOBB, Vertices, Position, sizeof(XMFLOAT3));
+
+	// 애니메이션 이름으로 프레임 목록 획득
+	auto it = PrecomputedBoneMatrices.find("Take 001");
+	if (it == PrecomputedBoneMatrices.end()) return;
+
+	const std::vector<BoneFrame>& boneFrames = it->second;
+
+	// 시간 → 프레임 인덱스
+	float localTime = Time - Source.StartTime;
+	float fps = 60.0f;
+	int frameIndex = std::clamp(static_cast<int>(localTime * fps), 0, (int)boneFrames.size() - 1);
+
+	const std::vector<XMMATRIX>& BoneMatrices = boneFrames[frameIndex];
+
+	for (UINT v = 0; v < Vertices; ++v) {
+		XMVECTOR skinnedPos = XMVectorZero();
+		XMVECTOR skinnedNorm = XMVectorZero();
+		XMVECTOR pos = XMLoadFloat3(&OriginalPosition[v]);
+		XMVECTOR norm = XMLoadFloat3(&OriginalNormal[v]);
+
+		UINT bi[4] = { BoneIndices[v].x, BoneIndices[v].y, BoneIndices[v].z, BoneIndices[v].w };
+		float bw[4] = { BoneWeights[v].x, BoneWeights[v].y, BoneWeights[v].z, BoneWeights[v].w };
+
+		for (int i = 0; i < 4; ++i) {
+			if (bw[i] > 0.0f && bi[i] < BoneMatrices.size()) {
+				XMMATRIX transform = BoneMatrices[bi[i]];
+				skinnedPos += XMVector3Transform(pos, transform) * bw[i];
+				skinnedNorm += XMVector3TransformNormal(norm, transform) * bw[i];
+			}
+		}
+
+		XMStoreFloat3(&Position[v], skinnedPos);
+		XMStoreFloat3(&Normal[v], skinnedNorm);
+	}
+
+	memcpy(PositionMapped, Position, sizeof(XMFLOAT3) * Vertices);
+	memcpy(NormalMapped, Normal, sizeof(XMFLOAT3) * Vertices);
+}
+
 void Mesh::UpdateSkinning(float Time) {
 	if (!BoneIndices || !BoneWeights) {
 		if (FbxNodePtr) {
@@ -230,11 +273,6 @@ void Mesh::UpdateSkinning(float Time) {
 			XMStoreFloat3(&Normal[v], SkinnedNormal);
 		}
 	}
-
-	//BoundingOrientedBox::CreateFromPoints(OOBB, Vertices, Position, sizeof(XMFLOAT3));
-
-	memcpy(PositionMapped, Position, sizeof(XMFLOAT3) * Vertices);
-	memcpy(NormalMapped, Normal, sizeof(XMFLOAT3) * Vertices);
 }
 
 void Mesh::UpdateSkinning(void*& PMap, void*& NMap, float Time) {
@@ -906,6 +944,32 @@ std::vector<FBXVertex> FBXUtil::GetVertexVector() {
 
 void FBXUtil::ClearVertexVector() {
 	ParsedVertices.clear();
+}
+
+void FBXUtil::PrecomputeBoneMatrices(FBXMesh& mesh, const std::string& animationName, float fps) {
+	SelectAnimation(mesh, animationName);              // 애니메이션 스택 설정
+	GetAnimationPlayTime(mesh, animationName);         // StartTime, EndTime 설정
+
+	float duration = mesh.TotalTime;
+	int frameCount = static_cast<int>(duration * fps);
+
+	// 각 Mesh별로 boneFrame 벡터 미리 준비
+	for (auto m : mesh.MeshPart) {
+		std::vector<BoneFrame> boneFrames;
+		boneFrames.resize(frameCount);
+
+		for (int i = 0; i < frameCount; ++i) {
+			float time = mesh.StartTime + (i / fps);
+			std::vector<XMMATRIX> matrices;
+
+			// 이 mesh에 해당하는 본만 계산
+			GetBoneMatricesFromScene(m, time, matrices);
+
+			boneFrames[i] = std::move(matrices);
+		}
+
+		m->PrecomputedBoneMatrices[animationName] = std::move(boneFrames);
+	}
 }
 
 void FBXUtil::CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& TargetMesh) {

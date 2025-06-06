@@ -186,7 +186,7 @@ void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
 			TargetMesh.CurrentTime = OverTime;
 		}
 		for (auto const& M : TargetMesh.MeshPart)
-			M->UpdateSkinning(TargetMesh.CurrentTime);
+			M->UpdateSkinning(TargetMesh, TargetMesh.CurrentTime);
 	}
 	else {
 		TargetMesh.CurrentTime += FrameTime;
@@ -196,7 +196,7 @@ void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
 			TargetMesh.CurrentTime = TargetMesh.StartTime + OverTime;
 		}
 		for (auto const& M : TargetMesh.MeshPart)
-			M->UpdateSkinning(TargetMesh.CurrentTime);
+			M->UpdateSkinning(TargetMesh, TargetMesh.CurrentTime);
 	}
 }
 

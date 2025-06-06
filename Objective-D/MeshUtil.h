@@ -5,6 +5,9 @@
 #include <map>
 #include <set>
 
+using BoneFrame = std::vector<XMMATRIX>; // 한 프레임의 본 행렬들
+using BoneAnimationCache = std::unordered_map<std::string, std::vector<BoneFrame>>;
+
 struct FBXVertex {
 	float px, py, pz;   // Position
 	float nx, ny, nz;   // Normal
@@ -31,6 +34,8 @@ typedef struct {
 
 class Mesh;
 typedef struct {
+	BoneAnimationCache PrecomputedBoneMatrices;
+
 	FbxScene* Scene;
 	std::vector<Mesh*> MeshPart;
 	std::vector<AnimationChannel> AnimationChannel;
@@ -59,6 +64,7 @@ public:
 
 	int MeshType{};
 
+	std::unordered_map<std::string, std::vector<BoneFrame>> PrecomputedBoneMatrices;
 	std::unordered_map<int, std::vector<int>> ControlPointToVertexIndices{};
 
 	XMUINT4* BoneIndices{};                      // 정점당 본 인덱스 (최대 4개)
@@ -135,6 +141,7 @@ public:
 	float GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix);
 	bool IsPointInTriangle(XMFLOAT2& pt, XMFLOAT2& v0, XMFLOAT2& v1, XMFLOAT2& v2);
 	float ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XMFLOAT3& v2);
+	void UpdateSkinning(FBXMesh& Source, float Time);
 	void UpdateSkinning(float Time);
 	void UpdateSkinning(void*& PMap, void*& NMap, float Time);
 };
@@ -172,6 +179,7 @@ public:
 	void ResetCurrentTime(FBXMesh& TargetMesh);
 	std::vector<FBXVertex> GetVertexVector();
 	void ClearVertexVector();
+	void PrecomputeBoneMatrices(FBXMesh& mesh, const std::string& animationName, float fps = 60.0f);
 	void CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& TargetMesh);
 	XMFLOAT3 GetRootMoveDelta(FBXMesh& TargetMesh, bool InPlace=false);
 };

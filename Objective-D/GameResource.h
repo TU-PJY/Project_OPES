@@ -155,6 +155,14 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::stri
 		TargetMesh.SerilaizedFlag = true;
 		fbxUtil.CreateAnimationStacksFromJSON(jsonFile, TargetMesh);
 	}
+
+	// 최적화를 위해 애니메이션 행렬 데이터를 미리 계산한다.
+	int StackCount = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
+	for (int i = 0; i < StackCount; ++i) {
+		FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
+		if (Stack)
+			fbxUtil.PrecomputeBoneMatrices(TargetMesh, Stack->GetName());
+	}
 }
 
 // 애니메이션이 없는 FBX 파일 로드용 함수
