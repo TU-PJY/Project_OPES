@@ -32,6 +32,12 @@ typedef struct {
 	std::string Name;
 } SerializedAnimationInfo;
 
+
+
+
+
+
+
 class Mesh;
 typedef struct {
 	BoneAnimationCache PrecomputedBoneMatrices;
@@ -45,14 +51,15 @@ typedef struct {
 
 	std::vector<std::string> AnimationStackNames; // 전체 스택 이름들
 	std::string CurrentAnimationStackName;        // 현재 선택된 스택 이름
-	int CurrentAnimationStackIndex;          // 현재 선택된 스택 인덱스
 
 	// 직렬화 애니메이션 데이터를 가진 경우 해당 컨테이너를 사용한다.
 	bool SerilaizedFlag;
+	std::string FirstStackName;
 	std::unordered_map<std::string, SerializedAnimationInfo> SerializedAnimationStacks;
 
 	FbxNode* GlobalRootNode;
 }FBXMesh;
+
 
 class Mesh {
 private:

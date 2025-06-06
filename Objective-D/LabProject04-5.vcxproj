@@ -221,6 +221,8 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="CollisionUtil.cpp" />
     <ClCompile Include="CrossHair.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
+    <ClCompile Include="FBXInstance.cpp" />
+    <ClCompile Include="FBXUtil.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="HP_Indicator.cpp" />

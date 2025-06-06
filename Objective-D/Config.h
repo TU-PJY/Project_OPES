@@ -1,6 +1,17 @@
 #pragma once
 #include <tchar.h>
 
+///////////////////////////////////////////
+// 애니메이션 데이터 추출 모드
+// 이 모드를 활성화 하면 지정한 Animated FBX에서 애니메이션 행렬 변환 데이터를 추출한 후 종료한다.
+constexpr bool AnimationDataExtractMode = false;
+
+// 애니메이션 데이터 추출 프레임
+// 데이터를 추출하는 간격을 설정한다. 높은 프레임일수록 추출이 더 오래걸리지만 그 만큼 더 부드러운 애니메이션을 사용할 수 있다.
+constexpr int AnimationExtractFrame = 60;
+///////////////////////////////////////////
+
+
 // 카메라 모드 설정
 // 카메라 클래스 멤버 함수 Update(float FT)에서 실행할 때 사용하는 열거형 클래스이다. 카메라 클래스에서 자세히 설명하도록 한다.
 enum class CamMode{ MODE1 };
@@ -17,7 +28,7 @@ constexpr bool START_WITH_FULL_SCREEN = false;
 constexpr bool DEV_EXIT = true;
 
 // 최대 프레임 제한을 설정한다. 0으로 설정 시 최대 프레임으로 동작한다.
-constexpr float FRAME_LIMITS = 60;
+constexpr float FRAME_LIMITS = 0;
 
 // 바운드박스 표시 여부를 설정한다.
 //#define SHOW_BOUND_BOX

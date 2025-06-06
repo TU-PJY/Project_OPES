@@ -8,6 +8,10 @@
 
 class TestObject : public GameObject {
 public:
+	TestObject() {
+		SelectFBXAnimation(MESH.scorpion, "Attack 1");
+	}
+
 	void InputKey(KeyEvent& Event) {
 		
 	}
