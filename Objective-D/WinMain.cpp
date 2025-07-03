@@ -1,4 +1,4 @@
-#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+ï»¿#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #define MAX_LOADSTRING 100
 #include "Config.h"
 #include "Objective-D.h"
@@ -17,13 +17,19 @@
 
 #include "MonsterSpawner.h"
 
-//¼­¹ö
+//ì„œë²„
 #include <winsock2.h>
 //#include <windows.h>
 #include <Ws2tcpip.h>  
 #include <atlconv.h>
 #include <typeinfo>
 #include <queue>
+#include <thread>
+#include <mutex>
+#include <atomic>
+#include <condition_variable>
+
+
 //#include <iostream>
 //#include <conio.h>
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
@@ -35,14 +41,18 @@
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 9000
 
+
+std::atomic<bool> NetRunning{ true };
+std::mutex PacketMutex;
+
 SOCKET clientSocket;
 bool isRunning = true;
 bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = false;//Å¬¶ó¸¸ ÄÑ¼­ ÇÒ¶© false·Î ¹Ù²ã¼­ÇÏ±â
-bool localServer = false;
+bool useServer = true;//í´ë¼ë§Œ ì¼œì„œ í• ë• falseë¡œ ë°”ê¿”ì„œí•˜ê¸°
+bool localServer = true;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -169,12 +179,12 @@ bool IsNewPlayer(unsigned int ID) {
 
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
 	if (err != 0 || num_bytes == 0) {
-		//std::cout << "[Å¬¶óÀÌ¾ğÆ®] ¼­¹ö ¿¬°á Á¾·á\n";
+		//std::cout << "[í´ë¼ì´ì–¸íŠ¸] ì„œë²„ ì—°ê²° ì¢…ë£Œ\n";
 		isRunning = false;
 		return;
 	}
 	//std::cout << "recv\n";
-	//std::cout << "[Å¬¶óÀÌ¾ğÆ®] ¼ö½ÅµÈ µ¥ÀÌÅÍ Å©±â: " << num_bytes << " bytes\n";
+	//std::cout << "[í´ë¼ì´ì–¸íŠ¸] ìˆ˜ì‹ ëœ ë°ì´í„° í¬ê¸°: " << num_bytes << " bytes\n";
 
 	PacketType* type = reinterpret_cast<PacketType*>(recv_buffer);
 //	std::cout << typeid(type).name() << std::endl;
@@ -183,25 +193,31 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(recv_buffer);
 		ChatPacket_StoC* chatPacket = reinterpret_cast<ChatPacket_StoC*>(recv_buffer);
 		std::string msg{ chatPacket->message,num_bytes - sizeof(PacketType) - sizeof(unsigned int) };
-		//std::cout << "[¼­¹ö]Ã¤ÆÃ: " << chatPacket->id << ":" << msg << std::endl;
+		//std::cout << "[ì„œë²„]ì±„íŒ…: " << chatPacket->id << ":" << msg << std::endl;
 	}
 
 	else if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
-		//std::cout << "[¼­¹ö]ÀÌµ¿: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
+		//std::cout << "[ì„œë²„]ì´ë™: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
 		PacketWork work{ PACKET_MOVE, movePacket->id, XMFLOAT3(movePacket->x, movePacket->y, movePacket->z), 0};
-		PacketProcessList.emplace(work);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			PacketProcessList.emplace(work);
+		}
 			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));*/
 	}
 
 	else if (*type == PacketType::VIEW_ANGLE) {
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
-		//std::cout << "[¼­¹ö]½Ã¼±: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
+		//std::cout << "[ì„œë²„]ì‹œì„ : " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
 		PacketWork work{ PACKET_ROTATE, viewAnglePacket->id, XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z), 0 };
-		PacketProcessList.emplace(work);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			PacketProcessList.emplace(work);
+		}
 			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
 				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));*/
 		
@@ -209,34 +225,40 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
-		std::cout << "[¼­¹ö] »óÅÂ: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
+		std::cout << "[ì„œë²„] ìƒíƒœ: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
 		PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3(0.0, 0.0, 0.0), aniPacket->animationType };
-		PacketProcessList.emplace(work);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			PacketProcessList.emplace(work);
+		}
 	}
 
 	else if (*type == PacketType::PLAYER_TO_MOSTER) {
 		Player2Monster* p2m_packet = reinterpret_cast<Player2Monster*>(recv_buffer);
 
 		PacketWork work{ PACKET_MONSTER_DAMAGE, p2m_packet->monsterId, XMFLOAT3(0.0, 0.0, 0.0), p2m_packet->damage };
-		PacketProcessList.emplace(work);
-		//ÇÇÇØÀÔÀº ¸ó½ºÅÍ id,ÇÇÇØ·® ¾ò´Â ºÎºĞÀ» Ã³¸®ÇØ¾ßÇÔ
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			PacketProcessList.emplace(work);
+		}
+		//í”¼í•´ì…ì€ ëª¬ìŠ¤í„° id,í”¼í•´ëŸ‰ ì–»ëŠ” ë¶€ë¶„ì„ ì²˜ë¦¬í•´ì•¼í•¨
 	}
 
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
-		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///·ë id°¡ 0ÀÏ½Ã ¸¸µé¾î Áø°ÍÀÌ ¾Æ´Ô ´ë±âÁßÀÎ »óÅÂÀÓ
+		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///ë£¸ idê°€ 0ì¼ì‹œ ë§Œë“¤ì–´ ì§„ê²ƒì´ ì•„ë‹˜ ëŒ€ê¸°ì¤‘ì¸ ìƒíƒœì„
 		if (0 != EnterPacket->roomID) {
 			enter_room = true;
 		}
 		else {
-			std::cout << "´ë±âÁß.." << std::endl;
+			std::cout << "ëŒ€ê¸°ì¤‘.." << std::endl;
 		}
 	}
 
 	else if (*type == PacketType::NEW_CLIENT) {
 		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(recv_buffer);
-		std::cout << "»õ·Î¿î Å¬¶óµé¾î¿È!:" << newClientPacket->id <<std::endl;
+		std::cout << "ìƒˆë¡œìš´ í´ë¼ë“¤ì–´ì˜´!:" << newClientPacket->id <<std::endl;
 
 		IsNewPlayer(newClientPacket->id);
 
@@ -250,16 +272,16 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(recv_buffer);
 		for (unsigned int i = 0; i < pkt->count; ++i) {
 			auto& info = pkt->clients[i];
-			std::cout << "[ÃÊ±âÈ­] Å¬¶óÀÌ¾ğÆ® " << info.id
-				<< " À§Ä¡: " << info.x << "," << info.y << "," << info.z
-				<< " ½Ã¼±: " << info.angle_x << "," << info.angle_y << "," << info.angle_z
+			std::cout << "[ì´ˆê¸°í™”] í´ë¼ì´ì–¸íŠ¸ " << info.id
+				<< " ìœ„ì¹˜: " << info.x << "," << info.y << "," << info.z
+				<< " ì‹œì„ : " << info.angle_x << "," << info.angle_y << "," << info.angle_z
 				<< std::endl;
 
-			// TODO: ID¿¡ ÇØ´çÇÏ´Â °ÔÀÓ °´Ã¼ »ı¼º ¶Ç´Â ÃÊ±âÈ­
+			// TODO: IDì— í•´ë‹¹í•˜ëŠ” ê²Œì„ ê°ì²´ ìƒì„± ë˜ëŠ” ì´ˆê¸°í™”
 		}
 	}
 
-	// ´ÙÀ½ ¼ö½Å ¿äÃ»
+	// ë‹¤ìŒ ìˆ˜ì‹  ìš”ì²­
 	recv_wsabuf[0].buf = recv_buffer;
 	recv_wsabuf[0].len = sizeof(recv_buffer);
 	DWORD recv_flag = 0;
@@ -267,15 +289,15 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	int result = WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
 	if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-		std::cerr << "[Å¬¶óÀÌ¾ğÆ®] µ¥ÀÌÅÍ ¼ö½Å ¿À·ù\n";
+		std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ë°ì´í„° ìˆ˜ì‹  ì˜¤ë¥˜\n";
 		isRunning = false;
 	}
 }
 
-// µ¥ÀÌÅÍ Àü¼Û Äİ¹é ÇÔ¼ö
+// ë°ì´í„° ì „ì†¡ ì½œë°± í•¨ìˆ˜
 void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
 	if (err != 0 || num_bytes == 0) {
-		std::cerr << "[Å¬¶óÀÌ¾ğÆ®] µ¥ÀÌÅÍ Àü¼Û ½ÇÆĞ\n";
+		std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ë°ì´í„° ì „ì†¡ ì‹¤íŒ¨\n";
 		isRunning = false;
 	}
 //	std::cout << "send\n";
@@ -285,8 +307,57 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	ZeroMemory(&recv_over, sizeof(recv_over));
 	WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
 }
+void NetworkThread(bool localServer, const wchar_t* cmdLine)
+{
+	char ipStr[64] = { 0 };
 
-// ÀÌµ¿ ÆĞÅ¶ Àü¼Û ÇÔ¼ö
+#ifdef UNICODE
+	WideCharToMultiByte(CP_ACP, 0, cmdLine, -1, ipStr, sizeof(ipStr), NULL, NULL);
+#else
+	strncpy(ipStr, cmdLine, sizeof(ipStr) - 1);
+#endif
+
+	WSADATA wsaData;
+	WSAStartup(MAKEWORD(2, 2), &wsaData);
+
+	clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
+
+	BOOL bNoDelay = TRUE;
+	setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
+
+	SOCKADDR_IN serverAddr;
+	serverAddr.sin_family = AF_INET;
+	serverAddr.sin_port = htons(SERVER_PORT);
+
+	if (!localServer)
+		inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);
+	else
+		inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);
+
+	if (WSAConnect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
+		std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì„œë²„ ì—°ê²° ì‹¤íŒ¨\n";
+		return;
+	}
+
+	std::cout << "[í´ë¼ì´ì–¸íŠ¸] ì„œë²„ì— ì—°ê²°ë¨\n";
+
+	recv_wsabuf[0].buf = recv_buffer;
+	recv_wsabuf[0].len = sizeof(recv_buffer);
+	DWORD recv_flag = 0;
+	ZeroMemory(&recv_over, sizeof(recv_over));
+
+	int __result = WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
+	if (__result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+		std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì²« ë²ˆì§¸ ë°ì´í„° ìˆ˜ì‹  ì˜¤ë¥˜\n";
+		return;
+	}
+
+	// ì½œë°± ì‹¤í–‰ ë£¨í”„
+	while (NetRunning.load()) {
+		SleepEx(INFINITE, TRUE); // RecvCallback, SendCallback ì‹¤í–‰ë¨
+	}
+}
+// ì´ë™ íŒ¨í‚· ì „ì†¡ í•¨ìˆ˜
 void SendMovePacket(float x, float y,float z) {
 	if (enter_room) {
 		MovePacket_CtoS movePacket = {};
@@ -299,18 +370,18 @@ void SendMovePacket(float x, float y,float z) {
 		wsaBuf.buf = reinterpret_cast<char*>(&movePacket);
 		wsaBuf.len = sizeof(MovePacket_CtoS);
 
-		// WSAOVERLAPPED ±¸Á¶Ã¼¸¦ µ¿Àû ÇÒ´ç
+		// WSAOVERLAPPED êµ¬ì¡°ì²´ë¥¼ ë™ì  í• ë‹¹
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
 		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//ºñµ¿±âio
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//ë¹„ë™ê¸°io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
-				std::cerr << "[Å¬¶óÀÌ¾ğÆ®] ÀÌµ¿ ÆĞÅ¶ Àü¼Û ¿À·ù: " << err << "\n";
-				delete send_over;  // ¿À·ù ¹ß»ı ½Ã ÇÒ´ç ÇØÁ¦
+				std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì´ë™ íŒ¨í‚· ì „ì†¡ ì˜¤ë¥˜: " << err << "\n";
+				delete send_over;  // ì˜¤ë¥˜ ë°œìƒ ì‹œ í• ë‹¹ í•´ì œ
 			}
 		}
 	}
@@ -326,18 +397,18 @@ void SendViewingAnglePacket(float x, float y, float z) {
 		wsaBuf.buf = reinterpret_cast<char*>(&viewAnglePacket);
 		wsaBuf.len = sizeof(ViewingAnglePacket_CtoS);
 
-		// WSAOVERLAPPED ±¸Á¶Ã¼¸¦ µ¿Àû ÇÒ´ç
+		// WSAOVERLAPPED êµ¬ì¡°ì²´ë¥¼ ë™ì  í• ë‹¹
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
 		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//ºñµ¿±âio
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//ë¹„ë™ê¸°io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
-				std::cerr << "[Å¬¶óÀÌ¾ğÆ®] ÀÌµ¿ ÆĞÅ¶ Àü¼Û ¿À·ù: " << err << "\n";
-				delete send_over;  // ¿À·ù ¹ß»ı ½Ã ÇÒ´ç ÇØÁ¦
+				std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì´ë™ íŒ¨í‚· ì „ì†¡ ì˜¤ë¥˜: " << err << "\n";
+				delete send_over;  // ì˜¤ë¥˜ ë°œìƒ ì‹œ í• ë‹¹ í•´ì œ
 			}
 		}
 	}
@@ -354,18 +425,18 @@ void SendAnimaionPacket(unsigned short playerState) {
 		wsaBuf.buf = reinterpret_cast<char*>(&animationPacket);
 		wsaBuf.len = sizeof(AnimationPacket_CtoS);
 
-		// WSAOVERLAPPED ±¸Á¶Ã¼¸¦ µ¿Àû ÇÒ´ç
+		// WSAOVERLAPPED êµ¬ì¡°ì²´ë¥¼ ë™ì  í• ë‹¹
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
 		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//ºñµ¿±âio
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//ë¹„ë™ê¸°io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
-				std::cerr << "[Å¬¶óÀÌ¾ğÆ®] ÀÌµ¿ ÆĞÅ¶ Àü¼Û ¿À·ù: " << err << "\n";
-				delete send_over;  // ¿À·ù ¹ß»ı ½Ã ÇÒ´ç ÇØÁ¦
+				std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì´ë™ íŒ¨í‚· ì „ì†¡ ì˜¤ë¥˜: " << err << "\n";
+				delete send_over;  // ì˜¤ë¥˜ ë°œìƒ ì‹œ í• ë‹¹ í•´ì œ
 			}
 		}
 	}
@@ -381,23 +452,23 @@ void SendPlayer2MonsterPacket(unsigned int monsterID,unsigned int damage) {
 		wsaBuf.buf = reinterpret_cast<char*>(&damagePacket);
 		wsaBuf.len = sizeof(Player2Monster);
 
-		// WSAOVERLAPPED ±¸Á¶Ã¼¸¦ µ¿Àû ÇÒ´ç
+		// WSAOVERLAPPED êµ¬ì¡°ì²´ë¥¼ ë™ì  í• ë‹¹
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
 		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
 
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//ºñµ¿±âio
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//ë¹„ë™ê¸°io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
-				std::cerr << "[Å¬¶óÀÌ¾ğÆ®] ÀÌµ¿ ÆĞÅ¶ Àü¼Û ¿À·ù: " << err << "\n";
-				delete send_over;  // ¿À·ù ¹ß»ı ½Ã ÇÒ´ç ÇØÁ¦
+				std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì´ë™ íŒ¨í‚· ì „ì†¡ ì˜¤ë¥˜: " << err << "\n";
+				delete send_over;  // ì˜¤ë¥˜ ë°œìƒ ì‹œ í• ë‹¹ í•´ì œ
 			}
 		}
 	}
 }
-// Ã¤ÆÃ ÆĞÅ¶ Àü¼Û ÇÔ¼ö
+// ì±„íŒ… íŒ¨í‚· ì „ì†¡ í•¨ìˆ˜
 void SendChatPacket(const char* message) {
 	if (enter_room) {
 		ChatPacket_CtoS chatPacket = {};
@@ -411,9 +482,9 @@ void SendChatPacket(const char* message) {
 
 		WSAOVERLAPPED send_over = { 0 };
 
-		int result = WSASend(clientSocket, wsaBuf, 1, NULL, 0, &send_over, SendCallback);//µ¿±â io
+		int result = WSASend(clientSocket, wsaBuf, 1, NULL, 0, &send_over, SendCallback);//ë™ê¸° io
 		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-			std::cerr << "[Å¬¶óÀÌ¾ğÆ®] Ã¤ÆÃ ÆĞÅ¶ Àü¼Û ¿À·ù\n";
+			std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì±„íŒ… íŒ¨í‚· ì „ì†¡ ì˜¤ë¥˜\n";
 		}
 	}
 }
@@ -424,30 +495,30 @@ int SCREEN_HEIGHT = GetSystemMetrics(SM_CYSCREEN);
 
 Framework framework;
 
-// ÇÁ·¹ÀÓ¿öÅ©, Ä«¸Ş¶ó, ¸¶¿ì½ºÀ¯Æ¿, ÅÍ·¹ÀÎ À¯Æ¿Àº Àü¿ª °´Ã¼ÀÌ´Ù. Áï, ÇØ´çµÇ´Â Çì´õÆÄÀÏ¸¸ Æ÷ÇÔÇÏ¸é ¾îµğ¼­µçÁö »ç¿ë °¡´ÉÇÏ´Ù
+// í”„ë ˆì„ì›Œí¬, ì¹´ë©”ë¼, ë§ˆìš°ìŠ¤ìœ í‹¸, í„°ë ˆì¸ ìœ í‹¸ì€ ì „ì—­ ê°ì²´ì´ë‹¤. ì¦‰, í•´ë‹¹ë˜ëŠ” í—¤ë”íŒŒì¼ë§Œ í¬í•¨í•˜ë©´ ì–´ë””ì„œë“ ì§€ ì‚¬ìš© ê°€ëŠ¥í•˜ë‹¤
 Scene scene;
 Camera camera;
 MouseUtil mouse;
 
-// Àü¿ª ½Ã½ºÅÛ
+// ì „ì—­ ì‹œìŠ¤í…œ
 DeviceSystem GlobalSystem;
 
-// Àü¿ª Ä¿¸Çµå ¸®½ºÆ®
+// ì „ì—­ ì»¤ë§¨ë“œ ë¦¬ìŠ¤íŠ¸
 ID3D12GraphicsCommandList* GlobalCommandList;
 
-// ¿ÀºêÁ§Æ® ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³
+// ì˜¤ë¸Œì íŠ¸ ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜
 ID3D12RootSignature* ObjectShaderRootSignature;
 
-// ÀÌ¹ÌÁö ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³
+// ì´ë¯¸ì§€ ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜
 ID3D12RootSignature* ImageShaderRootSignature;
 
-// ¼± ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³
+// ì„  ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜
 ID3D12RootSignature* LineShaderRootSignature;
 
-// ¹Ù¿îµå¹Ú½º ·çÆ® ½Ã±×´ÏÃ³
+// ë°”ìš´ë“œë°•ìŠ¤ ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜
 ID3D12RootSignature* BoundboxShaderRootSignature;
 
-// Àü¿ª HWND
+// ì „ì—­ HWND
 HWND GlobalHWND;
 
 HINSTANCE						AppInstance;
@@ -474,66 +545,69 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		return(FALSE);
 
 	AccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT045));
-
+	std::thread netThread;
 	if (useServer) {
-
-		//if (lpCmdLine == NULL || _tcslen(lpCmdLine) == 0) {
-		//	MessageBox(NULL, _T("¼­¹ö IP ÁÖ¼Ò¸¦ ÀÎÀÚ·Î ÀÔ·ÂÇÏ¼¼¿ä.\n¿¹: program.exe 127.0.0.1"), _T("¿À·ù"), MB_OK);
-		//	return -1;
-		//}
-
-		char ipStr[64] = { 0 };
-
-#ifdef UNICODE
-		// À¯´ÏÄÚµå ¡æ ¸ÖÆ¼¹ÙÀÌÆ® º¯È¯
-		WideCharToMultiByte(CP_ACP, 0, lpCmdLine, -1, ipStr, sizeof(ipStr), NULL, NULL);
-#else
-		// ¸ÖÆ¼¹ÙÀÌÆ®´Â ¹Ù·Î º¹»ç
-		strncpy(ipStr, lpCmdLine, sizeof(ipStr) - 1);
-#endif
-		// À©¼Ó ÃÊ±âÈ­
-		WSADATA wsaData;
-		WSAStartup(MAKEWORD(2, 2), &wsaData);
-
-		// ¼ÒÄÏ »ı¼º ¹× ¼­¹ö ¿¬°á
-		clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
-
-		// NAGLE ºñÈ°¼ºÈ­
-		BOOL bNoDelay = TRUE;
-		int result = setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
-		if (result == SOCKET_ERROR) {
-			std::cerr << "[Å¬¶óÀÌ¾ğÆ®] setsockopt(TCP_NODELAY) ½ÇÆĞ: " << WSAGetLastError() << std::endl;
-		}
-		///
-
-		SOCKADDR_IN serverAddr;
-		serverAddr.sin_family = AF_INET;
-		serverAddr.sin_port = htons(SERVER_PORT);
-
-		if(!localServer)
-			inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);//cmd¿¡¼­ ipÀÔ·ÂÇÒ¶§ 
-		else
-			inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//ÇÑ ÄÄÇ»ÅÍ¿¡¼­ ½ÇÇàÇÒ¶§
-
-		//std::cout << ipStr << std::endl;
-		if (WSAConnect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
-			std::cerr << "[Å¬¶óÀÌ¾ğÆ®] ¼­¹ö ¿¬°á ½ÇÆĞ\n";
-			return -1;
-		}
-		std::cout << "[Å¬¶óÀÌ¾ğÆ®] ¼­¹ö¿¡ ¿¬°áµÊ\n";
-
-		// Ã¹ ¹øÂ° µ¥ÀÌÅÍ ¼ö½Å ¿äÃ»
-		recv_wsabuf[0].buf = recv_buffer;
-		recv_wsabuf[0].len = sizeof(recv_buffer);
-		DWORD recv_flag = 0;
-		ZeroMemory(&recv_over, sizeof(recv_over));
-
-		int __result = WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
-		if (__result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-			std::cerr << "[Å¬¶óÀÌ¾ğÆ®] Ã¹ ¹øÂ° µ¥ÀÌÅÍ ¼ö½Å ¿À·ù\n";
-			return -1;
-		}
+		netThread = std::thread(NetworkThread, localServer, lpCmdLine);
 	}
+//	if (useServer) {
+//
+//		//if (lpCmdLine == NULL || _tcslen(lpCmdLine) == 0) {
+//		//	MessageBox(NULL, _T("ì„œë²„ IP ì£¼ì†Œë¥¼ ì¸ìë¡œ ì…ë ¥í•˜ì„¸ìš”.\nì˜ˆ: program.exe 127.0.0.1"), _T("ì˜¤ë¥˜"), MB_OK);
+//		//	return -1;
+//		//}
+//
+//		char ipStr[64] = { 0 };
+//
+//#ifdef UNICODE
+//		// ìœ ë‹ˆì½”ë“œ â†’ ë©€í‹°ë°”ì´íŠ¸ ë³€í™˜
+//		WideCharToMultiByte(CP_ACP, 0, lpCmdLine, -1, ipStr, sizeof(ipStr), NULL, NULL);
+//#else
+//		// ë©€í‹°ë°”ì´íŠ¸ëŠ” ë°”ë¡œ ë³µì‚¬
+//		strncpy(ipStr, lpCmdLine, sizeof(ipStr) - 1);
+//#endif
+//		// ìœˆì† ì´ˆê¸°í™”
+//		WSADATA wsaData;
+//		WSAStartup(MAKEWORD(2, 2), &wsaData);
+//
+//		// ì†Œì¼“ ìƒì„± ë° ì„œë²„ ì—°ê²°
+//		clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
+//
+//		// NAGLE ë¹„í™œì„±í™”
+//		BOOL bNoDelay = TRUE;
+//		int result = setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
+//		if (result == SOCKET_ERROR) {
+//			std::cerr << "[í´ë¼ì´ì–¸íŠ¸] setsockopt(TCP_NODELAY) ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
+//		}
+//		///
+//
+//		SOCKADDR_IN serverAddr;
+//		serverAddr.sin_family = AF_INET;
+//		serverAddr.sin_port = htons(SERVER_PORT);
+//
+//		if(!localServer)
+//			inet_pton(AF_INET, ipStr, &serverAddr.sin_addr);//cmdì—ì„œ ipì…ë ¥í• ë•Œ 
+//		else
+//			inet_pton(AF_INET, SERVER_IP, &serverAddr.sin_addr);//í•œ ì»´í“¨í„°ì—ì„œ ì‹¤í–‰í• ë•Œ
+//
+//		//std::cout << ipStr << std::endl;
+//		if (WSAConnect(clientSocket, (SOCKADDR*)&serverAddr, sizeof(serverAddr), NULL, NULL, NULL, NULL) == SOCKET_ERROR) {
+//			std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì„œë²„ ì—°ê²° ì‹¤íŒ¨\n";
+//			return -1;
+//		}
+//		std::cout << "[í´ë¼ì´ì–¸íŠ¸] ì„œë²„ì— ì—°ê²°ë¨\n";
+//
+//		// ì²« ë²ˆì§¸ ë°ì´í„° ìˆ˜ì‹  ìš”ì²­
+//		recv_wsabuf[0].buf = recv_buffer;
+//		recv_wsabuf[0].len = sizeof(recv_buffer);
+//		DWORD recv_flag = 0;
+//		ZeroMemory(&recv_over, sizeof(recv_over));
+//
+//		int __result = WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
+//		if (__result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//			std::cerr << "[í´ë¼ì´ì–¸íŠ¸] ì²« ë²ˆì§¸ ë°ì´í„° ìˆ˜ì‹  ì˜¤ë¥˜\n";
+//			return -1;
+//		}
+//	}
 
 	while (true) {
 		if (::PeekMessage(&Messege, NULL, 0, 0, PM_REMOVE)) {
@@ -587,15 +661,28 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			}
 
 			framework.Update();
-			SleepEx(0, TRUE);
+			//SleepEx(0, TRUE);
+			//Sleep(0);
 		}
-		// ºñµ¿±â I/O Äİ¹é ½ÇÇà
+		// ë¹„ë™ê¸° I/O ì½œë°± ì‹¤í–‰
 		
 	}
 
-	framework.Destroy();
+	// _tWinMain() ë£¨í”„ë¥¼ ë¹ ì ¸ë‚˜ì˜¨ ì§í›„ ---------
+	NetRunning = false;                 // â‘  ë„¤íŠ¸ì›Œí¬ ë£¨í”„ ì •ì§€ í”Œë˜ê·¸
 
-	return((int)Messege.wParam);
+	shutdown(clientSocket, SD_BOTH);    // â‘¡ ì§„í–‰ ì¤‘ I/O ëª¨ë‘ ì·¨ì†Œ
+	closesocket(clientSocket);          //    â†’ SleepEx(INFINITE,TRUE) ê¹¨ì›€
+
+	if (netThread.joinable())           // â‘¢ ì¦‰ì‹œ ì¡°ì¸ ê°€ëŠ¥
+		netThread.join();
+
+	WSACleanup();                       // â‘£ Winsock í•´ì œ
+	framework.Destroy();                // â‘¤ DirectXÂ·ë¦¬ì†ŒìŠ¤ ì •ë¦¬
+	return static_cast<int>(Messege.wParam);
+
+
+	//return((int)Messege.wParam);
 }
 
 ATOM MyRegisterClass(HINSTANCE hInstance) {
@@ -650,16 +737,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 	::ShowWindow(MainWnd, nCmdShow);
 	::UpdateWindow(MainWnd);
 
-	// Config.h¿¡¼­ ÀüÃ¼È­¸é ¸ğµå¸¦ È°¼ºÈ­ ÇßÀ» °æ¿ì ¹Ù·Î ÀüÃ¼È­¸éÀ¸·Î ÀüÈ¯µÈ´Ù
+	// Config.hì—ì„œ ì „ì²´í™”ë©´ ëª¨ë“œë¥¼ í™œì„±í™” í–ˆì„ ê²½ìš° ë°”ë¡œ ì „ì²´í™”ë©´ìœ¼ë¡œ ì „í™˜ëœë‹¤
 	if (!START_WITH_FULL_SCREEN)
 		framework.SwitchToWindowMode(MainWnd);
 
 	return(TRUE);
 }
 
-// F11Å°¸¦ ´©¸¦ ½Ã Ã¢¸ğµå<->ÀüÃ¼È­¸é ¸ğµå ÀüÈ¯ÀÌ °¡´ÉÇÏ´Ù. Á¶ÀÛÅ°´Â ºñÈ°¼ºÈ­ ÇÏ°Å³ª ¹Ù²Ü ¼ö ÀÖ´Ù.
-// ChangeSwapChainState()¸¦ »ç¿ëÇÏÁö ¾Ê´Â ÀÌÀ¯´Â ÇØ´ç ÇÔ¼ö »ç¿ë ½Ã ºäÆ÷Æ®ÀÇ ¼±¸íµµ°¡ ¶³¾îÁö´Â ¹®Á¦°¡ ÀÖ±â ¶§¹®ÀÌ´Ù.
-// Ã¢ Å©±â¸¦ ´Ã·Á Á¦¸ñÇ¥½ÃÁÙÀ» ¾ø¾Ö´Â ¹æ½ÄÀ¸·Î ÀüÃ¼È­¸éÀ» ±¸ÇöÇÑ´Ù.
+// F11í‚¤ë¥¼ ëˆ„ë¥¼ ì‹œ ì°½ëª¨ë“œ<->ì „ì²´í™”ë©´ ëª¨ë“œ ì „í™˜ì´ ê°€ëŠ¥í•˜ë‹¤. ì¡°ì‘í‚¤ëŠ” ë¹„í™œì„±í™” í•˜ê±°ë‚˜ ë°”ê¿€ ìˆ˜ ìˆë‹¤.
+// ChangeSwapChainState()ë¥¼ ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” ì´ìœ ëŠ” í•´ë‹¹ í•¨ìˆ˜ ì‚¬ìš© ì‹œ ë·°í¬íŠ¸ì˜ ì„ ëª…ë„ê°€ ë–¨ì–´ì§€ëŠ” ë¬¸ì œê°€ ìˆê¸° ë•Œë¬¸ì´ë‹¤.
+// ì°½ í¬ê¸°ë¥¼ ëŠ˜ë ¤ ì œëª©í‘œì‹œì¤„ì„ ì—†ì• ëŠ” ë°©ì‹ìœ¼ë¡œ ì „ì²´í™”ë©´ì„ êµ¬í˜„í•œë‹¤.
 void DisplayStateChanger(HWND hWnd, UINT nMessageID, WPARAM wParam) {
 	switch (nMessageID) {
 	case WM_KEYDOWN:
@@ -675,7 +762,7 @@ void DisplayStateChanger(HWND hWnd, UINT nMessageID, WPARAM wParam) {
 	}
 }
 
-// ÀÌ ÇÔ¼öÀÇ ³»¿ëµéÀº ¼öÁ¤ÇÒ ÇÊ¿ä ¾ø´Ù.
+// ì´ í•¨ìˆ˜ì˜ ë‚´ìš©ë“¤ì€ ìˆ˜ì •í•  í•„ìš” ì—†ë‹¤.
 LRESULT CALLBACK WndProc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	int wmId, wmEvent;
 	PAINTSTRUCT PaintStruct;
@@ -685,7 +772,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lPara
 	DisplayStateChanger(hWnd, nMessageID, wParam);
 
 	switch (nMessageID) {
-		// À©µµ¿ì »çÀÌÁî º¯°æÀÌ °¨ÁöµÇ¸é Ä«¸Ş¶ó Çà·ÄÀ» »õ·Î ¾÷µ¥ÀÌÆ®ÇÑ´Ù.
+		// ìœˆë„ìš° ì‚¬ì´ì¦ˆ ë³€ê²½ì´ ê°ì§€ë˜ë©´ ì¹´ë©”ë¼ í–‰ë ¬ì„ ìƒˆë¡œ ì—…ë°ì´íŠ¸í•œë‹¤.
 	case WM_SIZE:
 	{
 		SCREEN_WIDTH = LOWORD(lParam);
@@ -768,7 +855,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 	return((INT_PTR)FALSE);
 }
 
-// ºäÆ÷Æ® ¹è°æ»öÀ» º¯°æÇÑ´Ù. flaot °ª ¶Ç´Â rgb°ªÀ» »ç¿ëÇÒ ¼ö ÀÖ´Ù.
+// ë·°í¬íŠ¸ ë°°ê²½ìƒ‰ì„ ë³€ê²½í•œë‹¤. flaot ê°’ ë˜ëŠ” rgbê°’ì„ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤.
 void SetBackgroundColorRGB(int R, int G, int B) {
 	framework.BackgroundColor.x = 1.0 / 255.0 * float(R);
 	framework.BackgroundColor.y = 1.0 / 255.0 * float(G);
