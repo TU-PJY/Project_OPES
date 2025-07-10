@@ -25,9 +25,6 @@
     <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ Test bed ]">
       <UniqueIdentifier>{5b0c4a43-72da-4e28-acb1-2d94578fe541}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ Modes ]">
-      <UniqueIdentifier>{64814673-b711-4547-a2fa-f83b097a05fe}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]">
       <UniqueIdentifier>{ff900b4e-0c5d-4b64-8b68-91350d32ea6d}</UniqueIdentifier>
     </Filter>
@@ -193,6 +190,9 @@
     </Filter>
     <Filter Include="[ etc ]">
       <UniqueIdentifier>{6e896042-8540-4bc7-9d0b-873930d71c7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ Levels ]">
+      <UniqueIdentifier>{64814673-b711-4547-a2fa-f83b097a05fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -461,7 +461,7 @@
       <Filter>[ D3D12 ]\[ Objective-D ]\[7] - [ Matrix ]</Filter>
     </ClCompile>
     <ClCompile Include="Level1.cpp">
-      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Modes ]</Filter>
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Levels ]</Filter>
     </ClCompile>
     <ClCompile Include="ScriptUtil.cpp">
       <Filter>[ D3D12 ]\[ Objective-D ]\[6] - [ Util ]\[ Script Util ]</Filter>
@@ -479,10 +479,10 @@
       <Filter>[ D3D12 ]\[ Objective-D ]\[6] - [ Util ]\[ Script Util ]\[ tinyxml ]</Filter>
     </ClCompile>
     <ClCompile Include="Level2.cpp">
-      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Modes ]</Filter>
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Levels ]</Filter>
     </ClCompile>
     <ClCompile Include="Level3.cpp">
-      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Modes ]</Filter>
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Levels ]</Filter>
     </ClCompile>
     <ClCompile Include="CrossHair.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ CrossHair ]</Filter>

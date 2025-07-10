@@ -16,80 +16,88 @@ unsigned int enter_player_id;
 
 DeviceSystem LoadSystem;
 
-
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
 	LoadSystem = System;
 
-	// map1
-	LoadSingleStaticFBX(MESH.RockMesh, "Resources//Models//map1//wall-rock.fbx");
-	LoadSingleStaticFBX(MESH.LakeMesh, "Resources//Models//map1//lake.fbx");
-	LoadSingleStaticFBX(MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
+	// Map Objects
+	// fold here
+	{
+		// map1
+		LoadSingleStaticFBX(MESH.RockMesh, "Resources//Models//map1//wall-rock.fbx");
+		LoadSingleStaticFBX(MESH.LakeMesh, "Resources//Models//map1//lake.fbx");
+		LoadSingleStaticFBX(MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
 
-	for (int i = 0; i < 3; ++i) {
-		std::string FileName = "Resources//Models//map1//lake-rock-";
-		FileName += std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(MESH.LakeRockMesh[i], (char*)FileName.c_str());
+		for (int i = 0; i < 3; ++i) {
+			std::string FileName = "Resources//Models//map1//lake-rock-";
+			FileName += std::to_string(i + 1) + ".fbx";
+			LoadSingleStaticFBX(MESH.LakeRockMesh[i], (char*)FileName.c_str());
+		}
+
+		for (int i = 0; i < 5; ++i) {
+			std::string FileName = "Resources//Models//map1//map-object-";
+			FileName += std::to_string(i + 1) + ".fbx";
+			LoadSingleStaticFBX(MESH.MapObjectMesh[i], (char*)FileName.c_str());
+		}
+
+		LoadSingleStaticFBX(MESH.Grass[0], "Resources//Models//map1//grass-1.fbx");
+		LoadSingleStaticFBX(MESH.Grass[1], "Resources//Models//map1//grass-2.fbx");
+		LoadSingleStaticFBX(MESH.Flower[0], "Resources//Models//map1//flower-1.fbx");
+		LoadSingleStaticFBX(MESH.Flower[1], "Resources//Models//map1//flower-2.fbx");
+		LoadSingleStaticFBX(MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
+		LoadSingleStaticFBX(MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
+
+
+		// map2
+		LoadSingleStaticFBX(MESH.WinterWall, "Resources//Models//map2//winter-cliff.fbx");
+
+		for (int i = 0; i < 3; ++i) {
+			std::string FileName = "Resources//Models//map2//winter-rock-" + std::to_string(i + 1) + ".fbx";
+			LoadSingleStaticFBX(MESH.WinterRock[i], (char*)FileName.c_str());
+		}
+
+		for (int i = 0; i < 2; ++i) {
+			std::string FileName = "Resources//Models//map2//winter-ice-" + std::to_string(i + 1) + ".fbx";
+			LoadSingleStaticFBX(MESH.WinterIce[i], (char*)FileName.c_str());
+		}
+
+		// map3
+		LoadSingleStaticFBX(MESH.FloatingRock, "Resources//Models//map3//map3-rock.fbx");
+		LoadSingleStaticFBX(MESH.Volcano, "Resources//Models//map3//volcano.fbx");
+		LoadSingleStaticFBX(MESH.SmallVolcano, "Resources//Models//map3//volcano-small.fbx");
+
+		for (int i = 0; i < 2; i++) {
+			std::string FileName = "Resources//Models//map3//map3-stone-" + std::to_string(i + 1) + ".fbx";
+			LoadSingleStaticFBX(MESH.Map3Stone[i], (char*)FileName.c_str());
+		}
+
+		for (int i = 0; i < 3; ++i) {
+			std::string FileName = "Resources//Models//map3//map3-crystal-" + std::to_string(i + 1) + ".fbx";
+			LoadSingleStaticFBX(MESH.Crystal[i], (char*)FileName.c_str());
+		}
+
+		LoadSingleStaticFBX(MESH.DeadTree, "Resources//Models//map3//map3-tree.fbx");
+
+		LoadMultiStaticFBX(MESH.center_building, "Resources//Models//building//center.fbx");
 	}
 
-	for (int i = 0; i < 5; ++i) {
-		std::string FileName = "Resources//Models//map1//map-object-";
-		FileName += std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(MESH.MapObjectMesh[i], (char*)FileName.c_str());
+	// Objects
+	// fold here
+	{
+		// polygon scifi asset
+		LoadMultiStaticFBX(MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
+		LoadMultiStaticFBX(MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
+
+		// polygon scifi asset - heavy
+		LoadAnimatedFBX(MESH.heavy_idle, "Resources//Models//player//heavy//heavy_idle.fbx", "Extracted Animations//heavy_idle.animated");
+		LoadAnimatedFBX(MESH.heavy_move, "Resources//Models//player//heavy//heavy_move.fbx", "Extracted Animations//heavy_move.animated");
+		LoadAnimatedFBX(MESH.heavy_shoot, "Resources//Models//player//heavy//heavy_shoot.fbx", "Extracted Animations//heavy_shoot.animated");
+		LoadAnimatedFBX(MESH.heavy_death, "Resources//Models//player//heavy//heavy_death.fbx", "Extracted Animations//heavy_death.animated");
+
+		// gun flame
+		LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
+		LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 	}
-
-	LoadSingleStaticFBX(MESH.Grass[0], "Resources//Models//map1//grass-1.fbx");
-	LoadSingleStaticFBX(MESH.Grass[1], "Resources//Models//map1//grass-2.fbx");
-	LoadSingleStaticFBX(MESH.Flower[0], "Resources//Models//map1//flower-1.fbx");
-	LoadSingleStaticFBX(MESH.Flower[1], "Resources//Models//map1//flower-2.fbx");
-	LoadSingleStaticFBX(MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
-	LoadSingleStaticFBX(MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
-
-
-	// map2
-	LoadSingleStaticFBX(MESH.WinterWall, "Resources//Models//map2//winter-cliff.fbx");
-
-	for (int i = 0; i < 3; ++i) {
-		std::string FileName = "Resources//Models//map2//winter-rock-" + std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(MESH.WinterRock[i], (char*)FileName.c_str());
-	}
-
-	for (int i = 0; i < 2; ++i) {
-		std::string FileName = "Resources//Models//map2//winter-ice-" + std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(MESH.WinterIce[i], (char*)FileName.c_str());
-	}
-
-	// map3
-	LoadSingleStaticFBX(MESH.FloatingRock, "Resources//Models//map3//map3-rock.fbx");
-	LoadSingleStaticFBX(MESH.Volcano, "Resources//Models//map3//volcano.fbx");
-	LoadSingleStaticFBX(MESH.SmallVolcano, "Resources//Models//map3//volcano-small.fbx");
-
-	for (int i = 0; i < 2; i++) {
-		std::string FileName = "Resources//Models//map3//map3-stone-" + std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(MESH.Map3Stone[i], (char*)FileName.c_str());
-	}
-
-	for (int i = 0; i < 3; ++i) {
-		std::string FileName = "Resources//Models//map3//map3-crystal-" + std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(MESH.Crystal[i], (char*)FileName.c_str());
-	}
-
-	LoadSingleStaticFBX(MESH.DeadTree, "Resources//Models//map3//map3-tree.fbx");
-
-	// polygon scifi asset
-	LoadMultiStaticFBX(MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
-	LoadMultiStaticFBX(MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
-	LoadMultiStaticFBX(MESH.center_building, "Resources//Models//building//center.fbx");
-
-	// polygon scifi asset - heavy
-	LoadAnimatedFBX(MESH.heavy_idle, "Resources//Models//player//heavy//heavy_idle.fbx", "Extracted Animations//heavy_idle.animated");
-	LoadAnimatedFBX(MESH.heavy_move, "Resources//Models//player//heavy//heavy_move.fbx", "Extracted Animations//heavy_move.animated");
-	LoadAnimatedFBX(MESH.heavy_shoot, "Resources//Models//player//heavy//heavy_shoot.fbx", "Extracted Animations//heavy_shoot.animated");
-	LoadAnimatedFBX(MESH.heavy_death, "Resources//Models//player//heavy//heavy_death.fbx", "Extracted Animations//heavy_death.animated");
-
-	// gun flame
-	LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
-	LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
