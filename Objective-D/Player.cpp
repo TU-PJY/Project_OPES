@@ -109,22 +109,22 @@ void Player::SendPacket(float Delta) {
 
 void Player::Update(float FrameTime) {
 	// 총 발사 업데이트
-	UpdateFire(FrameTime);
-
-	// 총 업데이트
-	UpdateGun(FrameTime);
-
 	// 이동 속도 가감속 업데이트
 	UpdateMoveSpeed(FrameTime);
-	 
-	// 카메라 업데이트
-	UpdateCamera(FrameTime);
 
 	// 터레인 충돌 처리 업데이트
 	UpdateTerrainCollision(FrameTime);
 
 	// 총 - 맵 오브젝트 충돌 처리 업데이트
 	UpdateGunCollision();
+	 
+	// 총 업데이트
+	UpdateGun(FrameTime);
+
+	// 카메라 업데이트
+	UpdateCamera(FrameTime);
+
+	UpdateFire(FrameTime);
 
 	// 서버로 패킷 전송
 	SendPacket(FrameTime);
@@ -254,7 +254,7 @@ void Player::UpdateGun(float FrameTime) {
 	gun_rotation.x = std::lerp(gun_rotation.x, rotation.x, FrameTime * 30.0);
 	gun_rotation.y = std::lerp(gun_rotation.y, rotation.y, FrameTime * 30.0);
 	gun_rotation.z = std::lerp(gun_rotation.z, rotation.z, FrameTime * 30.0);
-;
+
 	if (gun_collided)
 		gun_rotation_offset = std::lerp(gun_rotation_offset, -90.0, FrameTime * 3.0);
 	else 

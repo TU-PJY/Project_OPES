@@ -772,11 +772,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lPara
 	switch (nMessageID) {
 		// 윈도우 사이즈 변경이 감지되면 카메라 행렬을 새로 업데이트한다.
 	case WM_SIZE:
-	{
 		SCREEN_WIDTH = LOWORD(lParam);
 		SCREEN_HEIGHT = HIWORD(lParam);
-		camera.GenerateStaticMatrix();
-	}
 		break;
 
 	case WM_LBUTTONDOWN:
