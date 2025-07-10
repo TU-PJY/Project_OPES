@@ -14,116 +14,117 @@ float global_fov_offset;
 bool player_enter;
 unsigned int enter_player_id;
 
+DeviceSystem LoadSystem;
+
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
+	LoadSystem = System;
+
 	// map1
-	LoadSingleStaticFBX(System, MESH.RockMesh, "Resources//Models//map1//wall-rock.fbx");
-	LoadSingleStaticFBX(System, MESH.LakeMesh, "Resources//Models//map1//lake.fbx");
-	LoadSingleStaticFBX(System, MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
+	LoadSingleStaticFBX(MESH.RockMesh, "Resources//Models//map1//wall-rock.fbx");
+	LoadSingleStaticFBX(MESH.LakeMesh, "Resources//Models//map1//lake.fbx");
+	LoadSingleStaticFBX(MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
 
 	for (int i = 0; i < 3; ++i) {
 		std::string FileName = "Resources//Models//map1//lake-rock-";
 		FileName += std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(System, MESH.LakeRockMesh[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(MESH.LakeRockMesh[i], (char*)FileName.c_str());
 	}
 
 	for (int i = 0; i < 5; ++i) {
 		std::string FileName = "Resources//Models//map1//map-object-";
 		FileName += std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(System, MESH.MapObjectMesh[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(MESH.MapObjectMesh[i], (char*)FileName.c_str());
 	}
 
-	LoadSingleStaticFBX(System, MESH.Grass[0], "Resources//Models//map1//grass-1.fbx");
-	LoadSingleStaticFBX(System, MESH.Grass[1], "Resources//Models//map1//grass-2.fbx");
-	LoadSingleStaticFBX(System, MESH.Flower[0], "Resources//Models//map1//flower-1.fbx");
-	LoadSingleStaticFBX(System, MESH.Flower[1], "Resources//Models//map1//flower-2.fbx");
-	LoadSingleStaticFBX(System, MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
-	LoadSingleStaticFBX(System, MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
+	LoadSingleStaticFBX(MESH.Grass[0], "Resources//Models//map1//grass-1.fbx");
+	LoadSingleStaticFBX(MESH.Grass[1], "Resources//Models//map1//grass-2.fbx");
+	LoadSingleStaticFBX(MESH.Flower[0], "Resources//Models//map1//flower-1.fbx");
+	LoadSingleStaticFBX(MESH.Flower[1], "Resources//Models//map1//flower-2.fbx");
+	LoadSingleStaticFBX(MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
+	LoadSingleStaticFBX(MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
 
 
 	// map2
-	LoadSingleStaticFBX(System, MESH.WinterWall, "Resources//Models//map2//winter-cliff.fbx");
+	LoadSingleStaticFBX(MESH.WinterWall, "Resources//Models//map2//winter-cliff.fbx");
 
 	for (int i = 0; i < 3; ++i) {
 		std::string FileName = "Resources//Models//map2//winter-rock-" + std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(System, MESH.WinterRock[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(MESH.WinterRock[i], (char*)FileName.c_str());
 	}
 
 	for (int i = 0; i < 2; ++i) {
 		std::string FileName = "Resources//Models//map2//winter-ice-" + std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(System, MESH.WinterIce[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(MESH.WinterIce[i], (char*)FileName.c_str());
 	}
 
 	// map3
-	LoadSingleStaticFBX(System, MESH.FloatingRock, "Resources//Models//map3//map3-rock.fbx");
-	LoadSingleStaticFBX(System, MESH.Volcano, "Resources//Models//map3//volcano.fbx");
-	LoadSingleStaticFBX(System, MESH.SmallVolcano, "Resources//Models//map3//volcano-small.fbx");
+	LoadSingleStaticFBX(MESH.FloatingRock, "Resources//Models//map3//map3-rock.fbx");
+	LoadSingleStaticFBX(MESH.Volcano, "Resources//Models//map3//volcano.fbx");
+	LoadSingleStaticFBX(MESH.SmallVolcano, "Resources//Models//map3//volcano-small.fbx");
 
 	for (int i = 0; i < 2; i++) {
 		std::string FileName = "Resources//Models//map3//map3-stone-" + std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(System, MESH.Map3Stone[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(MESH.Map3Stone[i], (char*)FileName.c_str());
 	}
 
 	for (int i = 0; i < 3; ++i) {
 		std::string FileName = "Resources//Models//map3//map3-crystal-" + std::to_string(i + 1) + ".fbx";
-		LoadSingleStaticFBX(System, MESH.Crystal[i], (char*)FileName.c_str());
+		LoadSingleStaticFBX(MESH.Crystal[i], (char*)FileName.c_str());
 	}
 
-	LoadSingleStaticFBX(System, MESH.DeadTree, "Resources//Models//map3//map3-tree.fbx");
+	LoadSingleStaticFBX(MESH.DeadTree, "Resources//Models//map3//map3-tree.fbx");
 
 	// polygon scifi asset
-	LoadMultiStaticFBX(System, MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
-	LoadMultiStaticFBX(System, MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
-	LoadMultiStaticFBX(System, MESH.center_building, "Resources//Models//building//center.fbx");
+	LoadMultiStaticFBX(MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
+	LoadMultiStaticFBX(MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
+	LoadMultiStaticFBX(MESH.center_building, "Resources//Models//building//center.fbx");
 
 	// polygon scifi asset - heavy
-	LoadAnimatedFBX(System, MESH.heavy_idle, "Resources//Models//player//heavy//heavy_idle.fbx");
-	LoadAnimatedFBX(System, MESH.heavy_move, "Resources//Models//player//heavy//heavy_move.fbx");
-	LoadAnimatedFBX(System, MESH.heavy_shoot, "Resources//Models//player//heavy//heavy_shoot.fbx");
-	LoadPrecomputedAnimation(MESH.heavy_shoot, "Extracted Animations\\heavy_shoot.animated");
-	LoadAnimatedFBX(System, MESH.heavy_death, "Resources//Models//player//heavy//heavy_death.fbx");
+	LoadAnimatedFBX(MESH.heavy_idle, "Resources//Models//player//heavy//heavy_idle.fbx", "Extracted Animations//heavy_idle.animated");
+	LoadAnimatedFBX(MESH.heavy_move, "Resources//Models//player//heavy//heavy_move.fbx", "Extracted Animations//heavy_move.animated");
+	LoadAnimatedFBX(MESH.heavy_shoot, "Resources//Models//player//heavy//heavy_shoot.fbx", "Extracted Animations//heavy_shoot.animated");
+	LoadAnimatedFBX(MESH.heavy_death, "Resources//Models//player//heavy//heavy_death.fbx", "Extracted Animations//heavy_death.animated");
 
 	// gun flame
-	LoadMultiStaticFBX(System, MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
-	LoadMultiStaticFBX(System, MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
-
-	// monster
-	LoadAnimatedFBX(System, MESH.scorpion, "Resources//Models//monster//scorpion.fbx", "Resources//Models//monster//scorpion_animation.json");
-	LoadPrecomputedAnimation(MESH.scorpion, "Extracted Animations\\scorpion.animated");
+	LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
+	LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
-	LoadTexture(System, TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
+	LoadSystem = System;
+
+	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 
 	// map1
-	LoadTexture(System, TEX.Palette1, L"Resources//Image//palette-1.png", TEXTURE_TYPE_WIC);
-	LoadTexture(System, TEX.Palette2, L"Resources//Image//palette-2.png", TEXTURE_TYPE_WIC);
-	LoadTexture(System, TEX.Palette3, L"Resources//Image//palette-3.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.Palette1, L"Resources//Image//palette-1.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.Palette2, L"Resources//Image//palette-2.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.Palette3, L"Resources//Image//palette-3.png", TEXTURE_TYPE_WIC);
 
 	// map2
-	LoadTexture(System, TEX.Map2Palette, L"Resources//Image//GradientSS.png", TEXTURE_TYPE_WIC);
-	LoadTexture(System, TEX.Map2TerrainTex, L"Resources//Image//map2-terrain.png", TEXTURE_TYPE_WIC);
-	LoadTexture(System, TEX.IceTex, L"Resources//Image//ice.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.Map2Palette, L"Resources//Image//GradientSS.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.Map2TerrainTex, L"Resources//Image//map2-terrain.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.IceTex, L"Resources//Image//ice.png", TEXTURE_TYPE_WIC);
 
 	// map3
-	LoadTexture(System, TEX.Magma, L"Resources//Image//Cave_Magma_B.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
-	LoadTexture(System, TEX.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
-	LoadTexture(System, TEX.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
-	LoadTexture(System, TEX.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.Magma, L"Resources//Image//Cave_Magma_B.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
+	LoadTexture(TEX.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
 
 	// polygon scifi asset
-	LoadTexture(System, TEX.scifi, L"Resources//Image//scifi//polygon_scifi.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.scifi, L"Resources//Image//scifi//polygon_scifi.png", TEXTURE_TYPE_WIC);
 
 	// gun flame
-	LoadTexture(System, TEX.gun_flame, L"Resources//Image//weapon//flame.png", TEXTURE_TYPE_WIC);
-	LoadTexture(System, TEX.gun_flame_back, L"Resources//Image//weapon//flame-back.png", TEXTURE_TYPE_WIC);
-	LoadTexture(System, TEX.muzzle_particle, L"Resources//Image//weapon//muzzle_particle.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.gun_flame, L"Resources//Image//weapon//flame.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.gun_flame_back, L"Resources//Image//weapon//flame-back.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.muzzle_particle, L"Resources//Image//weapon//muzzle_particle.png", TEXTURE_TYPE_WIC);
 
 	// map1 monster
-	LoadTexture(System, TEX.scorpion, L"Resources//Image//monster//scorpion.png");
+	LoadTexture(TEX.scorpion, L"Resources//Image//monster//scorpion.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

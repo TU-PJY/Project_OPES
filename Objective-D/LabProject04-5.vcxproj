@@ -181,7 +181,6 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="MathUtil.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="ModePack.h" />
-    <ClInclude Include="MonsterSpawner.h" />
     <ClInclude Include="MouseUtil.h" />
     <ClInclude Include="MuzzleFlash.h" />
     <ClInclude Include="Objective-D.h" />
@@ -195,7 +194,6 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="RootConstants.h" />
     <ClInclude Include="RootConstantUtil.h" />
     <ClInclude Include="ObjectShader.h" />
-    <ClInclude Include="Scorpion.h" />
     <ClInclude Include="ScriptUtil.h" />
     <ClInclude Include="SettingRootSignature.h" />
     <ClInclude Include="ShaderUtil.h" />
@@ -209,6 +207,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="tinyxml\tinyxml.h" />
     <ClInclude Include="TransformUtil.h" />
     <ClInclude Include="WICTextureLoader12.h" />
+    <ClInclude Include="RandomUtil.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Blends.cpp" />
@@ -236,18 +235,17 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Meshes.cpp" />
     <ClCompile Include="MeshUtil.cpp" />
     <ClCompile Include="Level1.cpp" />
-    <ClCompile Include="MonsterSpawner.cpp" />
     <ClCompile Include="MouseUtil.cpp" />
     <ClCompile Include="MuzzleFlash.cpp" />
     <ClCompile Include="ObjectShader.cpp" />
     <ClCompile Include="PickingUtil.cpp" />
     <ClCompile Include="GameResource.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="RandomUtil.cpp" />
     <ClCompile Include="Resterizers.cpp" />
     <ClCompile Include="RootConstants.cpp" />
     <ClCompile Include="Pipelines.cpp" />
     <ClCompile Include="RootConstantUtil.cpp" />
-    <ClCompile Include="Scorpion.cpp" />
     <ClCompile Include="ScriptUtil.cpp" />
     <ClCompile Include="ServerExample.cpp" />
     <ClCompile Include="SettingRootSignature.cpp" />

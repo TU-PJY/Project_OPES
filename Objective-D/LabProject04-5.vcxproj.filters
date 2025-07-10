@@ -173,9 +173,6 @@
     <Filter Include="[2]____________[ Game Object ]\[ Monster ]">
       <UniqueIdentifier>{8ad5e691-61cd-47df-802d-0e799c051bec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[2]____________[ Game Object ]\[ Monster ]\[ Scorpion ]">
-      <UniqueIdentifier>{1884997c-80d6-41ff-b441-4866a032b012}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[2]____________[ Game Object ]\[ Monster Manager ]">
       <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
     </Filter>
@@ -184,6 +181,9 @@
     </Filter>
     <Filter Include="[2]____________[ Game Object ]\[ Particle ]">
       <UniqueIdentifier>{4fc0f333-203d-4e2e-b1cf-30412c777b0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[5]____________[ Objective-D ]\[6] - [ Util ]\[ Random Util ]">
+      <UniqueIdentifier>{0dd15479-2b0d-4201-a81f-2b080621a746}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -332,17 +332,14 @@
     <ClInclude Include="CenterBuilding.h">
       <Filter>[2]____________[ Game Object ]\[ Building ]</Filter>
     </ClInclude>
-    <ClInclude Include="Scorpion.h">
-      <Filter>[2]____________[ Game Object ]\[ Monster ]\[ Scorpion ]</Filter>
-    </ClInclude>
-    <ClInclude Include="MonsterSpawner.h">
-      <Filter>[2]____________[ Game Object ]\[ Monster Manager ]</Filter>
-    </ClInclude>
     <ClInclude Include="HP_Indicator.h">
       <Filter>[2]____________[ Game Object ]\[ UI ]</Filter>
     </ClInclude>
     <ClInclude Include="MuzzleFlash.h">
       <Filter>[2]____________[ Game Object ]\[ Particle ]</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomUtil.h">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Random Util ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -493,12 +490,6 @@
     <ClCompile Include="CenterBuilding.cpp">
       <Filter>[2]____________[ Game Object ]\[ Building ]</Filter>
     </ClCompile>
-    <ClCompile Include="Scorpion.cpp">
-      <Filter>[2]____________[ Game Object ]\[ Monster ]\[ Scorpion ]</Filter>
-    </ClCompile>
-    <ClCompile Include="MonsterSpawner.cpp">
-      <Filter>[2]____________[ Game Object ]\[ Monster Manager ]</Filter>
-    </ClCompile>
     <ClCompile Include="HP_Indicator.cpp">
       <Filter>[2]____________[ Game Object ]\[ UI ]</Filter>
     </ClCompile>
@@ -513,6 +504,9 @@
     </ClCompile>
     <ClCompile Include="FBXUtil.cpp">
       <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Mesh Util ]</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomUtil.cpp">
+      <Filter>[5]____________[ Objective-D ]\[6] - [ Util ]\[ Random Util ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -319,9 +319,6 @@ void GameObject::PrepareRender() {
 
 // 렌더링 전 카메라를 설정한다.
 void GameObject::SetCamera() {
-	// 카메라 뷰 행렬을 설정한다.
-	camera.SetViewMatrix();
-
 	// 렌더 타입에 따라 다른 행렬을 초기화 한다.
 	switch (RenderType) {
 	case RENDER_TYPE_3D: case RENDER_TYPE_3D_STATIC:
@@ -336,7 +333,6 @@ void GameObject::SetCamera() {
 		camera.GenerateStaticMatrix();
 	}
 
-	camera.SetViewportsAndScissorRects();
 	camera.UpdateShaderVariables();
 }
 

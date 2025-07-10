@@ -20,6 +20,8 @@ extern float global_fov_offset;
 extern bool player_enter;
 extern unsigned int enter_player_id;
 
+extern DeviceSystem LoadSystem;
+
 
 /////////////////////////////////////////////////////////////////////////////////
 // 매쉬 리소스는 해당 클래스 안에 선언
@@ -226,10 +228,10 @@ inline void LoadPrecomputedAnimation(FBXMesh& TargetMesh, const std::string& Fil
 }
 
 // 애니메이션 FBX 파일 로드용 함수
-inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::string Directory, std::string jsonFile = "") {
+inline void LoadAnimatedFBX(FBXMesh& TargetMesh, const std::string& Directory, const std::string& AnimationDataFile, const std::string& jsonFile = "") {
 	if (fbxUtil.LoadAnimatedFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateAnimatedScene();
-		fbxUtil.GetAnimatedVertexData(System);
+		fbxUtil.GetAnimatedVertexData(LoadSystem);
 		fbxUtil.ProcessAnimation();
 		fbxUtil.EnumerateAnimationStacks();
 		fbxUtil.ClearVertexVector();
@@ -240,7 +242,10 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::stri
 		fbxUtil.CreateAnimationStacksFromJSON(jsonFile, TargetMesh);
 	}
 
-	if (AnimationDataExtractMode) {
+	if(!AnimationDataExtractMode)
+		LoadPrecomputedAnimation(TargetMesh, AnimationDataFile);
+
+	else {
 		// 최적화를 위해 애니메이션 행렬 데이터를 미리 계산한다.
 		int StackCount = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
 		for (int i = 0; i < StackCount; ++i) {
@@ -262,14 +267,14 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::stri
 
 // 애니메이션이 없는 FBX 파일 로드용 함수
 // 애니메이션 추출모드를 활성화하면 건너뛴다.
-inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::string Directory) {
+inline void LoadSingleStaticFBX(Mesh*& TargetMesh, const std::string& Directory) {
 	if (AnimationDataExtractMode)
 		return;
 
 	if (fbxUtil.LoadStaticFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateStaticScene();
 		fbxUtil.GetSingleStaticVertexData();
-		TargetMesh->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
+		TargetMesh->CreateFBXMesh(LoadSystem.Device, LoadSystem.CmdList, fbxUtil.GetVertexVector());
 		LoadedMeshList.emplace_back(TargetMesh);
 		fbxUtil.ClearVertexVector();
 	}
@@ -277,14 +282,14 @@ inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::st
 
 // 애니메이션이 없는 다중 FBX 파일 로드용 함수
 // 애니메이션 추출모드를 활성화하면 건너뛴다.
-inline void LoadMultiStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::string Directory) {
+inline void LoadMultiStaticFBX(Mesh*& TargetMesh, const std::string& Directory) {
 	if (AnimationDataExtractMode)
 		return;
 
 	if (fbxUtil.LoadMultiStaticFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateMultiStaticScene();
 		fbxUtil.GetMultiStaticVertexData();
-		TargetMesh->CreateFBXMesh(System.Device, System.CmdList, fbxUtil.GetVertexVector());
+		TargetMesh->CreateFBXMesh(LoadSystem.Device, LoadSystem.CmdList, fbxUtil.GetVertexVector());
 		LoadedMeshList.emplace_back(TargetMesh);
 		fbxUtil.ClearVertexVector();
 	}
@@ -292,10 +297,10 @@ inline void LoadMultiStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::str
 
 // TEXTURE_TYPE_WIC, D3D12_FILTER_MIN_MAG_MIP_POINT가 디폴트
 // 애니메이션 추출모드를 활성화하면 건너뛴다.
-inline void LoadTexture(DeviceSystem& System, Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_POINT) {
+inline void LoadTexture(Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_POINT) {
 	if (AnimationDataExtractMode)
 		return;
 	
-	TexturePtr = new Texture(System.Device, System.CmdList, Directory, Type, FilterOption);
+	TexturePtr = new Texture(LoadSystem.Device, LoadSystem.CmdList, Directory, Type, FilterOption);
 	LoadedTextureList.emplace_back(TexturePtr);
 }

@@ -42,14 +42,12 @@ void Framework::Init() {
 		}
 	}
 
-	// scene 초기화
-	// 이 함수에서 모드를 실행하고 쉐이더를 로드한다.
-	// StartMode.cpp의 StartMode 변경 시 시작 모드 변경이 가능하다.
-
-	scene.Init(StartMode);
-
 	// CBV를 생성한다.
 	CreateConstantBufferResource(Device);
+
+	// scene 초기화
+	// StartMode.cpp의 StartMode 변경 시 시작 모드 변경이 가능하다.
+	scene.Init(StartMode);
 
 	// 카메라 초기 설정(완전 초기값)
 	camera.Move(XMFLOAT3(0.0, 0.0, 0.0));
@@ -117,6 +115,8 @@ void Framework::Update() {
 
 	// 카메라를 업데이트한다.
 	camera.Update(Timer.GetTimeElapsed());
+	camera.SetViewMatrix();
+	camera.SetViewportsAndScissorRects();
 
 	// 오브젝트 렌더링
 	scene.Render();
