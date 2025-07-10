@@ -1,4 +1,6 @@
 #define MAX_SOCKBUF 1024
+
+
 enum class PacketType {
     CHAT,
     MOVE,

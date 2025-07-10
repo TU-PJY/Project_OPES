@@ -1,17 +1,21 @@
-#pragma once
+﻿#pragma once
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>
 #include <Ws2tcpip.h>
 #include <vector>
+#include<array>
 #include <mutex>
 #include <thread>
 #include <unordered_map>
+#include<algorithm>
 #include"Packet.h"
 #define MAX_SOCKBUF 1024  
 #define SERVER_PORT 9000
 //#define MAX_WORKERTHREAD 4  
+constexpr std::size_t MAX_CLIENTS = 5000;
 
 enum class IOOperation {
+    ACCEPT,  // 추가됨
     RECV,
     SEND
 };
@@ -21,6 +25,7 @@ struct stOverlappedEx {
     WSABUF wsaBuf;
     char buffer[MAX_SOCKBUF];
     IOOperation operation;
+    SOCKET acceptSocket; // AcceptEx에서 필요
 };
 
 struct stClientInfo {
@@ -32,7 +37,7 @@ struct stClientInfo {
     stOverlappedEx recvOverlapped;
     stOverlappedEx sendOverlapped;
     int roomID;
-
+    std::atomic<bool> alreadyRemoved{ false };
     stClientInfo() {
         ZeroMemory(&recvOverlapped, sizeof(stOverlappedEx));
         ZeroMemory(&sendOverlapped, sizeof(stOverlappedEx));
@@ -68,16 +73,23 @@ public:
     void SendData_Animaion(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_Player2Monster(unsigned int monsterID, unsigned int damage, stClientInfo* recvingClient);
     void SendData_EnterRoom(stClientInfo* recvingClient);
-    void RemoveClient(stClientInfo* client);
+   // void RemoveClient(stClientInfo* client);
     void NotifyOthersAboutNewClient(stClientInfo* newClient);
     void SendExistingClientsToNewClient(stClientInfo* newClient);
+    void SendData_Player(stClientInfo* sender, stClientInfo* recv, PacketType type);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
+
+
+    bool AddClient(stClientInfo* c); 
+    void RemoveClient(stClientInfo* c);
 private:
     
     
     int idCount = 0;
-    std::vector<stClientInfo*> clients;
+    //std::vector<stClientInfo*> clients;
+    std::array<stClientInfo*, MAX_CLIENTS> clients{};   
+    std::size_t clientCount = 0;
     SOCKET listenSocket = INVALID_SOCKET;
     HANDLE iocpHandle = INVALID_HANDLE_VALUE;
     //std::vector<std::thread> workerThreads;
@@ -93,6 +105,7 @@ private:
     std::mutex roomMutex;
 
     void WorkThread();
-    void AcceptThread();
+    void PostAccept();
+    //void AcceptThread();
 
 };

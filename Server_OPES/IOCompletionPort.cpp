@@ -1,7 +1,9 @@
-#include "IOCompletionPort.h"
+ï»¿#include "IOCompletionPort.h"
 //#include"Packet.h"
 #include <iostream>
-
+#include <mswsock.h> // AcceptEx
+#pragma comment(lib, "Mswsock.lib")
+extern LPFN_ACCEPTEX lpfnAcceptEx = nullptr; // ì „ì—­ìœ¼ë¡œ AcceptEx í¬ì¸í„°
 IOCompletionPort::IOCompletionPort() {}
 
 IOCompletionPort::~IOCompletionPort() {
@@ -21,7 +23,12 @@ bool IOCompletionPort::InitSocket() {
         return false;
     }
 
-    std::cout << "¼ÒÄÏ ÃÊ±âÈ­ ¼º°ø\n";
+    // AcceptEx ê°€ì ¸ì˜¤ê¸°
+    GUID guidAcceptEx = WSAID_ACCEPTEX;
+    DWORD bytes;
+    WSAIoctl(listenSocket, SIO_GET_EXTENSION_FUNCTION_POINTER, &guidAcceptEx, sizeof(guidAcceptEx), &lpfnAcceptEx, sizeof(lpfnAcceptEx), &bytes, NULL, NULL);
+
+    std::cout << "ì†Œì¼“ ì´ˆê¸°í™” ì„±ê³µ\n";
     return true;
 }
 
@@ -41,84 +48,107 @@ bool IOCompletionPort::BindandListen() {
         return false;
     }
 
-    std::cout << "¼­¹ö µî·Ï ¼º°ø..\n";
+    std::cout << "ì„œë²„ ë“±ë¡ ì„±ê³µ..\n";
     return true;
 }
+void IOCompletionPort::PostAccept() {
+    stOverlappedEx* overlappedEx = new stOverlappedEx();
+    overlappedEx->operation = IOOperation::ACCEPT;
+    ZeroMemory(&overlappedEx->overlapped, sizeof(overlappedEx->overlapped));
+    overlappedEx->acceptSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, NULL, 0, WSA_FLAG_OVERLAPPED);
 
+    DWORD bytesReceived = 0;
+    int addrLen = sizeof(SOCKADDR_IN) + 16;
+
+    BOOL ret = lpfnAcceptEx(
+        listenSocket,
+        overlappedEx->acceptSocket,
+        overlappedEx->buffer,
+        0,
+        addrLen,
+        addrLen,
+        &bytesReceived,
+        &overlappedEx->overlapped
+    );
+
+    if (ret == FALSE && WSAGetLastError() != ERROR_IO_PENDING) {
+        std::cerr << "AcceptEx ì‹¤íŒ¨: " << WSAGetLastError() << "\n";
+        delete overlappedEx;
+    }
+}
 bool IOCompletionPort::StartServer() {
     iocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 4);
     if (iocpHandle == NULL) {
-        std::cerr << "[¿¡·¯] CreateIoCompletionPort() ½ÇÆĞ: " << GetLastError() << "\n";
+        std::cerr << "[ì—ëŸ¬] CreateIoCompletionPort() ì‹¤íŒ¨: " << GetLastError() << "\n";
         return false;
     }
 
-    //for (int i = 0; i < MAX_WORKERTHREAD; i++) {
-    //    workerThreads.emplace_back([this]() { WorkerThread(); });
-    //}
-    accepterThread = std::thread([this]() { AcceptThread(); });
+    CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
+    PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
 
-    std::cout << "¼­¹ö°¡ ½ÃÀÛµÇ¾ú½À´Ï´Ù.\n";
+    std::cout << "ì„œë²„ê°€ ì‹œì‘ë˜ì—ˆìŠµë‹ˆë‹¤.\n";
     return true;
 }
 
-void IOCompletionPort::AcceptThread() {
-    while (isRunning) {
-        SOCKADDR_IN clientAddr;
-        int addrLen = sizeof(SOCKADDR_IN);
-
-        // Å¬¶óÀÌ¾ğÆ® ±¸Á¶Ã¼¸¦ µ¿Àû ÇÒ´çÇÏ¿© ÀúÀå
-        stClientInfo* newClient = new stClientInfo();
-        newClient->socketClient = accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-        if (newClient->socketClient == INVALID_SOCKET) {
-            std::cerr << "[¿¡·¯] accept() ½ÇÆĞ\n";
-            delete newClient;  // ¸Ş¸ğ¸® ÇØÁ¦
-            continue;
-        }
-
-        // NAGLE ºñÈ°¼ºÈ­
-        BOOL bNoDelay = TRUE;
-        int result = setsockopt(newClient->socketClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
-        if (result == SOCKET_ERROR) {
-            std::cerr << "[¿¡·¯] setsockopt(TCP_NODELAY) ½ÇÆĞ: " << WSAGetLastError() << std::endl;
-        }
-        ///
-
-        CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
-
-        idCount++;
-        newClient->id = idCount;
-        clients.push_back(newClient);
-        NotifyOthersAboutNewClient(newClient);
-        SendExistingClientsToNewClient(newClient);
-        std::cout << "»õ·Î¿î Å¬¶óÀÌ¾ğÆ® Á¢¼Ó! ÇöÀç Å¬¶óÀÌ¾ğÆ® ¼ö: " << clients.size() << "\n";
-        //
-        std::lock_guard<std::mutex> lock(waitMutex);
-        waitingClients.push_back(newClient);
-        if (waitingClients.size() >= 3) {
-            std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + 3);
-            waitingClients.erase(waitingClients.begin(), waitingClients.begin() + 3);
-
-            CreateRoom(roomMembers);
-            for (auto& client : roomMembers) {
-                SendData_EnterRoom(client);
-                RegisterRecv(client);
-            }
-        }
-        else {
-            SendData_EnterRoom(newClient);
-            RegisterRecv(newClient);
-        }
-
-
-    }
-}
+//void IOCompletionPort::AcceptThread() {
+//    while (isRunning) {
+//        SOCKADDR_IN clientAddr;
+//        int addrLen = sizeof(SOCKADDR_IN);
+//
+//        // í´ë¼ì´ì–¸íŠ¸ êµ¬ì¡°ì²´ë¥¼ ë™ì  í• ë‹¹í•˜ì—¬ ì €ì¥
+//        stClientInfo* newClient = new stClientInfo();
+//        newClient->socketClient = accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
+//        if (newClient->socketClient == INVALID_SOCKET) {
+//            std::cerr << "[ì—ëŸ¬] accept() ì‹¤íŒ¨\n";
+//            delete newClient;  // ë©”ëª¨ë¦¬ í•´ì œ
+//            continue;
+//        }
+//
+//        // NAGLE ë¹„í™œì„±í™”
+//        BOOL bNoDelay = TRUE;
+//        int result = setsockopt(newClient->socketClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
+//        if (result == SOCKET_ERROR) {
+//            std::cerr << "[ì—ëŸ¬] setsockopt(TCP_NODELAY) ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
+//        }
+//        ///
+//
+//        CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
+//
+//        idCount++;
+//        newClient->id = idCount;
+//        clients.push_back(newClient);
+//        NotifyOthersAboutNewClient(newClient);
+//        SendExistingClientsToNewClient(newClient);
+//        std::cout << "ìƒˆë¡œìš´ í´ë¼ì´ì–¸íŠ¸ ì ‘ì†! í˜„ì¬ í´ë¼ì´ì–¸íŠ¸ ìˆ˜: " << clients.size() << "\n";
+//        //
+//        std::lock_guard<std::mutex> lock(waitMutex);
+//        waitingClients.push_back(newClient);
+//        if (waitingClients.size() >= 3) {
+//            std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + 3);
+//            waitingClients.erase(waitingClients.begin(), waitingClients.begin() + 3);
+//
+//            CreateRoom(roomMembers);
+//            for (auto& client : roomMembers) {
+//                SendData_EnterRoom(client);
+//                RegisterRecv(client);
+//            }
+//        }
+//        else {
+//            SendData_EnterRoom(newClient);
+//            RegisterRecv(newClient);
+//        }
+//
+//
+//    }
+//}
 void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* newClient) {
     ExistingClientsDataPacket packet;
     packet.type = PacketType::EXISTING_CLIENTS;
     packet.count = 0;
 
     for (auto& client : clients) {
+        if (!client) continue;
         if (client != newClient && client->roomID == newClient->roomID) {
             auto& dst = packet.clients[packet.count++];
             dst.id = client->id;
@@ -142,7 +172,7 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* newClient) {
     DWORD size_sent = 0;
     int ret = WSASend(newClient->socketClient, &newClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &newClient->sendOverlapped.overlapped, NULL);
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[¿¡·¯] WSASend(EXISTING_CLIENTS) ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+        std::cerr << "[ì—ëŸ¬] WSASend(EXISTING_CLIENTS) ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
         closesocket(newClient->socketClient);
         RemoveClient(newClient);
     }
@@ -153,6 +183,7 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
     pkt.id = newClient->id;
 
     for (auto& other : clients) {
+        if (!other) continue;
         if (other != newClient && other->roomID == newClient->roomID) {
             other->sendOverlapped.operation = IOOperation::SEND;
             ZeroMemory(&other->sendOverlapped.overlapped, sizeof(other->sendOverlapped.overlapped));
@@ -162,7 +193,7 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
             DWORD sent = 0;
             int ret = WSASend(other->socketClient, &other->sendOverlapped.wsaBuf, 1, &sent, 0, &other->sendOverlapped.overlapped, NULL);
             if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-                std::cerr << "[¿¡·¯] WSASend ½ÇÆĞ (NEW_CLIENT): " << WSAGetLastError() << "\n";
+                std::cerr << "[ì—ëŸ¬] WSASend ì‹¤íŒ¨ (NEW_CLIENT): " << WSAGetLastError() << "\n";
                 closesocket(other->socketClient);
                 RemoveClient(other);
             }
@@ -179,7 +210,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
 
     for (auto* client : members) {
         client->roomID = newRoom.roomID;
-        // ¹æ ÀÔÀå ¸Ş½ÃÁö Àü¼Û
+        // ë°© ì…ì¥ ë©”ì‹œì§€ ì „ì†¡
         //SendRoomEnterMessage(client, newRoom.roomID);
     }
 
@@ -199,14 +230,14 @@ void IOCompletionPort::SendData_EnterRoom(stClientInfo* recvingClient) {
     DWORD size_sent = 0;
     int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[¿¡·¯] WSASend ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+        std::cerr << "[ì—ëŸ¬] WSASend ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
         closesocket(recvingClient->socketClient);
         RemoveClient(recvingClient);
     }
 }
 void IOCompletionPort::RegisterRecv(stClientInfo* client) {
     if (!client || client->socketClient == INVALID_SOCKET) {
-        std::cerr << "[¿¡·¯] À¯È¿ÇÏÁö ¾ÊÀº Å¬¶óÀÌ¾ğÆ® ¼ÒÄÏ\n";
+        std::cerr << "[ì—ëŸ¬] ìœ íš¨í•˜ì§€ ì•Šì€ í´ë¼ì´ì–¸íŠ¸ ì†Œì¼“\n";
         return;
     }
 
@@ -218,31 +249,62 @@ void IOCompletionPort::RegisterRecv(stClientInfo* client) {
 
     int result = WSARecv(client->socketClient, &client->recvOverlapped.wsaBuf, 1, &bytesReceived, &flags, &client->recvOverlapped.overlapped, NULL);
     if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[¿¡·¯] WSARecv ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+        std::cerr << "[ì—ëŸ¬] WSARecv ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
         closesocket(client->socketClient);
         RemoveClient(client);
     }
 }
-void IOCompletionPort::RemoveClient(stClientInfo* client) {
-    std::lock_guard<std::mutex> lock(clientMutex);
-
-    clients.erase(std::remove_if(clients.begin(), clients.end(),
-        [&](stClientInfo* c) {
-            if (c == client) {
-                //delete c;
-                return true;
-            }
-            return false;
-        }), clients.end());
-    waitingClients.erase(std::remove_if(waitingClients.begin(), waitingClients.end(),
-        [&](stClientInfo* c) {
-            if (c == client) {
-                delete c;
-                return true;
-            }
-            return false;
-        }), waitingClients.end());
+bool IOCompletionPort::AddClient(stClientInfo* c)
+{
+    for (auto& slot : clients)
+        if (slot == nullptr) { slot = c; ++clientCount; return true; }
+    std::cerr << "[ê²½ê³ ] MAX_CLIENTS ì´ˆê³¼\n";
+    return false;
 }
+
+void IOCompletionPort::RemoveClient(stClientInfo* c)
+{
+    if (!c) return;
+
+    // â‘  ì´ë¯¸ ì œê±° ì²˜ë¦¬í–ˆë‹¤ë©´ ì•„ë¬´ ê²ƒë„ í•˜ì§€ ì•ŠëŠ”ë‹¤
+    if (c->alreadyRemoved.exchange(true))
+        return;
+
+    // â‘¡ ì†Œì¼“ì´ ì—´ë ¤ ìˆìœ¼ë©´ ì§€ê¸ˆ ë‹«ëŠ”ë‹¤
+    if (c->socketClient != INVALID_SOCKET) {
+        shutdown(c->socketClient, SD_BOTH);
+        closesocket(c->socketClient);
+        c->socketClient = INVALID_SOCKET;
+    }
+
+    for (auto& slot : clients)
+        if (slot == c) { slot = nullptr; --clientCount; break; }
+
+    waitingClients.erase(
+        std::remove(waitingClients.begin(), waitingClients.end(), c),
+        waitingClients.end());
+    delete c;
+}
+//void IOCompletionPort::RemoveClient(stClientInfo* client) {
+//    std::lock_guard<std::mutex> lock(clientMutex);
+//
+//    clients.erase(std::remove_if(clients.begin(), clients.end(),
+//        [&](stClientInfo* c) {
+//            if (c == client) {
+//                //delete c;
+//                return true;
+//            }
+//            return false;
+//        }), clients.end());
+//    waitingClients.erase(std::remove_if(waitingClients.begin(), waitingClients.end(),
+//        [&](stClientInfo* c) {
+//            if (c == client) {
+//                delete c;
+//                return true;
+//            }
+//            return false;
+//        }), waitingClients.end());
+//}
 
 
 //void IOCompletionPort::SendData_Player(stClientInfo* sendingClient, stClientInfo* recvingClient,PacketType pType) {
@@ -288,7 +350,7 @@ void IOCompletionPort::RemoveClient(stClientInfo* client) {
 //    DWORD size_sent = 0;
 //    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
 //    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-//        std::cerr << "[¿¡·¯] WSASend ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+//        std::cerr << "[ì—ëŸ¬] WSASend ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
 //        closesocket(recvingClient->socketClient);
 //        RemoveClient(recvingClient);
 //    }
@@ -310,7 +372,7 @@ void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvi
     DWORD size_sent = 0;
     int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[¿¡·¯] WSASend ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+        std::cerr << "[ì—ëŸ¬] WSASend ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
         closesocket(recvingClient->socketClient);
         RemoveClient(recvingClient);
     }
@@ -332,7 +394,7 @@ void IOCompletionPort::SendData_Move(stClientInfo* sendingClient, stClientInfo* 
     DWORD size_sent = 0;
     int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[¿¡·¯] WSASend ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+        std::cerr << "[ì—ëŸ¬] WSASend ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
         closesocket(recvingClient->socketClient);
         RemoveClient(recvingClient);
     }
@@ -354,7 +416,7 @@ void IOCompletionPort::SendData_ViewAngle(stClientInfo* sendingClient, stClientI
     DWORD size_sent = 0;
     int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[¿¡·¯] WSASend ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+        std::cerr << "[ì—ëŸ¬] WSASend ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
         closesocket(recvingClient->socketClient);
         RemoveClient(recvingClient);
     }
@@ -374,7 +436,7 @@ void IOCompletionPort::SendData_Animaion(stClientInfo* sendingClient, stClientIn
     DWORD size_sent = 0;
     int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[¿¡·¯] WSASend ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+        std::cerr << "[ì—ëŸ¬] WSASend ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
         closesocket(recvingClient->socketClient);
         RemoveClient(recvingClient);
     }
@@ -394,7 +456,7 @@ void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID,unsigned i
     DWORD size_sent = 0;
     int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[¿¡·¯] WSASend ½ÇÆĞ: " << WSAGetLastError() << std::endl;
+        std::cerr << "[ì—ëŸ¬] WSASend ì‹¤íŒ¨: " << WSAGetLastError() << std::endl;
         closesocket(recvingClient->socketClient);
         RemoveClient(recvingClient);
     }
@@ -406,33 +468,102 @@ void IOCompletionPort::WorkThread() {
 
     while (isRunning) {
         BOOL result = GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, &completionKey, &overlapped, INFINITE);
-        if (!result || bytesTransferred == 0) {
-            // Å¬¶óÀÌ¾ğÆ® Á¾·á °¨Áö
-            stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
-            std::cerr << "[¿¬°á Á¾·á] Å¬¶óÀÌ¾ğÆ® ID " << client->id << " Á¢¼Ó ÇØÁ¦\n";
-            closesocket(client->socketClient);
-            RemoveClient(client);
+        stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
+        if (pOverlappedEx->operation == IOOperation::ACCEPT) {
+            stClientInfo* newClient = new stClientInfo();
+            newClient->socketClient = pOverlappedEx->acceptSocket;
+
+            setsockopt(newClient->socketClient, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT,
+                (char*)&listenSocket, sizeof(listenSocket));
+            // ì†Œì¼“ ì˜µì…˜ ì„¤ì •
+            BOOL bNoDelay = TRUE;
+            setsockopt(newClient->socketClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
+
+            CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
+            idCount++;
+            newClient->id = idCount;
+            //clients.push_back(newClient);
+            AddClient(newClient);
+            // ê¸°ì¡´ ì²˜ë¦¬ í•¨ìˆ˜ í˜¸ì¶œ
+            NotifyOthersAboutNewClient(newClient);
+            SendExistingClientsToNewClient(newClient);
+            std::cout << "ì…ì¥:" << idCount << std::endl;
+            {
+                std::lock_guard<std::mutex> lock(waitMutex);
+                waitingClients.push_back(newClient);
+                if (waitingClients.size() >= 3) {
+                    std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + 3);
+                    waitingClients.erase(waitingClients.begin(), waitingClients.begin() + 3);
+                    CreateRoom(roomMembers);
+                    for (auto& client : roomMembers) {
+                        SendData_EnterRoom(client);
+                        RegisterRecv(client);
+                    }
+                }
+                else {
+                    RegisterRecv(newClient);
+                    SendData_EnterRoom(newClient);
+                }
+            }
+
+            // ë‹¤ìŒ AcceptEx ë“±ë¡
+            PostAccept();
+            delete pOverlappedEx;
             continue;
         }
+        
+        // -------------- [DISCONNECT ì²˜ë¦¬] --------------
+        if (!result || bytesTransferred == 0)
+        {
+            if (completionKey == 9999 || completionKey == 0) {
+                // ë¦¬ìŠ¤ë‹ ì†Œì¼“ìš© AcceptEx ì‹¤íŒ¨Â·ì·¨ì†Œ
+                delete pOverlappedEx;          // <- ì´ë•ŒëŠ” Accept overlappedë¼ delete OK
+                PostAccept();
+                continue;
+            }
 
-        stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
+            stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
+
+            bool found = std::any_of(clients.begin(), clients.end(),
+                [&](auto* s) { return s == client; });
+            if (!found)
+            {
+                // ì´ë¯¸ ì‚­ì œëœ í¬ì¸í„°ì´ê±°ë‚˜ ì“°ë ˆê¸° í¬ì¸í„° -> overlappedë§Œ Acceptì¼ ê°€ëŠ¥ì„±
+                if (pOverlappedEx && pOverlappedEx->operation == IOOperation::ACCEPT)
+                    delete pOverlappedEx;
+                continue;
+            }
+
+            std::cerr << "[ì—°ê²° ì¢…ë£Œ] í´ë¼ì´ì–¸íŠ¸ ID "
+                << client->id << " ì ‘ì† í•´ì œ\n";
+
+            RemoveClient(client);              // clientì™€ í•¨ê»˜ overlapped ë©”ëª¨ë¦¬ë„ í•´ì œë¨
+            // !! ì—¬ê¸°ì„œ pOverlappedEx ëŠ” client ë‚´ë¶€ ë©”ëª¨ë¦¬ â†’ ë” ì´ìƒ delete ê¸ˆì§€ !!
+            continue;
+        }
+        // ----------------------------------------------
+
+
+
+
+       
         if (pOverlappedEx->operation == IOOperation::RECV) {
             stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
 
             PacketType* packetType = reinterpret_cast<PacketType*>(pOverlappedEx->buffer);
 
-           // std::cout << "[µğ¹ö±ë] ¼ö½ÅµÈ ÆĞÅ¶ Å¸ÀÔ: " << static_cast<int>(*packetType)
-           //     << ", ¹ŞÀº ¹ÙÀÌÆ®: " << bytesTransferred << std::endl;
+           // std::cout << "[ë””ë²„ê¹…] ìˆ˜ì‹ ëœ íŒ¨í‚· íƒ€ì…: " << static_cast<int>(*packetType)
+           //     << ", ë°›ì€ ë°”ì´íŠ¸: " << bytesTransferred << std::endl;
 
             if (*packetType == PacketType::MOVE) {
                 //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[¿¡·¯] MOVE ÆĞÅ¶ Å©±â ¿À·ù: " << bytesTransferred << " bytes" << std::endl;
+                //    std::cerr << "[ì—ëŸ¬] MOVE íŒ¨í‚· í¬ê¸° ì˜¤ë¥˜: " << bytesTransferred << " bytes" << std::endl;
                 //    continue;
                 //}
 
                 MovePacket_CtoS* movePacket = reinterpret_cast<MovePacket_CtoS*>(pOverlappedEx->buffer);
 
-                // ÀÌµ¿ Ã³¸®
+                // ì´ë™ ì²˜ë¦¬
                //switch (movePacket->direction) {
                //case 0: client->y -= 1; break; // UP
                //case 1: client->y += 1; break; // DOWN
@@ -444,19 +575,20 @@ void IOCompletionPort::WorkThread() {
                 client->x = movePacket->x;
                 client->y = movePacket->y;
                 client->z = movePacket->z;
-               // std::cout << "[ÀÌµ¿] Å¬¶óÀÌ¾ğÆ® " << client->id
-                //    << " À§Ä¡: (" << client->x << ", " << client->y << ", " << client->z<<")\n";
+               // std::cout << "[ì´ë™] í´ë¼ì´ì–¸íŠ¸ " << client->id
+                //    << " ìœ„ì¹˜: (" << client->x << ", " << client->y << ", " << client->z<<")\n";
 
-                // ÀÌµ¿ ÆĞÅ¶À» ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü¼Û
+                // ì´ë™ íŒ¨í‚·ì„ ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ì†¡
                 for (stClientInfo* otherClient : clients) {
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // ÆĞÅ¶À» º¸³½ Å¬¶óÀÌ¾ğÆ®¿¡°Ô´Â ´Ù½Ã Àü¼ÛÇÏÁö ¾ÊÀ½
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // íŒ¨í‚·ì„ ë³´ë‚¸ í´ë¼ì´ì–¸íŠ¸ì—ê²ŒëŠ” ë‹¤ì‹œ ì „ì†¡í•˜ì§€ ì•ŠìŒ
                         SendData_Move(client, otherClient);
                     }
                 }
             }
             else if (*packetType == PacketType::VIEW_ANGLE) {
                 //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[¿¡·¯] MOVE ÆĞÅ¶ Å©±â ¿À·ù: " << bytesTransferred << " bytes" << std::endl;
+                //    std::cerr << "[ì—ëŸ¬] MOVE íŒ¨í‚· í¬ê¸° ì˜¤ë¥˜: " << bytesTransferred << " bytes" << std::endl;
                 //    continue;
                 //}
 
@@ -465,19 +597,20 @@ void IOCompletionPort::WorkThread() {
                 client->angle_x = viewAnglePacket->x;
                 client->angle_y = viewAnglePacket->y;
                 client->angle_z = viewAnglePacket->z;
-               // std::cout << "[½Ã¼±] Å¬¶óÀÌ¾ğÆ® " << client->id
-                //    << " ½Ã¼±°¢µµ: (" << client->angle_x << ", " << client->angle_y << ", " << client->angle_z << ")\n";
+                //std::cout << "[ì‹œì„ ] í´ë¼ì´ì–¸íŠ¸ " << client->id
+                //    << " ì‹œì„ ê°ë„: (" << client->angle_x << ", " << client->angle_y << ", " << client->angle_z << ")\n";
 
-                // ÀÌµ¿ ÆĞÅ¶À» ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü¼Û
+                // ì´ë™ íŒ¨í‚·ì„ ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ì†¡
                 for (stClientInfo* otherClient : clients) {
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // ÆĞÅ¶À» º¸³½ Å¬¶óÀÌ¾ğÆ®¿¡°Ô´Â ´Ù½Ã Àü¼ÛÇÏÁö ¾ÊÀ½
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // íŒ¨í‚·ì„ ë³´ë‚¸ í´ë¼ì´ì–¸íŠ¸ì—ê²ŒëŠ” ë‹¤ì‹œ ì „ì†¡í•˜ì§€ ì•ŠìŒ
                         SendData_ViewAngle(client, otherClient);
                     }
                 }
             }
             else if (*packetType == PacketType::ANIMATION) {
                 //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[¿¡·¯] MOVE ÆĞÅ¶ Å©±â ¿À·ù: " << bytesTransferred << " bytes" << std::endl;
+                //    std::cerr << "[ì—ëŸ¬] MOVE íŒ¨í‚· í¬ê¸° ì˜¤ë¥˜: " << bytesTransferred << " bytes" << std::endl;
                 //    continue;
                 //}
 
@@ -485,51 +618,54 @@ void IOCompletionPort::WorkThread() {
 
                 client->animationType = anyPacket->anymationType;
                 
-                //std::cout << "[¾Ö´Ï¸ÅÀÌ¼Ç] Å¬¶óÀÌ¾ğÆ® " << client->animationType << " \n";
+                //std::cout << "[ì• ë‹ˆë§¤ì´ì…˜] í´ë¼ì´ì–¸íŠ¸ " << client->animationType << " \n";
 
-                // ÀÌµ¿ ÆĞÅ¶À» ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü¼Û
+                // ì´ë™ íŒ¨í‚·ì„ ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ì†¡
                 for (stClientInfo* otherClient : clients) {
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // ÆĞÅ¶À» º¸³½ Å¬¶óÀÌ¾ğÆ®¿¡°Ô´Â ´Ù½Ã Àü¼ÛÇÏÁö ¾ÊÀ½
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // íŒ¨í‚·ì„ ë³´ë‚¸ í´ë¼ì´ì–¸íŠ¸ì—ê²ŒëŠ” ë‹¤ì‹œ ì „ì†¡í•˜ì§€ ì•ŠìŒ
                         SendData_Animaion(client, otherClient);
                     }
                 }
             }
             else if (*packetType == PacketType::PLAYER_TO_MOSTER) {
                 //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[¿¡·¯] MOVE ÆĞÅ¶ Å©±â ¿À·ù: " << bytesTransferred << " bytes" << std::endl;
+                //    std::cerr << "[ì—ëŸ¬] MOVE íŒ¨í‚· í¬ê¸° ì˜¤ë¥˜: " << bytesTransferred << " bytes" << std::endl;
                 //    continue;
                 //}
 
                 Player2Monster* damagePacket = reinterpret_cast<Player2Monster*>(pOverlappedEx->buffer);
 
-                // µ¥¹ÌÁö ÆĞÅ¶À» ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü¼Û
+                // ë°ë¯¸ì§€ íŒ¨í‚·ì„ ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ì†¡
                 for (stClientInfo* otherClient : clients) {
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // ÆĞÅ¶À» º¸³½ Å¬¶óÀÌ¾ğÆ®¿¡°Ô´Â ´Ù½Ã Àü¼ÛÇÏÁö ¾ÊÀ½
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // íŒ¨í‚·ì„ ë³´ë‚¸ í´ë¼ì´ì–¸íŠ¸ì—ê²ŒëŠ” ë‹¤ì‹œ ì „ì†¡í•˜ì§€ ì•ŠìŒ
                         SendData_Player2Monster(damagePacket->monsterId, damagePacket->damage, otherClient);
                     }
                 }
             }
             else if (*packetType == PacketType::CHAT) {
                 //if (bytesTransferred < sizeof(ChatPacket)) {
-                //    std::cerr << "[¿¡·¯] CHAT ÆĞÅ¶ Å©±â ¿À·ù: " << bytesTransferred << " bytes" << std::endl;
+                //    std::cerr << "[ì—ëŸ¬] CHAT íŒ¨í‚· í¬ê¸° ì˜¤ë¥˜: " << bytesTransferred << " bytes" << std::endl;
                 //    continue;
                 //}
 
                 ChatPacket_CtoS* chatPacket = reinterpret_cast<ChatPacket_CtoS*>(pOverlappedEx->buffer);
                 std::string msg{ chatPacket->message,bytesTransferred - sizeof(PacketType) };
 
-                std::cout << "[Ã¤ÆÃ] Å¬¶óÀÌ¾ğÆ® " << client->id << ": " << msg << std::endl;
+                std::cout << "[ì±„íŒ…] í´ë¼ì´ì–¸íŠ¸ " << client->id << ": " << msg << std::endl;
 
-                //Ã¤ÆÃ ÆĞÅ¶À» ¸ğµç Å¬¶óÀÌ¾ğÆ®¿¡°Ô Àü¼Û
+                //ì±„íŒ… íŒ¨í‚·ì„ ëª¨ë“  í´ë¼ì´ì–¸íŠ¸ì—ê²Œ ì „ì†¡
                 for (stClientInfo* otherClient : clients) {
-                    if (otherClient != client) { // ÆĞÅ¶À» º¸³½ Å¬¶óÀÌ¾ğÆ®¿¡°Ô´Â ´Ù½Ã Àü¼ÛÇÏÁö ¾ÊÀ½
+                    if (!otherClient) continue;
+                    if (otherClient != client) { // íŒ¨í‚·ì„ ë³´ë‚¸ í´ë¼ì´ì–¸íŠ¸ì—ê²ŒëŠ” ë‹¤ì‹œ ì „ì†¡í•˜ì§€ ì•ŠìŒ
                         SendData(client, otherClient, msg.c_str(), bytesTransferred);
                         std::cout << "send\n";
                     }
                 }
             }
 
-            RegisterRecv(client);  // ´Ù½Ã ¼ö½Å ´ë±â
+            RegisterRecv(client);  // ë‹¤ì‹œ ìˆ˜ì‹  ëŒ€ê¸°
         }
     }
 }
@@ -547,5 +683,5 @@ void IOCompletionPort::DestroyThread() {
 
     if (accepterThread.joinable()) accepterThread.join();
 
-    std::cout << "¼­¹ö Á¾·á ¿Ï·á.\n";
+    std::cout << "ì„œë²„ ì¢…ë£Œ ì™„ë£Œ.\n";
 }
