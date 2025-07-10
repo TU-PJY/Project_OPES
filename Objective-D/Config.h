@@ -51,4 +51,4 @@ constexpr bool ENABLE_FOG_AFTER_BEGIN_RENDER = false;
 constexpr bool ENABLE_TEXTURE_V_FLIP_AFTER_BEGIN_RENDER = true;
 
 // 제목표시줄 문자열을 설정한다. 반드시 아래와 같은 형식으로 저정해야 한다.
-constexpr TCHAR TitleName[] = _T("Objective-D(");
+constexpr TCHAR TitleName[] = _T("OPES(");
