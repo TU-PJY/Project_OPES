@@ -248,8 +248,8 @@ public:
 	void ResetAnimation();
 	size_t GetMeshCount();
 	void Render(int Index);
-	void ApplyAnimation();
 	XMFLOAT3 GetInplaceDelta();
+	void ApplyAnimation();
 
 private:
 	void CreateBuffer(DeviceSystem& System);

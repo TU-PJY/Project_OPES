@@ -176,7 +176,6 @@ void Scorpion::Update(float Delta) {
 			fbx.UpdateAnimation(Delta);
 		}
 
-
 		terrainUT.InputPosition(position);
 		terrainUT.ClampToTerrain(terrainUT, position, 0.0);
 

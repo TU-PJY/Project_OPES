@@ -26,22 +26,21 @@ public:
 
 	void Update(float Delta) {
 		if (!Init) {
-			fbx.SelectFBXMesh(MESH.scorpion);
-			fbx.SelectAnimation("Walk");
+			fbx.SelectFBXMesh(MESH.heavy_shoot);
+			//fbx.SelectAnimation("Walk");
 
 			//fbx2.SelectFBXMesh(MESH.scorpion);
 		//	fbx2.SelectAnimation("Death");
 			Init = true;
 		}
 
-		fbx.UpdateAnimation(Delta, true);
+		fbx.UpdateAnimation(Delta);
 		//std::cout << fbx.GetInplaceDelta() << std::endl;
 	}
 
 	void Render() {
 		BeginRender();
-		Transform::Move(TranslateMatrix, -fbx.GetInplaceDelta());
-		RenderFBX(fbx, TEX.scorpion);
+		RenderFBX(fbx, TEX.scifi);
 		//RenderFBX(MESH.scorpion, TEX.scorpion);
 
 		//Transform::Move(TranslateMatrix, 4.0, 0.0, 0.0);

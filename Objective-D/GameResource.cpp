@@ -81,6 +81,7 @@ void LoadMesh(DeviceSystem& System) {
 	LoadAnimatedFBX(System, MESH.heavy_idle, "Resources//Models//player//heavy//heavy_idle.fbx");
 	LoadAnimatedFBX(System, MESH.heavy_move, "Resources//Models//player//heavy//heavy_move.fbx");
 	LoadAnimatedFBX(System, MESH.heavy_shoot, "Resources//Models//player//heavy//heavy_shoot.fbx");
+	LoadPrecomputedAnimation(MESH.heavy_shoot, "Extracted Animations\\heavy_shoot.animated");
 	LoadAnimatedFBX(System, MESH.heavy_death, "Resources//Models//player//heavy//heavy_death.fbx");
 
 	// gun flame
@@ -88,7 +89,8 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(System, MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
 	// monster
-	LoadAnimatedFBX(System, MESH.scorpion, "Resources//Models//monster//scorpion.fbx", true, "Resources//Models//monster//scorpion_animation.json");
+	LoadAnimatedFBX(System, MESH.scorpion, "Resources//Models//monster//scorpion.fbx", "Resources//Models//monster//scorpion_animation.json");
+	LoadPrecomputedAnimation(MESH.scorpion, "Extracted Animations\\scorpion.animated");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

@@ -14,24 +14,38 @@ void Framework::Init() {
 	// 루트 시그니처를 생성한다.
 	DeviceSystem System{ Device, CmdList };
 	GlobalSystem = { Device, CmdList };
-	ObjectShaderRootSignature = scene.CreateObjectShaderSignature(System.Device);
-	ImageShaderRootSignature = scene.CreateImageShaderSignature(System.Device);
-	BoundboxShaderRootSignature = scene.CreateBoundboxShaderSignature(System.Device);
-	LineShaderRootSignature = scene.CreateLineShaderSignature(System.Device);
 
-	InitObjectShader(ObjectShaderRootSignature, System.Device);
-	InitImageShader(ImageShaderRootSignature, System.Device);
-	InitBoundboxShader(BoundboxShaderRootSignature, System.Device);
-	InitLineShader(LineShaderRootSignature, System.Device);
+	if (!AnimationDataExtractMode) {
+		ObjectShaderRootSignature = scene.CreateObjectShaderSignature(System.Device);
+		ImageShaderRootSignature = scene.CreateImageShaderSignature(System.Device);
+		BoundboxShaderRootSignature = scene.CreateBoundboxShaderSignature(System.Device);
+		LineShaderRootSignature = scene.CreateLineShaderSignature(System.Device);
+
+		InitObjectShader(ObjectShaderRootSignature, System.Device);
+		InitImageShader(ImageShaderRootSignature, System.Device);
+		InitBoundboxShader(BoundboxShaderRootSignature, System.Device);
+		InitLineShader(LineShaderRootSignature, System.Device);
+	}
 
 	fbxUtil.Init();
 	LoadSystemMesh(System);
 	LoadMesh(System);
 	LoadTexture(System);
 
+	if (AnimationDataExtractMode) {
+		std::cout << "\nAnimation Data Extraction Completed.\n";
+		std::cout << "Press Enter To Exit.\n";
+
+		while (true) {
+			if (GetKeyState(VK_RETURN) & 0x8000)
+				exit(0);
+		}
+	}
+
 	// scene 초기화
 	// 이 함수에서 모드를 실행하고 쉐이더를 로드한다.
 	// StartMode.cpp의 StartMode 변경 시 시작 모드 변경이 가능하다.
+
 	scene.Init(StartMode);
 
 	// CBV를 생성한다.

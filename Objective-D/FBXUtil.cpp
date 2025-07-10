@@ -9,7 +9,7 @@ void FBXUtil::Init() {
 		std::cerr << "Error: Unable to create FBX Manager!\n";
 		exit(1);
 	}
-	std::cout << "FBX Manager created.\nLoading FBX files...";
+	std::cout << "FBX Manager created.\nLoading FBX files...\n";
 
 	FbxIOSettings* IOS = FbxIOSettings::Create(Manager, IOSROOT);
 	Manager->SetIOSettings(IOS);
@@ -623,17 +623,44 @@ void FBXUtil::PrecomputeBoneMatrices(FBXMesh& TargetMesh, const std::string& Ani
 		std::vector<BoneFrame> boneFrames;
 		boneFrames.resize(frameCount);
 
-		for (int i = 0; i < frameCount; ++i) {
-			float time = TargetMesh.StartTime + (i / fps);
-			std::vector<XMMATRIX> matrices;
-
-			// 이 mesh에 해당하는 본만 계산
-			GetBoneMatricesFromScene(m, time, matrices);
-
-			boneFrames[i] = std::move(matrices);
+		if (m->BoneIndices && m->BoneWeights) {
+			// 기존 스킨 메시 처리
+			std::vector<BoneFrame> boneFrames(frameCount);
+			for (int i = 0; i < frameCount; ++i) {
+				float time = TargetMesh.StartTime + (i / fps);
+				std::vector<XMMATRIX> matrices;
+				GetBoneMatricesFromScene(m, time, matrices);
+				boneFrames[i] = std::move(matrices);
+			}
+			m->PrecomputedBoneMatrices[AnimationName] = std::move(boneFrames);
 		}
 
-		m->PrecomputedBoneMatrices[AnimationName] = std::move(boneFrames);
+		else {
+			if (m->FbxNodePtr) {
+				// 스킨이 없는 메시 처리
+				std::vector<BoneFrame> boneFrames(frameCount);
+
+				for (int i = 0; i < frameCount; ++i) {
+					float time = TargetMesh.StartTime + (i / fps);
+					FbxTime t;
+					t.SetSecondDouble(time);
+					FbxAMatrix Transform = m->FbxNodePtr->EvaluateGlobalTransform(t);
+
+					XMMATRIX M = XMMATRIX(
+						(float)Transform[0][0], (float)Transform[0][1], (float)Transform[0][2], (float)Transform[0][3],
+						(float)Transform[1][0], (float)Transform[1][1], (float)Transform[1][2], (float)Transform[1][3],
+						(float)Transform[2][0], (float)Transform[2][1], (float)Transform[2][2], (float)Transform[2][3],
+						(float)Transform[3][0], (float)Transform[3][1], (float)Transform[3][2], (float)Transform[3][3]
+					);
+
+					std::vector<XMMATRIX> DummyBoneFrame(1, M);  // 하나의 행렬만 갖는 BoneFrame
+
+					boneFrames[i] = std::move(DummyBoneFrame);
+				}
+
+				m->PrecomputedBoneMatrices[AnimationName] = std::move(boneFrames);
+			}
+		}
 	}
 }
 

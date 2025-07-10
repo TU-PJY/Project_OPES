@@ -104,7 +104,7 @@ void FBX::UpdateAnimation(float Delta, bool Inplace) {
 		for (int M = 0; M < MeshCount; M++) {
 			auto FoundFrames = FBXPtr->MeshPart[M]->PrecomputedBoneMatrices.find(SearchName);
 			if (FoundFrames == FBXPtr->MeshPart[M]->PrecomputedBoneMatrices.end())
-				break;
+				continue;
 
 			CurrentFrame = std::clamp(static_cast<int>(CurrentTime * AnimationExtractFrame), 0, (int)FoundFrames->second.size() - 1);
 
@@ -178,13 +178,13 @@ void FBX::Render(int Index) {
 	FBXPtr->MeshPart[Index]->Render(GlobalCommandList, VertexBufferViews[Index]);
 }
 
-void FBX::ApplyAnimation() {
-
-}
 
 XMFLOAT3 FBX::GetInplaceDelta() {
 	return InplaceDelta;
 }
+
+void FBX::ApplyAnimation() {}
+
 ///////////////////////////////////////// private
 
 // 원본 FBX와 동일 사양으로 버퍼를 맞춘다.

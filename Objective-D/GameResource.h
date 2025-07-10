@@ -140,24 +140,107 @@ inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, in
 	LoadedMeshList.emplace_back(MeshPtr);
 }
 
+inline void SavePrecomputedAnimation(const std::string& FilePath, const FBXMesh& TargetMesh) {
+	std::ofstream out(FilePath, std::ios::binary);
+	if (!out) {
+		std::cerr << "Failed to open file for writing: " << FilePath << "\n";
+		return;
+	}
+
+	uint32_t meshCount = static_cast<uint32_t>(TargetMesh.MeshPart.size());
+	out.write(reinterpret_cast<const char*>(&meshCount), sizeof(meshCount));
+
+	for (const Mesh* mesh : TargetMesh.MeshPart) {
+		// Write node name
+		uint32_t nodeNameLen = static_cast<uint32_t>(mesh->NodeName.size());
+		out.write(reinterpret_cast<const char*>(&nodeNameLen), sizeof(nodeNameLen));
+		out.write(mesh->NodeName.c_str(), nodeNameLen);
+
+		uint32_t animCount = static_cast<uint32_t>(mesh->PrecomputedBoneMatrices.size());
+		out.write(reinterpret_cast<const char*>(&animCount), sizeof(animCount));
+
+		for (const auto& [animName, frames] : mesh->PrecomputedBoneMatrices) {
+			uint32_t animNameLen = static_cast<uint32_t>(animName.size());
+			out.write(reinterpret_cast<const char*>(&animNameLen), sizeof(animNameLen));
+			out.write(animName.c_str(), animNameLen);
+
+			uint32_t frameCount = static_cast<uint32_t>(frames.size());
+			uint32_t boneCount = static_cast<uint32_t>(frames[0].size());
+			out.write(reinterpret_cast<const char*>(&frameCount), sizeof(frameCount));
+			out.write(reinterpret_cast<const char*>(&boneCount), sizeof(boneCount));
+
+			for (const auto& frame : frames)
+				out.write(reinterpret_cast<const char*>(frame.data()), sizeof(XMMATRIX) * boneCount);
+		}
+	}
+}
+
+inline void LoadPrecomputedAnimation(FBXMesh& TargetMesh, const std::string& FilePath) {
+	if (AnimationDataExtractMode)
+		return;
+
+	std::ifstream in(FilePath, std::ios::binary);
+	if (!in) {
+		std::cerr << "Failed to open file for reading: " << FilePath << "\n";
+		return;
+	}
+
+	uint32_t meshCount;
+	in.read(reinterpret_cast<char*>(&meshCount), sizeof(meshCount));
+	if (meshCount != TargetMesh.MeshPart.size()) {
+		std::cerr << "Mismatch in mesh count!\n";
+		return;
+	}
+
+	for (Mesh* mesh : TargetMesh.MeshPart) {
+		uint32_t nodeNameLen;
+		in.read(reinterpret_cast<char*>(&nodeNameLen), sizeof(nodeNameLen));
+		std::string nodeName(nodeNameLen, '\0');
+		in.read(&nodeName[0], nodeNameLen);
+
+		if (mesh->NodeName != nodeName) {
+			std::cerr << "Node name mismatch: " << mesh->NodeName << " != " << nodeName << "\n";
+			continue;
+		}
+
+		uint32_t animCount;
+		in.read(reinterpret_cast<char*>(&animCount), sizeof(animCount));
+
+		for (uint32_t i = 0; i < animCount; ++i) {
+			uint32_t animNameLen;
+			in.read(reinterpret_cast<char*>(&animNameLen), sizeof(animNameLen));
+			std::string animName(animNameLen, '\0');
+			in.read(&animName[0], animNameLen);
+
+			uint32_t frameCount, boneCount;
+			in.read(reinterpret_cast<char*>(&frameCount), sizeof(frameCount));
+			in.read(reinterpret_cast<char*>(&boneCount), sizeof(boneCount));
+
+			std::vector<BoneFrame> frames(frameCount, BoneFrame(boneCount));
+			for (auto& frame : frames)
+				in.read(reinterpret_cast<char*>(frame.data()), sizeof(XMMATRIX) * boneCount);
+
+			mesh->PrecomputedBoneMatrices[animName] = std::move(frames);
+		}
+	}
+}
+
 // 애니메이션 FBX 파일 로드용 함수
-inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::string Directory, bool ComputeAnimation = false, std::string jsonFile="") {
+inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::string Directory, std::string jsonFile = "") {
 	if (fbxUtil.LoadAnimatedFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateAnimatedScene();
 		fbxUtil.GetAnimatedVertexData(System);
 		fbxUtil.ProcessAnimation();
-		//fbxUtil.PrintAnimationStackNames();
 		fbxUtil.EnumerateAnimationStacks();
 		fbxUtil.ClearVertexVector();
 	}
 
-	// 직렬화 애니메이션 데이터를 가진 경우 별도로 애니메이션 키프레임을 생성한다.
 	if (!jsonFile.empty()) {
 		TargetMesh.SerializedFlag = true;
 		fbxUtil.CreateAnimationStacksFromJSON(jsonFile, TargetMesh);
 	}
 
-	if (ComputeAnimation) {
+	if (AnimationDataExtractMode) {
 		// 최적화를 위해 애니메이션 행렬 데이터를 미리 계산한다.
 		int StackCount = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
 		for (int i = 0; i < StackCount; ++i) {
@@ -165,11 +248,24 @@ inline void LoadAnimatedFBX(DeviceSystem& System, FBXMesh& TargetMesh, std::stri
 			if (Stack)
 				fbxUtil.PrecomputeBoneMatrices(TargetMesh, Stack->GetName(), AnimationExtractFrame);
 		}
+
+		if(!std::filesystem::exists("Extracted Animations"))
+			std::filesystem::create_directory("Extracted Animations");
+
+		std::filesystem::path FilePath = Directory;
+		std::string FBXFileName = FilePath.stem().string();
+		std::string OutFileName = "Extracted Animations\\" + FBXFileName + ".animated";
+		SavePrecomputedAnimation(OutFileName, TargetMesh);
+		std::cout << "Saved Precomputed Animation Data To " << OutFileName << ".\n";
 	}
 }
 
 // 애니메이션이 없는 FBX 파일 로드용 함수
+// 애니메이션 추출모드를 활성화하면 건너뛴다.
 inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::string Directory) {
+	if (AnimationDataExtractMode)
+		return;
+
 	if (fbxUtil.LoadStaticFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateStaticScene();
 		fbxUtil.GetSingleStaticVertexData();
@@ -180,7 +276,11 @@ inline void LoadSingleStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::st
 }
 
 // 애니메이션이 없는 다중 FBX 파일 로드용 함수
+// 애니메이션 추출모드를 활성화하면 건너뛴다.
 inline void LoadMultiStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::string Directory) {
+	if (AnimationDataExtractMode)
+		return;
+
 	if (fbxUtil.LoadMultiStaticFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateMultiStaticScene();
 		fbxUtil.GetMultiStaticVertexData();
@@ -191,7 +291,11 @@ inline void LoadMultiStaticFBX(DeviceSystem& System, Mesh*& TargetMesh, std::str
 }
 
 // TEXTURE_TYPE_WIC, D3D12_FILTER_MIN_MAG_MIP_POINT가 디폴트
+// 애니메이션 추출모드를 활성화하면 건너뛴다.
 inline void LoadTexture(DeviceSystem& System, Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_POINT) {
+	if (AnimationDataExtractMode)
+		return;
+	
 	TexturePtr = new Texture(System.Device, System.CmdList, Directory, Type, FilterOption);
 	LoadedTextureList.emplace_back(TexturePtr);
 }

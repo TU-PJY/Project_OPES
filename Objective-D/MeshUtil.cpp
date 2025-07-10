@@ -178,8 +178,25 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 }
 
 void Mesh::UpdateSkinning(FBXMesh& Source, std::vector<XMMATRIX>& BoneMatrices, void*& PMap, void*& NMap, float Time) {
-	if (!BoneIndices || !BoneWeights)
+	if (!BoneIndices || !BoneWeights) {
+		const XMMATRIX& M = BoneMatrices[0];
+
+		for (UINT v = 0; v < Vertices; ++v) {
+			XMVECTOR p = XMLoadFloat3(&OriginalPosition[v]);
+			XMVECTOR n = XMLoadFloat3(&OriginalNormal[v]);
+
+			XMVECTOR tp = XMVector3Transform(p, M);
+			XMVECTOR tn = XMVector3TransformNormal(n, M);
+
+			XMStoreFloat3(&Position[v], tp);
+			XMStoreFloat3(&Normal[v], tn);
+		}
+		
+		memcpy(PMap, Position, sizeof(XMFLOAT3) * Vertices);
+		memcpy(NMap, Normal, sizeof(XMFLOAT3) * Vertices);
+
 		return;
+	}
 
 	for (UINT v = 0; v < Vertices; ++v) {
 		XMVECTOR SkinnedPosition = XMVectorZero();
@@ -198,9 +215,12 @@ void Mesh::UpdateSkinning(FBXMesh& Source, std::vector<XMMATRIX>& BoneMatrices, 
 			}
 		}
 
-		XMStoreFloat3(&reinterpret_cast<XMFLOAT3*>(PMap)[v], SkinnedPosition);
-		XMStoreFloat3(&reinterpret_cast<XMFLOAT3*>(NMap)[v], SkinnedNormal);
+		XMStoreFloat3(&Position[v], SkinnedPosition);
+		XMStoreFloat3(&Normal[v], SkinnedNormal);
 	}
+
+	memcpy(PMap, Position, sizeof(XMFLOAT3)* Vertices);
+	memcpy(NMap, Normal, sizeof(XMFLOAT3)* Vertices);
 }
 
 void Mesh::UpdateSkinning(FBXMesh& Source, float Time) {
@@ -347,6 +367,7 @@ void Mesh::UpdateSkinning(void*& PMap, void*& NMap, float Time) {
 					SkinnedNormal += TransformedNormal * Weights[i];
 				}
 			}
+
 			XMStoreFloat3(&Position[v], SkinnedPosition);
 			XMStoreFloat3(&Normal[v], SkinnedNormal);
 		}

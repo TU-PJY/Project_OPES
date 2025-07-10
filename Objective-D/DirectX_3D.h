@@ -37,6 +37,7 @@
 #include <D3d12SDKLayers.h>
 
 #include <iostream>
+#include <filesystem>
 
 #define FBXSDK_SHARED
 #include <fbxsdk.h>
