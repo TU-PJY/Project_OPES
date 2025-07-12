@@ -76,12 +76,30 @@ void IOCompletionPort::PostAccept() {
         delete overlappedEx;
     }
 }
+
 bool IOCompletionPort::StartServer() {
     iocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 4);
     if (iocpHandle == NULL) {
         std::cerr << "[에러] CreateIoCompletionPort() 실패: " << GetLastError() << "\n";
         return false;
     }
+    //npc생성
+    for (int i = 0; i < MAX_NPC; ++i) {
+        stNPC npc;
+        npc.id = i;
+        npc.x = rand() % 100 - 50;
+        npc.y = 20;
+        npc.z = rand() % 100 - 50;
+
+        npc.origin_x = npc.x;
+        npc.origin_y = npc.y;
+        npc.origin_z = npc.z;
+
+        npc.hp = 100;
+        npcs.push_back(npc);
+    }
+
+    npcThread = std::thread([this]() { NPCAIThread(); });
 
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
@@ -90,7 +108,80 @@ bool IOCompletionPort::StartServer() {
     std::cout << "서버가 시작되었습니다.\n";
     return true;
 }
+void IOCompletionPort::NPCAIThread() {
+    while (isRunning) {
+        std::lock_guard<std::mutex> lock(npcMutex);
+        for (auto& npc : npcs) {
+            if (!npc.isAlive) continue;
 
+            stClientInfo* nearest = nullptr;
+            float minDist = 10000.0f;
+
+            // 타겟 다시 찾기
+            for (auto* player : clients) {
+                if (!player) continue;
+                float dx = player->x - npc.x;
+                float dz = player->z - npc.z;
+                float dist = sqrt(dx * dx + dz * dz);
+
+                if (dist < minDist) {
+                    minDist = dist;
+                    nearest = player;
+                }
+            }
+
+            if (nearest && minDist < 30.0f) {
+                npc.targetPlayerId = nearest->id;
+            }
+            else if (nearest && minDist >= 40.0f) {
+                npc.targetPlayerId = -1; // 거리가 너무 멀면 추적 해제
+            }
+
+            if (npc.targetPlayerId != -1) {
+                // 추적 중
+                stClientInfo* target = nullptr;
+                for (auto* player : clients) {
+                    if (player && player->id == npc.targetPlayerId) {
+                        target = player;
+                        break;
+                    }
+                }
+                if (target) {
+                    float dx = target->x - npc.x;
+                    float dz = target->z - npc.z;
+                    float len = sqrt(dx * dx + dz * dz);
+                    if (len > 0.01f) {
+                        dx /= len; dz /= len;//방향만 유지하고 거리 정보를 제거
+                        npc.x += dx * npc.speed;
+                        npc.z += dz * npc.speed;
+                    }
+
+                    if (len < 1.5f) {
+                        std::cout << "[NPC 충돌] 플레이어 " << target->id << " 공격!\n";
+                    }
+                }
+            }
+            else {
+                // 원래 자리로 복귀
+                float dx = npc.origin_x - npc.x;
+                float dz = npc.origin_z - npc.z;
+                float len = sqrt(dx * dx + dz * dz);
+                if (len > 0.01f) {
+                    dx /= len; dz /= len;
+                    npc.x += dx * npc.speed;
+                    npc.z += dz * npc.speed;
+                }
+            }
+            auto now = std::chrono::steady_clock::now();
+            if (duration_cast<std::chrono::milliseconds>(now - npc.lastSent).count() > 200) {
+                SendData_NPCState(npc);
+                npc.lastSent = now;
+            }
+        }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
 //void IOCompletionPort::AcceptThread() {
 //    while (isRunning) {
 //        SOCKADDR_IN clientAddr;
@@ -285,26 +376,6 @@ void IOCompletionPort::RemoveClient(stClientInfo* c)
         waitingClients.end());
     delete c;
 }
-//void IOCompletionPort::RemoveClient(stClientInfo* client) {
-//    std::lock_guard<std::mutex> lock(clientMutex);
-//
-//    clients.erase(std::remove_if(clients.begin(), clients.end(),
-//        [&](stClientInfo* c) {
-//            if (c == client) {
-//                //delete c;
-//                return true;
-//            }
-//            return false;
-//        }), clients.end());
-//    waitingClients.erase(std::remove_if(waitingClients.begin(), waitingClients.end(),
-//        [&](stClientInfo* c) {
-//            if (c == client) {
-//                delete c;
-//                return true;
-//            }
-//            return false;
-//        }), waitingClients.end());
-//}
 
 
 //void IOCompletionPort::SendData_Player(stClientInfo* sendingClient, stClientInfo* recvingClient,PacketType pType) {
@@ -378,6 +449,45 @@ void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvi
     }
 
 }
+void IOCompletionPort::SendData_NPCState(const stNPC& npc) {
+    MonsterStatePacket packet;
+    packet.id = npc.id;
+    packet.x = npc.x;
+    packet.y = npc.y;
+    packet.z = npc.z;
+    packet.hp = npc.hp;
+
+    for (auto* client : clients) {
+        if (!client) continue;
+
+        stOverlappedEx* sendOver = new stOverlappedEx();
+        ZeroMemory(&sendOver->overlapped, sizeof(WSAOVERLAPPED));
+        sendOver->operation = IOOperation::SEND;
+
+        auto* packetCopy = new MonsterStatePacket(packet); // 복사본을 따로 생성
+        sendOver->wsaBuf.buf = reinterpret_cast<char*>(packetCopy);
+        sendOver->wsaBuf.len = sizeof(MonsterStatePacket);
+
+        DWORD size_sent = 0;
+        int ret = WSASend(client->socketClient,
+            &sendOver->wsaBuf, 1, &size_sent, 0,
+            &sendOver->overlapped,
+            [](DWORD err, DWORD bytes, LPWSAOVERLAPPED overlapped, DWORD flags) {
+                auto* ex = reinterpret_cast<stOverlappedEx*>(overlapped);
+                delete reinterpret_cast<MonsterStatePacket*>(ex->wsaBuf.buf);
+                delete ex;
+            });
+
+        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+            std::cerr << "[에러] WSASend 실패 (MONSTER_STATE): " << WSAGetLastError() << "\n";
+            closesocket(client->socketClient);
+            RemoveClient(client);
+            delete reinterpret_cast<MonsterStatePacket*>(sendOver->wsaBuf.buf);
+            delete sendOver;
+        }
+    }
+}
+
 void IOCompletionPort::SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient) {
     recvingClient->sendOverlapped.operation = IOOperation::SEND;
     ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
@@ -682,6 +792,7 @@ void IOCompletionPort::DestroyThread() {
     if (workerThread.joinable()) workerThread.join();
 
     if (accepterThread.joinable()) accepterThread.join();
+    if (npcThread.joinable()) npcThread.join();
 
     std::cout << "서버 종료 완료.\n";
 }

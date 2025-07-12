@@ -8,6 +8,7 @@
 #include <thread>
 #include <unordered_map>
 #include<algorithm>
+#include <chrono>
 #include"Packet.h"
 #define MAX_SOCKBUF 1024  
 #define SERVER_PORT 9000
@@ -51,6 +52,22 @@ struct stClientInfo {
         //-130.0, 20.0, -130.0 
     }
 };
+struct stNPC {
+    unsigned int id;
+    float x, y, z;
+    float origin_x, origin_y, origin_z; //원래 위치 저장
+    int hp;
+    bool isAlive = true;
+    float speed = 1.0f;
+    int targetPlayerId = -1;
+
+    std::mutex npcMutex;
+   std::chrono::steady_clock::time_point lastSent = std::chrono::steady_clock::now();
+};
+
+std::vector<stNPC> npcs;
+std::thread npcThread;
+std::mutex npcMutex;
 
 struct Room {
     int roomID;
@@ -67,22 +84,23 @@ public:
     void RegisterRecv(stClientInfo* client);
     void SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length);
     
-    //void SendData_Player(stClientInfo* sendingClient, stClientInfo* recvingClient,PacketType pType);
+    
     void SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_ViewAngle(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_Animaion(stClientInfo* sendingClient, stClientInfo* recvingClient);
     void SendData_Player2Monster(unsigned int monsterID, unsigned int damage, stClientInfo* recvingClient);
     void SendData_EnterRoom(stClientInfo* recvingClient);
-   // void RemoveClient(stClientInfo* client);
     void NotifyOthersAboutNewClient(stClientInfo* newClient);
     void SendExistingClientsToNewClient(stClientInfo* newClient);
-    void SendData_Player(stClientInfo* sender, stClientInfo* recv, PacketType type);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 
 
     bool AddClient(stClientInfo* c); 
     void RemoveClient(stClientInfo* c);
+
+    void NPCAIThread();
+    void SendData_NPCState(const stNPC& npc);
 private:
     
     
