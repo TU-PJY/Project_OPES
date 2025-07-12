@@ -1,5 +1,5 @@
 #define MAX_SOCKBUF 1024
-
+constexpr int MAX_NPC = 100;
 
 enum class PacketType {
     CHAT,
@@ -10,6 +10,7 @@ enum class PacketType {
     ENTER,
     ANIMATION,
     PLAYER_TO_MOSTER,
+    MONSTER_STATE,
 };
 
 // 채팅 패킷 구조체
@@ -85,4 +86,11 @@ struct Player2Monster {
     PacketType type;
     unsigned int monsterId;
     unsigned int damage;
+};
+
+struct MonsterStatePacket {
+    PacketType type = PacketType::MONSTER_STATE;
+    unsigned int id;
+    float x, y, z;
+    int hp;
 };
