@@ -30,6 +30,8 @@ void PlantMonster::updateAnimation(float Delta) {
 			plantFBX.SelectAnimation("Attack01"); break;
 		case PLANT_DEATH:
 			plantFBX.SelectAnimation("Death"); break;
+		case PLANT_LIFT:
+			plantFBX.SelectAnimation("Magic01charge"); break;
 		}
 
 		prevState = currentState;
@@ -48,7 +50,7 @@ void PlantMonster::updateBehaviorEnableDelay(float Delta) {
 // 죽음 상태 업데이트 진행
 void PlantMonster::updateDeleteDelay(float Delta) {
 	deleteDelayTime += Delta;
-	if (deleteDelayTime >= 5.0) 
+	if (deleteDelayTime >= 3.0) 
 		scene.DeleteObject(this);
 }
 
@@ -60,19 +62,32 @@ void PlantMonster::updateDeleteDelay(float Delta) {
 // terrainName: 현재 맵의 터레인 객체 이름
 // appearFromGround: 활성화 시 땅 속에서 나옴
 PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, bool appearFromGround) {
-	// 원본에서 인스턴스 복사 후 기본 애니메이션 상태 지정
+	// 원본에서 인스턴스 복사
 	plantFBX.SelectFBXMesh(MESH.plantMonster);
-	plantFBX.SelectAnimation("AttackIdle");
 
-	position = createPosition;
-	fromGroundState = appearFromGround;
+	tempPosition = createPosition;
 	behaviorEnabledState = !appearFromGround;
+
+	// 땅에서 나오는 상태일 경우 별도의 상태를 지정한다.
+	if (behaviorEnabledState)
+		currentState = PLANT_IDLE;
+	else
+		currentState = PLANT_LIFT;
+
+	TerrainUtil terrainUtil;
 
 	// 고정형 몬스터이므로 생성 이후로는 터레인 업데이트를 진행하지 않는다.
 	if (auto terrain = scene.Find(terrainName); terrain) {
-		terrainUtil.InputPosition(position);
-		terrainUtil.ClampToTerrain(terrain->GetTerrain(), position, 0.0);
-		currentTerrain = terrain;
+		terrainUtil.InputPosition(tempPosition);
+		terrainUtil.ClampToTerrain(terrain->GetTerrain(), tempPosition, 0.0);
+		position = tempPosition;
+
+		// 현재 위치에서의 터레인 높이 구하기
+		terrainFloorHeight = tempPosition.y;
+
+		//  땅에서 나오는 상태일 경우 높이를 땅 속으로 옮긴다.
+		if (!behaviorEnabledState)
+			position.y -= 10.0;
 	}
 
 	// 고정형 몬스터이므로 생성 이후로는 시야 범위 업데이트를 진행하지 않는다.
@@ -84,6 +99,8 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 
 // 모든 업데이트
 void PlantMonster::Update(float Delta) {
+	updateAnimation(Delta);
+
 	if (behaviorEnabledState) {
 		if (currentState != PLANT_DEATH) {
 			updateHitBox();
@@ -95,8 +112,6 @@ void PlantMonster::Update(float Delta) {
 	}
 	else
 		updateBehaviorEnableDelay(Delta);
-
-	updateAnimation(Delta);
 }
 
 // 렌더링

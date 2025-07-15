@@ -17,8 +17,6 @@ public:
 	}
 
 	void InputKey(KeyEvent& Event) {
-		if(Event.Type == WM_KEYDOWN && Event.Key == VK_SPACE)
-			fbx.SelectAnimation("Attack01");
 	}
 
 	void InputMouse(MouseEvent& Event) {
@@ -30,7 +28,7 @@ public:
 		//	fbx.UpdateAnimation(Delta);
 		if (!Init) {
 			fbx.SelectFBXMesh(MESH.plantMonster);
-			fbx.SelectAnimation("AttackIdle");
+			fbx.SelectAnimation("Magic01charge");
 
 			//fbx2.SelectFBXMesh(MESH.scorpion);
 		//	fbx2.SelectAnimation("Death");

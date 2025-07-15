@@ -7,7 +7,8 @@ private:
 	enum PlantMonsterState {
 		PLANT_IDLE,
 		PLANT_ATTACK,
-		PLANT_DEATH
+		PLANT_DEATH,
+		PLANT_LIFT
 	};
 
 	// 모델
@@ -15,15 +16,16 @@ private:
 
 	// 위치, 회전 각도, 크기
 	XMFLOAT3    position{};
+	XMFLOAT3    tempPosition{};
+	float       terrainFloorHeight{};
 	XMFLOAT3    rotation{};
 	XMFLOAT3    size{ XMFLOAT3(1.0, 1.0, 1.0) };
 
 	// 각종 상태
-	int         currentState = PLANT_IDLE;
-	int         prevState    = PLANT_IDLE;
+	int         currentState{};
+	int         prevState{};
 	bool        behaviorEnabledState{};
 	bool        detectState{};
-	bool        fromGroundState{};
 
 	// 전체 체력, 현재 체력
 	int         totalHP   = 100;
@@ -40,12 +42,6 @@ private:
 
 	// 충돌 감지를 위한 히트 박스
 	OOBB        hitBox{};
-
-	// 터레인 감지를 위한 터레인 유틸
-	TerrainUtil terrainUtil{};
-
-	// 현재 터레인 오브젝트 포인터
-	GameObject* currentTerrain{};
 	
 	// 현재 객체가 소유하는 hp 표시기 오브젝트 포인터
 	GameObject* hpIndicator{};
