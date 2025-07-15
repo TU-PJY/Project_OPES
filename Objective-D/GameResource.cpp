@@ -97,6 +97,18 @@ void LoadMesh(DeviceSystem& System) {
 		// gun flame
 		LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
 		LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
+
+		// monster - troll
+		LoadAnimatedFBX(MESH.troll, 
+			"Resources//Models//monster//troll.fbx", 
+			"Extracted Animations//troll.animated", "Resources//Models//monster//troll.json");
+		fbxUtil.SetAnimationOffsetTime(MESH.troll, 0.4333333373069763);
+
+		// monster - plant monster
+		LoadAnimatedFBX(MESH.plantMonster,
+			"Resources//Models//monster//plant_monster.fbx", 
+			"Extracted Animations//plant_monster.animated", "Resources//Models//monster//plant_monster.json");
+		fbxUtil.SetAnimationOffsetTime(MESH.plantMonster, 1.6666666269302369);
 	}
 }
 /////////////////////////////////////////////////////////////////////////////////
@@ -132,7 +144,9 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.muzzle_particle, L"Resources//Image//weapon//muzzle_particle.png", TEXTURE_TYPE_WIC);
 
 	// map1 monster
-	LoadTexture(TEX.scorpion, L"Resources//Image//monster//scorpion.png");
+	// monster - troll
+	LoadTexture(TEX.troll, L"Resources//Image//monster//troll.png");
+	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

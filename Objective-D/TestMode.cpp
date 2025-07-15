@@ -17,7 +17,8 @@ public:
 	}
 
 	void InputKey(KeyEvent& Event) {
-		
+		if(Event.Type == WM_KEYDOWN && Event.Key == VK_SPACE)
+			fbx.SelectAnimation("Attack01");
 	}
 
 	void InputMouse(MouseEvent& Event) {
@@ -25,22 +26,26 @@ public:
 	}
 
 	void Update(float Delta) {
+		//if (Init)
+		//	fbx.UpdateAnimation(Delta);
 		if (!Init) {
-			fbx.SelectFBXMesh(MESH.heavy_shoot);
-			//fbx.SelectAnimation("Walk");
+			fbx.SelectFBXMesh(MESH.plantMonster);
+			fbx.SelectAnimation("AttackIdle");
 
 			//fbx2.SelectFBXMesh(MESH.scorpion);
 		//	fbx2.SelectAnimation("Death");
 			Init = true;
 		}
 
-		fbx.UpdateAnimation(Delta);
+		fbx.UpdateAnimation(Delta, false);
+		
 		//std::cout << fbx.GetInplaceDelta() << std::endl;
 	}
 
 	void Render() {
 		BeginRender();
-		RenderFBX(fbx, TEX.scifi);
+		//Transform::Move(TranslateMatrix, -fbx.GetInplaceDelta());
+		RenderFBX(fbx, TEX.plantMonster);
 		//RenderFBX(MESH.scorpion, TEX.scorpion);
 
 		//Transform::Move(TranslateMatrix, 4.0, 0.0, 0.0);

@@ -1,0 +1,76 @@
+{
+    "clips": [
+        {
+            "name": "Idle",
+            "startTime": 0.4333333373069763,
+            "endTime": 5.066666603088379,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Idle Break",
+            "startTime": 5.099999904632568,
+            "endTime": 11.766666412353516,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Taunt",
+            "startTime": 11.800000190734864,
+            "endTime": 17.799999237060548,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Got Hit",
+            "startTime": 17.83333396911621,
+            "endTime": 19.5,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Death",
+            "startTime": 19.53333282470703,
+            "endTime": 21.766666412353517,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Jump",
+            "startTime": 37.13333511352539,
+            "endTime": 38.96666717529297,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack 3",
+            "startTime": 23.600000381469728,
+            "endTime": 26.566667556762697,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack 2",
+            "startTime": 26.600000381469728,
+            "endTime": 29.366666793823243,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack 1",
+            "startTime": 29.399999618530275,
+            "endTime": 32.16666793823242,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Dodge",
+            "startTime": 32.20000076293945,
+            "endTime": 33.86666488647461,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Walk",
+            "startTime": 33.900001525878909,
+            "endTime": 35.400001525878909,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Walk Backward",
+            "startTime": 35.5,
+            "endTime": 37.06666564941406,
+            "frameRate": 30.0
+        }
+    ]
+}

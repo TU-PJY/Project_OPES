@@ -1,0 +1,100 @@
+{
+    "clips": [
+        {
+            "name": "Walk",
+            "startTime": 1.6666666269302369,
+            "endTime": 2.6666667461395265,
+            "frameRate": 30.0
+        },
+        {
+            "name": "WalkSkip",
+            "startTime": 5.0,
+            "endTime": 6.0,
+            "frameRate": 30.0
+        },
+        {
+            "name": "WalkBackward",
+            "startTime": 8.333333015441895,
+            "endTime": 9.666666984558106,
+            "frameRate": 30.0
+        },
+        {
+            "name": "IdlePlant",
+            "startTime": 11.666666984558106,
+            "endTime": 17.0,
+            "frameRate": 30.0
+        },
+        {
+            "name": "ComesAlive",
+            "startTime": 20.0,
+            "endTime": 21.66666603088379,
+            "frameRate": 30.0
+        },
+        {
+            "name": "AttackIdle",
+            "startTime": 23.33333396911621,
+            "endTime": 25.66666603088379,
+            "frameRate": 30.0
+        },
+        {
+            "name": "AttackIdleBreak",
+            "startTime": 26.66666603088379,
+            "endTime": 32.33333206176758,
+            "frameRate": 30.0
+        },
+        {
+            "name": "BigJump",
+            "startTime": 33.33333206176758,
+            "endTime": 35.33333206176758,
+            "frameRate": 30.0
+        },
+        {
+            "name": "GoToSleep",
+            "startTime": 36.66666793823242,
+            "endTime": 40.0,
+            "frameRate": 30.0
+        },
+        {
+            "name": "GotHit",
+            "startTime": 40.66666793823242,
+            "endTime": 42.33333206176758,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Death",
+            "startTime": 43.33333206176758,
+            "endTime": 45.66666793823242,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack01",
+            "startTime": 46.66666793823242,
+            "endTime": 47.83333206176758,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Attack02",
+            "startTime": 48.33333206176758,
+            "endTime": 51.66666793823242,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Magic01start",
+            "startTime": 53.33333206176758,
+            "endTime": 53.70000076293945,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Magic01charge",
+            "startTime": 53.733333587646487,
+            "endTime": 54.33333206176758,
+            "frameRate": 30.0
+        },
+        {
+            "name": "Magic01end",
+            "startTime": 54.33333206176758,
+            "endTime": 55.83333206176758,
+            "frameRate": 30.0
+        }
+    ]
+}

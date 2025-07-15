@@ -15,6 +15,10 @@ void FBXUtil::Init() {
 	Manager->SetIOSettings(IOS);
 }
 
+void FBXUtil::SetAnimationOffsetTime(FBXMesh& TargetMesh, float Time) {
+	TargetMesh.OffsetTime = Time;
+}
+
 bool FBXUtil::LoadStaticFBXFile(const char* FilePath, Mesh*& TargetMesh) {
 	if (!TargetMesh) {
 		TargetMesh = new Mesh();

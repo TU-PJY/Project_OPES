@@ -46,6 +46,7 @@ typedef struct {
 	float StartTime;
 	float CurrentTime;
 	float TotalTime;
+	float OffsetTime;
 
 	std::vector<std::string> AnimationStackNames; // 전체 스택 이름들
 	std::string CurrentAnimationStackName;        // 현재 선택된 스택 이름
@@ -162,6 +163,7 @@ private:
 
 public:
 	void Init();
+	void SetAnimationOffsetTime(FBXMesh& TargetMesh, float Time);
 	bool LoadStaticFBXFile(const char* FilePath, Mesh*& TargetMesh);
 	bool LoadMultiStaticFBXFile(std::string FilePath, Mesh*& TargetMesh);
 	bool LoadAnimatedFBXFile(const char* FilePath, FBXMesh& TargetMesh);
@@ -221,6 +223,7 @@ private:
 	float CurrentTime{};
 	float TotalTime{};
 	float StartTime{};
+	float OffsetTime{};
 	float CurrentSpeed = 1.0;
 	int PrevFrame{};
 	int CurrentFrame{};

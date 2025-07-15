@@ -65,8 +65,10 @@ typedef struct {
 	Mesh* gun_flame;
 	Mesh* gun_flame_back;
 
-	// map1 monster
-	FBXMesh scorpion;
+	// monster - troll
+	FBXMesh troll;
+	FBXMesh plantMonster;
+
 }MeshResource;
 extern MeshResource MESH;
 
@@ -99,7 +101,8 @@ typedef struct {
 	Texture* muzzle_particle;
 
 	// map1 monster
-	Texture* scorpion;
+	Texture* troll;
+	Texture* plantMonster;
 }TextureResource;
 extern TextureResource TEX;
 

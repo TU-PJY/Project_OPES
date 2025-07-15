@@ -32,6 +32,7 @@ void FBX::SelectFBXMesh(FBXMesh& TargetFBX, bool StopState) {
 
 	TotalTime = FBXPtr->TotalTime;
 	StartTime = FBXPtr->StartTime;
+	OffsetTime = FBXPtr->OffsetTime;
 
 	if (!Serialized)
 		CurrentAnimationName = FBXPtr->CurrentAnimationStackName;
@@ -57,9 +58,14 @@ void FBX::SelectAnimation(std::string AnimationName) {
 		auto Found = FBXPtr->SerializedAnimationStacks.find(AnimationName);
 		if (Found != FBXPtr->SerializedAnimationStacks.end()) {
 			CurrentAnimationName = AnimationName;
-			StartTime = Found->second.StartTime;
-			TotalTime = Found->second.EndTime;
+			double Start = Found->second.StartTime;
+			double End = Found->second.EndTime;
+
+			StartTime = Start - (double)OffsetTime;
+			TotalTime = End - (double)OffsetTime;
 			CurrentTime = StartTime;
+
+			std::cout << StartTime << " " << TotalTime << std::endl;
 		}
 	}
 }
@@ -81,6 +87,7 @@ void FBX::UpdateAnimation(float Delta, bool Inplace) {
 		return;
 
 	CurrentTime += Delta * CurrentSpeed;
+	//std::cout << CurrentTime << std::endl;
 
 	if (CurrentTime >= TotalTime) {
 		float OverTime = CurrentTime - TotalTime;
