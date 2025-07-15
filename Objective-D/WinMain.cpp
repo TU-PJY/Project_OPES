@@ -223,7 +223,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
-		std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
+		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
 		PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3(0.0, 0.0, 0.0), aniPacket->animationType };
 		{
