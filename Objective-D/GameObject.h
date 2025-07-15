@@ -92,11 +92,11 @@ public:
 	virtual bool ChangeHP(int hp) { return {}; }
 	virtual int GetID() { return {}; }
 	virtual bool GetDeathState() { return {}; }
+	virtual void GiveDamage(int hp) {}
 
 	// HP 인디케이터 함수
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
 	virtual void InputHP(int fullHP, int currentHP) {}
-
 
 	// 서버 테스트
 	virtual void InputPosition(XMFLOAT3& value) {}
