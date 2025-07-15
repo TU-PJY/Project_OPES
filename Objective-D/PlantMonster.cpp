@@ -3,6 +3,7 @@
 #include "MathUtil.h"
 #include "PickingUtil.h"
 
+// 히트박스 업데이트
 void PlantMonster::updateHitBox() {
 	XMFLOAT3 boxPosition = XMFLOAT3(position.x, position.y, position.z);
 	XMFLOAT3 boxSize = XMFLOAT3(0.7, size.y * 0.8, 0.7);
