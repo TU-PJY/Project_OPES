@@ -65,9 +65,9 @@ struct stNPC {
    std::chrono::steady_clock::time_point lastSent = std::chrono::steady_clock::now();
 };
 
-std::vector<stNPC> npcs;
-std::thread npcThread;
-std::mutex npcMutex;
+extern std::vector<std::unique_ptr<stNPC>> npcs;
+extern std::thread npcThread;
+extern std::mutex npcMutex;
 
 struct Room {
     int roomID;

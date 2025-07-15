@@ -3,6 +3,11 @@
 #include <iostream>
 #include <mswsock.h> // AcceptEx
 #pragma comment(lib, "Mswsock.lib")
+
+std::vector<std::unique_ptr<stNPC>> npcs;
+std::thread npcThread;
+std::mutex npcMutex;
+
 extern LPFN_ACCEPTEX lpfnAcceptEx = nullptr; // 전역으로 AcceptEx 포인터
 IOCompletionPort::IOCompletionPort() {}
 
@@ -85,18 +90,20 @@ bool IOCompletionPort::StartServer() {
     }
     //npc생성
     for (int i = 0; i < MAX_NPC; ++i) {
-        stNPC npc;
-        npc.id = i;
-        npc.x = rand() % 100 - 50;
-        npc.y = 20;
-        npc.z = rand() % 100 - 50;
+        auto npc = std::make_unique<stNPC>(); // 힙에 NPC 동적 생성
 
-        npc.origin_x = npc.x;
-        npc.origin_y = npc.y;
-        npc.origin_z = npc.z;
+        npc->id = i;
+        npc->x = static_cast<float>(rand() % 100 - 50);
+        npc->y = 20.0f;
+        npc->z = static_cast<float>(rand() % 100 - 50);
 
-        npc.hp = 100;
-        npcs.push_back(npc);
+        npc->origin_x = npc->x;
+        npc->origin_y = npc->y;
+        npc->origin_z = npc->z;
+
+        npc->hp = 100;
+
+        npcs.push_back(std::move(npc)); // unique_ptr 이동
     }
 
     npcThread = std::thread([this]() { NPCAIThread(); });
@@ -111,7 +118,8 @@ bool IOCompletionPort::StartServer() {
 void IOCompletionPort::NPCAIThread() {
     while (isRunning) {
         std::lock_guard<std::mutex> lock(npcMutex);
-        for (auto& npc : npcs) {
+        for (auto& npcPtr : npcs) {
+            auto& npc = *npcPtr;
             if (!npc.isAlive) continue;
 
             stClientInfo* nearest = nullptr;
@@ -174,7 +182,7 @@ void IOCompletionPort::NPCAIThread() {
             }
             auto now = std::chrono::steady_clock::now();
             if (duration_cast<std::chrono::milliseconds>(now - npc.lastSent).count() > 200) {
-                SendData_NPCState(npc);
+                //SendData_NPCState(npc);
                 npc.lastSent = now;
             }
         }
