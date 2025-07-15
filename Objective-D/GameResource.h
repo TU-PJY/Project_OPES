@@ -15,7 +15,7 @@ struct ObjectStruct {
 };
 
 // 전역 카메라 fov 값 오프셋
-extern float global_fov_offset;
+extern float globalFovOffset;
 
 extern bool player_enter;
 extern unsigned int enter_player_id;

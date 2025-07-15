@@ -9,7 +9,7 @@ TextureResource TEX;
 SystemResource SysRes;
 
 // 전역 카메라 fov 값 오프셋
-float global_fov_offset;
+float globalFovOffset;
 
 bool player_enter;
 unsigned int enter_player_id;
