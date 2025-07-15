@@ -2,21 +2,23 @@
 #include "CameraController.h"
 #include "PickingUtil.h"
 
-#include "MuzzleFlash.h"
+#include "PlantMonster.h"
 
 //테스트 작업을 위한 모드.
 
 class TestObject : public GameObject {
 public:
-	FBX fbx{}, fbx2{};
-
-	bool Init{};
+	bool init{};
 
 	TestObject() {
-	
+		
 	}
 
 	void InputKey(KeyEvent& Event) {
+		if (Event.Type == WM_KEYDOWN && Event.Key == 'P') {
+			if (auto plantMonster = scene.Find("plantMonster"); plantMonster)
+				plantMonster->GiveDamage(20);
+		}
 	}
 
 	void InputMouse(MouseEvent& Event) {
@@ -24,29 +26,14 @@ public:
 	}
 
 	void Update(float Delta) {
-		//if (Init)
-		//	fbx.UpdateAnimation(Delta);
-		if (!Init) {
-			fbx.SelectFBXMesh(MESH.plantMonster);
-			fbx.SelectAnimation("Magic01charge");
-
-			//fbx2.SelectFBXMesh(MESH.scorpion);
-		//	fbx2.SelectAnimation("Death");
-			Init = true;
+		if (!init) {
+			scene.AddObject(new PlantMonster(XMFLOAT3(0.0, 0.0, 0.0), "", false), "plantMonster", LAYER2);
+			init = true;
 		}
-
-		fbx.UpdateAnimation(Delta, false);
-		
-		//std::cout << fbx.GetInplaceDelta() << std::endl;
 	}
 
 	void Render() {
-		BeginRender();
-		//Transform::Move(TranslateMatrix, -fbx.GetInplaceDelta());
-		RenderFBX(fbx, TEX.plantMonster);
-		//RenderFBX(MESH.scorpion, TEX.scorpion);
 
-		//Transform::Move(TranslateMatrix, 4.0, 0.0, 0.0);
 	}
 };
 
@@ -56,6 +43,7 @@ void TestMode::Start() {
 	scene.SetupMode("TestMode", Destructor, ControlObjectList);
 	scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 	scene.AddObject(new TestObject, "test_object", LAYER1, true);
+	
 }
 
 void TestMode::Destructor() {

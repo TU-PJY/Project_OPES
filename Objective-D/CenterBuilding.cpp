@@ -22,3 +22,7 @@ void CenterBuilding::Render() {
 OOBB CenterBuilding::GetOOBB(){
 	return oobb;
 }
+
+XMFLOAT3 CenterBuilding::GetPosition() {
+	return position;
+}

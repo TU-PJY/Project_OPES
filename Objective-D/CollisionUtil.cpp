@@ -16,6 +16,18 @@ void OOBB::UpdateAnimated(FBXMesh& Mesh, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatri
 		Update(Mesh.MeshPart[NodeIndex], TMatrix, RMatrix, SMatrix, true);
 }
 
+void OOBB::UpdateAnimated(FBX& TargetFBX, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex) {
+	Mesh* MeshNode = TargetFBX[NodeIndex];
+	const XMFLOAT3* Position = reinterpret_cast<const XMFLOAT3*>(TargetFBX.PositionMapped[NodeIndex]);
+	DirectX::BoundingOrientedBox NewBox;
+	BoundingOrientedBox::CreateFromPoints( NewBox, MeshNode->Vertices, Position, sizeof(XMFLOAT3));
+
+	XMMATRIX ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&SMatrix), XMLoadFloat4x4(&RMatrix));
+	ResultMatrix = XMMatrixMultiply(ResultMatrix, XMLoadFloat4x4(&TMatrix));
+	NewBox.Transform(oobb, ResultMatrix);
+	XMStoreFloat4(&oobb.Orientation, XMQuaternionNormalize(XMLoadFloat4(&oobb.Orientation)));
+}
+
 void OOBB::Update(Mesh* MeshPtr, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, bool ApplySkinning) {
 	if (ApplySkinning) {
 		DirectX::BoundingOrientedBox NewBox;

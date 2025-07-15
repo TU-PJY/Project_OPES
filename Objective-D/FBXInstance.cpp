@@ -1,6 +1,10 @@
 #include "MeshUtil.h"
 #include "Config.h"
 
+Mesh* FBX::operator [] (int Index) {
+	return FBXPtr->MeshPart[Index];
+}
+
 FBX::FBX(FBXMesh& TargetFBX, bool StopState) {
 	if (InitState)
 		return;

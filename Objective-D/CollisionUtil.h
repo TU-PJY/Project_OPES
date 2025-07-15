@@ -14,6 +14,7 @@ private:
 public:
 	BoundingOrientedBox oobb = BoundingOrientedBox();
 	void UpdateAnimated(FBXMesh& Mesh, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex);
+	void UpdateAnimated(FBX& TargetFBX, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex);
 	void Update(Mesh* MeshPtr, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, bool ApplySkinning=false);
 	void Update(XMFLOAT3& Position, XMFLOAT3& Size, XMFLOAT3& Rotation);
 	void Render();

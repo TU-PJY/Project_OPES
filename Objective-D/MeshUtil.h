@@ -194,9 +194,11 @@ public:
 
 extern FBXUtil fbxUtil;
 
-
+class OOBB;
 class FBX {
 private:
+	friend OOBB;
+
 	bool InitState{};
 	bool Running{ true };
 
@@ -237,6 +239,8 @@ private:
 	float DestDelay{};
 
 public:
+	Mesh* operator [] (int Index);
+
 	FBX();
 	~FBX();
 	FBX(FBXMesh& TargetFBX, bool StopState=false);

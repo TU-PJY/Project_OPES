@@ -1,21 +1,33 @@
 #include "PlantMonster.h"
 #include "HP_Indicator.h"
+#include "MathUtil.h"
 
 // 히트박스 업데이트 진행
 void PlantMonster::updateHitBox() {
-	hitBox.Update(position, size, rotation);
+	//hitBox.Update(XMFLOAT3(position.x, position.y + size.y * 0.5, position.z), XMFLOAT3(0.4, 1.5, 0.6), rotation);
 }
 
-// 플레이어 접근 감지 진행
-void PlantMonster::updatePlayerDetect() {
-	
+// 공격 대상 감지 진행
+void PlantMonster::updateTargetDetect() {
+	// 디펜스 모드 시에는 중앙 건물만을 공격하므로 플레이어 인식 안 함
+	if (defenseModeState)
+		return;
 }
 
 // hp 표시기 업데이트 진행
 void PlantMonster::updateIndicatorHP() {
 	if (hpIndicator) {
 		hpIndicator->InputPosition(position, 3.0);
-		hpIndicator->InputHP(currentHP, totalHP);
+		hpIndicator->InputHP(totalHP, currentHP);
+	}
+}
+
+// 디펜스 모드 시 땅에서 올라오는 애니메이션 업데이트
+void PlantMonster::updateLiftFromGround(float Delta) {
+	position.y += Delta * 5.0;
+	if (position.y > terrainHeight) {
+		position.y = terrainHeight;
+		behaviorEnabledState = true;
 	}
 }
 
@@ -40,17 +52,10 @@ void PlantMonster::updateAnimation(float Delta) {
 	plantFBX.UpdateAnimation(Delta);
 }
 
-// 땅 속에서 나올때의 행동 실행 지연 업데이트 실행
-void PlantMonster::updateBehaviorEnableDelay(float Delta) {
-	behaviorEnableDelayTime += Delta;
-	if (behaviorEnableDelayTime >= 1.0)
-		behaviorEnabledState = true;
-}
-
 // 죽음 상태 업데이트 진행
 void PlantMonster::updateDeleteDelay(float Delta) {
 	deleteDelayTime += Delta;
-	if (deleteDelayTime >= 3.0) 
+	if (deleteDelayTime >= 2.3) 
 		scene.DeleteObject(this);
 }
 
@@ -65,8 +70,10 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 	// 원본에서 인스턴스 복사
 	plantFBX.SelectFBXMesh(MESH.plantMonster);
 
+	// 땅에서 나오는 상태일 경우 디펜스 업데이트 모드 활성화
 	tempPosition = createPosition;
 	behaviorEnabledState = !appearFromGround;
+	defenseModeState = appearFromGround;
 
 	// 땅에서 나오는 상태일 경우 별도의 상태를 지정한다.
 	if (behaviorEnabledState)
@@ -83,15 +90,26 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 		position = tempPosition;
 
 		// 현재 위치에서의 터레인 높이 구하기
-		terrainFloorHeight = tempPosition.y;
+		terrainHeight = tempPosition.y;
 
 		//  땅에서 나오는 상태일 경우 높이를 땅 속으로 옮긴다.
 		if (!behaviorEnabledState)
 			position.y -= 10.0;
 	}
-
+	else 
+		position = tempPosition;
+	
 	// 고정형 몬스터이므로 생성 이후로는 시야 범위 업데이트를 진행하지 않는다.
 	lookRange.Update(position, 10.0);
+
+	// 디펜스 모드 일때는 중앙 건물 만을 공격하므로 생성 이후로는 회전각도 업데이트를 하지 않는다.
+	if (defenseModeState) {
+		if (auto centerBuilding = scene.Find("center_building"); centerBuilding) {
+			XMFLOAT3 centerBuildingPosition = centerBuilding->GetPosition();
+			float destRotation = Math::CalcDegree2D(position.x, centerBuildingPosition.x, position.z, centerBuildingPosition.z);
+			rotation.y = destRotation;
+		}
+	}
 
 	// 자기 소유의 hp 표시기 객체 추가
 	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER2);
@@ -104,14 +122,14 @@ void PlantMonster::Update(float Delta) {
 	if (behaviorEnabledState) {
 		if (currentState != PLANT_DEATH) {
 			updateHitBox();
-			updatePlayerDetect();
+			updateTargetDetect();
 			updateIndicatorHP();
 		}
 		else
 			updateDeleteDelay(Delta);
 	}
 	else
-		updateBehaviorEnableDelay(Delta);
+		updateLiftFromGround(Delta);
 }
 
 // 렌더링
@@ -122,7 +140,11 @@ void PlantMonster::Render() {
 	Transform::Scale(ScaleMatrix, size);
 	RenderFBX(plantFBX, TEX.plantMonster);
 
-	hitBox.Render();
+	// 머리와 몸통 부분을 따로 업데이트 한다.
+	hitBoxHead.UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 0);
+	hitBoxBody.UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 9);
+	hitBoxHead.Render();
+	hitBoxBody.Render();
 }
 
 // 죽을 시 자기 소유의 hp 표시기 객체를 즉시 삭제하고 죽음 상태를 활성화 한다.
@@ -147,5 +169,9 @@ bool PlantMonster::GetDeathState() {
 
 // 히트 박스 얻기
 OOBB PlantMonster::GetOOBB() {
-	return hitBox;
+	return hitBoxHead;
+}
+
+OOBB PlantMonster::GetOOBB2() {
+	return hitBoxBody;
 }
