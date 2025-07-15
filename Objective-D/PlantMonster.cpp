@@ -1,11 +1,6 @@
 #include "PlantMonster.h"
 #include "HP_Indicator.h"
 
-// 시야 바운드 스페어 업데이트 진행
-void PlantMonster::updateLookRange() {
-	lookRange.Update(position, 10.0);
-}
-
 // 히트박스 업데이트 진행
 void PlantMonster::updateHitBox() {
 	hitBox.Update(position, size, rotation);
@@ -43,6 +38,13 @@ void PlantMonster::updateAnimation(float Delta) {
 	plantFBX.UpdateAnimation(Delta);
 }
 
+// 땅 속에서 나올때의 행동 실행 지연 업데이트 실행
+void PlantMonster::updateBehaviorEnableDelay(float Delta) {
+	behaviorEnableDelayTime += Delta;
+	if (behaviorEnableDelayTime >= 1.0)
+		behaviorEnabledState = true;
+}
+
 // 죽음 상태 업데이트 진행
 void PlantMonster::updateDeleteDelay(float Delta) {
 	deleteDelayTime += Delta;
@@ -64,6 +66,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 
 	position = createPosition;
 	fromGroundState = appearFromGround;
+	behaviorEnabledState = !appearFromGround;
 
 	// 고정형 몬스터이므로 생성 이후로는 터레인 업데이트를 진행하지 않는다.
 	if (auto terrain = scene.Find(terrainName); terrain) {
@@ -72,20 +75,26 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 		currentTerrain = terrain;
 	}
 
+	// 고정형 몬스터이므로 생성 이후로는 시야 범위 업데이트를 진행하지 않는다.
+	lookRange.Update(position, 10.0);
+
 	// 자기 소유의 hp 표시기 객체 추가
 	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER2);
 }
 
 // 모든 업데이트
 void PlantMonster::Update(float Delta) {
-	if (currentState != PLANT_DEATH) {
-		updateHitBox();
-		updateLookRange();
-		updatePlayerDetect();
-		updateIndicatorHP();
+	if (behaviorEnabledState) {
+		if (currentState != PLANT_DEATH) {
+			updateHitBox();
+			updatePlayerDetect();
+			updateIndicatorHP();
+		}
+		else
+			updateDeleteDelay(Delta);
 	}
 	else
-		updateDeleteDelay(Delta);
+		updateBehaviorEnableDelay(Delta);
 
 	updateAnimation(Delta);
 }
