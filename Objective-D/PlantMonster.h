@@ -48,7 +48,6 @@ private:
 	GameObject* hpIndicator{};
 
 public:
-	void updateHitBox();
 	void updateTargetDetect();
 	void updateIndicatorHP();
 	void updateLiftFromGround(float Delta);

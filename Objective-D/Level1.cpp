@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "CrossHair.h"
 #include "MuzzleFlash.h"
+#include "PlantMonster.h"
 
 namespace Level1 { std::deque<GameObject*> ControlObjectList; }
 
@@ -17,6 +18,7 @@ void Level1::Start() {
 
 	scene.AddObject(new Map1, "map1", LAYER1, true);
 	scene.AddObject(new CenterBuilding("map1", -2.0), "center_building", LAYER1);
+	scene.AddObject(new PlantMonster(XMFLOAT3(-140.0, 0.0, -130.0), "map1", true), "plantMonster", LAYER1);
 
 	if (dev)
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);

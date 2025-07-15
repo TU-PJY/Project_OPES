@@ -2,11 +2,6 @@
 #include "HP_Indicator.h"
 #include "MathUtil.h"
 
-// 히트박스 업데이트 진행
-void PlantMonster::updateHitBox() {
-	//hitBox.Update(XMFLOAT3(position.x, position.y + size.y * 0.5, position.z), XMFLOAT3(0.4, 1.5, 0.6), rotation);
-}
-
 // 공격 대상 감지 진행
 void PlantMonster::updateTargetDetect() {
 	// 디펜스 모드 시에는 중앙 건물만을 공격하므로 플레이어 인식 안 함
@@ -17,17 +12,18 @@ void PlantMonster::updateTargetDetect() {
 // hp 표시기 업데이트 진행
 void PlantMonster::updateIndicatorHP() {
 	if (hpIndicator) {
-		hpIndicator->InputPosition(position, 3.0);
+		hpIndicator->InputPosition(position, size.y * 1.5);
 		hpIndicator->InputHP(totalHP, currentHP);
 	}
 }
 
 // 디펜스 모드 시 땅에서 올라오는 애니메이션 업데이트
 void PlantMonster::updateLiftFromGround(float Delta) {
-	position.y += Delta * 5.0;
+	position.y += Delta * 10.0;
 	if (position.y > terrainHeight) {
 		position.y = terrainHeight;
 		behaviorEnabledState = true;
+		currentState = PLANT_ATTACK;
 	}
 }
 
@@ -106,7 +102,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 	if (defenseModeState) {
 		if (auto centerBuilding = scene.Find("center_building"); centerBuilding) {
 			XMFLOAT3 centerBuildingPosition = centerBuilding->GetPosition();
-			float destRotation = Math::CalcDegree2D(position.x, centerBuildingPosition.x, position.z, centerBuildingPosition.z);
+			float destRotation = Math::CalcDegree2D(position.z, position.x, centerBuildingPosition.z, centerBuildingPosition.x);
 			rotation.y = destRotation;
 		}
 	}
@@ -121,7 +117,6 @@ void PlantMonster::Update(float Delta) {
 
 	if (behaviorEnabledState) {
 		if (currentState != PLANT_DEATH) {
-			updateHitBox();
 			updateTargetDetect();
 			updateIndicatorHP();
 		}
