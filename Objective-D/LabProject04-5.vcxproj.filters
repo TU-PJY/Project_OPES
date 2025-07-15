@@ -185,23 +185,23 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]">
       <UniqueIdentifier>{67b98f70-6cb6-4ec7-a5fd-6d249410d027}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Player ]">
-      <UniqueIdentifier>{0e3eacd1-45f7-4761-8928-8b05d1d1d88e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ 0_Super ]">
       <UniqueIdentifier>{03b6b546-94f5-4152-a165-f88612df9eb3}</UniqueIdentifier>
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]">
       <UniqueIdentifier>{147e2871-02f2-4377-bd27-477c2e36fc0c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Spawner ]">
-      <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ 0_Mode Packs ]">
       <UniqueIdentifier>{82e1b461-5d00-4430-aea1-ac6ac2a9bd4b}</UniqueIdentifier>
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Plant Monster ]">
       <UniqueIdentifier>{2e3ed06f-a3c8-43eb-ac58-a04f9a235e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Player ]">
+      <UniqueIdentifier>{0e3eacd1-45f7-4761-8928-8b05d1d1d88e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]">
+      <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -332,7 +332,7 @@
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ CrossHair ]</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Player ]</Filter>
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Player ]</Filter>
     </ClInclude>
     <ClInclude Include="ClampUtil.h">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
@@ -361,6 +361,9 @@
     </ClInclude>
     <ClInclude Include="HP_Indicator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ HP Indicator ]</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterGenerator.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -500,7 +503,7 @@
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ CrossHair ]</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Player ]</Filter>
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Player ]</Filter>
     </ClCompile>
     <ClCompile Include="ClampUtil.cpp">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
@@ -531,6 +534,9 @@
     </ClCompile>
     <ClCompile Include="HP_Indicator.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ HP Indicator ]</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterGenerator.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

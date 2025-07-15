@@ -1,6 +1,13 @@
 #include "PlantMonster.h"
 #include "HP_Indicator.h"
 #include "MathUtil.h"
+#include "PickingUtil.h"
+
+void PlantMonster::updateHitBox() {
+	XMFLOAT3 boxPosition = XMFLOAT3(position.x, position.y, position.z);
+	XMFLOAT3 boxSize = XMFLOAT3(0.7, size.y * 0.8, 0.7);
+	hitBox.Update(boxPosition, boxSize, rotation);
+}
 
 // 공격 대상 감지 진행
 void PlantMonster::updateTargetDetect() {
@@ -114,6 +121,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 // 모든 업데이트
 void PlantMonster::Update(float Delta) {
 	updateAnimation(Delta);
+	updateHitBox();
 
 	if (behaviorEnabledState) {
 		if (currentState != PLANT_DEATH) {
@@ -134,39 +142,24 @@ void PlantMonster::Render() {
 	Transform::Rotate(RotateMatrix, rotation);
 	Transform::Scale(ScaleMatrix, size);
 	RenderFBX(plantFBX, TEX.plantMonster);
+	UpdatePickMatrix();
 
-	// 머리와 몸통 부분을 따로 업데이트 한다.
-	hitBoxHead.UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 0);
-	hitBoxBody.UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 9);
-	hitBoxHead.Render();
-	hitBoxBody.Render();
+	hitBox.Render();
 }
 
-// 죽을 시 자기 소유의 hp 표시기 객체를 즉시 삭제하고 죽음 상태를 활성화 한다.
-void PlantMonster::GiveDamage(int hp) {
+bool PlantMonster::CheckHit(XMFLOAT2& checkPosition, int damage) {
 	if (currentState == PLANT_DEATH)
-		return;
+		return false;
 
-	currentHP -= hp;
-	if (currentHP <= 0) {
-		currentState = PLANT_DEATH;
-		if (hpIndicator) 
-			scene.DeleteObject(hpIndicator);
-	}
-}
-
-// 죽은 상태일 경우 true를 리턴
-bool PlantMonster::GetDeathState() {
-	if (currentState == PLANT_DEATH)
+	if (PickingUtil::PickByViewportOOBB(checkPosition.x, checkPosition.y, hitBox)) {
+		currentHP -= damage;
+		if (currentHP <= 0) {
+			currentState = PLANT_DEATH;
+			if (hpIndicator)
+				scene.DeleteObject(hpIndicator);
+		}
 		return true;
+	}
+
 	return false;
-}
-
-// 히트 박스 얻기
-OOBB PlantMonster::GetOOBB() {
-	return hitBoxHead;
-}
-
-OOBB PlantMonster::GetOOBB2() {
-	return hitBoxBody;
 }

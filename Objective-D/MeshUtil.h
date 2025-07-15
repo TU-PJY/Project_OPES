@@ -195,9 +195,12 @@ public:
 extern FBXUtil fbxUtil;
 
 class OOBB;
+class AABB;
+
 class FBX {
 private:
 	friend OOBB;
+	friend AABB;
 
 	bool InitState{};
 	bool Running{ true };
@@ -218,7 +221,6 @@ private:
 	FBXMesh* FBXPtr{};
 
 	std::vector<BoundingOrientedBox> OOBB{};
-
 
 	std::string CurrentAnimationName{};
 
@@ -257,9 +259,10 @@ public:
 	void Render(int Index);
 	XMFLOAT3 GetInplaceDelta();
 	void ApplyAnimation();
+	bool CheckRayIntersection(XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection, float* pfNearHitDistance);
 
 private:
 	void CreateBuffer(DeviceSystem& System);
 	void ReleaseBuffer();
+	BOOL RayIntersectionByTriangle(XMVECTOR& xmRayOrigin, XMVECTOR& xmRayDirection, XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, float* pfNearHitDistance);
 };
-

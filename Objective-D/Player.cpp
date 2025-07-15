@@ -82,14 +82,9 @@ void Player::InputKey(KeyEvent& Event) {
 void Player::CheckHitMap1Monsters() {
 	size_t layerSize = scene.LayerSize(LAYER1);
 	for (int i = 0; i < layerSize; i++) {
-		if (auto plantMonster = scene.Find("plantMonster"); plantMonster) {
-			if (!plantMonster->GetDeathState()) {
-				OOBB oobb1 = plantMonster->GetOOBB();
-				OOBB oobb2 = plantMonster->GetOOBB2();
-				if (PickingUtil::PickByViewportOOBB(0.0, 0.0, oobb1) || PickingUtil::PickByViewportOOBB(0.0, 0.0, oobb2))
-					plantMonster->GiveDamage(10);
+		if (auto plantMonster = scene.FindMulti("plantMonster", LAYER1, i); plantMonster) {
+			if (plantMonster->CheckHit(XMFLOAT2(0.0, 0.0), 10))
 				break;
-			}
 		}
 	}
 }

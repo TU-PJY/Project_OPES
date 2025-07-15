@@ -41,13 +41,13 @@ private:
 	BoundSphere lookRange{};
 
 	// 충돌 감지를 위한 히트 박스
-	OOBB        hitBoxHead{};
-	OOBB        hitBoxBody{};
+	OOBB        hitBox{};
 	
 	// 현재 객체가 소유하는 hp 표시기 오브젝트 포인터
 	GameObject* hpIndicator{};
 
 public:
+	void updateHitBox();
 	void updateTargetDetect();
 	void updateIndicatorHP();
 	void updateLiftFromGround(float Delta);
@@ -57,8 +57,5 @@ public:
 	PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, bool appearFromGround=false);
 	void Update(float Delta) override;
 	void Render()            override;
-	OOBB GetOOBB()           override;
-	OOBB GetOOBB2()          override;
-	void GiveDamage(int hp)  override;
-	bool GetDeathState()     override;
+	bool CheckHit(XMFLOAT2& checkPosition, int damage) override;
 };

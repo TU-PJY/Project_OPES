@@ -7,6 +7,7 @@
 #include "CrossHair.h"
 #include "MuzzleFlash.h"
 #include "PlantMonster.h"
+#include "MonsterGenerator.h"
 
 namespace Level1 { std::deque<GameObject*> ControlObjectList; }
 
@@ -18,7 +19,10 @@ void Level1::Start() {
 
 	scene.AddObject(new Map1, "map1", LAYER1, true);
 	scene.AddObject(new CenterBuilding("map1", -2.0), "center_building", LAYER1);
-	scene.AddObject(new PlantMonster(XMFLOAT3(-140.0, 0.0, -120.0), "map1", true), "plantMonster", LAYER1);
+//	scene.AddObject(new PlantMonster(XMFLOAT3(-140.0, 0.0, -120.0), "map1", true), "plantMonster", LAYER1);
+
+	// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
+	scene.AddObject(new DefenseModeMonsterGenerator("map1", 20), "defenseModeMonsterGenerator", LAYER1);
 
 	if (dev)
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
