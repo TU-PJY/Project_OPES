@@ -98,6 +98,7 @@ public:
 	// HP 인디케이터 함수
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
 	virtual void InputHP(int fullHP, int currentHP) {}
+	virtual void SetSize(float Value) {}
 
 	// 서버 테스트
 	virtual void InputPosition(XMFLOAT3& value) {}
