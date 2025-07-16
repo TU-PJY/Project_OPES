@@ -152,7 +152,7 @@ bool PlantMonster::CheckHit(XMFLOAT2& checkPosition, int damage) {
 	if (currentState == PLANT_DEATH)
 		return false;
 
-	if (PickingUtil::PickByViewportOOBB(checkPosition.x, checkPosition.y, hitBox)) {
+	if (PickingUtil::PickByViewportOOBB(checkPosition, hitBox)) {
 		currentHP -= damage;
 		if (currentHP <= 0) {
 			currentState = PLANT_DEATH;

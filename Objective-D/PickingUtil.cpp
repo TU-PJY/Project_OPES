@@ -188,6 +188,10 @@ bool PickingUtil::PickByViewportAABB(float X, float Y, const AABB& Other) {
 	return Math::CheckRayCollision(Origin, Direction, Other);
 }
 
+bool PickingUtil::PickByViewportOOBB(const XMFLOAT2& Position, const OOBB& Other) {
+	return PickByViewportOOBB(Position.x, Position.y, Other);
+}
+
 bool PickingUtil::PickByViewportOOBB(float X, float Y, const OOBB& Other) {
 	XMFLOAT3 PickPoint{};
 	PickPoint.x = (((2.0f * ConvertXToWinCoord(X)) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;

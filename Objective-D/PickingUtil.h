@@ -16,6 +16,7 @@ namespace PickingUtil {
 	bool PickByWinCoordOOBB(int X, int Y, const OOBB& Other);
 	bool PickByWinCoordRange(int X, int Y, const BoundSphere& Other);
 	bool PickByViewportAABB(float X, float Y, const AABB& Other);
+	bool PickByViewportOOBB(const XMFLOAT2& Position, const OOBB& Other);
 	bool PickByViewportOOBB(float X, float Y, const OOBB& Other);
 	bool PickByViewportRange(float X, float Y, const BoundSphere& Other);
 };

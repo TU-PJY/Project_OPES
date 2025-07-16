@@ -14,10 +14,11 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 	if (currentTime >= destGenerateTime) {
 		currentTime -= destGenerateTime;
 		XMFLOAT3 randomPosition{};
+		XMFLOAT2 RandomXZ = Random.GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
 
 		// À§Ä¡ ·£´ý
-		randomPosition.x = Random.Gen(-160.0, -80.0);
-		randomPosition.z = Random.Gen(-160.0, -80.0);
+		randomPosition.x = RandomXZ.x;
+		randomPosition.z = RandomXZ.y;
 
 		if (currentMapName.compare("map1") == 0)
 			scene.AddObject(new PlantMonster(randomPosition, currentMapName, true), "plantMonster", LAYER1);
