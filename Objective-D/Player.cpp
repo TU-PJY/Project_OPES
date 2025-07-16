@@ -80,9 +80,9 @@ void Player::InputKey(KeyEvent& Event) {
 }
 
 void Player::CheckHitMap1Monsters() {
-	size_t layerSize = scene.LayerSize(LAYER1);
+	size_t layerSize = scene.LayerSize(LAYER2);
 	for (int i = 0; i < layerSize; i++) {
-		if (auto plantMonster = scene.FindMulti("plantMonster", LAYER1, i); plantMonster) {
+		if (auto plantMonster = scene.FindMulti("plantMonster", LAYER2, i); plantMonster) {
 			if (plantMonster->CheckHit(XMFLOAT2(0.0, 0.0), 10))
 				break;
 		}

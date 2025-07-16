@@ -1,6 +1,7 @@
 #include "ModePack.h"
 
 #include "Map1.h"
+#include "SkyBox.h"
 #include "CameraController.h"
 #include "CenterBuilding.h"
 #include "Player.h"
@@ -17,7 +18,8 @@ void Level1::Start() {
 	globalFovOffset = 0.0;
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
 
-	scene.AddObject(new Map1, "map1", LAYER1, true);
+	scene.AddObject(new Map1, "map1", LAYER1);
+	scene.AddObject(new SkyBox, "skybox", LAYER1);
 	scene.AddObject(new CenterBuilding("map1", -2.0), "center_building", LAYER1);
 //	scene.AddObject(new PlantMonster(XMFLOAT3(-140.0, 0.0, -120.0), "map1", true), "plantMonster", LAYER1);
 

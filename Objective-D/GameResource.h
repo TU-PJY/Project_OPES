@@ -75,6 +75,9 @@ extern MeshResource MESH;
 /////////////////////////////////////////////////////////////////////////////////
 // 텍스처 리소스는 해당 클래스 안에 선언
 typedef struct {
+	// skybox
+	Texture* skyBox;
+
 	// map1
 	Texture* Palette1;
 	Texture* Palette2;

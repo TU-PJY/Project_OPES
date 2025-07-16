@@ -119,6 +119,9 @@ void LoadTexture(DeviceSystem& System) {
 
 	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 
+	// sky box
+	LoadTexture(TEX.skyBox, L"Resources//Image//sky.png", TEXTURE_TYPE_WIC);
+
 	// map1
 	LoadTexture(TEX.Palette1, L"Resources//Image//palette-1.png", TEXTURE_TYPE_WIC);
 	LoadTexture(TEX.Palette2, L"Resources//Image//palette-2.png", TEXTURE_TYPE_WIC);

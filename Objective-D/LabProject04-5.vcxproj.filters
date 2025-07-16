@@ -203,6 +203,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]">
       <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ SkyBox ]">
+      <UniqueIdentifier>{a8cb922f-c189-435c-94d1-0e04c4220348}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -364,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="MonsterGenerator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ SkyBox ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -537,6 +543,9 @@
     </ClCompile>
     <ClCompile Include="MonsterGenerator.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ SkyBox ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
