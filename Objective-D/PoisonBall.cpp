@@ -10,15 +10,11 @@ PoisonBall::PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPos
 	defenseModeState = defenseMode;
 }
 
-void PoisonBall::UpdateMove(float Delta) {
+void PoisonBall::updateCollision() {
 	if (disapperState)
 		return;
 
-	// 대상을 향해 날아간다
-	Math::MoveTowards(position, destPosition, 15.0, Delta);
-	bs.Update(position, 1.0);
-
-	// 디펜스 모드 활성화 시에는 건물에 대미지를 가한다.
+	// 디펜스 모드 활성화 시에는 건물에도 대미지를 가한다.
 	// 충돌시 사라지는 애니메이션과 함께 삭제된다.
 	if (defenseModeState) {
 		if (auto centerBuilding = scene.Find("center_building"); centerBuilding) {
@@ -26,6 +22,16 @@ void PoisonBall::UpdateMove(float Delta) {
 				disapperState = true;
 		}
 	}
+}
+
+// 이동 업데이트
+void PoisonBall::updateMove(float Delta) {
+	if (disapperState)
+		return;
+
+	// 대상을 향해 날아간다
+	Math::MoveTowards(position, destPosition, 15.0, Delta);
+	bs.Update(position, 1.0);
 
 	// 80.0이상 이동했다면 사라짐 상태 활성화
 	float MoveDistance = Math::CalcDistance3D(position, originPosition);
@@ -38,6 +44,7 @@ void PoisonBall::updateDisappear(float Delta) {
 	if (!disapperState)
 		return;
 
+	// 투명해짐과 동시에 커지면서 사라진다.
 	opacity -= Delta * 4.0;
 	size.x += Delta * 8.0;
 	size.y += Delta * 8.0;
@@ -49,7 +56,8 @@ void PoisonBall::updateDisappear(float Delta) {
 }
 
 void PoisonBall::Update(float Delta) {
-	UpdateMove(Delta);
+	updateMove(Delta);
+	updateCollision();
 	updateDisappear(Delta);
 }
 

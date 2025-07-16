@@ -6,6 +6,9 @@
 
 // 히트박스 업데이트
 void PlantMonster::updateHitBox() {
+	if (currentState == PLANT_DEATH)
+		return;
+
 	XMFLOAT3 boxPosition = XMFLOAT3(position.x, position.y, position.z);
 	XMFLOAT3 boxSize = XMFLOAT3(0.7, size.y * 0.8, 0.7);
 	hitBox.Update(boxPosition, boxSize, rotation);
@@ -13,6 +16,9 @@ void PlantMonster::updateHitBox() {
 
 // 공격 대상 감지 진행
 void PlantMonster::updateTargetDetect() {
+	if (currentState == PLANT_DEATH)
+		return;
+
 	// 디펜스 모드 시에는 중앙 건물만을 공격하므로 플레이어 인식 안 함
 	if (defenseModeState)
 		return;
@@ -41,6 +47,9 @@ void PlantMonster::updateAttack(float Delta) {
 
 // hp 표시기 업데이트 진행
 void PlantMonster::updateIndicatorHP() {
+	if (currentState == PLANT_DEATH)
+		return;
+
 	if (hpIndicator) {
 		hpIndicator->InputPosition(position, size.y * 1.5);
 		hpIndicator->InputHP(totalHP, currentHP);
@@ -49,6 +58,9 @@ void PlantMonster::updateIndicatorHP() {
 
 // 디펜스 모드 시 땅에서 올라오는 애니메이션 업데이트
 void PlantMonster::updateLiftFromGround(float Delta) {
+	if (currentState != PLANT_LIFT)
+		return;
+
 	position.y += Delta * 10.0;
 	if (position.y > terrainHeight) {
 		position.y = terrainHeight;
@@ -80,6 +92,9 @@ void PlantMonster::updateAnimation(float Delta) {
 
 // 죽음 상태 업데이트 진행
 void PlantMonster::updateDeleteDelay(float Delta) {
+	if (currentState != PLANT_DEATH)
+		return;
+
 	deleteDelayTime += Delta;
 	if (deleteDelayTime >= 2.3) 
 		scene.DeleteObject(this);
@@ -148,16 +163,13 @@ void PlantMonster::Update(float Delta) {
 	updateHitBox();
 
 	if (behaviorEnabledState) {
-		if (currentState != PLANT_DEATH) {
-			updateTargetDetect();
-			updateIndicatorHP();
-			updateAttack(Delta);
-		}
-		else
-			updateDeleteDelay(Delta);
+		updateTargetDetect();
+		updateIndicatorHP();
+		updateAttack(Delta);
+		updateDeleteDelay(Delta);
 	}
-	else
-		updateLiftFromGround(Delta);
+
+	updateLiftFromGround(Delta);
 }
 
 // 렌더링

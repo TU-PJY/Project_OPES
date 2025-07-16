@@ -17,7 +17,8 @@ private:
 
 public:
 	PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, bool defenseMode=false);
-	void UpdateMove(float Delta);
+	void updateCollision();
+	void updateMove(float Delta);
 	void updateDisappear(float Delta);
 	void Update(float Delta) override;
 	void Render() override;
