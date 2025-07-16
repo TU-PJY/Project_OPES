@@ -24,8 +24,13 @@ namespace Math {
 	XMVECTOR ClosestPointOnOOBB(const OOBB& Box, FXMVECTOR& Point);
 	void MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, BoundSphere& A, std::vector<OOBB>& B, float FrameTime);
 	float CalcDistance2D(float FromX, float FromY, float ToX, float ToY);
+	float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B);
 	float CalcDegree2D(float FromX, float FromY, float ToX, float ToY);
+	XMFLOAT3 CalcDegree3D(const XMFLOAT3& A, const XMFLOAT3& B);
+	XMFLOAT3 CalcRadians3D(const XMFLOAT3& A, const XMFLOAT3& B);
 	float CalcRadians2D(float FromX, float FromY, float ToX, float ToY);
 	void Normalize2DAngleTo360(float& Degree);
 	void LerpXMFLOAT3(XMFLOAT3& Value, XMFLOAT3& Dest, float Speed, float Delta);
+	void MoveTowards(XMFLOAT3& CurrentPos, const XMFLOAT3& TargetPos, float Speed, float DeltaTime);
+	XMFLOAT3 CalcForwardOffset(const XMFLOAT3& Position, float DegreesY, float ForwardDistance, float HeightOffset);
 }

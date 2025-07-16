@@ -72,6 +72,9 @@ void FBX::SelectAnimation(std::string AnimationName) {
 			std::cout << StartTime << " " << TotalTime << std::endl;
 		}
 	}
+
+	CurrentEndCount = 0;
+	PrevEndCount = 0;
 }
 
 void FBX::StopAnimationUpdate() {
@@ -86,12 +89,33 @@ void FBX::SetSpeed(float Speed) {
 	CurrentSpeed = Speed;
 }
 
+// 하나의 키프레임이 끝날 때 true를 반환한다.
+bool FBX::GetAnimationEndState() {
+	if (PrevEndCount != CurrentEndCount) {
+		PrevEndCount = CurrentEndCount;
+		return true;
+	}
+
+	return false;
+}
+
+float FBX::GetCurrentAnimationTime() {
+	return TotalTime;
+}
+
+// 애니메이션 키프레임 재생 시간이 특정 시간을 지나면 true를 리턴한다.
+bool FBX::GetTimeSectionPassed(float Time) {
+	if (CurrentTime >= Time) 
+		return true;
+		
+	return false;
+}
+
 void FBX::UpdateAnimation(float Delta, bool Inplace) {
 	if (!Running)
 		return;
 
 	CurrentTime += Delta * CurrentSpeed;
-	//std::cout << CurrentTime << std::endl;
 
 	if (CurrentTime >= TotalTime) {
 		float OverTime = CurrentTime - TotalTime;
@@ -100,6 +124,8 @@ void FBX::UpdateAnimation(float Delta, bool Inplace) {
 			CurrentTime = OverTime;
 		else
 			CurrentTime = StartTime + OverTime;
+
+		CurrentEndCount++;
 	}
 
 	CurrentDelay += Delta;

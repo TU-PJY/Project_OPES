@@ -8,7 +8,7 @@ CenterBuilding::CenterBuilding(std::string map_name, float height_offset) {
 		terrainUtil.InputPosition(position, height_offset);
 		terrainUtil.ClampToTerrain(terrain->GetTerrain(), position, height_offset);
 
-		oobb.Update(XMFLOAT3(position.x, position.y + height_offset, position.z), XMFLOAT3(8.0, 10.0, 9.0), XMFLOAT3(0.0, 0.0, 0.0));
+		aabb.Update(XMFLOAT3(position.x, position.y + height_offset, position.z), XMFLOAT3(8.0, 10.0, 9.0));
 	}
 
 	hpIndicator = scene.AddObject(new HP_Indicator(), "indicatorHP", LAYER1);
@@ -33,15 +33,15 @@ void CenterBuilding::Render() {
 	Transform::Move(TranslateMatrix, position);
 	Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
 	Render3D(MESH.center_building, TEX.scifi);
-	oobb.Render();
+	aabb.Render();
 }
 
-OOBB CenterBuilding::GetOOBB(){
-	return oobb;
+AABB CenterBuilding::GetAABB(){
+	return aabb;
 }
 
 XMFLOAT3 CenterBuilding::GetPosition() {
-	return position;
+	return XMFLOAT3(position.x, position.y + 5.0, position.z);
 }
 
 void CenterBuilding::GiveDamage(int Damage) {

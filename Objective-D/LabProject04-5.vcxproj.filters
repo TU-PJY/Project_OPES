@@ -206,6 +206,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ SkyBox ]">
       <UniqueIdentifier>{a8cb922f-c189-435c-94d1-0e04c4220348}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ PoisionBall ]">
+      <UniqueIdentifier>{4848456c-a0eb-4ec2-be6b-36e65885d0cf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -370,6 +373,9 @@
     </ClInclude>
     <ClInclude Include="SkyBox.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ SkyBox ]</Filter>
+    </ClInclude>
+    <ClInclude Include="PoisonBall.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ PoisionBall ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -546,6 +552,9 @@
     </ClCompile>
     <ClCompile Include="SkyBox.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ SkyBox ]</Filter>
+    </ClCompile>
+    <ClCompile Include="PoisonBall.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ PoisionBall ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

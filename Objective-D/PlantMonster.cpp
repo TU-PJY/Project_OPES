@@ -2,6 +2,7 @@
 #include "HP_Indicator.h"
 #include "MathUtil.h"
 #include "PickingUtil.h"
+#include "PoisonBall.h"
 
 // 히트박스 업데이트
 void PlantMonster::updateHitBox() {
@@ -15,6 +16,27 @@ void PlantMonster::updateTargetDetect() {
 	// 디펜스 모드 시에는 중앙 건물만을 공격하므로 플레이어 인식 안 함
 	if (defenseModeState)
 		return;
+}
+
+// 공격 타이밍 업데이트
+// 일정 시간마다 구체를 발사한다.
+void PlantMonster::updateAttack(float Delta) {
+	if (currentState != PLANT_ATTACK) {
+		shootState = false;
+		return;
+	}
+
+	// 공격 모션에 맞추어 독 구체를 발사한다.
+	// 구체 발사 후 애니메이션의 같은 구간에 도달할 때까지 발사하지 않는다.
+	if (plantFBX.GetTimeSectionPassed(plantFBX.GetCurrentAnimationTime() - 0.65f)) {
+		if (!shootState) {
+			XMFLOAT3 createPosition = Math::CalcForwardOffset(position, rotation.y, 2.0f, size.y * 0.9);
+			scene.AddObject(new PoisonBall(createPosition, targetPosition, true), "poisonBall", LAYER3);
+			shootState = true;
+		}
+	}
+	else
+		shootState = false;
 }
 
 // hp 표시기 업데이트 진행
@@ -112,6 +134,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 			XMFLOAT3 centerBuildingPosition = centerBuilding->GetPosition();
 			float destRotation = Math::CalcDegree2D(position.z, position.x, centerBuildingPosition.z, centerBuildingPosition.x);
 			rotation.y = destRotation;
+			targetPosition = centerBuildingPosition;
 		}
 	}
 
@@ -128,6 +151,7 @@ void PlantMonster::Update(float Delta) {
 		if (currentState != PLANT_DEATH) {
 			updateTargetDetect();
 			updateIndicatorHP();
+			updateAttack(Delta);
 		}
 		else
 			updateDeleteDelay(Delta);

@@ -106,6 +106,7 @@ typedef struct {
 	// map1 monster
 	Texture* troll;
 	Texture* plantMonster;
+	Texture* poisonBall;
 }TextureResource;
 extern TextureResource TEX;
 

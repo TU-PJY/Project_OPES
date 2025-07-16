@@ -17,6 +17,7 @@ private:
 	// 위치, 회전 각도, 크기
 	XMFLOAT3    position{};
 	XMFLOAT3    tempPosition{};
+	XMFLOAT3    targetPosition{};
 	float       terrainHeight{};
 	XMFLOAT3    rotation{};
 	XMFLOAT3    size{ XMFLOAT3(3.0, 3.0, 3.0) };
@@ -26,6 +27,7 @@ private:
 	int         prevState{-1};
 	bool        detectState{};
 	bool        behaviorEnabledState{};
+	bool        shootState{};
 
 	// 디펜스 모드 실행 시 별도의 로직을 실행한다.
 	bool        defenseModeState{};
@@ -49,6 +51,7 @@ private:
 public:
 	void updateHitBox();
 	void updateTargetDetect();
+	void updateAttack(float Delta);
 	void updateIndicatorHP();
 	void updateLiftFromGround(float Delta);
 	void updateAnimation(float Delta);

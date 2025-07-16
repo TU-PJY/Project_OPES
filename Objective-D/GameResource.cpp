@@ -150,6 +150,7 @@ void LoadTexture(DeviceSystem& System) {
 	// monster - troll
 	LoadTexture(TEX.troll, L"Resources//Image//monster//troll.png");
 	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");
+	LoadTexture(TEX.poisonBall, L"Resources//Image//plant_monster_bullet.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

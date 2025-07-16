@@ -240,6 +240,13 @@ private:
 	float CurrentDelay{};
 	float DestDelay{};
 
+	int CurrentEndCount{};
+	int PrevEndCount{};
+
+	float SectionTime{};
+	int CurrentPassCount{};
+	int PrevPassCount{};
+
 public:
 	Mesh* operator [] (int Index);
 
@@ -251,6 +258,9 @@ public:
 	void StopAnimationUpdate();
 	void ResumeAnimationUpdate();
 	void SetSpeed(float Speed);
+	bool GetAnimationEndState();
+	float GetCurrentAnimationTime();
+	bool GetTimeSectionPassed(float Time);
 	void UpdateAnimation(float Delta, bool Inplace=false);
 	XMFLOAT3 GetRootMoveDelta(std::vector<BoneFrame>& BoneFrame, bool InPlace);
 	std::string GetCurrentAnimation();

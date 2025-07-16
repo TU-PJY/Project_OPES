@@ -266,9 +266,45 @@ float Math::CalcDistance2D(float FromX, float FromY, float ToX, float ToY) {
 	return  std::sqrt(std::pow(FromX - ToX, 2) + std::pow(FromY - ToY, 2));
 }
 
+float Math::CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
+	XMVECTOR VecA = XMLoadFloat3(&A);
+	XMVECTOR VecB = XMLoadFloat3(&B);
+	XMVECTOR Diff = XMVectorSubtract(VecA, VecB);
+	XMVECTOR Length = XMVector3Length(Diff);
+	return XMVectorGetX(Length);
+}
+
 // 2차원 각도를 계산한다.
 float Math::CalcDegree2D(float FromX, float FromY, float ToX, float ToY) {
 	return XMConvertToDegrees(atan2(ToY - FromY, ToX - FromX));
+}
+
+XMFLOAT3 Math::CalcDegree3D(const XMFLOAT3& A, const XMFLOAT3& B) {
+	XMFLOAT3 Direction = {
+	   B.x - A.x,
+	   B.y - A.y,
+	   B.z - A.z
+	};
+
+	float Yaw = std::atan2(Direction.x, Direction.z);
+	float Pitch = std::atan2(Direction.y, std::sqrt(Direction.x * Direction.x + Direction.z * Direction.z));
+	float Roll = 0.0f;
+
+	return XMFLOAT3(XMConvertToDegrees(Pitch), XMConvertToDegrees(Yaw), Roll);
+}
+
+XMFLOAT3 Math::CalcRadians3D(const XMFLOAT3& A, const XMFLOAT3& B) {
+	XMFLOAT3 Direction = {
+	   B.x - A.x,
+	   B.y - A.y,
+	   B.z - A.z
+	};
+
+	float Yaw = std::atan2(Direction.x, Direction.z);
+	float Pitch = std::atan2(Direction.y, std::sqrt(Direction.x * Direction.x + Direction.z * Direction.z));
+	float Roll = 0.0f;
+
+	return XMFLOAT3(Pitch, Yaw, Roll);
 }
 
 // 2차원 라디안을 계산한다.
@@ -287,4 +323,30 @@ void Math::LerpXMFLOAT3(XMFLOAT3& Value, XMFLOAT3& Dest, float Speed, float Delt
 	Value.x = std::lerp(Value.x, Dest.x, Speed * Delta);
 	Value.y = std::lerp(Value.y, Dest.y, Speed * Delta);
 	Value.z = std::lerp(Value.z, Dest.z, Speed * Delta);
+}
+
+void Math::MoveTowards(XMFLOAT3& CurrentPos, const XMFLOAT3& TargetPos, float Speed, float DeltaTime) {
+	XMVECTOR curr = XMLoadFloat3(&CurrentPos);
+	XMVECTOR target = XMLoadFloat3(&TargetPos);
+
+	XMVECTOR direction = XMVectorSubtract(target, curr);
+	direction = XMVector3Normalize(direction);
+
+	XMVECTOR velocity = XMVectorScale(direction, Speed * DeltaTime);
+	XMVECTOR result = XMVectorAdd(curr, velocity);
+
+	XMStoreFloat3(&CurrentPos, result);
+}
+
+XMFLOAT3 Math::CalcForwardOffset(const XMFLOAT3& Position, float DegreesY, float ForwardDistance, float HeightOffset) {
+	float radians = XMConvertToRadians(DegreesY);
+	float forwardX = sinf(radians);
+	float forwardZ = cosf(radians);
+
+	XMFLOAT3 Result{};
+	Result.x = Position.x + forwardX * ForwardDistance;
+	Result.y = Position.y + HeightOffset;
+	Result.z = Position.z + forwardZ * ForwardDistance;
+
+	return Result;
 }
