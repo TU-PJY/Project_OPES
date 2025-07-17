@@ -194,6 +194,13 @@ bool PlantMonster::CheckHit(XMFLOAT2& checkPosition, int damage) {
 			currentState = PLANT_DEATH;
 			if (hpIndicator)
 				scene.DeleteObject(hpIndicator);
+
+			// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
+			if (defenseModeState) {
+				GLOBAL.map1DefenseEnemyRemained--;
+				if (GLOBAL.map1DefenseEnemyRemained == 0)
+					GLOBAL.map1DefenseState = false;
+			}
 		}
 		return true;
 	}

@@ -82,7 +82,7 @@ void OOBB::Render() {
 	RCUtil::Input(GlobalCommandList, &xmf4x4World, GAME_OBJECT_INDEX, 16, 0);
 	RCUtil::Input(GlobalCommandList, &BoundboxColor, GAME_OBJECT_INDEX, 3, 16);
 
-	SysRes.BoundMesh->Render(GlobalCommandList);
+	SYSRES.BoundMesh->Render(GlobalCommandList);
 #endif
 }
 
@@ -145,7 +145,7 @@ void AABB::Render() {
 	RCUtil::Input(GlobalCommandList, &xmf4x4World, GAME_OBJECT_INDEX, 16, 0);
 	RCUtil::Input(GlobalCommandList, &BoundboxColor, GAME_OBJECT_INDEX, 3, 16);
 
-	SysRes.BoundMesh->Render(GlobalCommandList);
+	SYSRES.BoundMesh->Render(GlobalCommandList);
 #endif
 }
 
@@ -238,6 +238,6 @@ void BoundSphere::Render() {
 	RCUtil::Input(GlobalCommandList, &xmf4x4World, GAME_OBJECT_INDEX, 16, 0);
 	RCUtil::Input(GlobalCommandList, &BoundboxColor, GAME_OBJECT_INDEX, 3, 16);
 
-	SysRes.BoundingSphereMesh->Render(GlobalCommandList);
+	SYSRES.BoundingSphereMesh->Render(GlobalCommandList);
 #endif
 }

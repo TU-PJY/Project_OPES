@@ -94,7 +94,7 @@ public:
 			Transform::Rotate(RotateMatrix, 90.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, 9.0, 0.6, -7.0);
 			Transform::Scale(ScaleMatrix, 55.0, 41.0, 1.0);
-			Render3D(SysRes.BillboardMesh, TEX.ColorTex, 0.5);
+			Render3D(SYSRES.BillboardMesh, TEX.ColorTex, 0.5);
 
 			// 호수 주변 바위 렌더링
 			for (auto& P : LakeObjectPosition) {

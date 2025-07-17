@@ -22,6 +22,20 @@ extern unsigned int enter_player_id;
 
 extern DeviceSystem LoadSystem;
 
+// 프로젝트 전역에서 사용하는 변수들
+typedef struct {
+	// 디펜스 모드에서 사용할 남은 적 수  및 디펜스 모드 상태 여부
+	int map1DefenseEnemyRemained;
+	bool map1DefenseState;
+
+	int map2DefenseEnemyRemained;
+	bool map2DefenseState;
+
+	int map3DefenseEnemyRemained;
+	bool map3DefenseState;
+
+}GlobalValue;
+extern GlobalValue GLOBAL;
 
 /////////////////////////////////////////////////////////////////////////////////
 // 매쉬 리소스는 해당 클래스 안에 선언
@@ -95,6 +109,9 @@ typedef struct {
 	Texture* Map3Palette;
 	Texture* Volcano;
 
+	// roadblock
+	Texture* roadBlock;
+
 	// polyson scifi asset
 	Texture* scifi;
 
@@ -132,7 +149,7 @@ public:
 	Mesh* BoundMesh;
 	Mesh* BoundingSphereMesh;
 };
-extern SystemResource SysRes;
+extern SystemResource SYSRES;
 
 void InitObjectShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);
 void InitImageShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);

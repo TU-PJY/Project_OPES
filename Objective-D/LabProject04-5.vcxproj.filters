@@ -209,6 +209,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ PoisionBall ]">
       <UniqueIdentifier>{4848456c-a0eb-4ec2-be6b-36e65885d0cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ RoadBlock ]">
+      <UniqueIdentifier>{0d90f504-1c7e-4a7b-b12d-549c98ab2c34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -376,6 +379,9 @@
     </ClInclude>
     <ClInclude Include="PoisonBall.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ PoisionBall ]</Filter>
+    </ClInclude>
+    <ClInclude Include="RoadBlock.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ RoadBlock ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -555,6 +561,9 @@
     </ClCompile>
     <ClCompile Include="PoisonBall.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ PoisionBall ]</Filter>
+    </ClCompile>
+    <ClCompile Include="RoadBlock.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ RoadBlock ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

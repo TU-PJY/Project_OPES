@@ -57,7 +57,7 @@ public:
 		Transform::Move(TranslateMatrix, 0.0, -30.0, 0.0);
 		Transform::Rotate(RotateMatrix, 90.0, 0.0, 0.0);
 		Transform::Scale(ScaleMatrix, 1000.0, 1000.0, 1.0);
-		Render3D(SysRes.BillboardMesh, TEX.Magma);
+		Render3D(SYSRES.BillboardMesh, TEX.Magma);
 
 		// È­»ê
 		BeginRender();

@@ -67,5 +67,5 @@ void PoisonBall::Render() {
 	Transform::Move(TranslateMatrix, position);
 	Transform::Scale(ScaleMatrix, size);
 	Math::LookAt(RotateMatrix, vec, position, camera.GetPosition(), camera.GetUpVector());
-	Render3D(SysRes.BillboardMesh, TEX.poisonBall, opacity);
+	Render3D(SYSRES.BillboardMesh, TEX.poisonBall, opacity);
 }

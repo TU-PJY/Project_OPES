@@ -151,7 +151,7 @@ void GameObject::Render2D(Texture* TexturePtr, float AlphaValue, bool EnableAspe
 	ObjectAlpha = AlphaValue;
 
 	PrepareRender();
-	SysRes.ImagePannel->Render(GlobalCommandList);
+	SYSRES.ImagePannel->Render(GlobalCommandList);
 }
 
 // 마우스 모션으로부터 회전값 업데이트 한다.

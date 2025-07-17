@@ -28,7 +28,7 @@ void HP_Indicator::Render() {
 	Math::BillboardLookAt(RotateMatrix, vec, position, camera.GetPosition());
 	Transform::Scale(ScaleMatrix, 3.0 * renderSize, 0.2 * renderSize, 1.0);
 	SetColor(0.0, 0.0, 0.0);
-	Render3D(SysRes.BillboardMesh, TEX.ColorTex);
+	Render3D(SYSRES.BillboardMesh, TEX.ColorTex);
 
 	BeginRender();
 	Transform::Move(TranslateMatrix, position.x, position.y, position.z);
@@ -36,5 +36,5 @@ void HP_Indicator::Render() {
 	Transform::Move(RotateMatrix, 0.0, 0.0, -0.01);
 	Transform::Scale(ScaleMatrix, length * renderSize, 0.15 * renderSize, 1.0);
 	SetColor(1.0, 0.0, 0.0);
-	Render3D(SysRes.BillboardMesh, TEX.ColorTex);
+	Render3D(SYSRES.BillboardMesh, TEX.ColorTex);
 }

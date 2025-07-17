@@ -6,7 +6,8 @@
 
 MeshResource MESH;
 TextureResource TEX;
-SystemResource SysRes;
+SystemResource SYSRES;
+GlobalValue GLOBAL;
 
 // 전역 카메라 fov 값 오프셋
 float globalFovOffset;
@@ -168,6 +169,9 @@ void LoadTexture(DeviceSystem& System) {
 		LoadTexture(TEX.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
 	}
 
+	// roadblock
+	LoadTexture(TEX.roadBlock, L"Resources//Image//roadblock.png");
+
 	// polygon scifi asset
 	LoadTexture(TEX.scifi, L"Resources//Image//scifi//polygon_scifi.png", TEXTURE_TYPE_WIC);
 
@@ -230,26 +234,26 @@ std::vector<Texture*> LoadedTextureList;
 // 기본 전역 매쉬 로드
 void LoadSystemMesh(DeviceSystem& System) {
 	// 이미지 출력용 매쉬 생성
-	SysRes.ImagePannel = new Mesh;
-	SysRes.ImagePannel->CreateImagePannelMesh(System.Device, System.CmdList);
-	LoadedMeshList.emplace_back(SysRes.ImagePannel);
+	SYSRES.ImagePannel = new Mesh;
+	SYSRES.ImagePannel->CreateImagePannelMesh(System.Device, System.CmdList);
+	LoadedMeshList.emplace_back(SYSRES.ImagePannel);
 
 	// 이미지 패널과 빌보드 매쉬는 같은 버텍스를 사용함
-	SysRes.BillboardMesh = SysRes.ImagePannel;
+	SYSRES.BillboardMesh = SYSRES.ImagePannel;
 
 	// 스카이박스 출력용 매쉬 생성
-	SysRes.SkyboxMesh = new Mesh;
-	SysRes.SkyboxMesh->CreateSkyboxMesh(System.Device, System.CmdList);
-	LoadedMeshList.emplace_back(SysRes.SkyboxMesh);
+	SYSRES.SkyboxMesh = new Mesh;
+	SYSRES.SkyboxMesh->CreateSkyboxMesh(System.Device, System.CmdList);
+	LoadedMeshList.emplace_back(SYSRES.SkyboxMesh);
 
 	// 바운드박스 출력용 매쉬 생성
-	SysRes.BoundMesh = new Mesh;
-	SysRes.BoundMesh->CreateBoundboxMesh(System.Device, System.CmdList);
-	LoadedMeshList.emplace_back(SysRes.BoundMesh);
+	SYSRES.BoundMesh = new Mesh;
+	SYSRES.BoundMesh->CreateBoundboxMesh(System.Device, System.CmdList);
+	LoadedMeshList.emplace_back(SYSRES.BoundMesh);
 
 	// 바운드스페어 출력용 매쉬 생성
-	SysRes.BoundingSphereMesh = new Mesh(System.Device, System.CmdList, "Resources//SystemResources//Models//BoundingSphereMesh.txt", MESH_TYPE_TEXT);
-	LoadedMeshList.emplace_back(SysRes.BoundingSphereMesh);
+	SYSRES.BoundingSphereMesh = new Mesh(System.Device, System.CmdList, "Resources//SystemResources//Models//BoundingSphereMesh.txt", MESH_TYPE_TEXT);
+	LoadedMeshList.emplace_back(SYSRES.BoundingSphereMesh);
 }
 
 // 업로드 버퍼를 삭제하고, 벡터를 비운다.

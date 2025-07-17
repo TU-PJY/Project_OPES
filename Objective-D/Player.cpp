@@ -90,8 +90,11 @@ void Player::CheckHitMap1Monsters() {
 }
 
 // 서버 부하를 방지하기 위해 0.05초 간격으로 패킷 전송 
+// 개발을 위해 잠시 비활성화
 void Player::SendPacket(float Delta) {
-	sendDelay += Delta;
+	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+
+	/*sendDelay += Delta;
 
 	if (sendDelay >= 0.025) {
 		if (sendOrder == 1) {
@@ -115,7 +118,7 @@ void Player::SendPacket(float Delta) {
 
 		float over_time = 0.025 - sendDelay;
 		sendDelay = over_time;
-	}
+	}*/
 }
 
 void Player::Update(float FrameTime) {
