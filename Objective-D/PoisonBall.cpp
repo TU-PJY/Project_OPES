@@ -18,7 +18,7 @@ void PoisonBall::updateCollision() {
 	// 충돌시 사라지는 애니메이션과 함께 삭제된다.
 	if (defenseModeState) {
 		if (auto centerBuilding = scene.Find("center_building"); centerBuilding) {
-			if (centerBuilding->GetAABB().CheckCollision(bs))
+			if (centerBuilding->GetOOBB().CheckCollision(bs))
 				disapperState = true;
 		}
 	}
