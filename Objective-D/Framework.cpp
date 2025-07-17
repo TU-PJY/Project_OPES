@@ -55,7 +55,7 @@ void Framework::Init() {
 	camera.SetViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f);
 	camera.SetScissorRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	camera.SetTimeLag(0.0f);
-	camera.InitStaticMatrix();
+	//camera.InitStaticMatrix();
 	camera.SwitchCameraMode(CamMode::MODE1);
 
 	CmdList->Close();
@@ -116,6 +116,7 @@ void Framework::Update() {
 	// 카메라를 업데이트한다.
 	camera.Update(Timer.GetTimeElapsed());
 	camera.SetViewMatrix();
+	camera.SetStaticViewMatrix();
 	camera.SetViewportsAndScissorRects();
 
 	// 오브젝트 렌더링

@@ -212,6 +212,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ RoadBlock ]">
       <UniqueIdentifier>{0d90f504-1c7e-4a7b-b12d-549c98ab2c34}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ D3D12 ]\[6] - [ Util ]\[ Text Util ]">
+      <UniqueIdentifier>{a6e474e1-c661-4e45-b3de-2a6acb086734}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -382,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="RoadBlock.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ RoadBlock ]</Filter>
+    </ClInclude>
+    <ClInclude Include="TextUtil.h">
+      <Filter>[ D3D12 ]\[6] - [ Util ]\[ Text Util ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -564,6 +570,9 @@
     </ClCompile>
     <ClCompile Include="RoadBlock.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ RoadBlock ]</Filter>
+    </ClCompile>
+    <ClCompile Include="TextUtil.cpp">
+      <Filter>[ D3D12 ]\[6] - [ Util ]\[ Text Util ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

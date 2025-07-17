@@ -89,6 +89,9 @@ extern MeshResource MESH;
 /////////////////////////////////////////////////////////////////////////////////
 // 텍스처 리소스는 해당 클래스 안에 선언
 typedef struct {
+	// font atlas
+	Texture* fontAtlas[96];
+
 	// skybox
 	Texture* skyBox;
 
@@ -344,5 +347,16 @@ inline void LoadTexture(Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTU
 		return;
 	
 	TexturePtr = new Texture(LoadSystem.Device, LoadSystem.CmdList, Directory, Type, FilterOption);
+	LoadedTextureList.emplace_back(TexturePtr);
+}
+
+inline void LoadCropTexture(Texture*& TexturePtr, wchar_t* Directory, int X, int Y, int SizeX, int SizeY, D3D12_FILTER FilterOption = D3D12_FILTER_MIN_MAG_MIP_POINT) {
+	WICRect CropRect;
+	CropRect.X = X;
+	CropRect.Y = Y;
+	CropRect.Width = SizeX;
+	CropRect.Height = SizeY;
+
+	TexturePtr = new Texture(LoadSystem.Device, LoadSystem.CmdList, Directory, CropRect, FilterOption);
 	LoadedTextureList.emplace_back(TexturePtr);
 }

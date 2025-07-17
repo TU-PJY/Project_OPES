@@ -102,6 +102,16 @@ void Camera::SetViewMatrix() {
 	CalculateFrustumPlanes();
 }
 
+void Camera::SetStaticViewMatrix() {
+	StaticViewMatrix._11 = StaticRight.x; StaticViewMatrix._12 = StaticUp.x; StaticViewMatrix._13 = StaticLook.x;
+	StaticViewMatrix._21 = StaticRight.y; StaticViewMatrix._22 = StaticUp.y; StaticViewMatrix._23 = StaticLook.y;
+	StaticViewMatrix._31 = StaticRight.z; StaticViewMatrix._32 = StaticUp.z; StaticViewMatrix._33 = StaticLook.z;
+
+	StaticViewMatrix._41 = -Vec3::DotProduct(XMFLOAT3(0.0, 0.0, 0.0), StaticRight);
+	StaticViewMatrix._42 = -Vec3::DotProduct(XMFLOAT3(0.0, 0.0, 0.0), StaticUp);
+	StaticViewMatrix._43 = -Vec3::DotProduct(XMFLOAT3(0.0, 0.0, 0.0), StaticLook);
+}
+
 // 원근 투영 행렬을 초기화한다. 윈도우 사이즈 변경 시 이 함수가 실행된다.
 void Camera::GeneratePerspectiveMatrix(float NearPlane, float FarPlane, float AspRatio, float Fov) {
 	Transform::Identity(ProjectionMatrix);
@@ -127,6 +137,7 @@ void Camera::GenerateOrthoMatrix(float Width, float Height, float AspRatio, floa
 
 // 정적 직각 투영 행렬을 초기화 한다
 void Camera::GenerateStaticMatrix() {
+	Transform::Identity(StaticViewMatrix);
 	Transform::Identity(StaticProjectionMatrix);
 	XMMATRIX Projection = XMMatrixOrthographicLH(2.0 * ASPECT, 2.0, 0.0, 10.0);
 	XMStoreFloat4x4(&StaticProjectionMatrix, Projection);

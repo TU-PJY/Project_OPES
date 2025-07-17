@@ -3,19 +3,21 @@
 #include "PickingUtil.h"
 
 #include "PlantMonster.h"
+#include "TextUtil.h"
+#include <string>
 
 //테스트 작업을 위한 모드.
 
 class TestObject : public GameObject {
 public:
-	bool init{};
-	FBX fbx{ MESH.heavyIdle };
+	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, XMFLOAT3(0.0, 1.0, 1.0) };
 
 	TestObject() {
 		
 	}
 
 	void InputKey(KeyEvent& Event) {
+
 	}
 
 	void InputMouse(MouseEvent& Event) {
@@ -23,17 +25,11 @@ public:
 	}
 
 	void Update(float Delta) {
-		if (!init) {
-			//fbx.SelectFBXMesh(MESH.heavy_idle);
-			std::cout << fbx.GetCurrentAnimation() << std::endl;
-			init = true;
-		}
-		fbx.UpdateAnimation(Delta);
+
 	}
 
 	void Render() {
-		BeginRender();
-		RenderFBX(fbx, TEX.scifi);
+		text.Render(XMFLOAT2(0.0, 0.0), 0.3, "Hello World!");
 	}
 };
 

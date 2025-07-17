@@ -208,6 +208,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="TerrainUtil.h" />
     <ClInclude Include="Map1.h" />
     <ClInclude Include="TextureUtil.h" />
+    <ClInclude Include="TextUtil.h" />
     <ClInclude Include="TimerUtil.h" />
     <ClInclude Include="tinyxml\tinystr.h" />
     <ClInclude Include="tinyxml\tinyxml.h" />
@@ -265,6 +266,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="TerrainUtil.cpp" />
     <ClCompile Include="TestMode.cpp" />
     <ClCompile Include="TextureUtil.cpp" />
+    <ClCompile Include="TextUtil.cpp" />
     <ClCompile Include="TimerUtil.cpp" />
     <ClCompile Include="tinyxml\tinystr.cpp" />
     <ClCompile Include="tinyxml\tinyxml.cpp" />

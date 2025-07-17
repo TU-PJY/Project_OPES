@@ -11,6 +11,10 @@ protected:
 	XMFLOAT3						Up{ 0.0, 1.0, 0.0 };
 	XMFLOAT3						Look{ 0.0, 0.0, 1.0 };
 
+	XMFLOAT3						StaticRight{ 1.0, 0.0, 0.0 };
+	XMFLOAT3						StaticUp{ 0.0, 1.0, 0.0 };
+	XMFLOAT3						StaticLook{ 0.0, 0.0, 1.0 };
+
 	float           				Pitch{};
 	float           				Roll{};
 	float           				Yaw{};
@@ -53,6 +57,7 @@ public:
 	void SetToStaticMode();
 	void UpdateShaderVariables();
 	void SetViewMatrix();
+	void SetStaticViewMatrix();
 	void InitStaticMatrix();
 	void GenerateStaticMatrix();
 	void GeneratePerspectiveMatrix(float NearPlane, float FarPlane, float AspRatio, float Fov);

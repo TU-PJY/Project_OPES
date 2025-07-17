@@ -140,6 +140,17 @@ void LoadMesh(DeviceSystem& System) {
 void LoadTexture(DeviceSystem& System) {
 	LoadSystem = System;
 
+	// fontAtlas
+	int CropSize = 2048 / 16;      // 각 셀의 가로/세로 크기
+	int Columns = 16;      // 한 줄당 셀 수
+	int Offset = 2048 / 16 * 2;
+
+	for (int i = 0; i < 96; ++i) {
+		int x = (i % Columns) * CropSize;
+		int y = Offset + (i / Columns) * CropSize;
+		LoadCropTexture(TEX.fontAtlas[i], L"Resources//Image//font_atlas.png", x, y, CropSize, CropSize);
+	}
+
 	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 
 	// map1

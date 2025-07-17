@@ -2,6 +2,7 @@
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "windowscodecs.lib")
 
 #define WIN32_LEAN_AND_MEAN
 #define _WITH_DIERECTX_MATH_FRUSTUM
@@ -21,6 +22,9 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
+
+#include <wincodec.h>
+#include <wrl/client.h>
 
 #include "d3dx12.h"
 #include "WICTextureLoader12.h"
@@ -99,7 +103,8 @@ enum MeshTypeEnum {
 // 텍스처 파일 타입 열거형
 enum TextureTypeEnum {
 	TEXTURE_TYPE_WIC,
-	TEXTURE_TYPE_DDS
+	TEXTURE_TYPE_DDS,
+	TEXTURE_TYPE_WIC_CROP
 };
 
 // FBX 힙타입 열거형
@@ -130,6 +135,16 @@ enum ClampDirectionEnum {
 enum ObjectDeleteRangeTypeEnum {
 	DELETE_RANGE_SINGLE,
 	DELETE_RANGE_ALL
+};
+
+// 텍스트 정렬 타입
+enum TextAlignEnum {
+	ALIGN_DEFAULT,
+	ALIGN_MIDDLE,
+	ALIGN_LEFT,
+	HEIGHT_DEFAULT,
+	HEIGHT_MIDDLE,
+	HEIGHT_UNDER
 };
 
 // 오브젝트 벡터 구조체

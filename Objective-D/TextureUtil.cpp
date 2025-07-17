@@ -6,6 +6,11 @@ Texture::Texture(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, wchar
 	CreateTextureAndSRV(Device, CmdList, FileName, &Tex, &SRV, &Sampler, Type, FilterOption);
 }
 
+Texture::Texture(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, wchar_t* FileName, const WICRect& CropRect, D3D12_FILTER FilterOption) {
+	CropData = CropRect;
+	CreateTextureAndSRV(Device, CmdList, FileName, &Tex, &SRV, &Sampler, TEXTURE_TYPE_WIC_CROP, FilterOption);
+}
+
 void Texture::ReleaseUploadBuffers() {
 	if (UploadBuffer) 
 		UploadBuffer->Release();
@@ -32,6 +37,9 @@ void Texture::CreateTextureAndSRV(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 
 	else if(Type == TEXTURE_TYPE_DDS)
 		*ppd3dTexture = CreateTextureResourceFromDDSFile(pd3dDevice, pd3dCommandList, pszTextureFilename, &UploadBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+	else if (Type == TEXTURE_TYPE_WIC_CROP)
+		*ppd3dTexture = CreateCroppedTextureResourceFromWICFile(pd3dDevice, pd3dCommandList, pszTextureFilename, &UploadBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, CropData);
 
 	// SRV 赛 积己
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
@@ -64,6 +72,71 @@ void Texture::CreateTextureAndSRV(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 	samplerDesc.MinLOD = 0;  // 弥家 LOD
 	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;  // 弥措 LOD
 	pd3dDevice->CreateSampler(&samplerDesc, (*ppd3dSamplerDescriptorHeap)->GetCPUDescriptorHandleForHeapStart());
+}
+
+ID3D12Resource* Texture::CreateCroppedTextureResourceFromWICFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszFileName, ID3D12Resource** ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates, const WICRect& cropRect) {
+	HRESULT hr = CoInitializeEx(nullptr, COINITBASE_MULTITHREADED);
+
+	Microsoft::WRL::ComPtr<IWICImagingFactory> factory;
+	CoCreateInstance(CLSID_WICImagingFactory, nullptr, CLSCTX_INPROC_SERVER, IID_PPV_ARGS(&factory));
+
+	Microsoft::WRL::ComPtr<IWICBitmapDecoder> decoder;
+	factory->CreateDecoderFromFilename(pszFileName, nullptr, GENERIC_READ, WICDecodeMetadataCacheOnLoad, &decoder);
+
+	Microsoft::WRL::ComPtr<IWICBitmapFrameDecode> frame;
+	decoder->GetFrame(0, &frame);
+
+	UINT fullWidth = 0, fullHeight = 0;
+	frame->GetSize(&fullWidth, &fullHeight);
+
+	WICRect rect = cropRect;
+	Width = rect.Width;
+	Height = rect.Height;
+
+	UINT rowPitch = Width * 4;
+	std::unique_ptr<BYTE[]> pixels(new BYTE[rowPitch * Height]);
+
+	// Convert to 32bpp RGBA
+	Microsoft::WRL::ComPtr<IWICFormatConverter> converter;
+	factory->CreateFormatConverter(&converter);
+	converter->Initialize(frame.Get(), GUID_WICPixelFormat32bppRGBA, WICBitmapDitherTypeNone, nullptr, 0.0, WICBitmapPaletteTypeCustom);
+
+	converter->CopyPixels(&rect, rowPitch, rowPitch * Height, pixels.get());
+
+	// Create texture
+	D3D12_RESOURCE_DESC texDesc = CD3DX12_RESOURCE_DESC::Tex2D(DXGI_FORMAT_R8G8B8A8_UNORM, Width, Height);
+	texDesc.MipLevels = 1;
+
+	ID3D12Resource* pd3dTexture = nullptr;
+	pd3dDevice->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&texDesc,
+		D3D12_RESOURCE_STATE_COPY_DEST,
+		nullptr,
+		IID_PPV_ARGS(&pd3dTexture));
+
+	UINT64 uploadBufferSize = GetRequiredIntermediateSize(pd3dTexture, 0, 1);
+
+	pd3dDevice->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer(uploadBufferSize),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(ppd3dUploadBuffer));
+
+	D3D12_SUBRESOURCE_DATA subresource = {};
+	subresource.pData = pixels.get();
+	subresource.RowPitch = rowPitch;
+	subresource.SlicePitch = rowPitch * Height;
+
+	UpdateSubresources(pd3dCommandList, pd3dTexture, *ppd3dUploadBuffer, 0, 0, 1, &subresource);
+
+	auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(pd3dTexture, D3D12_RESOURCE_STATE_COPY_DEST, d3dResourceStates);
+	pd3dCommandList->ResourceBarrier(1, &barrier);
+
+	return pd3dTexture;
 }
 
 ID3D12Resource* Texture::CreateTextureResourceFromWICFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszFileName, ID3D12Resource** ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates) {
