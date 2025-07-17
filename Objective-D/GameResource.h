@@ -54,10 +54,10 @@ typedef struct {
 	Mesh* dot_machine_gun;
 
 	// polygon scifi asset - heavy
-	FBXMesh heavy_idle;
-	FBXMesh heavy_move;
-	FBXMesh heavy_shoot;
-	FBXMesh heavy_death;
+	FBXMesh heavyIdle;
+	FBXMesh heavyMove;
+	FBXMesh heavyShoot;
+	FBXMesh heavyDeath;
 
 	Mesh* center_building;
 
@@ -235,7 +235,11 @@ inline void LoadPrecomputedAnimation(FBXMesh& TargetMesh, const std::string& Fil
 }
 
 // 애니메이션 FBX 파일 로드용 함수
-inline void LoadAnimatedFBX(FBXMesh& TargetMesh, const std::string& Directory, const std::string& AnimationDataFile, const std::string& jsonFile = "") {
+// CreateMode가 true인 매쉬들만 애니메이션 데이터가 추출된다.
+inline void LoadAnimatedFBX(FBXMesh& TargetMesh, const std::string& Directory, const std::string& AnimationDataFile, const std::string& jsonFile = "", bool CreateMode=false) {
+	if (!CreateMode && AnimationDataExtractMode)
+		return;
+	
 	if (fbxUtil.LoadAnimatedFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateAnimatedScene();
 		fbxUtil.GetAnimatedVertexData(LoadSystem);
@@ -268,14 +272,17 @@ inline void LoadAnimatedFBX(FBXMesh& TargetMesh, const std::string& Directory, c
 				fbxUtil.PrecomputeBoneMatrices(TargetMesh, Stack->GetName(), AnimationExtractFrame);
 		}
 
-		if(!std::filesystem::exists("Extracted Animations"))
-			std::filesystem::create_directory("Extracted Animations");
+		std::string FolderCreateName = "Resources//Animation Data";
 
-		std::filesystem::path FilePath = Directory;
-		std::string FBXFileName = FilePath.stem().string();
-		std::string OutFileName = "Extracted Animations\\" + FBXFileName + ".animated";
-		SavePrecomputedAnimation(OutFileName, TargetMesh);
-		std::cout << "Saved Precomputed Animation Data To " << OutFileName << ".\n";
+		std::filesystem::path FilePath = AnimationDataFile;
+		std::string FileName = FilePath.stem().string();
+		std::string OutFileName = FolderCreateName + "//" + FileName;
+
+		if(!std::filesystem::exists(FolderCreateName))
+			std::filesystem::create_directory(FolderCreateName);
+
+		SavePrecomputedAnimation(AnimationDataFile, TargetMesh);
+		std::cout << "Saved Precomputed Animation Data To " << AnimationDataFile << ".\n";
 	}
 }
 

@@ -9,7 +9,7 @@
 class TestObject : public GameObject {
 public:
 	bool init{};
-	FBX fbx{ MESH.heavy_idle };
+	FBX fbx{ MESH.heavyIdle };
 
 	TestObject() {
 		

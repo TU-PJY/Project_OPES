@@ -8,7 +8,7 @@ CenterBuilding::CenterBuilding(std::string map_name, float height_offset) {
 		terrainUtil.InputPosition(position, height_offset);
 		terrainUtil.ClampToTerrain(terrain->GetTerrain(), position, height_offset);
 
-		aabb.Update(XMFLOAT3(position.x, position.y + height_offset, position.z), XMFLOAT3(8.0, 10.0, 9.0));
+		aabb.Update(XMFLOAT3(position.x, position.y + height_offset, position.z), XMFLOAT3(7.0, 10.0, 8.0));
 	}
 
 	hpIndicator = scene.AddObject(new HP_Indicator(), "indicatorHP", LAYER1);

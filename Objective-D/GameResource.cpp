@@ -16,17 +16,29 @@ unsigned int enter_player_id;
 
 DeviceSystem LoadSystem;
 
+// 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
+// DevMode 활성화 시에만 아래 3개의 플래그가 의미가 있음
+bool DevMode = true;
+
+bool LoadMap1Resources = true;
+bool LoadMap2Resources = false;
+bool LoadMap3Resources = false;
+
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
 	LoadSystem = System;
 
-	// Map Objects
-	// fold here
-	{
-		// map1
+	// DevMode가 아닐 경우 모두 로드하도록 강제한다.
+	if (!DevMode) {
+		LoadMap1Resources = true;
+		LoadMap2Resources = true;
+		LoadMap3Resources = true;
+	}
+
+	// map1
+	if (LoadMap1Resources) {
 		LoadSingleStaticFBX(MESH.RockMesh, "Resources//Models//map1//wall-rock.fbx");
 		LoadSingleStaticFBX(MESH.LakeMesh, "Resources//Models//map1//lake.fbx");
-		LoadSingleStaticFBX(MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
 
 		for (int i = 0; i < 3; ++i) {
 			std::string FileName = "Resources//Models//map1//lake-rock-";
@@ -47,8 +59,21 @@ void LoadMesh(DeviceSystem& System) {
 		LoadSingleStaticFBX(MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
 		LoadSingleStaticFBX(MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
 
+		// monster - troll
+		LoadAnimatedFBX(MESH.troll,
+			"Resources//Models//monster//troll.fbx",
+			"Resources//Animation Data///troll.pca", "Resources//Models//monster//troll.json", false);
+		fbxUtil.SetAnimationOffsetTime(MESH.troll, 0.4333333373069763);
 
-		// map2
+		// monster - plant monster
+		LoadAnimatedFBX(MESH.plantMonster,
+			"Resources//Models//monster//plant_monster.fbx",
+			"Resources//Animation Data///plant_monster.pca", "Resources//Models//monster//plant_monster.json", false);
+		fbxUtil.SetAnimationOffsetTime(MESH.plantMonster, 1.6666666269302369);
+	}
+
+	// map2
+	if (LoadMap2Resources) {
 		LoadSingleStaticFBX(MESH.WinterWall, "Resources//Models//map2//winter-cliff.fbx");
 
 		for (int i = 0; i < 3; ++i) {
@@ -60,8 +85,14 @@ void LoadMesh(DeviceSystem& System) {
 			std::string FileName = "Resources//Models//map2//winter-ice-" + std::to_string(i + 1) + ".fbx";
 			LoadSingleStaticFBX(MESH.WinterIce[i], (char*)FileName.c_str());
 		}
+	}
 
-		// map3
+	// 맵 1, 2와 공유하므로 둘 다 로드 안할 시에만 로드 안 함
+	if(LoadMap2Resources || LoadMap1Resources)
+		LoadSingleStaticFBX(MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
+
+	// map3
+	if(LoadMap3Resources) {
 		LoadSingleStaticFBX(MESH.FloatingRock, "Resources//Models//map3//map3-rock.fbx");
 		LoadSingleStaticFBX(MESH.Volcano, "Resources//Models//map3//volcano.fbx");
 		LoadSingleStaticFBX(MESH.SmallVolcano, "Resources//Models//map3//volcano-small.fbx");
@@ -77,39 +108,23 @@ void LoadMesh(DeviceSystem& System) {
 		}
 
 		LoadSingleStaticFBX(MESH.DeadTree, "Resources//Models//map3//map3-tree.fbx");
-
-		LoadMultiStaticFBX(MESH.center_building, "Resources//Models//building//center.fbx");
 	}
 
-	// Objects
-	// fold here
-	{
-		// polygon scifi asset
-		LoadMultiStaticFBX(MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
-		LoadMultiStaticFBX(MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
+	// 항상 필요한 리소스들은 여기에서 로드한다.
+	// polygon scifi asset
+	LoadMultiStaticFBX(MESH.center_building, "Resources//Models//building//center.fbx");
+	LoadMultiStaticFBX(MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
+	LoadMultiStaticFBX(MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
 
-		// polygon scifi asset - heavy
-		LoadAnimatedFBX(MESH.heavy_idle, "Resources//Models//player//heavy//heavy_idle.fbx", "Extracted Animations//heavy_idle.animated");
-		LoadAnimatedFBX(MESH.heavy_move, "Resources//Models//player//heavy//heavy_move.fbx", "Extracted Animations//heavy_move.animated");
-		LoadAnimatedFBX(MESH.heavy_shoot, "Resources//Models//player//heavy//heavy_shoot.fbx", "Extracted Animations//heavy_shoot.animated");
-		LoadAnimatedFBX(MESH.heavy_death, "Resources//Models//player//heavy//heavy_death.fbx", "Extracted Animations//heavy_death.animated");
+	// gun flame
+	LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
+	LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
-		// gun flame
-		LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
-		LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
-
-		// monster - troll
-		LoadAnimatedFBX(MESH.troll, 
-			"Resources//Models//monster//troll.fbx", 
-			"Extracted Animations//troll.animated", "Resources//Models//monster//troll.json");
-		fbxUtil.SetAnimationOffsetTime(MESH.troll, 0.4333333373069763);
-
-		// monster - plant monster
-		LoadAnimatedFBX(MESH.plantMonster,
-			"Resources//Models//monster//plant_monster.fbx", 
-			"Extracted Animations//plant_monster.animated", "Resources//Models//monster//plant_monster.json");
-		fbxUtil.SetAnimationOffsetTime(MESH.plantMonster, 1.6666666269302369);
-	}
+	// polygon scifi player asset - heavy
+	LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", "Resources//Animation Data//heavy_idle.pca", "", false);
+	LoadAnimatedFBX(MESH.heavyMove, "Resources//Models//player//heavy//heavy_move.fbx", "Resources//Animation Data///heavy_move.pca", "", false);
+	LoadAnimatedFBX(MESH.heavyShoot, "Resources//Models//player//heavy//heavy_shoot.fbx", "Resources//Animation Data///heavy_shoot.pca", "", false);
+	LoadAnimatedFBX(MESH.heavyDeath, "Resources//Models//player//heavy//heavy_death.fbx", "Resources//Animation Data///heavy_death.pca", "", false);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -119,24 +134,32 @@ void LoadTexture(DeviceSystem& System) {
 
 	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 
-	// sky box
-	LoadTexture(TEX.skyBox, L"Resources//Image//sky.png", TEXTURE_TYPE_WIC);
-
 	// map1
-	LoadTexture(TEX.Palette1, L"Resources//Image//palette-1.png", TEXTURE_TYPE_WIC);
-	LoadTexture(TEX.Palette2, L"Resources//Image//palette-2.png", TEXTURE_TYPE_WIC);
-	LoadTexture(TEX.Palette3, L"Resources//Image//palette-3.png", TEXTURE_TYPE_WIC);
+	if (LoadMap1Resources) {
+		LoadTexture(TEX.Palette1, L"Resources//Image//palette-1.png", TEXTURE_TYPE_WIC);
+		LoadTexture(TEX.Palette2, L"Resources//Image//palette-2.png", TEXTURE_TYPE_WIC);
+	}
 
 	// map2
-	LoadTexture(TEX.Map2Palette, L"Resources//Image//GradientSS.png", TEXTURE_TYPE_WIC);
-	LoadTexture(TEX.Map2TerrainTex, L"Resources//Image//map2-terrain.png", TEXTURE_TYPE_WIC);
-	LoadTexture(TEX.IceTex, L"Resources//Image//ice.png", TEXTURE_TYPE_WIC);
+	if (LoadMap2Resources) {
+		LoadTexture(TEX.Map2Palette, L"Resources//Image//GradientSS.png", TEXTURE_TYPE_WIC);
+		LoadTexture(TEX.Map2TerrainTex, L"Resources//Image//map2-terrain.png", TEXTURE_TYPE_WIC);
+		LoadTexture(TEX.IceTex, L"Resources//Image//ice.png", TEXTURE_TYPE_WIC);
+	}
+
+	if (LoadMap2Resources || LoadMap1Resources) {
+		LoadTexture(TEX.Palette3, L"Resources//Image//palette-3.png", TEXTURE_TYPE_WIC);
+		// sky box
+		LoadTexture(TEX.skyBox, L"Resources//Image//sky.png", TEXTURE_TYPE_WIC);
+	}
 
 	// map3
-	LoadTexture(TEX.Magma, L"Resources//Image//Cave_Magma_B.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
-	LoadTexture(TEX.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
-	LoadTexture(TEX.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
-	LoadTexture(TEX.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
+	if (LoadMap3Resources) {
+		LoadTexture(TEX.Magma, L"Resources//Image//Cave_Magma_B.png", TEXTURE_TYPE_WIC, D3D12_FILTER_ANISOTROPIC);
+		LoadTexture(TEX.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
+		LoadTexture(TEX.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
+		LoadTexture(TEX.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
+	}
 
 	// polygon scifi asset
 	LoadTexture(TEX.scifi, L"Resources//Image//scifi//polygon_scifi.png", TEXTURE_TYPE_WIC);
