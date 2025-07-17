@@ -286,6 +286,10 @@ inline void LoadAnimatedFBX(FBXMesh& TargetMesh, const std::string& Directory, c
 	}
 }
 
+inline void SetAnimationOffset(FBXMesh& TargetFBX, float Offset) {
+	fbxUtil.SetAnimationOffsetTime(TargetFBX, Offset);
+}
+
 // 애니메이션이 없는 FBX 파일 로드용 함수
 // 애니메이션 추출모드를 활성화하면 건너뛴다.
 inline void LoadSingleStaticFBX(Mesh*& TargetMesh, const std::string& Directory) {

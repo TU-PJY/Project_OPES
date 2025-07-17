@@ -63,13 +63,13 @@ void LoadMesh(DeviceSystem& System) {
 		LoadAnimatedFBX(MESH.troll,
 			"Resources//Models//monster//troll.fbx",
 			"Resources//Animation Data///troll.pca", "Resources//Models//monster//troll.json", false);
-		fbxUtil.SetAnimationOffsetTime(MESH.troll, 0.4333333373069763);
+		SetAnimationOffset(MESH.troll, 0.4333333373069763);
 
 		// monster - plant monster
 		LoadAnimatedFBX(MESH.plantMonster,
 			"Resources//Models//monster//plant_monster.fbx",
 			"Resources//Animation Data///plant_monster.pca", "Resources//Models//monster//plant_monster.json", false);
-		fbxUtil.SetAnimationOffsetTime(MESH.plantMonster, 1.6666666269302369);
+		SetAnimationOffset(MESH.plantMonster, 1.6666666269302369);
 	}
 
 	// map2
@@ -121,10 +121,17 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
 	// polygon scifi player asset - heavy
-	LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", "Resources//Animation Data//heavy_idle.pca", "", false);
-	LoadAnimatedFBX(MESH.heavyMove, "Resources//Models//player//heavy//heavy_move.fbx", "Resources//Animation Data///heavy_move.pca", "", false);
-	LoadAnimatedFBX(MESH.heavyShoot, "Resources//Models//player//heavy//heavy_shoot.fbx", "Resources//Animation Data///heavy_shoot.pca", "", false);
-	LoadAnimatedFBX(MESH.heavyDeath, "Resources//Models//player//heavy//heavy_death.fbx", "Resources//Animation Data///heavy_death.pca", "", false);
+	LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", 
+		"Resources//Animation Data//heavy_idle.pca", "", false);
+
+	LoadAnimatedFBX(MESH.heavyMove, "Resources//Models//player//heavy//heavy_move.fbx", 
+		"Resources//Animation Data///heavy_move.pca", "", false);
+
+	LoadAnimatedFBX(MESH.heavyShoot, "Resources//Models//player//heavy//heavy_shoot.fbx", 
+		"Resources//Animation Data///heavy_shoot.pca", "", false);
+
+	LoadAnimatedFBX(MESH.heavyDeath, "Resources//Models//player//heavy//heavy_death.fbx", 
+		"Resources//Animation Data///heavy_death.pca", "", false);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
