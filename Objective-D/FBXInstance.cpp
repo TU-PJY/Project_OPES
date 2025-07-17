@@ -5,22 +5,12 @@ Mesh* FBX::operator [] (int Index) {
 	return FBXPtr->MeshPart[Index];
 }
 
-FBX::FBX(FBXMesh& TargetFBX, bool StopState) {
-	if (InitState)
-		return;
-
-	FBXPtr = &TargetFBX;
-	Serialized = FBXPtr->SerializedFlag;
-	SelectAnimation(FBXPtr->CurrentAnimationStackName);
-	CreateBuffer(GlobalSystem);
-
-	if (StopState)
-		StopAnimationUpdate();
-
-	DestDelay = 1.0 / (float)AnimationExtractFrame;
-}
 
 FBX::FBX() {}
+
+FBX::FBX(FBXMesh& TargetFBXMesh, bool StopState) {
+	SelectFBXMesh(TargetFBXMesh, StopState);
+}
 
 FBX::~FBX() {
 	ReleaseBuffer();
@@ -68,8 +58,6 @@ void FBX::SelectAnimation(std::string AnimationName) {
 			StartTime = Start - (double)OffsetTime;
 			TotalTime = End - (double)OffsetTime;
 			CurrentTime = StartTime;
-
-			std::cout << StartTime << " " << TotalTime << std::endl;
 		}
 	}
 

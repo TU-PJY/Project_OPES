@@ -9,16 +9,13 @@
 class TestObject : public GameObject {
 public:
 	bool init{};
+	FBX fbx{ MESH.heavy_idle };
 
 	TestObject() {
 		
 	}
 
 	void InputKey(KeyEvent& Event) {
-		if (Event.Type == WM_KEYDOWN && Event.Key == 'P') {
-			if (auto plantMonster = scene.Find("plantMonster"); plantMonster)
-				plantMonster->GiveDamage(20);
-		}
 	}
 
 	void InputMouse(MouseEvent& Event) {
@@ -27,13 +24,16 @@ public:
 
 	void Update(float Delta) {
 		if (!init) {
-			scene.AddObject(new PlantMonster(XMFLOAT3(0.0, 0.0, 0.0), "", false), "plantMonster", LAYER2);
+			//fbx.SelectFBXMesh(MESH.heavy_idle);
+			std::cout << fbx.GetCurrentAnimation() << std::endl;
 			init = true;
 		}
+		fbx.UpdateAnimation(Delta);
 	}
 
 	void Render() {
-
+		BeginRender();
+		RenderFBX(fbx, TEX.scifi);
 	}
 };
 

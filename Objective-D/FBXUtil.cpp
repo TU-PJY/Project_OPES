@@ -1,4 +1,5 @@
 #include <fbxsdk.h> 
+#include <fbxsdk/fileio/fbxiosettingspath.h>
 #include <json.hpp>
 #include "MeshUtil.h"
 
@@ -11,8 +12,20 @@ void FBXUtil::Init() {
 	}
 	std::cout << "FBX Manager created.\nLoading FBX files...\n";
 
-	FbxIOSettings* IOS = FbxIOSettings::Create(Manager, IOSROOT);
-	Manager->SetIOSettings(IOS);
+	FbxIOSettings* ios = FbxIOSettings::Create(Manager, IOSROOT);
+	Manager->SetIOSettings(ios);
+
+	ios->SetBoolProp(IMP_GEOMETRY, true);
+	ios->SetBoolProp(IMP_ANIMATION, true);
+	ios->SetBoolProp(IMP_DEFORMATION, true);
+	ios->SetBoolProp(IMP_SKINS, true);
+
+	ios->SetBoolProp(IMP_SHAPE, false);
+	ios->SetBoolProp(IMP_INCLUDE_GRP "|" IOSN_MATERIAL, false); 
+	ios->SetBoolProp(IMP_INCLUDE_GRP "|" IOSN_TEXTURE, false);
+	ios->SetBoolProp(IMP_CAMERA_GRP, false); 
+	ios->SetBoolProp(IMP_LIGHT_GRP, false);
+	ios->SetBoolProp(IOSN_IMPORT "|" IOSN_GLOBAL_SETTINGS, false);
 }
 
 void FBXUtil::SetAnimationOffsetTime(FBXMesh& TargetMesh, float Time) {
@@ -35,7 +48,6 @@ bool FBXUtil::LoadStaticFBXFile(const char* FilePath, Mesh*& TargetMesh) {
 	}
 
 	FbxImporter* Importer = FbxImporter::Create(Manager, "");
-
 	if (!Importer->Initialize(FilePath, -1, Manager->GetIOSettings())) {
 		std::cerr << "Error: Unable to initialize importer!\n";
 		std::cerr << "Error: " << Importer->GetStatus().GetErrorString() << "\n";

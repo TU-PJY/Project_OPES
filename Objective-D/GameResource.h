@@ -239,8 +239,15 @@ inline void LoadAnimatedFBX(FBXMesh& TargetMesh, const std::string& Directory, c
 	if (fbxUtil.LoadAnimatedFBXFile(Directory.c_str(), TargetMesh)) {
 		fbxUtil.TriangulateAnimatedScene();
 		fbxUtil.GetAnimatedVertexData(LoadSystem);
-		fbxUtil.ProcessAnimation();
+
+		if(AnimationDataExtractMode)
+			fbxUtil.ProcessAnimation();
+
 		fbxUtil.EnumerateAnimationStacks();
+
+		if (AnimationDataExtractMode)
+			fbxUtil.PrintAnimationStackNames();
+
 		fbxUtil.ClearVertexVector();
 	}
 
