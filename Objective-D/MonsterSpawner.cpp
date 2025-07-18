@@ -31,6 +31,7 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 	script.Release();
 	position.clear();
 	type.clear();
+	currentCreateDelay = 0.0;
 
 	if (currentMapName.compare("map1") == 0)
 		script.Load("Resources//Scripts//map1//map1-monster.xml");
@@ -52,17 +53,28 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 	// 람다로 정의한 동작대로 로드 수행
 	script.LoadAllData(custumLoad);
 
-	size_t spawnCount = position.size();
-	for (int i = 0; i < spawnCount; i++) {
-		// plantMonster 스폰
-		if (type[i] == 1)
-			scene.AddObject(new PlantMonster(position[i], "map1", false), "plantMonster", LAYER2);
-	}
+	currentCreateIndex = position.size() - 1;
 }
 
 // 디펜스 모드에서 모든 몬스터가 죽으면 어드벤처모드 몬스터를 스폰한 후 삭제된다.
 // 에디트 모드에서는 F5를 누를떄마다 새로 스폰한다.
 void MonsterSpawner::Update(float Delta) {
+	// 추가 시 멈춤 방지를 위해 하나씩 추가한다.
+	if (currentCreateIndex > -1) {
+		currentCreateDelay += Delta;
+
+		if (currentCreateDelay >= 0.02) {
+			if (currentMapName.compare("map1") == 0) {
+				if (type[currentCreateIndex] == 1)
+					scene.AddObject(new PlantMonster(position[currentCreateIndex], "map1", false), "plantMonster", LAYER2);
+
+			}
+
+			currentCreateIndex--;
+			currentCreateDelay -= 0.02;
+		}
+	}
+
 	if (editMode)
 		return;
 

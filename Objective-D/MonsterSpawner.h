@@ -8,7 +8,10 @@ private:
 	ScriptUtil            script{};
 	std::vector<XMFLOAT3> position{};
 	std::vector<int>      type{};
+	float                 currentCreateDelay{};
+	int                   currentCreateIndex{};
 	bool                  editMode{};
+
 
 public:
 	MonsterSpawner(const std::string& currentMapName, bool editMode);

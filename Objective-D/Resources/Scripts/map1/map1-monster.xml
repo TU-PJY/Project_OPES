@@ -33,4 +33,15 @@
     <monster type="1" x="-90.0" z="60.0"/>
     <monster type="1" x="-80.0" z="70.0"/>
     <monster type="1" x="-75.0" z="72.0"/>
+    
+    <monster type="1" x="-43.2" z="56.2"/>
+    
+    <monster type="1" x="-1.4" z="77.8"/>
+    <monster type="1" x="6.6" z="78.2"/>
+    
+    <monster type="1" x="25.0" z="54.2"/>
+    <monster type="1" x="39.2" z="75.1"/>
+   
+    <monster type="1" x="52.9" z="54.3"/>
+    <monster type="1" x="69.3" z="70.5"/>
 </Script>

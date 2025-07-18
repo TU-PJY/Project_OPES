@@ -87,7 +87,7 @@ void PlantMonster::updateAnimation(float Delta) {
 		prevState = currentState;
 	}
 
-	// 프러스텀 바깥일 때는 애니메이션 게산 없이 재생 시간만 계산
+	// 프러스텀 바깥일 때는 애니메이션 적용 없이 재생 시간만 계산
 	plantFBX.UpdateAnimation(Delta, false, !inFrustum);
 }
 
