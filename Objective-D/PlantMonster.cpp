@@ -157,6 +157,11 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER2);
 }
 
+PlantMonster::~PlantMonster() {
+	if (hpIndicator) 
+		scene.DeleteObject(hpIndicator);
+}
+
 // 모든 업데이트
 void PlantMonster::Update(float Delta) {
 	updateAnimation(Delta);

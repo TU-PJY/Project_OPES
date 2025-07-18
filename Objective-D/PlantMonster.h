@@ -58,6 +58,7 @@ public:
 	void updateDeleteDelay(float Delta);
 
 	PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, bool appearFromGround=false);
+	~PlantMonster();
 	void Update(float Delta) override;
 	void Render()            override;
 	bool CheckHit(XMFLOAT2& checkPosition, int damage) override;

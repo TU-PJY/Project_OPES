@@ -119,7 +119,7 @@ void Scene::DeleteObject(GameObject* Object) {
 void Scene::DeleteObject(std::string Tag, int DeleteRangeFlag) {
 	if (DeleteRangeFlag == DELETE_RANGE_SINGLE) {
 		if (auto Found = Find(Tag); Found)
-			DeleteObject(Found);
+			Found->DeleteCommand = true;
 	}
 
 	else if (DeleteRangeFlag == DELETE_RANGE_ALL) {
@@ -127,7 +127,7 @@ void Scene::DeleteObject(std::string Tag, int DeleteRangeFlag) {
 			size_t Size = ObjectList[L].size();
 			for (int O = 0; O < Size; O++) {
 				if (auto Found = FindMulti(Tag, L, O); Found)
-					DeleteObject(Found);
+					Found->DeleteCommand = true;
 			}
 		}
 	}
@@ -230,6 +230,7 @@ void Scene::ProcessObjectCommand() {
 
 		for (int O = 0; O < Size; ++O) {
 			auto Object = begin(ObjectList[L]) + DeleteLocation[L][O] - Offset;
+			delete *Object;
 			*Object = nullptr;
 			Object = ObjectList[L].erase(Object);
 			++SceneCommandCount;

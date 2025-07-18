@@ -218,6 +218,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Map1DefenseIndicator ]">
       <UniqueIdentifier>{ac60117c-49f7-4bcd-92a9-9189ce670f18}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Spawner ]">
+      <UniqueIdentifier>{09297f32-f47c-4716-a3e0-ad4cb83ff38d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -394,6 +397,9 @@
     </ClInclude>
     <ClInclude Include="Map1DefenseIndicator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Map1DefenseIndicator ]</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterSpawner.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Spawner ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -582,6 +588,9 @@
     </ClCompile>
     <ClCompile Include="Map1DefenseIndicator.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Map1DefenseIndicator ]</Filter>
+    </ClCompile>
+    <ClCompile Include="MonsterSpawner.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Spawner ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

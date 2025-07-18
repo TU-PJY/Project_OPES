@@ -119,11 +119,12 @@ void Framework::Update() {
 	camera.SetStaticViewMatrix();
 	camera.SetViewportsAndScissorRects();
 
+	// 삭제 마크가 표시된 객체를 최종삭제한다.
+	scene.CompleteCommand();
+
 	// 오브젝트 렌더링
 	scene.Render();
 
-	// 삭제 마크가 표시된 객체를 최종삭제한다.
-	scene.CompleteCommand();
 
 #ifdef _WITH_PLAYER_TOP
 	CmdList->ClearDepthStencilView(DsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
