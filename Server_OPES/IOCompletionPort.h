@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include<algorithm>
 #include <chrono>
+#include<functional>
 #include"Packet.h"
 #define MAX_SOCKBUF 1024  
 #define SERVER_PORT 9000
@@ -27,6 +28,7 @@ struct stOverlappedEx {
     char buffer[MAX_SOCKBUF];
     IOOperation operation;
     SOCKET acceptSocket; // AcceptEx에서 필요
+    std::function<void()> cleanup;
 };
 
 struct stClientInfo {
