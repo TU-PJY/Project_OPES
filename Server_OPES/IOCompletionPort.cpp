@@ -328,7 +328,7 @@ void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
     sendOver->wsaBuf.len = sizeof(EnterRoomPacket);
-
+    sendOver->cleanup = [packet, sendOver]() {delete packet; delete sendOver; };
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,NULL);
 
@@ -440,7 +440,10 @@ void IOCompletionPort::SendData_Move(stClientInfo* sender, stClientInfo* receive
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
     sendOver->wsaBuf.len = sizeof(MovePacket_StoC);
-
+    sendOver->cleanup = [packet, sendOver]() {
+        delete packet;
+        delete sendOver;
+        };
     DWORD sizeSent = 0;
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, &sizeSent, 0,
         &sendOver->overlapped,
@@ -473,7 +476,10 @@ void IOCompletionPort::SendData_ViewAngle(stClientInfo* sender, stClientInfo* re
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,
         NULL);
-
+    sendOver->cleanup = [packet, sendOver]() {
+        delete packet;
+        delete sendOver;
+        };
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
         RemoveClient(receiver);
@@ -493,7 +499,10 @@ void IOCompletionPort::SendData_Animaion(stClientInfo* sender, stClientInfo* rec
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
     sendOver->wsaBuf.len = sizeof(AnimationPacket_StoC);
-
+    sendOver->cleanup = [packet, sendOver]() {
+        delete packet;
+        delete sendOver;
+        };
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,
         NULL);
@@ -517,7 +526,10 @@ void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID, unsigned 
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
     sendOver->wsaBuf.len = sizeof(Player2Monster);
-
+    sendOver->cleanup = [packet, sendOver]() {
+        delete packet;
+        delete sendOver;
+        };
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,
         NULL);
@@ -569,7 +581,10 @@ void IOCompletionPort::SendData(stClientInfo* sender, stClientInfo* receiver, co
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
     sendOver->wsaBuf.len = length + sizeof(unsigned int);
-
+    sendOver->cleanup = [packet, sendOver]() {
+        delete packet;
+        delete sendOver;
+        };
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,
         NULL);
@@ -605,7 +620,10 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
     sendOver->wsaBuf.len = sizeof(PacketType) + sizeof(unsigned int) + packet->count * sizeof(packet->clients[0]);
-
+    sendOver->cleanup = [packet, sendOver]() {
+        delete packet;
+        delete sendOver;
+        };
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,
         NULL);
@@ -631,7 +649,10 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
         sendOver->operation = IOOperation::SEND;
         sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
         sendOver->wsaBuf.len = sizeof(NewClientPacket);
-
+        sendOver->cleanup = [pkt, sendOver]() {
+            delete pkt;
+            delete sendOver;
+            };
         int ret = WSASend(other->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
             &sendOver->overlapped,
             NULL);
@@ -850,6 +871,15 @@ void IOCompletionPort::WorkThread() {
             }
 
             RegisterRecv(client);  // 다시 수신 대기
+        }
+        if (pOverlappedEx->operation == IOOperation::SEND) {
+            if (pOverlappedEx->cleanup) {
+                pOverlappedEx->cleanup();  // 💡 안전하게 패킷 + overlapped 메모리 해제
+            }
+            else {
+                delete pOverlappedEx;
+            }
+            continue;
         }
     }
 }
