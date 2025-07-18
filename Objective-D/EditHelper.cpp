@@ -4,7 +4,7 @@
 
 EditHelper::EditHelper(const std::string& currentMapName) {
 	text.EnableShadow();
-	text.SetShadow(XMFLOAT2(0.01, -0.01), 1.0);
+	text.SetShadow(XMFLOAT2(0.008, -0.008), 1.0);
 	this->currentMapName = currentMapName;
 }
 
