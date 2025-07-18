@@ -148,7 +148,7 @@ void LoadTexture(DeviceSystem& System) {
 	for (int i = 0; i < 96; ++i) {
 		int x = (i % Columns) * CropSize;
 		int y = Offset + (i / Columns) * CropSize;
-		LoadCropTexture(TEX.fontAtlas[i], L"Resources//Image//font_atlas.png", x, y, CropSize, CropSize);
+		LoadCropTexture(TEX.fontAtlas[i], L"Resources//Image//ui//font_atlas.png", x, y, CropSize, CropSize);
 	}
 
 	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
@@ -196,6 +196,9 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.troll, L"Resources//Image//monster//troll.png");
 	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");
 	LoadTexture(TEX.poisonBall, L"Resources//Image//plant_monster_bullet.png");
+
+	// UI
+	LoadTexture(TEX.UI_map1Enemy, L"Resources//Image//ui//map1_enemy.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

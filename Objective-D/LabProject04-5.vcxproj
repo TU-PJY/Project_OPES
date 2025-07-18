@@ -177,6 +177,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="ImageShader.h" />
     <ClInclude Include="LineBrush.h" />
     <ClInclude Include="LineShader.h" />
+    <ClInclude Include="Map1DefenseIndicator.h" />
     <ClInclude Include="Map2.h" />
     <ClInclude Include="Map3.h" />
     <ClInclude Include="MathUtil.h" />
@@ -237,6 +238,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Level3.cpp" />
     <ClCompile Include="LineBrush.cpp" />
     <ClCompile Include="LineShader.cpp" />
+    <ClCompile Include="Map1DefenseIndicator.cpp" />
     <ClCompile Include="MathUtil.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Meshes.cpp" />

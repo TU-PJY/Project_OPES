@@ -127,6 +127,10 @@ typedef struct {
 	Texture* troll;
 	Texture* plantMonster;
 	Texture* poisonBall;
+
+
+	// UI
+	Texture* UI_map1Enemy;
 }TextureResource;
 extern TextureResource TEX;
 
