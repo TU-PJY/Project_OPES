@@ -17,7 +17,6 @@ private:
 	XMFLOAT3   TextRenderColor{};
 	float      TextRenderOpacity{};
 
-
 public:
 	Text() {}
 	Text(int AlignFlag, int HeightFlag, const XMFLOAT3& Color);
@@ -29,10 +28,6 @@ public:
 	void SetColor(const XMFLOAT3& Color);
 	void SetOpacity(float OpacityValue);
 	void Render(const XMFLOAT2& Position, float Size, const std::string& Str);
-
-
-
-
 
 private:
 	void TransformText(const XMFLOAT2& Position, float Size, float TotalLength, int StrLength, const char* Input);

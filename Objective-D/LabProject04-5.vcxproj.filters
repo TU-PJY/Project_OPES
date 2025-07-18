@@ -215,6 +215,9 @@
     <Filter Include="[ D3D12 ]\[6] - [ Util ]\[ Text Util ]">
       <UniqueIdentifier>{a6e474e1-c661-4e45-b3de-2a6acb086734}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Map1DefenseIndicator ]">
+      <UniqueIdentifier>{ac60117c-49f7-4bcd-92a9-9189ce670f18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -388,6 +391,9 @@
     </ClInclude>
     <ClInclude Include="TextUtil.h">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Text Util ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Map1DefenseIndicator.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Map1DefenseIndicator ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -573,6 +579,9 @@
     </ClCompile>
     <ClCompile Include="TextUtil.cpp">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Text Util ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Map1DefenseIndicator.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Map1DefenseIndicator ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

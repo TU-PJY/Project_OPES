@@ -7,6 +7,7 @@
 #include "RoadBlock.h"
 #include "Player.h"
 #include "CrossHair.h"
+#include "Map1DefenseIndicator.h"
 #include "MuzzleFlash.h"
 #include "PlantMonster.h"
 #include "MonsterGenerator.h"
@@ -20,7 +21,7 @@ bool dev = false;
 void Level1::Start() {
 	globalFovOffset = 0.0;
 	// 맵1 디펜스 모드에 등장하는 몬스터 수를 20마리로 설정
-	GLOBAL.map1DefenseEnemyRemained = 1;
+	GLOBAL.map1DefenseEnemyRemained = 20;
 	GLOBAL.map1DefenseState = true;
 
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
@@ -39,6 +40,8 @@ void Level1::Start() {
 		scene.AddObject(new CrossHair, "crosshair", LAYERUI);
 		scene.AddObject(new Player("map1"), "player", LAYER_PLAYER, true);
 	}
+
+	scene.AddObject(new Map1DefenseIndicator, "map1DefendeIndicator", LAYERUI);
 }
 
 void Level1::Destructor() {
