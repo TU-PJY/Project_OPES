@@ -45,6 +45,10 @@ private:
 	// 충돌 감지를 위한 히트 박스
 	OOBB        hitBox{};
 	
+	// 프러스텀 컬링을 위한 aabb
+	AABB        frustumAABB{};
+	bool        inFrustum{};
+	
 	// 현재 객체가 소유하는 hp 표시기 오브젝트 포인터
 	GameObject* hpIndicator{};
 

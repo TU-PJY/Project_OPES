@@ -413,10 +413,6 @@ void Camera::SetLookAt(XMFLOAT3& ObjectPosition, XMFLOAT3& UpVec) {
 	Look = XMFLOAT3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
 }
 
-bool Camera::CheckFrustum(OOBB& Other) {
-	return IsInFrustum(Other.oobb);
-}
-
 // 프러스텀 관련 함수들
 void Camera::CalculateFrustumPlanes() {
 #ifdef _WITH_DIERECTX_MATH_FRUSTUM
@@ -457,6 +453,22 @@ void Camera::CalculateFrustumPlanes() {
 	for (int i = 0; i < 6; i++)
 		FrustumPlane[i] = Plane::Normalize(FrustumPlane[i]);
 #endif
+}
+
+bool Camera::CheckFrustum(AABB& aabb) {
+	return IsInFrustum(aabb.aabb);
+}
+
+bool Camera::CheckFrustum(OOBB& oobb) {
+	return IsInFrustum(oobb.oobb);
+}
+
+bool Camera::CheckFrustum(BoundSphere& Sphere) {
+	return IsInFrustum(Sphere.sphere);
+}
+
+bool Camera::IsInFrustum(BoundingSphere& Sphere) {
+	return(FrustumWorld.Intersects(Sphere));
 }
 
 bool Camera::IsInFrustum(BoundingBox& BoundingBox) {

@@ -6,7 +6,7 @@
 
 // 히트박스 업데이트
 void PlantMonster::updateHitBox() {
-	if (currentState == PLANT_DEATH)
+	if (currentState == PLANT_DEATH || !inFrustum)
 		return;
 
 	XMFLOAT3 boxPosition = XMFLOAT3(position.x, position.y, position.z);
@@ -87,7 +87,8 @@ void PlantMonster::updateAnimation(float Delta) {
 		prevState = currentState;
 	}
 
-	plantFBX.UpdateAnimation(Delta);
+	// 프러스텀 바깥일 때는 애니메이션 게산 없이 재생 시간만 계산
+	plantFBX.UpdateAnimation(Delta, false, !inFrustum);
 }
 
 // 죽음 상태 업데이트 진행
@@ -155,6 +156,9 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 
 	// 자기 소유의 hp 표시기 객체 추가
 	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER2);
+
+	// 고정형 몬스터이므로 프러스텀 aabb는 생성 시 한 번만 설정한다.
+	frustumAABB.Update(position, XMFLOAT3(5.5, 5.0, 5.5));
 }
 
 PlantMonster::~PlantMonster() {
@@ -164,21 +168,28 @@ PlantMonster::~PlantMonster() {
 
 // 모든 업데이트
 void PlantMonster::Update(float Delta) {
-	updateAnimation(Delta);
+	// 프러스텀 검사
+	inFrustum = camera.CheckFrustum(frustumAABB);
+
 	updateHitBox();
+	updateAnimation(Delta);
 
 	if (behaviorEnabledState) {
 		updateTargetDetect();
-		updateIndicatorHP();
 		updateAttack(Delta);
 		updateDeleteDelay(Delta);
 	}
 
+	updateIndicatorHP();
 	updateLiftFromGround(Delta);
 }
 
 // 렌더링
 void PlantMonster::Render() {
+	// 프러스텀에 들어가있지 않다면 렌더링을 건너뛴다.
+	if (!inFrustum)
+		return;
+
 	BeginRender();
 	Transform::Move(TranslateMatrix, position);
 	Transform::Rotate(RotateMatrix, rotation);
@@ -187,6 +198,7 @@ void PlantMonster::Render() {
 	UpdatePickMatrix();
 
 	hitBox.Render();
+	frustumAABB.Render();
 }
 
 bool PlantMonster::CheckHit(XMFLOAT2& checkPosition, int damage) {

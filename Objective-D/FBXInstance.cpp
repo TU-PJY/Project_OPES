@@ -99,7 +99,7 @@ bool FBX::GetTimeSectionPassed(float Time) {
 	return false;
 }
 
-void FBX::UpdateAnimation(float Delta, bool Inplace) {
+void FBX::UpdateAnimation(float Delta, bool Inplace, bool OnlyDeltaUpdate) {
 	if (!Running)
 		return;
 
@@ -119,6 +119,9 @@ void FBX::UpdateAnimation(float Delta, bool Inplace) {
 	CurrentDelay += Delta;
 	if (CurrentDelay >= DestDelay) {
 		CurrentDelay -= DestDelay;
+
+		if (OnlyDeltaUpdate)
+			return;
 
 		std::string SearchName;
 		if (!FBXPtr->SerializedFlag)

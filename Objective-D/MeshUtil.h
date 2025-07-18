@@ -263,7 +263,7 @@ public:
 	bool GetAnimationEndState();
 	float GetCurrentAnimationTime();
 	bool GetTimeSectionPassed(float Time);
-	void UpdateAnimation(float Delta, bool Inplace=false);
+	void UpdateAnimation(float Delta, bool Inplace=false, bool OnlyDeltaUpdate=false);
 	XMFLOAT3 GetRootMoveDelta(std::vector<BoneFrame>& BoneFrame, bool InPlace);
 	std::string GetCurrentAnimation();
 	void ResetAnimation();
