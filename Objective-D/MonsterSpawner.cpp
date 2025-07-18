@@ -6,7 +6,7 @@ MonsterSpawner::MonsterSpawner(const std::string& currentMapName, bool editMode)
 	this->currentMapName = currentMapName;
 	this->editMode = editMode;
 
-	if(editMode)
+	if(this->editMode)
 		LoadDataAndSpawnMonster();
 }
 
@@ -77,9 +77,11 @@ void MonsterSpawner::Update(float Delta) {
 
 	if (editMode)
 		return;
-
-	if (currentMapName.compare("map1") == 0 && GLOBAL.map1DefenseEnemyRemained == 0) {
-		LoadDataAndSpawnMonster();
-		scene.DeleteObject(this);
+	
+	else {
+		if (currentMapName.compare("map1") == 0 && GLOBAL.map1DefenseEnemyRemained == 0) {
+			LoadDataAndSpawnMonster();
+			scene.DeleteObject(this);
+		}
 	}
 }

@@ -9,7 +9,7 @@ private:
 	std::vector<XMFLOAT3> position{};
 	std::vector<int>      type{};
 	float                 currentCreateDelay{};
-	int                   currentCreateIndex{};
+	int                   currentCreateIndex{-1};
 	bool                  editMode{};
 
 

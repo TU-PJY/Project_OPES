@@ -227,6 +227,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Spider ]">
       <UniqueIdentifier>{617c6944-2a09-4ee3-a4f5-a469829d0e7f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]">
+      <UniqueIdentifier>{abd4ba8e-b8dd-4470-9ac2-e061fa363821}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -412,6 +415,9 @@
     </ClInclude>
     <ClInclude Include="Scorpion.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Spider ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -609,6 +615,9 @@
     </ClCompile>
     <ClCompile Include="Scorpion.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Spider ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

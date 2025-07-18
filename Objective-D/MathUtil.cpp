@@ -338,6 +338,21 @@ void Math::MoveTowards(XMFLOAT3& CurrentPos, const XMFLOAT3& TargetPos, float Sp
 	XMStoreFloat3(&CurrentPos, result);
 }
 
+void Math::MoveTowardInfinity(XMFLOAT3& CurrentPos, const XMFLOAT3& TargetPos, float Speed, float DeltaTime) {
+	// 1. 방향 벡터 계산
+	XMVECTOR curr = XMLoadFloat3(&CurrentPos);
+	XMVECTOR target = XMLoadFloat3(&TargetPos);
+
+	XMVECTOR direction = XMVectorSubtract(target, curr);
+	direction = XMVector3Normalize(direction); // 방향만 얻고
+
+	// 2. 일정 속도로 이동
+	XMVECTOR velocity = XMVectorScale(direction, Speed * DeltaTime);
+	XMVECTOR result = XMVectorAdd(curr, velocity);
+
+	XMStoreFloat3(&CurrentPos, result);
+}
+
 XMFLOAT3 Math::CalcForwardOffset(const XMFLOAT3& Position, float DegreesY, float ForwardDistance, float HeightOffset) {
 	float radians = XMConvertToRadians(DegreesY);
 	float forwardX = sinf(radians);

@@ -281,7 +281,7 @@ void BoundSphere::Render() {
 	Transform::Identity(ScaleMatrix);
 
 	Transform::Move(TranslateMatrix, sphere.Center.x, sphere.Center.y, sphere.Center.z);
-	Transform::Scale(ScaleMatrix, Size * 0.27, Size * 0.27, Size * 0.27);
+	Transform::Scale(ScaleMatrix, Size * 0.135, Size * 0.135, Size * 0.135);
 
 	BoundboxShader->RenderDefault(GlobalCommandList);
 	camera.SetToDefaultMode();

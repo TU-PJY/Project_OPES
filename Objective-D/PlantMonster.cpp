@@ -6,8 +6,11 @@
 
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
-	if (currentState == PLANT_DEATH || !inFrustum)
+	if (currentState == PLANT_DEATH)
 		return;
+
+	frustumBound.Update(position, 10.0);
+	lookRange.Update(position, 10.0);
 
 	for (int i = 0; i < 3; i++)
 		hitBox[i].UpdateDelta(Delta);
@@ -139,9 +142,6 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 	}
 	else 
 		position = tempPosition;
-	
-	// 고정형 몬스터이므로 생성 이후로는 시야 범위 업데이트를 진행하지 않는다.
-	lookRange.Update(position, 10.0);
 
 	// 디펜스 모드 일때는 중앙 건물 만을 공격하므로 생성 이후로는 회전각도 업데이트를 하지 않는다.
 	if (defenseModeState) {
@@ -156,9 +156,6 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 	// 자기 소유의 hp 표시기 객체 추가
 	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER2);
 
-	// 고정형 몬스터이므로 프러스텀 aabb는 생성 시 한 번만 설정한다.
-	frustumAABB.Update(position, XMFLOAT3(5.5, 5.0, 5.5));
-
 	for (int i = 0; i < 3; i++)
 		hitBox[i].SetUpdateFrequency(24);
 }
@@ -171,7 +168,7 @@ PlantMonster::~PlantMonster() {
 // 모든 업데이트
 void PlantMonster::Update(float Delta) {
 	// 프러스텀 검사
-	inFrustum = camera.CheckFrustum(frustumAABB);
+	inFrustum = camera.CheckFrustum(frustumBound);
 
 	updateHitBox(Delta);
 	updateAnimation(Delta);
@@ -206,7 +203,7 @@ void PlantMonster::Render() {
 	for (int i = 0; i < 3; i++)
 		hitBox[i].Render();
 
-	frustumAABB.Render();
+	frustumBound.Render();
 }
 
 bool PlantMonster::CheckHit(XMFLOAT2& checkPosition, int damage) {

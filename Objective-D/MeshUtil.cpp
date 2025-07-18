@@ -4,6 +4,9 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include <execution>
+#include <atomic>
+#include <optional>
 #include "Framework.h"
 #include "Config.h"
 
@@ -134,18 +137,31 @@ void Mesh::SetHeightCache(Mesh* terrainMesh, const XMFLOAT4X4& worldMatrix) {
 
 // 현재 지점의 높이를 구한다.
 float Mesh::GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix) {
-	size_t Size = HeightCache.size();
+	size_t size = HeightCache.size();
 
-	for (UINT i = 0; i < Size; i += 3) {
+	std::atomic<bool> found = false;
+	std::optional<float> result;
+
+	std::vector<size_t> indices;
+	for (size_t i = 0; i < size; i += 3)
+		indices.push_back(i); // 병렬 loop를 위한 index 리스트
+
+	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t i) {
+		if (found.load(std::memory_order_relaxed)) return;
+
 		XMFLOAT3 v0 = HeightCache[i];
 		XMFLOAT3 v1 = HeightCache[i + 1];
 		XMFLOAT3 v2 = HeightCache[i + 2];
 
-		if (IsPointInTriangle(XMFLOAT2(x, z), XMFLOAT2(v0.x, v0.z), XMFLOAT2(v1.x, v1.z), XMFLOAT2(v2.x, v2.z)))
-			return ComputeHeightOnTriangle(XMFLOAT3(x, 0, z), v0, v1, v2);
-	}
+		if (IsPointInTriangle(XMFLOAT2(x, z), XMFLOAT2(v0.x, v0.z), XMFLOAT2(v1.x, v1.z), XMFLOAT2(v2.x, v2.z))) {
+			float h = ComputeHeightOnTriangle(XMFLOAT3(x, 0, z), v0, v1, v2);
+			if (!found.exchange(true)) {
+				result = h;
+			}
+		}
+	});
 
-	return 0.0f;
+	return result.has_value() ? result.value() : 0.0f;
 }
 
 bool Mesh::IsPointInTriangle(XMFLOAT2& pt, XMFLOAT2& v0, XMFLOAT2& v1, XMFLOAT2& v2) {

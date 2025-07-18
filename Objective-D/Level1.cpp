@@ -18,7 +18,7 @@ namespace Level1 {
 	std::deque<GameObject*> ControlObjectList; 
 }
 
-bool editMode = true;
+bool editMode = false;
 
 void Level1::Start() {
 	globalFovOffset = 0.0;
