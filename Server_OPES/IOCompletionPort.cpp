@@ -241,64 +241,64 @@ void IOCompletionPort::NPCAIThread() {
 //
 //    }
 //}
-void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* newClient) {
-    ExistingClientsDataPacket packet;
-    packet.type = PacketType::EXISTING_CLIENTS;
-    packet.count = 0;
-
-    for (auto& client : clients) {
-        if (!client) continue;
-        if (client != newClient && client->roomID == newClient->roomID) {
-            auto& dst = packet.clients[packet.count++];
-            dst.id = client->id;
-            dst.x = client->x;
-            dst.y = client->y;
-            dst.z = client->z;
-            dst.angle_x = client->angle_x;
-            dst.angle_y = client->angle_y;
-            dst.angle_z = client->angle_z;
-        }
-    }
-
-    if (packet.count == 0)
-        return;
-
-    newClient->sendOverlapped.operation = IOOperation::SEND;
-    ZeroMemory(&newClient->sendOverlapped.overlapped, sizeof(newClient->sendOverlapped.overlapped));
-    newClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&packet);
-    newClient->sendOverlapped.wsaBuf.len = sizeof(PacketType) + sizeof(unsigned int) + packet.count * sizeof(packet.clients[0]);
-
-    DWORD size_sent = 0;
-    int ret = WSASend(newClient->socketClient, &newClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &newClient->sendOverlapped.overlapped, NULL);
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[에러] WSASend(EXISTING_CLIENTS) 실패: " << WSAGetLastError() << std::endl;
-        closesocket(newClient->socketClient);
-        RemoveClient(newClient);
-    }
-}
-void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
-    NewClientPacket pkt;
-    pkt.type = PacketType::NEW_CLIENT;
-    pkt.id = newClient->id;
-
-    for (auto& other : clients) {
-        if (!other) continue;
-        if (other != newClient && other->roomID == newClient->roomID) {
-            other->sendOverlapped.operation = IOOperation::SEND;
-            ZeroMemory(&other->sendOverlapped.overlapped, sizeof(other->sendOverlapped.overlapped));
-            other->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&pkt);
-            other->sendOverlapped.wsaBuf.len = sizeof(pkt);
-
-            DWORD sent = 0;
-            int ret = WSASend(other->socketClient, &other->sendOverlapped.wsaBuf, 1, &sent, 0, &other->sendOverlapped.overlapped, NULL);
-            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-                std::cerr << "[에러] WSASend 실패 (NEW_CLIENT): " << WSAGetLastError() << "\n";
-                closesocket(other->socketClient);
-                RemoveClient(other);
-            }
-        }
-    }
-}
+//void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* newClient) {
+//    ExistingClientsDataPacket packet;
+//    packet.type = PacketType::EXISTING_CLIENTS;
+//    packet.count = 0;
+//
+//    for (auto& client : clients) {
+//        if (!client) continue;
+//        if (client != newClient && client->roomID == newClient->roomID) {
+//            auto& dst = packet.clients[packet.count++];
+//            dst.id = client->id;
+//            dst.x = client->x;
+//            dst.y = client->y;
+//            dst.z = client->z;
+//            dst.angle_x = client->angle_x;
+//            dst.angle_y = client->angle_y;
+//            dst.angle_z = client->angle_z;
+//        }
+//    }
+//
+//    if (packet.count == 0)
+//        return;
+//
+//    newClient->sendOverlapped.operation = IOOperation::SEND;
+//    ZeroMemory(&newClient->sendOverlapped.overlapped, sizeof(newClient->sendOverlapped.overlapped));
+//    newClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&packet);
+//    newClient->sendOverlapped.wsaBuf.len = sizeof(PacketType) + sizeof(unsigned int) + packet.count * sizeof(packet.clients[0]);
+//
+//    DWORD size_sent = 0;
+//    int ret = WSASend(newClient->socketClient, &newClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &newClient->sendOverlapped.overlapped, NULL);
+//    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//        std::cerr << "[에러] WSASend(EXISTING_CLIENTS) 실패: " << WSAGetLastError() << std::endl;
+//        closesocket(newClient->socketClient);
+//        RemoveClient(newClient);
+//    }
+//}
+//void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
+//    NewClientPacket pkt;
+//    pkt.type = PacketType::NEW_CLIENT;
+//    pkt.id = newClient->id;
+//
+//    for (auto& other : clients) {
+//        if (!other) continue;
+//        if (other != newClient && other->roomID == newClient->roomID) {
+//            other->sendOverlapped.operation = IOOperation::SEND;
+//            ZeroMemory(&other->sendOverlapped.overlapped, sizeof(other->sendOverlapped.overlapped));
+//            other->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+//            other->sendOverlapped.wsaBuf.len = sizeof(pkt);
+//
+//            DWORD sent = 0;
+//            int ret = WSASend(other->socketClient, &other->sendOverlapped.wsaBuf, 1, &sent, 0, &other->sendOverlapped.overlapped, NULL);
+//            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//                std::cerr << "[에러] WSASend 실패 (NEW_CLIENT): " << WSAGetLastError() << "\n";
+//                closesocket(other->socketClient);
+//                RemoveClient(other);
+//            }
+//        }
+//    }
+//}
 void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     std::lock_guard<std::mutex> lock(roomMutex);
 
@@ -316,22 +316,27 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     rooms[newRoom.roomID] = newRoom;
     std::cout << "create room!: " << newRoom.roomID << std::endl;
 }
-void IOCompletionPort::SendData_EnterRoom(stClientInfo* recvingClient) {
-    recvingClient->sendOverlapped.operation = IOOperation::SEND;
-    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    EnterRoomPacket p;
-    p.type = PacketType::ENTER;
-    p.roomID = recvingClient->roomID;
-    p.myID = recvingClient->id;
-    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&p);
-    recvingClient->sendOverlapped.wsaBuf.len = sizeof(EnterRoomPacket);
 
-    DWORD size_sent = 0;
-    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
+void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
+    EnterRoomPacket* packet = new EnterRoomPacket{};
+    packet->type = PacketType::ENTER;
+    packet->roomID = receiver->roomID;
+    packet->myID = receiver->id;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+    sendOver->wsaBuf.len = sizeof(EnterRoomPacket);
+
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,NULL);
+
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
-        closesocket(recvingClient->socketClient);
-        RemoveClient(recvingClient);
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete packet;
+        delete sendOver;
     }
 }
 void IOCompletionPort::RegisterRecv(stClientInfo* client) {
@@ -386,77 +391,6 @@ void IOCompletionPort::RemoveClient(stClientInfo* c)
 }
 
 
-//void IOCompletionPort::SendData_Player(stClientInfo* sendingClient, stClientInfo* recvingClient,PacketType pType) {
-//    recvingClient->sendOverlapped.operation = IOOperation::SEND;
-//    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-//    switch (pType) {
-//    case PacketType::MOVE: {
-//        MovePacket_StoC movePacket = {};
-//        movePacket.type = PacketType::MOVE;
-//        movePacket.x = sendingClient->x;
-//        movePacket.y = sendingClient->y;
-//        movePacket.z = sendingClient->z;
-//        movePacket.id = sendingClient->id;
-//
-//        recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&movePacket);
-//        recvingClient->sendOverlapped.wsaBuf.len = sizeof(movePacket);
-//        break;
-//    }
-//    case PacketType::VIEW_ANGLE: {
-//        ViewingAnglePacket_StoC viewAnglePacket = {};
-//        viewAnglePacket.type = PacketType::VIEW_ANGLE;
-//        viewAnglePacket.x = sendingClient->angle_x;
-//        viewAnglePacket.y = sendingClient->angle_y;
-//        viewAnglePacket.z = sendingClient->angle_z;
-//        viewAnglePacket.id = sendingClient->id;
-//
-//        recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&viewAnglePacket);
-//        recvingClient->sendOverlapped.wsaBuf.len = sizeof(viewAnglePacket);
-//        break;
-//    }
-//    case PacketType::ANIMATION: {
-//        AnimationPacket_StoC aniPacket = {};
-//        aniPacket.type = PacketType::ANIMATION;
-//        aniPacket.anymationType = sendingClient->animationType;
-//        aniPacket.id = sendingClient->id;
-//
-//        recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&aniPacket);
-//        recvingClient->sendOverlapped.wsaBuf.len = sizeof(aniPacket);
-//        break;
-//    }
-//
-//    }
-//    DWORD size_sent = 0;
-//    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
-//    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-//        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
-//        closesocket(recvingClient->socketClient);
-//        RemoveClient(recvingClient);
-//    }
-//
-//
-//}
-void IOCompletionPort::SendData(stClientInfo* sendingClient, stClientInfo* recvingClient, const char* message, int length) {
-    recvingClient->sendOverlapped.operation = IOOperation::SEND;
-    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    ChatPacket_StoC chatPacket = {};
-    chatPacket.type = PacketType::CHAT;
-    int msg_size = length - sizeof(PacketType);
-    memcpy(chatPacket.message, message, msg_size);
-    chatPacket.id = sendingClient->id;
-
-    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&chatPacket);
-    recvingClient->sendOverlapped.wsaBuf.len = length + sizeof(unsigned int);
-
-    DWORD size_sent = 0;
-    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
-        closesocket(recvingClient->socketClient);
-        RemoveClient(recvingClient);
-    }
-
-}
 void IOCompletionPort::SendData_NPCState(const stNPC& npc) {
     MonsterStatePacket packet;
     packet.id = npc.id;
@@ -479,12 +413,7 @@ void IOCompletionPort::SendData_NPCState(const stNPC& npc) {
         DWORD size_sent = 0;
         int ret = WSASend(client->socketClient,
             &sendOver->wsaBuf, 1, &size_sent, 0,
-            &sendOver->overlapped,
-            [](DWORD err, DWORD bytes, LPWSAOVERLAPPED overlapped, DWORD flags) {
-                auto* ex = reinterpret_cast<stOverlappedEx*>(overlapped);
-                delete reinterpret_cast<MonsterStatePacket*>(ex->wsaBuf.buf);
-                delete ex;
-            });
+            &sendOver->overlapped,NULL);
 
         if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
             std::cerr << "[에러] WSASend 실패 (MONSTER_STATE): " << WSAGetLastError() << "\n";
@@ -496,89 +425,226 @@ void IOCompletionPort::SendData_NPCState(const stNPC& npc) {
     }
 }
 
-void IOCompletionPort::SendData_Move(stClientInfo* sendingClient, stClientInfo* recvingClient) {
-    recvingClient->sendOverlapped.operation = IOOperation::SEND;
-    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    MovePacket_StoC movePacket = {};
-    movePacket.type = PacketType::MOVE;
-    movePacket.x = sendingClient->x;
-    movePacket.y = sendingClient->y;
-    movePacket.z = sendingClient->z;
-    movePacket.id = sendingClient->id;
 
-    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&movePacket);
-    recvingClient->sendOverlapped.wsaBuf.len = sizeof(movePacket);
 
-    DWORD size_sent = 0;
-    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
+void IOCompletionPort::SendData_Move(stClientInfo* sender, stClientInfo* receiver) {
+    MovePacket_StoC* packet = new MovePacket_StoC{};
+    packet->type = PacketType::MOVE;
+    packet->id = sender->id;
+    packet->x = sender->x;
+    packet->y = sender->y;
+    packet->z = sender->z;
+
+    stOverlappedEx* sendOver = new stOverlappedEx();
+    ZeroMemory(&sendOver->overlapped, sizeof(WSAOVERLAPPED));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+    sendOver->wsaBuf.len = sizeof(MovePacket_StoC);
+
+    DWORD sizeSent = 0;
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, &sizeSent, 0,
+        &sendOver->overlapped,
+        NULL);
+
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
-        closesocket(recvingClient->socketClient);
-        RemoveClient(recvingClient);
-    }
-
-}
-void IOCompletionPort::SendData_ViewAngle(stClientInfo* sendingClient, stClientInfo* recvingClient) {
-    recvingClient->sendOverlapped.operation = IOOperation::SEND;
-    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    ViewingAnglePacket_StoC viewAnglePacket = {};
-    viewAnglePacket.type = PacketType::VIEW_ANGLE;
-    viewAnglePacket.x = sendingClient->angle_x;
-    viewAnglePacket.y = sendingClient->angle_y;
-    viewAnglePacket.z = sendingClient->angle_z;
-    viewAnglePacket.id = sendingClient->id;
-
-    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&viewAnglePacket);
-    recvingClient->sendOverlapped.wsaBuf.len = sizeof(viewAnglePacket);
-
-    DWORD size_sent = 0;
-    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
-        closesocket(recvingClient->socketClient);
-        RemoveClient(recvingClient);
-    }
-
-}
-void IOCompletionPort::SendData_Animaion(stClientInfo* sendingClient, stClientInfo* recvingClient) {
-    recvingClient->sendOverlapped.operation = IOOperation::SEND;
-    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    AnimationPacket_StoC aniPacket = {};
-    aniPacket.type = PacketType::ANIMATION;
-    aniPacket.animationType = sendingClient->animationType;
-    aniPacket.id = sendingClient->id;
-
-    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&aniPacket);
-    recvingClient->sendOverlapped.wsaBuf.len = sizeof(aniPacket);
-
-    DWORD size_sent = 0;
-    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
-        closesocket(recvingClient->socketClient);
-        RemoveClient(recvingClient);
+        std::cerr << "[에러] WSASend 실패(MOVE): " << WSAGetLastError() << std::endl;
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete packet;
+        delete sendOver;
     }
 }
 
-void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID,unsigned int damage,stClientInfo* recvingClient) {
-    recvingClient->sendOverlapped.operation = IOOperation::SEND;
-    ZeroMemory(&recvingClient->sendOverlapped.overlapped, sizeof(recvingClient->sendOverlapped.overlapped));
-    Player2Monster damagePacket = {};
-    damagePacket.type = PacketType::PLAYER_TO_MOSTER;
-    damagePacket.damage = damage;
-    damagePacket.monsterId = monsterID;
 
-    recvingClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&damagePacket);
-    recvingClient->sendOverlapped.wsaBuf.len = sizeof(damagePacket);
+void IOCompletionPort::SendData_ViewAngle(stClientInfo* sender, stClientInfo* receiver) {
+    ViewingAnglePacket_StoC* packet = new ViewingAnglePacket_StoC{};
+    packet->type = PacketType::VIEW_ANGLE;
+    packet->id = sender->id;
+    packet->x = sender->angle_x;
+    packet->y = sender->angle_y;
+    packet->z = sender->angle_z;
 
-    DWORD size_sent = 0;
-    int ret = WSASend(recvingClient->socketClient, &recvingClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &recvingClient->sendOverlapped.overlapped, NULL);
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+    sendOver->wsaBuf.len = sizeof(ViewingAnglePacket_StoC);
+
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        std::cerr << "[에러] WSASend 실패: " << WSAGetLastError() << std::endl;
-        closesocket(recvingClient->socketClient);
-        RemoveClient(recvingClient);
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete packet;
+        delete sendOver;
     }
 }
+
+void IOCompletionPort::SendData_Animaion(stClientInfo* sender, stClientInfo* receiver) {
+    AnimationPacket_StoC* packet = new AnimationPacket_StoC{};
+    packet->type = PacketType::ANIMATION;
+    packet->id = sender->id;
+    packet->animationType = sender->animationType;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+    sendOver->wsaBuf.len = sizeof(AnimationPacket_StoC);
+
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete packet;
+        delete sendOver;
+    }
+}
+
+void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID, unsigned int damage, stClientInfo* receiver) {
+    Player2Monster* packet = new Player2Monster{};
+    packet->type = PacketType::PLAYER_TO_MOSTER;
+    packet->monsterId = monsterID;
+    packet->damage = damage;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+    sendOver->wsaBuf.len = sizeof(Player2Monster);
+
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete packet;
+        delete sendOver;
+    }
+}
+
+//void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
+//    EnterRoomPacket* packet = new EnterRoomPacket{};
+//    packet->type = PacketType::ENTER;
+//    packet->roomID = receiver->roomID;
+//    packet->myID = receiver->id;
+//
+//    stOverlappedEx* sendOver = new stOverlappedEx{};
+//    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+//    sendOver->operation = IOOperation::SEND;
+//    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+//    sendOver->wsaBuf.len = sizeof(EnterRoomPacket);
+//
+//    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+//        &sendOver->overlapped,
+//        [](DWORD, DWORD, LPWSAOVERLAPPED overlapped, DWORD) {
+//            auto* ex = reinterpret_cast<stOverlappedEx*>(overlapped);
+//            delete reinterpret_cast<EnterRoomPacket*>(ex->wsaBuf.buf);
+//            delete ex;
+//        });
+//
+//    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//        closesocket(receiver->socketClient);
+//        RemoveClient(receiver);
+//        delete packet;
+//        delete sendOver;
+//    }
+//}
+
+void IOCompletionPort::SendData(stClientInfo* sender, stClientInfo* receiver, const char* message, int length) {
+    ChatPacket_StoC* packet = new ChatPacket_StoC{};
+    packet->type = PacketType::CHAT;
+    packet->id = sender->id;
+    memcpy(packet->message, message, length - sizeof(PacketType));
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+    sendOver->wsaBuf.len = length + sizeof(unsigned int);
+
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete packet;
+        delete sendOver;
+    }
+}
+
+void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
+    ExistingClientsDataPacket* packet = new ExistingClientsDataPacket{};
+    packet->type = PacketType::EXISTING_CLIENTS;
+    packet->count = 0;
+    for (auto& client : clients) {
+        if (!client || client == receiver || client->roomID != receiver->roomID) continue;
+        auto& dst = packet->clients[packet->count++];
+        dst.id = client->id;
+        dst.x = client->x;
+        dst.y = client->y;
+        dst.z = client->z;
+        dst.angle_x = client->angle_x;
+        dst.angle_y = client->angle_y;
+        dst.angle_z = client->angle_z;
+    }
+
+    if (packet->count == 0) { delete packet; return; }
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+    sendOver->wsaBuf.len = sizeof(PacketType) + sizeof(unsigned int) + packet->count * sizeof(packet->clients[0]);
+
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete packet;
+        delete sendOver;
+    }
+}
+
+void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
+    for (auto& other : clients) {
+        if (!other || other == newClient || other->roomID != newClient->roomID) continue;
+
+        NewClientPacket* pkt = new NewClientPacket{};
+        pkt->type = PacketType::NEW_CLIENT;
+        pkt->id = newClient->id;
+
+        stOverlappedEx* sendOver = new stOverlappedEx{};
+        ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+        sendOver->operation = IOOperation::SEND;
+        sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+        sendOver->wsaBuf.len = sizeof(NewClientPacket);
+
+        int ret = WSASend(other->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+            &sendOver->overlapped,
+            NULL);
+
+        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+            closesocket(other->socketClient);
+            RemoveClient(other);
+            delete pkt;
+            delete sendOver;
+        }
+    }
+}
+
 void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
