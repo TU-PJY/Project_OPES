@@ -2,6 +2,8 @@
 #include "CBVUtil.h"
 #include "RootConstants.h"
 #include "RootConstantUtil.h"
+#include "MathUtil.h"
+#include "CameraUtil.h"
 
 // 터레인 충돌처리 유틸이다.
 
@@ -52,4 +54,10 @@ bool TerrainUtil::CheckCollision(const TerrainUtil& Other) {
 	}
 
 	return false;
+}
+
+XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other) {
+	XMFLOAT3 ReturnValue{};
+	Other.TerrainMesh->PickTerrainFromCamera(camera.GetViewMatrix(), ReturnValue);
+	return ReturnValue;
 }

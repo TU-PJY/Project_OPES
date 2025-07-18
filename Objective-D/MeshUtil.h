@@ -147,6 +147,8 @@ public:
 	float GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix);
 	bool IsPointInTriangle(XMFLOAT2& pt, XMFLOAT2& v0, XMFLOAT2& v1, XMFLOAT2& v2);
 	float ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XMFLOAT3& v2);
+	bool PickTerrainFromCamera(const XMFLOAT4X4& cameraViewMatrix, XMFLOAT3& outHit);
+	bool RayIntersectsTriangle(XMVECTOR orig, XMVECTOR dir, XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, float& outT);
 	void UpdateSkinning(FBXMesh& Source, std::vector<XMMATRIX>& BoneMatrices, void*& PMap, void*& NMap, float Time);
 	void UpdateSkinning(FBXMesh& Source, float Time);
 	void UpdateSkinning(float Time);

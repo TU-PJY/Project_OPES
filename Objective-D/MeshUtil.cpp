@@ -177,6 +177,85 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 	return height;
 }
 
+bool Mesh::PickTerrainFromCamera(
+	const XMFLOAT4X4& cameraViewMatrix,
+	XMFLOAT3& outHit      // 교차 지점이 담길 출력 파라미터
+) {
+	// 1) Ray 원점/방향 계산
+	XMMATRIX view = XMLoadFloat4x4(&cameraViewMatrix);
+	XMMATRIX invView = XMMatrixInverse(nullptr, view);
+	XMVECTOR orig = invView.r[3];
+	XMVECTOR dir = XMVector3Normalize(
+		XMVector3TransformNormal(
+			XMVectorSet(0, 0, 1, 0), invView
+		)
+	);
+
+	// 2) 모든 삼각형 검사
+	float bestT = FLT_MAX;
+	XMVECTOR bestPoint = XMVectorZero();
+	size_t triCount = HeightCache.size() / 3;
+	for (size_t i = 0; i < triCount; ++i) {
+		XMFLOAT3 fv0 = HeightCache[i * 3 + 0];
+		XMFLOAT3 fv1 = HeightCache[i * 3 + 1];
+		XMFLOAT3 fv2 = HeightCache[i * 3 + 2];
+
+		XMVECTOR v0 = XMLoadFloat3(&fv0);
+		XMVECTOR v1 = XMLoadFloat3(&fv1);
+		XMVECTOR v2 = XMLoadFloat3(&fv2);
+
+		float t;
+		if (RayIntersectsTriangle(orig, dir, v0, v1, v2, t)) {
+			if (t < bestT) {
+				bestT = t;
+				bestPoint = orig + dir * t;
+			}
+		}
+	}
+
+	if (bestT < FLT_MAX) {
+		XMStoreFloat3(&outHit, bestPoint);
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
+bool Mesh::RayIntersectsTriangle(
+	XMVECTOR orig, XMVECTOR dir,
+	XMVECTOR v0, XMVECTOR v1, XMVECTOR v2,
+	float& outT    // 교차 지점까지 거리 t
+) {
+	const float EPSILON = 1e-6f;
+	XMVECTOR edge1 = v1 - v0;
+	XMVECTOR edge2 = v2 - v0;
+
+	XMVECTOR pvec = XMVector3Cross(dir, edge2);
+	float det = XMVectorGetX(XMVector3Dot(edge1, pvec));
+	if (fabs(det) < EPSILON)
+		return false;              // 평행하거나 거의 평행
+
+	float invDet = 1.0f / det;
+	XMVECTOR tvec = orig - v0;
+	float u = XMVectorGetX(XMVector3Dot(tvec, pvec)) * invDet;
+	if (u < 0.0f || u > 1.0f)
+		return false;
+
+	XMVECTOR qvec = XMVector3Cross(tvec, edge1);
+	float v = XMVectorGetX(XMVector3Dot(dir, qvec)) * invDet;
+	if (v < 0.0f || u + v > 1.0f)
+		return false;
+
+	float tVal = XMVectorGetX(XMVector3Dot(edge2, qvec)) * invDet;
+	if (tVal < EPSILON)
+		return false;              // 뒤쪽 교차 또는 너무 가까움
+
+	outT = tVal;
+	return true;
+}
+
+
 void Mesh::UpdateSkinning(FBXMesh& Source, std::vector<XMMATRIX>& BoneMatrices, void*& PMap, void*& NMap, float Time) {
 	if (!BoneIndices || !BoneWeights) {
 		const XMMATRIX& M = BoneMatrices[0];

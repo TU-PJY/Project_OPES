@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "TextUtil.h"
+#include "TerrainUtil.h"
 
 class EditHelper : public GameObject {
 private:
@@ -8,9 +9,11 @@ private:
 	std::string renderStr{};
 	XMFLOAT2    compassCenter{ XMFLOAT2(ASPECT * 1.0 - 0.6, -1.0 + 0.6) };
 	XMFLOAT2    compassPos[4]{};
+	TerrainUtil terrainUtil{};
+	std::string currentMapName{};
 
 public:
-	EditHelper();
+	EditHelper(const std::string& currentMapName);
 	void Update(float Delta) override;
 	void Render() override;
 };

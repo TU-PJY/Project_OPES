@@ -2,12 +2,17 @@
 #include "CameraUtil.h"
 #include "MathUtil.h"
 
-EditHelper::EditHelper() {
+EditHelper::EditHelper(const std::string& currentMapName) {
 	text.EnableShadow();
 	text.SetShadow(XMFLOAT2(0.01, -0.01), 1.0);
+	this->currentMapName = currentMapName;
 }
 
 void EditHelper::Update(float Delta) {
+	XMFLOAT3 pickPosition{};
+	if (auto terrain = scene.Find(currentMapName); terrain)
+		pickPosition = terrainUtil.CheckCollisionRay(terrain->GetTerrain());
+
 	XMFLOAT3 currentCamPosition = camera.GetPosition();
 	float currentCamRotation = XMConvertToDegrees(camera.GetYaw());
 	Math::Normalize2DAngleTo360(currentCamRotation);
@@ -18,10 +23,18 @@ void EditHelper::Update(float Delta) {
 	ossX << std::fixed << std::setprecision(3) << currentCamPosition.x;
 	ossY << std::fixed << std::setprecision(3) << currentCamPosition.y;
 	ossZ << std::fixed << std::setprecision(3) << currentCamPosition.z;
+
+	std::ostringstream ossPickX;
+	std::ostringstream ossPickY;
+	std::ostringstream ossPickZ;
+	ossPickX << std::fixed << std::setprecision(3) << pickPosition.x;
+	ossPickY << std::fixed << std::setprecision(3) << pickPosition.y;
+	ossPickZ << std::fixed << std::setprecision(3) << pickPosition.z;
 	
 	renderStr =
 		"(" + ossX.str() + ", " + ossY.str() + ", " + ossZ.str() + ") " +
-		"(" + std::to_string((int)currentCamRotation) + " degrees" + ")";
+		"(" + std::to_string((int)currentCamRotation) + " degrees" + ") " +
+		"(" + ossPickX.str() + ", " + ossPickY.str() + ", " + ossPickZ.str() + ")";
 
 	//Z+
 	compassPos[0].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation - 270.0)) * 0.25;
@@ -46,4 +59,9 @@ void EditHelper::Render() {
 	text.Render(compassPos[1], 0.1, "Z-");
 	text.Render(compassPos[2], 0.1, "X+");
 	text.Render(compassPos[3], 0.1, "X-");
+
+	BeginRender(RENDER_TYPE_2D);
+	Transform::Scale2D(ScaleMatrix, 0.02, 0.02);
+	SetColor(XMFLOAT3(1.0, 0.0, 0.0));
+	Render2D(TEX.ColorTex);
 }
