@@ -338,19 +338,36 @@ void Math::MoveTowards(XMFLOAT3& CurrentPos, const XMFLOAT3& TargetPos, float Sp
 	XMStoreFloat3(&CurrentPos, result);
 }
 
-void Math::MoveTowardInfinity(XMFLOAT3& CurrentPos, const XMFLOAT3& TargetPos, float Speed, float DeltaTime) {
-	// 1. 방향 벡터 계산
-	XMVECTOR curr = XMLoadFloat3(&CurrentPos);
-	XMVECTOR target = XMLoadFloat3(&TargetPos);
+XMFLOAT3 GetForwardVectorFromRotation(float yawDegrees, float pitchDegrees) {
+	float yaw = XMConvertToRadians(yawDegrees);
+	float pitch = XMConvertToRadians(pitchDegrees);
 
-	XMVECTOR direction = XMVectorSubtract(target, curr);
-	direction = XMVector3Normalize(direction); // 방향만 얻고
+	// 회전 행렬: Yaw → Pitch 순서
+	XMMATRIX yawMatrix = XMMatrixRotationY(yaw);
+	XMMATRIX pitchMatrix = XMMatrixRotationX(pitch);
 
-	// 2. 일정 속도로 이동
-	XMVECTOR velocity = XMVectorScale(direction, Speed * DeltaTime);
-	XMVECTOR result = XMVectorAdd(curr, velocity);
+	// 회전 행렬 합성
+	XMMATRIX rotation = pitchMatrix * yawMatrix;
 
-	XMStoreFloat3(&CurrentPos, result);
+	// Z+ 정면 기준 벡터
+	XMVECTOR forward = XMVector3TransformNormal(
+		XMVectorSet(0, 0, 1, 0), rotation);
+
+	XMFLOAT3 result;
+	XMStoreFloat3(&result, XMVector3Normalize(forward));
+	return result;
+}
+
+void Math::MoveInDirection(XMFLOAT3& position, float yawDegrees, float pitchDegrees, float speed, float deltaTime) {
+	XMFLOAT3 direction = GetForwardVectorFromRotation(yawDegrees, pitchDegrees);
+
+	XMVECTOR pos = XMLoadFloat3(&position);
+	XMVECTOR dir = XMVector3Normalize(XMLoadFloat3(&direction));
+
+	XMVECTOR velocity = XMVectorScale(dir, speed * deltaTime);
+	XMVECTOR result = XMVectorAdd(pos, velocity);
+
+	XMStoreFloat3(&position, result);
 }
 
 XMFLOAT3 Math::CalcForwardOffset(const XMFLOAT3& Position, float DegreesY, float ForwardDistance, float HeightOffset) {

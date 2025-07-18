@@ -11,6 +11,7 @@ private:
 	float                 currentCreateDelay{};
 	int                   currentCreateIndex{-1};
 	bool                  editMode{};
+	bool                  spawnStarted{};
 
 
 public:

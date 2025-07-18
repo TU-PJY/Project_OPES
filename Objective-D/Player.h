@@ -134,7 +134,7 @@ public:
 	void InputMouseMotion(MotionEvent& Event) override;
 	void InputMouse(MouseEvent& Event);
 	void InputKey(KeyEvent& Event);
-	void CheckHitMap1Monsters();
+	void createBulletObject();
 	void SendPacket(float Delta);
 	void UpdateMoveSpeed(float FrameTime);
 	void UpdateFire(float FrameTime);

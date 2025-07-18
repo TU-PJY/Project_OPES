@@ -4,6 +4,7 @@
 #include "CameraController.h"
 #include "ClampUtil.h"
 #include "PickingUtil.h"
+#include "Bullet.h"
 
 std::default_random_engine rd;
 std::mt19937 gen(rd());
@@ -79,20 +80,15 @@ void Player::InputKey(KeyEvent& Event) {
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'D', moveRightState);
 }
 
-void Player::CheckHitMap1Monsters() {
-	size_t layerSize = scene.LayerSize(LAYER2);
-	for (int i = 0; i < layerSize; i++) {
-		if (auto plantMonster = scene.FindMulti("plantMonster", LAYER2, i); plantMonster) {
-			if (plantMonster->CheckHit(XMFLOAT2(0.0, 0.0), 10))
-				break;
-		}
-	}
+// 현재 위치, y회전값, x회전값, 대미지, 현재 맵 이름을 전달한다.
+void Player::createBulletObject() {
+	scene.AddObject(new Bullet(position, rotation.y, rotation.x, 10, currentTerrainName), "bullet", LAYER1);
 }
 
 // 서버 부하를 방지하기 위해 0.05초 간격으로 패킷 전송 
 // 개발을 위해 잠시 비활성화
 void Player::SendPacket(float Delta) {
-	std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
 
 	/*sendDelay += Delta;
 
@@ -220,9 +216,8 @@ void Player::UpdateFire(float FrameTime) {
 	// 발사 상태에서 current_fire_delay가 0.0이 되면 crosshair에 반동값 부여 -> 발사
 	if (triggerState) {
 		if (currentFireDelay <= 0.0) {
-			// 각 맵마다 다른 몬스터들에 광선 충돌처리를 진행한다.
-			if (currentTerrainName.compare("map1") == 0)
-				CheckHitMap1Monsters();
+			// 총알 객체를 생성한다.
+			createBulletObject();
 
 			currentFireDelay = destFireDelay;
 			crosshair->InputRecoil(0.1);

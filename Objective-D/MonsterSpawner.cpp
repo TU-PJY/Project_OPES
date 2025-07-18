@@ -19,7 +19,7 @@ void MonsterSpawner::InputKey(KeyEvent& Event) {
 	if (Event.Type == WM_KEYDOWN && Event.Key == VK_F5) {
 		if (currentMapName.compare("map1") == 0) {
 			scene.DeleteObject("plantMonster", DELETE_RANGE_ALL);
-			scene.DeleteObject("troll", DELETE_RANGE_ALL);
+			//scene.DeleteObject("troll", DELETE_RANGE_ALL);
 		}
 
 		LoadDataAndSpawnMonster();
@@ -53,35 +53,24 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 	// 람다로 정의한 동작대로 로드 수행
 	script.LoadAllData(custumLoad);
 
-	currentCreateIndex = position.size() - 1;
+	size_t size = position.size();
+
+	if (currentMapName.compare("map1") == 0) {
+		for (int i = 0; i < size; i++) {
+			if (type[i] == 1)
+				scene.AddObject(new PlantMonster(position[i], "map1", false), "plantMonster", LAYER2);
+		}
+	}
 }
 
 // 디펜스 모드에서 모든 몬스터가 죽으면 어드벤처모드 몬스터를 스폰한 후 삭제된다.
 // 에디트 모드에서는 F5를 누를떄마다 새로 스폰한다.
 void MonsterSpawner::Update(float Delta) {
-	// 추가 시 멈춤 방지를 위해 하나씩 추가한다.
-	if (currentCreateIndex > -1) {
-		currentCreateDelay += Delta;
-
-		if (currentCreateDelay >= 0.02) {
-			if (currentMapName.compare("map1") == 0) {
-				if (type[currentCreateIndex] == 1)
-					scene.AddObject(new PlantMonster(position[currentCreateIndex], "map1", false), "plantMonster", LAYER2);
-
-			}
-
-			currentCreateIndex--;
-			currentCreateDelay -= 0.02;
-		}
-	}
-
 	if (editMode)
 		return;
 	
-	else {
-		if (currentMapName.compare("map1") == 0 && GLOBAL.map1DefenseEnemyRemained == 0) {
-			LoadDataAndSpawnMonster();
-			scene.DeleteObject(this);
-		}
+	if (currentMapName.compare("map1") == 0 && GLOBAL.map1DefenseEnemyRemained == 0) {
+		LoadDataAndSpawnMonster();
+		scene.DeleteObject(this);
 	}
 }

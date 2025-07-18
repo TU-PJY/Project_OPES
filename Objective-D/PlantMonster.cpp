@@ -203,29 +203,39 @@ void PlantMonster::Render() {
 	for (int i = 0; i < 3; i++)
 		hitBox[i].Render();
 
-	frustumBound.Render();
+	//frustumBound.Render();
 }
 
-bool PlantMonster::CheckHit(XMFLOAT2& checkPosition, int damage) {
+bool PlantMonster::CheckHit(BoundSphere& Sphere, int damage) {
 	if (currentState == PLANT_DEATH)
 		return false;
 
-	//if (PickingUtil::PickByViewportOOBB(checkPosition, hitBox)) {
-	//	currentHP -= damage;
-	//	if (currentHP <= 0) {
-	//		currentState = PLANT_DEATH;
-	//		if (hpIndicator)
-	//			scene.DeleteObject(hpIndicator);
+	bool hit{};
+	for (int i = 0; i < 3; i++) {
+		if (hitBox[i].CheckCollision(Sphere)) {
+			hit = true;
+			break;
+		}
+	}
 
-	//		// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
-	//		if (defenseModeState) {
-	//			GLOBAL.map1DefenseEnemyRemained--;
-	//			if (GLOBAL.map1DefenseEnemyRemained == 0)
-	//				GLOBAL.map1DefenseState = false;
-	//		}
-	//	}
-	//	return true;
-	//}
+	if (hit) {
+		currentHP -= damage;
+		if (currentHP <= 0) {
+			currentState = PLANT_DEATH;
+			if (hpIndicator) {
+				scene.DeleteObject(hpIndicator);
+				hpIndicator = nullptr;
+			}
+
+			// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
+			if (defenseModeState) {
+				GLOBAL.map1DefenseEnemyRemained--;
+				if (GLOBAL.map1DefenseEnemyRemained == 0)
+					GLOBAL.map1DefenseState = false;
+			}
+		}
+		return true;
+	}
 
 	return false;
 }

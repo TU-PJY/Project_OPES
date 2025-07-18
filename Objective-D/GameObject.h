@@ -89,7 +89,7 @@ public:
 	virtual std::vector<OOBB> GetMapWallOOBB() { return{}; }
 
 	// 몬스터 함수
-	virtual bool CheckHit(XMFLOAT2& checkPosition, int damage) { return{}; }
+	virtual bool CheckHit(BoundSphere& Sphere, int damage) { return{}; }
 	virtual bool ChangeHP(int hp) { return {}; }
 	virtual int GetID() { return {}; }
 	virtual bool GetDeathState() { return {}; }

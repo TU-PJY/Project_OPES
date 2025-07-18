@@ -65,5 +65,5 @@ public:
 	~PlantMonster();
 	void Update(float Delta) override;
 	void Render()            override;
-	bool CheckHit(XMFLOAT2& checkPosition, int damage) override;
+	bool CheckHit(BoundSphere& Sphere, int damage) override;
 };

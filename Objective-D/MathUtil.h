@@ -32,6 +32,6 @@ namespace Math {
 	void Normalize2DAngleTo360(float& Degree);
 	void LerpXMFLOAT3(XMFLOAT3& Value, XMFLOAT3& Dest, float Speed, float Delta);
 	void MoveTowards(XMFLOAT3& CurrentPos, const XMFLOAT3& TargetPos, float Speed, float DeltaTime);
-	void MoveTowardInfinity(XMFLOAT3& CurrentPos, const XMFLOAT3& TargetPos, float Speed, float DeltaTime);
+	void MoveInDirection(XMFLOAT3& position, float yawDegrees, float pitchDegrees, float speed, float deltaTime);
 	XMFLOAT3 CalcForwardOffset(const XMFLOAT3& Position, float DegreesY, float ForwardDistance, float HeightOffset);
 }
