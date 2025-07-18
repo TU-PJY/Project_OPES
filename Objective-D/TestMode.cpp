@@ -4,21 +4,40 @@
 
 #include "PlantMonster.h"
 #include "TextUtil.h"
+#include "Treant.h"
 #include <string>
 
 //테스트 작업을 위한 모드.
 
 class TestObject : public GameObject {
 public:
-	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, XMFLOAT3(0.0, 1.0, 1.0) };
+
 
 	TestObject() {
-		text.EnableShadow();
-		text.SetShadow(XMFLOAT2(0.01, -0.01), 0.5);
+
 	}
 
 	void InputKey(KeyEvent& Event) {
+		if (Event.Type == WM_KEYDOWN) {
+			GameObject* treant{};
 
+			if (treant = scene.Find("treant"); treant) {
+				switch (Event.Key) {
+				case 'Z':
+					treant->SetState(0);
+					break;
+				case 'X':
+					treant->SetState(1);
+					break;
+				case 'C':
+					treant->SetState(2);
+					break;
+				case 'V':
+					treant->SetState(3);
+					break;
+				}
+			}
+		}
 	}
 
 	void InputMouse(MouseEvent& Event) {
@@ -30,7 +49,7 @@ public:
 	}
 
 	void Render() {
-		text.Render(XMFLOAT2(0.0, 0.0), 0.3, "Hello World!");
+		
 	}
 };
 
@@ -40,7 +59,7 @@ void TestMode::Start() {
 	scene.SetupMode("TestMode", Destructor, ControlObjectList);
 	scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 	scene.AddObject(new TestObject, "test_object", LAYER1, true);
-	
+	scene.AddObject(new Treant(XMFLOAT3(0.0, 0.0, 0.0), "map1"), "treant", LAYER1);
 }
 
 void TestMode::Destructor() {

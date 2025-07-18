@@ -9,9 +9,9 @@ void PlantMonster::updateHitBox() {
 	if (currentState == PLANT_DEATH || !inFrustum)
 		return;
 
-	XMFLOAT3 boxPosition = XMFLOAT3(position.x, position.y, position.z);
-	XMFLOAT3 boxSize = XMFLOAT3(0.7, size.y * 0.8, 0.7);
-	hitBox.Update(boxPosition, boxSize, rotation);
+	//XMFLOAT3 boxPosition = XMFLOAT3(position.x, position.y, position.z);
+	//XMFLOAT3 boxSize = XMFLOAT3(0.7, size.y * 0.8, 0.7);
+	//hitBox.Update(boxPosition, boxSize, rotation);
 }
 
 // 공격 대상 감지 진행
@@ -197,7 +197,14 @@ void PlantMonster::Render() {
 	RenderFBX(plantFBX, TEX.plantMonster);
 	UpdatePickMatrix();
 
-	hitBox.Render();
+	hitBox[0].UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 0);
+	hitBox[1].UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 2);
+	hitBox[2].UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 4);
+
+	hitBox[0].Render();
+	hitBox[1].Render();
+	hitBox[2].Render();
+
 	frustumAABB.Render();
 }
 
@@ -205,22 +212,22 @@ bool PlantMonster::CheckHit(XMFLOAT2& checkPosition, int damage) {
 	if (currentState == PLANT_DEATH)
 		return false;
 
-	if (PickingUtil::PickByViewportOOBB(checkPosition, hitBox)) {
-		currentHP -= damage;
-		if (currentHP <= 0) {
-			currentState = PLANT_DEATH;
-			if (hpIndicator)
-				scene.DeleteObject(hpIndicator);
+	//if (PickingUtil::PickByViewportOOBB(checkPosition, hitBox)) {
+	//	currentHP -= damage;
+	//	if (currentHP <= 0) {
+	//		currentState = PLANT_DEATH;
+	//		if (hpIndicator)
+	//			scene.DeleteObject(hpIndicator);
 
-			// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
-			if (defenseModeState) {
-				GLOBAL.map1DefenseEnemyRemained--;
-				if (GLOBAL.map1DefenseEnemyRemained == 0)
-					GLOBAL.map1DefenseState = false;
-			}
-		}
-		return true;
-	}
+	//		// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
+	//		if (defenseModeState) {
+	//			GLOBAL.map1DefenseEnemyRemained--;
+	//			if (GLOBAL.map1DefenseEnemyRemained == 0)
+	//				GLOBAL.map1DefenseState = false;
+	//		}
+	//	}
+	//	return true;
+	//}
 
 	return false;
 }

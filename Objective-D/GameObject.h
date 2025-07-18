@@ -94,6 +94,7 @@ public:
 	virtual int GetID() { return {}; }
 	virtual bool GetDeathState() { return {}; }
 	virtual void GiveDamage(int hp) {}
+	virtual void SetState(int State) {}
 
 	// HP 인디케이터 함수
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}

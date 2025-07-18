@@ -6,6 +6,8 @@
 #include "TransformUtil.h"
 #include "GameResource.h"
 #include "Config.h"
+#include <thread>
+#include <future>
 
 // 충돌 처리를 담당하는 유틸이다.
 // 서로 다른 종류의 바운딩 객체와도 비교 가능하며, 객체가 가지는 위치, 회전, 크기를 파라미터에 넣어주면 된다.
@@ -17,14 +19,48 @@ void OOBB::UpdateAnimated(FBXMesh& Mesh, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatri
 }
 
 void OOBB::UpdateAnimated(FBX& TargetFBX, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex) {
-	Mesh* MeshNode = TargetFBX[NodeIndex];
-	const XMFLOAT3* Position = reinterpret_cast<const XMFLOAT3*>(TargetFBX.PositionMapped[NodeIndex]);
-	DirectX::BoundingOrientedBox NewBox;
-	BoundingOrientedBox::CreateFromPoints( NewBox, MeshNode->Vertices, Position, sizeof(XMFLOAT3));
+	if (TargetFBX.GetMeshCount() - 1 < NodeIndex) return;
 
-	XMMATRIX ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&SMatrix), XMLoadFloat4x4(&RMatrix));
-	ResultMatrix = XMMatrixMultiply(ResultMatrix, XMLoadFloat4x4(&TMatrix));
-	NewBox.Transform(oobb, ResultMatrix);
+	Mesh* MeshNode = TargetFBX[NodeIndex];
+	const XMFLOAT3* Positions = reinterpret_cast<const XMFLOAT3*>(TargetFBX.PositionMapped[NodeIndex]);
+	int VertexCount = MeshNode->Vertices;
+
+	// 병렬 처리
+	const int threadCount = std::thread::hardware_concurrency();
+	const int verticesPerThread = (VertexCount + threadCount - 1) / threadCount;
+
+	std::vector<std::future<std::vector<XMFLOAT3>>> futures;
+
+	for (int t = 0; t < threadCount; ++t) {
+		futures.emplace_back(std::async(std::launch::async, [=]() -> std::vector<XMFLOAT3> {
+			int start = t * verticesPerThread;
+			int end = std::min(start + verticesPerThread, VertexCount);
+
+			std::vector<XMFLOAT3> partial(end - start);
+			std::memcpy(partial.data(), &Positions[start], sizeof(XMFLOAT3) * (end - start));
+			return partial;
+		}));
+	}
+
+	// 모든 정점 취합
+	std::vector<XMFLOAT3> AllPositions;
+	AllPositions.reserve(VertexCount);
+	for (auto& f : futures) {
+		std::vector<XMFLOAT3> partial = f.get();
+		AllPositions.insert(AllPositions.end(), partial.begin(), partial.end());
+	}
+
+	// OOBB 생성
+	DirectX::BoundingOrientedBox NewBox;
+	BoundingOrientedBox::CreateFromPoints(NewBox, static_cast<UINT>(AllPositions.size()), AllPositions.data(), sizeof(XMFLOAT3));
+
+	// S * R * T 적용
+	XMMATRIX S = XMLoadFloat4x4(&SMatrix);
+	XMMATRIX R = XMLoadFloat4x4(&RMatrix);
+	XMMATRIX T = XMLoadFloat4x4(&TMatrix);
+	XMMATRIX M = S * R * T;
+	NewBox.Transform(oobb, M);
+
 	XMStoreFloat4(&oobb.Orientation, XMQuaternionNormalize(XMLoadFloat4(&oobb.Orientation)));
 }
 

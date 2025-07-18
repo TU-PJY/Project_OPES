@@ -60,11 +60,15 @@ void LoadMesh(DeviceSystem& System) {
 		LoadSingleStaticFBX(MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
 		LoadSingleStaticFBX(MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
 
-		// monster - troll
-		LoadAnimatedFBX(MESH.troll,
-			"Resources//Models//monster//troll.fbx",
-			"Resources//Animation Data///troll.pca", "Resources//Models//monster//troll.json", false);
-		SetAnimationOffset(MESH.troll, 0.4333333373069763);
+		// monster - treant
+		LoadAnimatedFBX(MESH.treant[0], "Resources//Models//monster//treant_idle.fbx", 
+			"Resources//Animation Data//treant_idle.pca");
+		LoadAnimatedFBX(MESH.treant[1], "Resources//Models//monster//treant_walk.fbx",
+			"Resources//Animation Data//treant_walk.pca");
+		LoadAnimatedFBX(MESH.treant[2], "Resources//Models//monster//treant_attack.fbx",
+			"Resources//Animation Data//treant_attack.pca");
+		LoadAnimatedFBX(MESH.treant[3], "Resources//Models//monster//treant_death.fbx",
+			"Resources//Animation Data//treant_death.pca");
 
 		// monster - plant monster
 		LoadAnimatedFBX(MESH.plantMonster,
@@ -86,6 +90,12 @@ void LoadMesh(DeviceSystem& System) {
 			std::string FileName = "Resources//Models//map2//winter-ice-" + std::to_string(i + 1) + ".fbx";
 			LoadSingleStaticFBX(MESH.WinterIce[i], (char*)FileName.c_str());
 		}
+
+		// monster - troll
+		LoadAnimatedFBX(MESH.troll,
+			"Resources//Models//monster//troll.fbx",
+			"Resources//Animation Data///troll.pca", "Resources//Models//monster//troll.json", false);
+		SetAnimationOffset(MESH.troll, 0.4333333373069763);
 	}
 
 	// 맵 1, 2와 공유하므로 둘 다 로드 안할 시에만 로드 안 함
@@ -192,10 +202,12 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.muzzle_particle, L"Resources//Image//weapon//muzzle_particle.png", TEXTURE_TYPE_WIC);
 
 	// map1 monster
-	// monster - troll
-	LoadTexture(TEX.troll, L"Resources//Image//monster//troll.png");
 	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");
 	LoadTexture(TEX.poisonBall, L"Resources//Image//plant_monster_bullet.png");
+	LoadTexture(TEX.treant, L"Resources//Image//monster//treant.png");
+
+	// map2 monster
+	LoadTexture(TEX.troll, L"Resources//Image//monster//troll.png");
 
 	// UI
 	LoadTexture(TEX.UI_map1Enemy, L"Resources//Image//ui//map1_enemy.png");

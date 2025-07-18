@@ -198,11 +198,13 @@ extern FBXUtil fbxUtil;
 
 class OOBB;
 class AABB;
+class NodeDegreeData;
 
 class FBX {
 private:
 	friend OOBB;
 	friend AABB;
+	friend NodeDegreeData;
 
 	bool InitState{};
 	bool Running{ true };
@@ -244,6 +246,7 @@ private:
 
 	int CurrentEndCount{};
 	int PrevEndCount{};
+	int DataReadCount{};
 
 	float SectionTime{};
 	int CurrentPassCount{};
@@ -270,6 +273,7 @@ public:
 	size_t GetMeshCount();
 	void Render(int Index);
 	XMFLOAT3 GetInplaceDelta();
+	XMFLOAT3 GetNodeRotation(int NodeIndex);
 	void ApplyAnimation();
 	bool CheckRayIntersection(XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection, float* pfNearHitDistance);
 
@@ -277,4 +281,20 @@ private:
 	void CreateBuffer(DeviceSystem& System);
 	void ReleaseBuffer();
 	BOOL RayIntersectionByTriangle(XMVECTOR& xmRayOrigin, XMVECTOR& xmRayDirection, XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, float* pfNearHitDistance);
+};
+
+class NodeDegreeData {
+private:
+	FBX*     CurrentFBX{};
+	int      CurrentNodeIndex{};
+	int      CurrentReadCount{};
+	int      PrevReadCount{};
+	XMFLOAT3 CurrentNodeRotation{};
+	FbxNode* CurrentNode{};
+
+public:
+	NodeDegreeData() {}
+	NodeDegreeData(FBX& TargetFBX, int NodeIndex);
+	void Init(FBX& TargetFBX, int NodeIndex);
+	XMFLOAT3 Get();
 };

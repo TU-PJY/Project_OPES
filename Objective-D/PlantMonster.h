@@ -43,7 +43,7 @@ private:
 	BoundSphere lookRange{};
 
 	// 충돌 감지를 위한 히트 박스
-	OOBB        hitBox{};
+	OOBB        hitBox[3]{};
 	
 	// 프러스텀 컬링을 위한 aabb
 	AABB        frustumAABB{};

@@ -143,6 +143,7 @@
       <PrecompiledHeaderFile />
       <PrecompiledHeaderOutputFile />
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -216,6 +217,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="tinyxml\tinystr.h" />
     <ClInclude Include="tinyxml\tinyxml.h" />
     <ClInclude Include="TransformUtil.h" />
+    <ClInclude Include="Treant.h" />
     <ClInclude Include="WICTextureLoader12.h" />
     <ClInclude Include="RandomUtil.h" />
   </ItemGroup>
@@ -279,6 +281,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="tinyxml\tinyxmlerror.cpp" />
     <ClCompile Include="tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="TransformUtil.cpp" />
+    <ClCompile Include="Treant.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="Scene.cpp" />

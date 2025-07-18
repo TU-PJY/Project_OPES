@@ -455,3 +455,38 @@ void Mesh::UpdateSkinning(void*& PMap, void*& NMap, float Time) {
 	memcpy(PMap, Position, sizeof(XMFLOAT3) * Vertices);
 	memcpy(NMap, Normal, sizeof(XMFLOAT3) * Vertices);
 }
+
+NodeDegreeData::NodeDegreeData(FBX& TargetFBX, int NodeIndex) {
+	Init(TargetFBX, NodeIndex);
+}
+
+void NodeDegreeData::Init(FBX& TargetFBX, int NodeIndex) {
+	if (TargetFBX.GetMeshCount() - 1 < NodeIndex)
+		return;
+	CurrentFBX = &TargetFBX;
+	CurrentNodeIndex = NodeIndex;
+	CurrentNode = CurrentFBX->FBXPtr->MeshPart[NodeIndex]->FbxNodePtr;
+	CurrentReadCount = CurrentFBX->DataReadCount;
+	PrevReadCount = CurrentFBX->DataReadCount;
+}
+
+XMFLOAT3 NodeDegreeData::Get() {
+	if (!CurrentFBX)
+		return XMFLOAT3(0.0, 0.0, 0.0);
+
+	CurrentReadCount = CurrentFBX->DataReadCount;
+	if (PrevReadCount != CurrentReadCount) {
+		FbxTime Time;
+		Time.SetSecondDouble(CurrentFBX->CurrentTime);
+		FbxAMatrix NodeTransform = CurrentNode->EvaluateGlobalTransform(Time);
+		FbxVector4 RotationEuler = NodeTransform.GetR();
+
+		CurrentNodeRotation.x = static_cast<float>(RotationEuler[0]);
+		CurrentNodeRotation.y = static_cast<float>(RotationEuler[1]);
+		CurrentNodeRotation.z = static_cast<float>(RotationEuler[2]);
+
+		PrevReadCount = CurrentReadCount;
+	}
+
+	return CurrentNodeRotation;
+}

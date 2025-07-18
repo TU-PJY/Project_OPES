@@ -118,7 +118,7 @@ void FBX::UpdateAnimation(float Delta, bool Inplace, bool OnlyDeltaUpdate) {
 
 	CurrentDelay += Delta;
 	if (CurrentDelay >= DestDelay) {
-		CurrentDelay -= DestDelay;
+		DataReadCount++;
 
 		if (OnlyDeltaUpdate)
 			return;
@@ -192,10 +192,14 @@ std::string FBX::GetCurrentAnimation() {
 }
 
 void FBX::ResetAnimation() {
-	if (!Serialized)
+	if (!Serialized) {
+		CurrentDelay = 0.0;
 		CurrentTime = 0.0;
-	else
+	}
+	else {
+		CurrentDelay = 0.0;
 		CurrentTime = StartTime;
+	}
 }
 
 size_t FBX::GetMeshCount() {
@@ -209,6 +213,21 @@ void FBX::Render(int Index) {
 
 XMFLOAT3 FBX::GetInplaceDelta() {
 	return InplaceDelta;
+}
+
+XMFLOAT3 FBX::GetNodeRotation(int NodeIndex) {
+	Mesh* MeshNode = FBXPtr->MeshPart[NodeIndex];
+	auto FBXNode = MeshNode->FbxNodePtr;
+	FbxTime Time;
+	Time.SetSecondDouble(CurrentTime);
+	FbxAMatrix NodeTransform = FBXNode->EvaluateGlobalTransform(Time);
+	FbxVector4 RotationEuler = NodeTransform.GetR();
+
+	float DegreeX = static_cast<float>(RotationEuler[0]);
+	float DegreeY = static_cast<float>(RotationEuler[1]);
+	float DegreeZ = static_cast<float>(RotationEuler[2]);
+
+	return XMFLOAT3(DegreeX, DegreeY, DegreeZ);
 }
 
 void FBX::ApplyAnimation() {}

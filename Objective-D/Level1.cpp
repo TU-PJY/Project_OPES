@@ -46,7 +46,7 @@ void Level1::Start() {
 		scene.AddObject(new CrossHair, "crosshair", LAYERUI);
 		scene.AddObject(new Player("map1"), "player", LAYER_PLAYER, true);
 
-		scene.AddObject(new Map1DefenseIndicator, "map1DefendeIndicator", LAYERUI);
+		scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);
 	}
 
 }
