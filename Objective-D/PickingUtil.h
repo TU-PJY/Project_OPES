@@ -19,4 +19,5 @@ namespace PickingUtil {
 	bool PickByViewportOOBB(const XMFLOAT2& Position, const OOBB& Other);
 	bool PickByViewportOOBB(float X, float Y, const OOBB& Other);
 	bool PickByViewportRange(float X, float Y, const BoundSphere& Other);
+	void GenBoundboxPickingRay(XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, XMVECTOR& PickRayOrigin, XMVECTOR& PickRayDirection);
 };

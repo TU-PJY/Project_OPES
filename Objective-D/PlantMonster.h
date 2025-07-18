@@ -53,7 +53,7 @@ private:
 	GameObject* hpIndicator{};
 
 public:
-	void updateHitBox();
+	void updateHitBox(float Delta);
 	void updateTargetDetect();
 	void updateAttack(float Delta);
 	void updateIndicatorHP();

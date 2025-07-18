@@ -149,8 +149,10 @@ void FBX::UpdateAnimation(float Delta, bool Inplace, bool OnlyDeltaUpdate) {
 		}
 
 		if (FrameUpdateState) {
-			if (Inplace)
+			if (Inplace) {
 				InplaceDelta = GetRootMoveDelta(RootFrame, true);
+				std::cout << InplaceDelta.x << " " << InplaceDelta.y << " " << InplaceDelta.z << std::endl;
+			}
 			else
 				InplaceDelta = XMFLOAT3(0.0, 0.0, 0.0);
 			PrevFrame = CurrentFrame;
@@ -211,8 +213,12 @@ void FBX::Render(int Index) {
 }
 
 
-XMFLOAT3 FBX::GetInplaceDelta() {
-	return InplaceDelta;
+XMFLOAT3 FBX::GetInplaceDelta(const XMFLOAT3& Size) {
+	XMFLOAT3 ReturnValue{};
+	ReturnValue.x = InplaceDelta.x * Size.x;
+	ReturnValue.y = InplaceDelta.y * Size.y;
+	ReturnValue.z = InplaceDelta.z * Size.z;
+	return ReturnValue;
 }
 
 XMFLOAT3 FBX::GetNodeRotation(int NodeIndex) {

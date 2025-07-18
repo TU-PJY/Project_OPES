@@ -6,7 +6,6 @@
 
 int ConvertXToWinCoord(float X);
 int ConvertYToWinCoord(float Y);
-void GenBoundboxPickingRay(XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, XMVECTOR& PickRayOrigin, XMVECTOR& PickRayDirection);
 
 
 // 어떤 이유 때문인진 몰라도 동작이 안되는데, 어차피 총알 피격 판정은 oobb 쓸거라 상관 없음
@@ -216,9 +215,8 @@ bool PickingUtil::PickByViewportRange(float X, float Y, const BoundSphere& Other
 	return Math::CheckRayCollision(Origin, Direction, Other);
 }
 
-
 // 윈도우 좌표를 공간 레이 벡터로 변환한다. 프로그래머가 직접 사용할 일은 없다.
-void GenBoundboxPickingRay(XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, XMVECTOR& PickRayOrigin, XMVECTOR& PickRayDirection) {
+void PickingUtil::GenBoundboxPickingRay(XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, XMVECTOR& PickRayOrigin, XMVECTOR& PickRayDirection) {
 	XMMATRIX MatrixTomodel = XMMatrixInverse(NULL, ViewMatrix);
 	XMFLOAT3 CameraOrigin(0.0f, 0.0f, 0.0f);
 	PickRayOrigin = XMVector3TransformCoord(XMLoadFloat3(&CameraOrigin), MatrixTomodel);

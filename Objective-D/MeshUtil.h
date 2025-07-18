@@ -272,15 +272,13 @@ public:
 	void ResetAnimation();
 	size_t GetMeshCount();
 	void Render(int Index);
-	XMFLOAT3 GetInplaceDelta();
+	XMFLOAT3 GetInplaceDelta(const XMFLOAT3& Size);
 	XMFLOAT3 GetNodeRotation(int NodeIndex);
 	void ApplyAnimation();
-	bool CheckRayIntersection(XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection, float* pfNearHitDistance);
 
 private:
 	void CreateBuffer(DeviceSystem& System);
 	void ReleaseBuffer();
-	BOOL RayIntersectionByTriangle(XMVECTOR& xmRayOrigin, XMVECTOR& xmRayDirection, XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, float* pfNearHitDistance);
 };
 
 class NodeDegreeData {

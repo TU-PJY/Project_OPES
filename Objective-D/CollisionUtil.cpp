@@ -9,6 +9,19 @@
 #include <thread>
 #include <future>
 
+void OOBB::SetUpdateFrequency(int FPS) {
+	UpdateFPS = FPS;
+	DestDelayTime = 1.0 / (float)FPS;
+}
+
+void OOBB::UpdateDelta(float Delta) {
+	DeltaTime += Delta;
+	if (DeltaTime >= DestDelayTime) {
+		DeltaTime -= DestDelayTime;
+		DestPassCount++;
+	}
+}
+
 // 충돌 처리를 담당하는 유틸이다.
 // 서로 다른 종류의 바운딩 객체와도 비교 가능하며, 객체가 가지는 위치, 회전, 크기를 파라미터에 넣어주면 된다.
 void OOBB::UpdateAnimated(FBXMesh& Mesh, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex) {
@@ -20,6 +33,13 @@ void OOBB::UpdateAnimated(FBXMesh& Mesh, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatri
 
 void OOBB::UpdateAnimated(FBX& TargetFBX, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex) {
 	if (TargetFBX.GetMeshCount() - 1 < NodeIndex) return;
+
+	if (UpdateFPS != 0) {
+		if (PrevDestPassCount == DestPassCount)
+			return;
+
+		PrevDestPassCount = DestPassCount;
+	}
 
 	Mesh* MeshNode = TargetFBX[NodeIndex];
 	const XMFLOAT3* Positions = reinterpret_cast<const XMFLOAT3*>(TargetFBX.PositionMapped[NodeIndex]);

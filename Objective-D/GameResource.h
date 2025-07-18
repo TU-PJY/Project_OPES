@@ -81,8 +81,9 @@ typedef struct {
 
 	// monster
 	FBXMesh plantMonster;
-	FBXMesh treant[4];
+	FBXMesh scorpion;
 
+	FBXMesh treant[4];
 	FBXMesh troll;
 
 }MeshResource;
@@ -128,6 +129,7 @@ typedef struct {
 	// map1 monster
 	Texture* plantMonster;
 	Texture* poisonBall;
+	Texture* scorpion;
 	Texture* treant;
 
 	// map2 monster

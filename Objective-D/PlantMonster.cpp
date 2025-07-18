@@ -5,13 +5,12 @@
 #include "PoisonBall.h"
 
 // 히트박스 업데이트
-void PlantMonster::updateHitBox() {
+void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH || !inFrustum)
 		return;
 
-	//XMFLOAT3 boxPosition = XMFLOAT3(position.x, position.y, position.z);
-	//XMFLOAT3 boxSize = XMFLOAT3(0.7, size.y * 0.8, 0.7);
-	//hitBox.Update(boxPosition, boxSize, rotation);
+	for (int i = 0; i < 3; i++)
+		hitBox[i].UpdateDelta(Delta);
 }
 
 // 공격 대상 감지 진행
@@ -159,6 +158,9 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 
 	// 고정형 몬스터이므로 프러스텀 aabb는 생성 시 한 번만 설정한다.
 	frustumAABB.Update(position, XMFLOAT3(5.5, 5.0, 5.5));
+
+	for (int i = 0; i < 3; i++)
+		hitBox[i].SetUpdateFrequency(24);
 }
 
 PlantMonster::~PlantMonster() {
@@ -171,7 +173,7 @@ void PlantMonster::Update(float Delta) {
 	// 프러스텀 검사
 	inFrustum = camera.CheckFrustum(frustumAABB);
 
-	updateHitBox();
+	updateHitBox(Delta);
 	updateAnimation(Delta);
 
 	if (behaviorEnabledState) {
@@ -201,9 +203,8 @@ void PlantMonster::Render() {
 	hitBox[1].UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 2);
 	hitBox[2].UpdateAnimated(plantFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 4);
 
-	hitBox[0].Render();
-	hitBox[1].Render();
-	hitBox[2].Render();
+	for (int i = 0; i < 3; i++)
+		hitBox[i].Render();
 
 	frustumAABB.Render();
 }

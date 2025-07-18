@@ -10,9 +10,16 @@ class OOBB {
 private:
 	bool Collide{};
 	XMFLOAT3 BoundboxColor{ 1.0, 0.0, 0.0 };
+	int   UpdateFPS{};
+	float DeltaTime{};
+	float DestDelayTime{};
+	int   PrevDestPassCount{};
+	int   DestPassCount{};
 
 public:
 	BoundingOrientedBox oobb = BoundingOrientedBox();
+	void SetUpdateFrequency(int FPS);
+	void UpdateDelta(float Delta);
 	void UpdateAnimated(FBXMesh& Mesh, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex);
 	void UpdateAnimated(FBX& TargetFBX, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex);
 	void Update(Mesh* MeshPtr, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, bool ApplySkinning=false);

@@ -207,6 +207,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="SettingRootSignature.h" />
     <ClInclude Include="ShaderUtil.h" />
     <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="Scorpion.h" />
     <ClInclude Include="StartMode.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TerrainUtil.h" />
@@ -217,7 +218,6 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="tinyxml\tinystr.h" />
     <ClInclude Include="tinyxml\tinyxml.h" />
     <ClInclude Include="TransformUtil.h" />
-    <ClInclude Include="Treant.h" />
     <ClInclude Include="WICTextureLoader12.h" />
     <ClInclude Include="RandomUtil.h" />
   </ItemGroup>
@@ -269,6 +269,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="ServerExample.cpp" />
     <ClCompile Include="SettingRootSignature.cpp" />
     <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="Scorpion.cpp" />
     <ClCompile Include="StartMode.cpp" />
     <ClCompile Include="Stencils.cpp" />
     <ClCompile Include="TerrainUtil.cpp" />
@@ -281,7 +282,6 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="tinyxml\tinyxmlerror.cpp" />
     <ClCompile Include="tinyxml\tinyxmlparser.cpp" />
     <ClCompile Include="TransformUtil.cpp" />
-    <ClCompile Include="Treant.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="Scene.cpp" />

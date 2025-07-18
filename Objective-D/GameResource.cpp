@@ -60,15 +60,8 @@ void LoadMesh(DeviceSystem& System) {
 		LoadSingleStaticFBX(MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
 		LoadSingleStaticFBX(MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
 
-		// monster - treant
-		LoadAnimatedFBX(MESH.treant[0], "Resources//Models//monster//treant_idle.fbx", 
-			"Resources//Animation Data//treant_idle.pca");
-		LoadAnimatedFBX(MESH.treant[1], "Resources//Models//monster//treant_walk.fbx",
-			"Resources//Animation Data//treant_walk.pca");
-		LoadAnimatedFBX(MESH.treant[2], "Resources//Models//monster//treant_attack.fbx",
-			"Resources//Animation Data//treant_attack.pca");
-		LoadAnimatedFBX(MESH.treant[3], "Resources//Models//monster//treant_death.fbx",
-			"Resources//Animation Data//treant_death.pca");
+		LoadAnimatedFBX(MESH.scorpion, "Resources//Models//monster//scorpion.fbx",
+			"Resources//Animation Data//scorpion.pca", "Resources//Models//monster//scorpion.json", false);
 
 		// monster - plant monster
 		LoadAnimatedFBX(MESH.plantMonster,
@@ -132,7 +125,7 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
 	// polygon scifi player asset - heavy
-	LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", 
+	/*LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", 
 		"Resources//Animation Data//heavy_idle.pca", "", false);
 
 	LoadAnimatedFBX(MESH.heavyMove, "Resources//Models//player//heavy//heavy_move.fbx", 
@@ -142,7 +135,7 @@ void LoadMesh(DeviceSystem& System) {
 		"Resources//Animation Data///heavy_shoot.pca", "", false);
 
 	LoadAnimatedFBX(MESH.heavyDeath, "Resources//Models//player//heavy//heavy_death.fbx", 
-		"Resources//Animation Data///heavy_death.pca", "", false);
+		"Resources//Animation Data///heavy_death.pca", "", false);*/
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -204,7 +197,7 @@ void LoadTexture(DeviceSystem& System) {
 	// map1 monster
 	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");
 	LoadTexture(TEX.poisonBall, L"Resources//Image//plant_monster_bullet.png");
-	LoadTexture(TEX.treant, L"Resources//Image//monster//treant.png");
+	LoadTexture(TEX.scorpion, L"Resources//Image//monster//scorpion.png");
 
 	// map2 monster
 	LoadTexture(TEX.troll, L"Resources//Image//monster//troll.png");

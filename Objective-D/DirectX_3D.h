@@ -49,6 +49,11 @@
 using DigitDataVec = std::vector<float>;
 using StringDataVec = std::vector<std::string>;
 
+typedef struct{
+	XMVECTOR Origin;     // 시작 위치
+	XMVECTOR Direction;  // 정규화된 방향
+}Ray;
+
 enum PlayerState {
 	STATE_IDLE,
 	STATE_MOVE,
