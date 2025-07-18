@@ -1,5 +1,4 @@
-#include <fbxsdk.h> 
-#include <fbxsdk/fileio/fbxiosettingspath.h>
+//#include <fbxsdk/fileio/fbxiosettingspath.h>
 #include <json.hpp>
 #include "MeshUtil.h"
 

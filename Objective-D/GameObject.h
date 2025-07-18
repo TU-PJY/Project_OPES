@@ -68,6 +68,7 @@ public:
 	virtual void Render() {}
 	virtual Mesh* GetObjectMesh() { return {}; }
 	virtual XMFLOAT3 GetPosition() { return {}; }
+	virtual XMFLOAT3 GetRotation() { return {}; }
 	virtual AABB GetAABB() { return {}; }
 	virtual OOBB GetOOBB() { return {}; }
 	virtual OOBB GetOOBB2() { return {}; }
@@ -76,7 +77,6 @@ public:
 	virtual TerrainUtil GetTerrain() { return {}; }
 
 	// 사용자 정의 리턴 함수는 아래에 정의한다.
-	
 	// 크로스헤어 반동 부여 함수
 	virtual void InputRecoil(float Value) {}
 

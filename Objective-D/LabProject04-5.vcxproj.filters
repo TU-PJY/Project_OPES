@@ -221,6 +221,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Spawner ]">
       <UniqueIdentifier>{09297f32-f47c-4716-a3e0-ad4cb83ff38d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]">
+      <UniqueIdentifier>{a99e71b7-1e0d-418d-a041-6af4eec650bf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -400,6 +403,9 @@
     </ClInclude>
     <ClInclude Include="MonsterSpawner.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Spawner ]</Filter>
+    </ClInclude>
+    <ClInclude Include="EditHelper.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -591,6 +597,9 @@
     </ClCompile>
     <ClCompile Include="MonsterSpawner.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Spawner ]</Filter>
+    </ClCompile>
+    <ClCompile Include="EditHelper.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

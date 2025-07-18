@@ -12,6 +12,7 @@
 #include "PlantMonster.h"
 #include "MonsterGenerator.h"
 #include "MonsterSpawner.h"
+#include "EditHelper.h"
 
 namespace Level1 { 
 	std::deque<GameObject*> ControlObjectList; 
@@ -35,6 +36,7 @@ void Level1::Start() {
 
 	if (editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
+		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else {
 		// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
