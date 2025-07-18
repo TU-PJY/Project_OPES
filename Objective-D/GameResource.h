@@ -342,7 +342,7 @@ inline void LoadMultiStaticFBX(Mesh*& TargetMesh, const std::string& Directory) 
 
 // TEXTURE_TYPE_WIC, D3D12_FILTER_MIN_MAG_MIP_POINT가 디폴트
 // 애니메이션 추출모드를 활성화하면 건너뛴다.
-inline void LoadTexture(Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption=D3D12_FILTER_MIN_MAG_MIP_POINT) {
+inline void LoadTexture(Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption= D3D12_FILTER_MIN_MAG_MIP_POINT) {
 	if (AnimationDataExtractMode)
 		return;
 	

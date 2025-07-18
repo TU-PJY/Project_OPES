@@ -10,17 +10,32 @@ private:
 	int        TextAlign{ ALIGN_DEFAULT };
 	int        TextHeightAlign{ HEIGHT_DEFAULT };
 
+	bool       TextShadowState{};
+	XMFLOAT2   TextShadowOffset{};
+	float      TextShadowOpacity{ 0.3 };
+
+	XMFLOAT3   TextRenderColor{};
+	float      TextRenderOpacity{};
+
 
 public:
 	Text() {}
 	Text(int AlignFlag, int HeightFlag, const XMFLOAT3& Color);
+	void SetShadow(const XMFLOAT2& ShadowOffset, float ShadowOpacity);
+	void EnableShadow();
+	void DisableShadow();
 	void SetAlign(int Flag);
 	void SetHeightAlign(int Flag);
 	void SetColor(const XMFLOAT3& Color);
 	void SetOpacity(float OpacityValue);
 	void Render(const XMFLOAT2& Position, float Size, const std::string& Str);
 
+
+
+
+
 private:
+	void TransformText(const XMFLOAT2& Position, float Size, float TotalLength, int StrLength, const char* Input);
 	void BeginTextRender();
 	void PrepareTextRender();
 	void RenderText(int Index);

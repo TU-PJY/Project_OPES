@@ -12,6 +12,19 @@ Text::Text(int AlignFlag, int HeightFlag, const XMFLOAT3& Color) {
 	SetColor(Color);
 }
 
+void Text::SetShadow(const XMFLOAT2& ShadowOffset, float ShadowOpacity) {
+	TextShadowOffset = ShadowOffset;
+	TextShadowOpacity = ShadowOpacity;
+}
+
+void Text::EnableShadow() {
+	TextShadowState = true;
+}
+
+void Text::DisableShadow() {
+	TextShadowState = false;
+}
+
 void Text::SetAlign(int Flag) {
 	TextAlign = Flag;
 }
@@ -33,8 +46,24 @@ void Text::Render(const XMFLOAT2& Position, float Size, const std::string& Str) 
 	int Length = Str.length();
 	float TotalLength = (float)(Length - 1) * Size * 0.45;
 
-	BeginTextRender();
+	XMFLOAT2 RenderStartPosition{};
 
+	if (TextShadowState) {
+		BeginTextRender();
+		TextRenderOpacity = TextOpacity * TextShadowOpacity;
+		TextRenderColor = XMFLOAT3(0.0, 0.0, 0.0);
+		RenderStartPosition = XMFLOAT2(Position.x + TextShadowOffset.x, Position.y + TextShadowOffset.y);
+		TransformText(RenderStartPosition, Size, TotalLength, Length, Input);
+	}
+
+	BeginTextRender();
+	TextRenderOpacity = TextOpacity;
+	TextRenderColor = TextColor;
+	RenderStartPosition = Position;
+	TransformText(RenderStartPosition, Size, TotalLength, Length, Input);
+}
+
+void Text::TransformText(const XMFLOAT2& Position, float Size, float TotalLength, int StrLength, const char* Input) {
 	switch (TextAlign) {
 	case ALIGN_DEFAULT:
 		Transform::Move2D(TextMatrix, Position.x, Position.y); break;
@@ -55,7 +84,7 @@ void Text::Render(const XMFLOAT2& Position, float Size, const std::string& Str) 
 
 	Transform::Scale2D(TextMatrix, Size, Size);
 
-	for (int i = 0; i < Length; i++) {
+	for (int i = 0; i < StrLength; i++) {
 		if (i > 0)
 			Transform::Move2D(TextMatrix, 0.45, 0.0);
 		char Word = Input[i];
@@ -80,8 +109,8 @@ void Text::PrepareTextRender() {
 	XMStoreFloat4x4(&TextResultMatrix, XMMatrixTranspose(XMLoadFloat4x4(&TextMatrix)));
 
 	RCUtil::Input(GlobalCommandList, &TextResultMatrix, GAME_OBJECT_INDEX, 16, 0);
-	RCUtil::Input(GlobalCommandList, &TextColor, GAME_OBJECT_INDEX, 3, 16);
-	RCUtil::Input(GlobalCommandList, &TextOpacity, GAME_OBJECT_INDEX, 1, 19);
+	RCUtil::Input(GlobalCommandList, &TextRenderColor, GAME_OBJECT_INDEX, 3, 16);
+	RCUtil::Input(GlobalCommandList, &TextRenderOpacity, GAME_OBJECT_INDEX, 1, 19);
 }
 
 void Text::RenderText(int Index) {

@@ -13,7 +13,8 @@ public:
 	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, XMFLOAT3(0.0, 1.0, 1.0) };
 
 	TestObject() {
-		
+		text.EnableShadow();
+		text.SetShadow(XMFLOAT2(0.01, -0.01), 0.5);
 	}
 
 	void InputKey(KeyEvent& Event) {
