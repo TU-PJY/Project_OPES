@@ -60,7 +60,7 @@ private:
 	float       strafeSpeed{};
 
 	// 플레이어 이동 속도
-	float       destMoveSpeed{ 8.0 };
+	float       destMoveSpeed{ 16.0 };
 
 
 	// 걷기 모션 흔들림 업데이트 값
@@ -153,6 +153,7 @@ public:
 	void UpdateCamera(float FrameTime);
 	void Render();
 	void Update(float FrameTime) override;
+	void GiveDamage(int Damage) override;
 
 	XMFLOAT3 GetPosition() {
 		return  cameraPosition;

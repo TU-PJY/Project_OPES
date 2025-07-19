@@ -204,7 +204,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 
 	// 어드벤처 모드에서만 시야를 설정한다.
 	if (!defenseModeState)
-		lookRange.Update(XMFLOAT3(position.x, position.y + size.y, position.z), 50.0);
+		lookRange.Update(XMFLOAT3(position.x, position.y + size.y, position.z), 80.0);
 
 	// 프러스텀 바운드 설정
 	frustumBound.Update(position, 10.0);

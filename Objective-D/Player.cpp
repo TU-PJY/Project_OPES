@@ -5,6 +5,7 @@
 #include "ClampUtil.h"
 #include "PickingUtil.h"
 #include "Bullet.h"
+#include "PlayerHit.h"
 
 std::default_random_engine rd;
 std::mt19937 gen(rd());
@@ -165,13 +166,13 @@ void Player::Render() {
 	}
 	gunOOBB.Update(MESH.machine_gun, TranslateMatrix, RotateMatrix, ScaleMatrix, true);
 	gunOOBB.Render();
-	//player_sphere.Render();
+	player_sphere.Render();
 
 	// 플레이어 바운드박스 업데이트
 	BeginRender();
 	Transform::Move(TranslateMatrix, playerPosition);
 	Transform::Rotate(RotateMatrix, XMFLOAT3(0.0, rotation.y, 0.0));
-	Transform::Scale(ScaleMatrix, XMFLOAT3(3.0, 3.0, 3.0));
+	Transform::Scale(ScaleMatrix, XMFLOAT3(2.0, 2.0, 2.0));
 	playerBound.UpdateAnimated(playerFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 0);
 	playerBound.Render();
 }
@@ -213,9 +214,8 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 	playerPosition.x = cameraPosition.x;
 	playerPosition.z = cameraPosition.z;
 	
-
 	// 플레이어 바운딩 스페어 업데이트
-	player_sphere.Update(XMFLOAT3(cameraPosition.x, cameraPosition.y, cameraPosition.z), 1.0);
+	player_sphere.Update(XMFLOAT3(playerPosition.x, playerPosition.y + 1.0, playerPosition.z), 1.0);
 
 	currentServerState = currentPlayerState;
 }
@@ -281,7 +281,7 @@ void Player::UpdateTerrainCollision(float FrameTime) {
 	// 플레이어 높이가 항상 터레인 위에 위치하도록 한다
 	if (auto terrain = scene.Find(currentTerrainName); terrain) {
 		terr.InputPosition(cameraPosition);
-		terr.ClampToTerrain(terrain->GetTerrain(), cameraPosition, 4.5);
+		terr.ClampToTerrain(terrain->GetTerrain(), cameraPosition, 3.0);
 		terr.ClampToTerrain(terrain->GetTerrain(), playerPosition, 0.0);
 	}
 }
@@ -354,4 +354,9 @@ void Player::UpdateCamera(float FrameTime) {
 
 	// 정조준 시 fov 업데이트
 	globalFovOffset = std::lerp(globalFovOffset, fovDest, FrameTime * 20.0);
+}
+
+void Player::GiveDamage(int HP) {
+	// 대미지를 받으면 피드백을 표시한다.
+	scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
 }

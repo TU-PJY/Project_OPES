@@ -195,6 +195,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="PickingUtil.h" />
     <ClInclude Include="PlantMonster.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="PlayerHit.h" />
     <ClInclude Include="PoisonBall.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RoadBlock.h" />
@@ -260,6 +261,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="GameResource.cpp" />
     <ClCompile Include="PlantMonster.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="PlayerHit.cpp" />
     <ClCompile Include="PoisonBall.cpp" />
     <ClCompile Include="RandomUtil.cpp" />
     <ClCompile Include="Resterizers.cpp" />

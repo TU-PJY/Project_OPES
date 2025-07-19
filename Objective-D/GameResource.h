@@ -138,6 +138,7 @@ typedef struct {
 
 	// UI
 	Texture* UI_map1Enemy;
+	Texture* UI_playerHit;
 }TextureResource;
 extern TextureResource TEX;
 

@@ -36,6 +36,7 @@ void PoisonBall::updateCollision() {
 	for (int i = 0; i < layerSize; i++) {
 		if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
 			if (bs.CheckCollision(player->GetOOBB())) {
+				player->GiveDamage(5);
 				disappearState = true;
 				return;
 			}
@@ -64,12 +65,12 @@ void PoisonBall::updateMove(float Delta) {
 		return;
 
 	// 대상을 향해 날아간다
-	Math::MoveInDirection(position, moveAngleY, moveAngleX, 15.0, Delta);
+	Math::MoveInDirection(position, moveAngleY, moveAngleX, 30.0, Delta);
 	bs.Update(position, 1.0);
 
-	// 80.0이상 이동했다면 사라짐 상태 활성화
+	// 300.0이상 이동했다면 사라짐 상태 활성화
 	float MoveDistance = Math::CalcDistance3D(position, originPosition);
-	if (MoveDistance >= 80.0)
+	if (MoveDistance >= 300.0)
 		disappearState = true;
 }
 

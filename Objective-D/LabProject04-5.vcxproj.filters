@@ -230,6 +230,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]">
       <UniqueIdentifier>{abd4ba8e-b8dd-4470-9ac2-e061fa363821}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]">
+      <UniqueIdentifier>{d1ac7033-8372-4a00-9dac-79a0096f0060}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -418,6 +421,9 @@
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerHit.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -618,6 +624,9 @@
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerHit.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

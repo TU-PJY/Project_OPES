@@ -204,6 +204,7 @@ void LoadTexture(DeviceSystem& System) {
 
 	// UI
 	LoadTexture(TEX.UI_map1Enemy, L"Resources//Image//ui//map1_enemy.png");
+	LoadTexture(TEX.UI_playerHit, L"Resources//Image//ui//playerHit.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
