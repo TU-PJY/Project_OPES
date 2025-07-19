@@ -60,6 +60,7 @@ void LoadMesh(DeviceSystem& System) {
 		LoadSingleStaticFBX(MESH.Mushroom[0], "Resources//Models//map1//mushroom-1.fbx");
 		LoadSingleStaticFBX(MESH.Mushroom[1], "Resources//Models//map1//mushroom-2.fbx");
 
+		// monster - scorpion
 		LoadAnimatedFBX(MESH.scorpion, "Resources//Models//monster//scorpion.fbx",
 			"Resources//Animation Data//scorpion.pca", "Resources//Models//monster//scorpion.json", false);
 

@@ -22,6 +22,7 @@ Player1st::Player1st(const std::string& terrainName, int characterType) {
 	switch (characterType) {
 	case CHARACTER_MG:
 		weaponPtr = scene.AddObject(new HeavyMachineGun(this), "mg", LAYER4);
+		maxSpeed = 10.0;
 		break;
 	}
 
@@ -223,6 +224,10 @@ XMFLOAT3 Player1st::GetPosition() {
 
 OOBB Player1st::GetOOBB() {
 	return playerBound;
+}
+
+XMFLOAT3 Player1st::GetSize() {
+	return playerSize;
 }
 
 void Player1st::InputRecoil(float Value) {

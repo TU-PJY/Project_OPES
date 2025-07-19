@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 몬스터의 경우 객체가 알아서 땅에 붙으니 y값은 다루지 않는다. -->
-<!-- type 1: plantMonster, type 2: troll -->
+<!-- type 1: plantMonster, type 2: scorpion -->
 
 <Script>
 <!-- 맵 중앙 -->
@@ -23,6 +23,14 @@
     <monster type="1" x="95.0" z="-30.0"/>
     
 <!-- 맵 좌측 -->
+    <monster type="2" x="-88.0" z="-43.4"/>
+    <monster type="2" x="-81.0" z="33.0"/>
+    <monster type="2" x="-18.0" z="66.5"/>
+    <monster type="2" x="89.0" z="35.5"/>
+    <monster type="2" x="70.5" z="7.1"/>
+    <monster type="2" x="-32.0" z="-72.1"/>
+    <monster type="2" x="66.0" z="-59.1"/>
+
     <monster type="1" x="-110.0" z="-40.0"/>
     <monster type="1" x="-110.0" z="-35.0"/>
     <monster type="1" x="-70.0" z="-30.0"/>

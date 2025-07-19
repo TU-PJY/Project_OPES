@@ -105,7 +105,11 @@ float4 PSTexColor(VS_OUTPUT input) : SV_TARGET
     float3 meshColor = gf3ObjectColor;
 
     // UseLight가 0이면 조명 사용 안 함, 1이면 조명 사용함
-    float3 finalColor = lerp(texColor.rgb, ComputeLightColor(input, texColor), UseLight);
+    float3 finalColor;
+    if(UseLight == 1)
+        finalColor = ComputeLightColor(input, texColor);
+    else
+        finalColor = texColor.rgb;
     
     // 덮어씌울 색상이 있다면 덮어 씌움
     finalColor += meshColor;
@@ -113,10 +117,9 @@ float4 PSTexColor(VS_OUTPUT input) : SV_TARGET
     // 텍스처의 투명 부분을 제거
     if (texColor.a < 0.01)
         discard;
-
-    // 최종 색상과 안개 색상 혼합
-    // UseFog = 1 일 시 안개 색상 혼합, 0일 시 혼합 안 함
-    finalColor = lerp(finalColor, lerp(finalColor, gFogColor, ComputeFog(input)), UseFog);
+    
+    if (UseFog == 1)
+        finalColor = lerp(finalColor, gFogColor, ComputeFog(input));
 
     float4 outputColor = float4(finalColor, texColor.a * AlphaValue);
     return outputColor;

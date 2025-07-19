@@ -11,10 +11,13 @@ private:
 	Vector vec{};
 	float length{};
 
+	bool  renderState{ true };
+
 public:
 	HP_Indicator();
 	void SetSize(float Value);
 	void InputPosition(XMFLOAT3& inputPos, float heightOffset);
 	void InputHP(int fullHP, int currentHP);
 	void Render();
+	void SetRenderState(bool Flag)override;
 };

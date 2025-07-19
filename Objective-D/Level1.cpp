@@ -22,7 +22,7 @@ namespace Level1 {
 bool editMode = false;
 
 // 활성화 시 디펜스 모드 건너뜀
-bool skipDefenseMode = false;
+bool skipDefenseMode = true;
 
 void Level1::Start() {
 	globalFovOffset = 0.0;
@@ -53,9 +53,7 @@ void Level1::Start() {
 			scene.AddObject(new DefenseModeMonsterGenerator("map1", GLOBAL.map1DefenseEnemyRemained), "defenseModeMonsterGenerator", LAYER1);
 		}
 
-		//scene.AddObject(new CrossHair, "crosshair", LAYERUI);
-		scene.AddObject(new Player1st("map1", CHARACTER_MG), "player_1st", LAYER_PLAYER, true);
-		//scene.AddObject(new Player("map1"), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st("map1", CHARACTER_MG), "player", LAYER_PLAYER, true);
 
 		if(!skipDefenseMode)
 			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);

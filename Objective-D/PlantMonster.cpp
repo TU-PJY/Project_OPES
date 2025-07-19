@@ -33,7 +33,8 @@ void PlantMonster::updateTargetDetect() {
 			if (lookRange.CheckCollision(player->GetOOBB())) {
 
 				// 플레이어가 감지되면 자신과 플레이어 사이의 광선벡터 계산
-				XMFLOAT3 playerPosition = camera.GetPosition();
+				XMFLOAT3 playerPosition = player->GetPosition();
+				playerPosition.y += player->GetSize().y * 1.5;
 				Ray rayVector = Math::CalcRayVector(position, playerPosition);
 				bool isBlocking{};
 
@@ -50,6 +51,7 @@ void PlantMonster::updateTargetDetect() {
 					currentState = PLANT_ATTACK;
 					// 플레이어 방향의 각도로 목표 각도 설정
 					destRotation = Math::CalcDegree3D(position, playerPosition);
+					Math::Normalize2DAngleTo360(destRotation.y);
 					targetPosition = playerPosition;
 				}
 			}
@@ -83,7 +85,7 @@ void PlantMonster::updateAttack(float Delta) {
 		shootState = false;
 
 	// 목표 각도로 회전한다.
-	rotation.y = std::lerp(rotation.y, destRotation.y, 15.0 * Delta);
+	rotation.y = Math::LerpDegrees(rotation.y, destRotation.y, 15.0 * Delta);
 }
 
 // hp 표시기 업데이트 진행
@@ -94,6 +96,7 @@ void PlantMonster::updateIndicatorHP() {
 	if (hpIndicator) {
 		hpIndicator->InputPosition(position, size.y * 1.5);
 		hpIndicator->InputHP(totalHP, currentHP);
+		hpIndicator->SetRenderState(inFrustum);
 	}
 }
 

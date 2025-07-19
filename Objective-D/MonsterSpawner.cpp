@@ -1,5 +1,6 @@
 #include "MonsterSpawner.h"
 #include "PlantMonster.h"
+#include "Scorpion.h"
 
 // 현재 맵에 따라 다른 몬스터 데이터를 로드하도록 한다.
 MonsterSpawner::MonsterSpawner(const std::string& currentMapName, bool editMode) {
@@ -19,6 +20,7 @@ void MonsterSpawner::InputKey(KeyEvent& Event) {
 	if (Event.Type == WM_KEYDOWN && Event.Key == VK_F5) {
 		if (currentMapName.compare("map1") == 0) {
 			scene.DeleteObject("plantMonster", DELETE_RANGE_ALL);
+			scene.DeleteObject("scorpion", DELETE_RANGE_ALL);
 		}
 
 		LoadDataAndSpawnMonster();
@@ -56,8 +58,10 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 
 	if (currentMapName.compare("map1") == 0) {
 		for (int i = 0; i < size; i++) {
-			if (type[i] == 1)
-				scene.AddObject(new PlantMonster(position[i], "map1", false), "plantMonster", LAYER2);
+			//if (type[i] == 1)
+				//scene.AddObject(new PlantMonster(position[i], "map1", false), "plantMonster", LAYER2);
+			if(type[i] == 2)
+				scene.AddObject(new Scorpion(position[i], "map1"), "scorpion", LAYER2);
 		}
 	}
 }

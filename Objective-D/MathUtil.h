@@ -8,6 +8,7 @@ namespace Math {
 	void InitVector(ObjectVector& VectorStruct);
 	void LookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLOAT3& ThisPosition, XMFLOAT3& TargetPosition, XMFLOAT3& TargetUpVector);
 	void BillboardLookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLOAT3& ThisPosition, XMFLOAT3& TargetPosition);
+	float LerpDegrees(float a, float b, float t);
 	Ray CalcRayVector(const XMFLOAT3& OriginPosition, const XMFLOAT3& TargetPosition);
 	bool CheckRayCollision(Ray& RayVector, OOBB& oobb);
 	bool CheckRayCollision(Ray& RayVector, AABB& aabb);

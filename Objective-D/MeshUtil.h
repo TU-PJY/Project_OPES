@@ -272,7 +272,7 @@ public:
 	void ResetAnimation();
 	size_t GetMeshCount();
 	void Render(int Index);
-	XMFLOAT3 GetInplaceDelta(const XMFLOAT3& Size);
+	XMFLOAT3 GetInplaceDelta(const XMFLOAT3& Scale=XMFLOAT3(1.0, 1.0, 1.0));
 	XMFLOAT3 GetNodeRotation(int NodeIndex);
 	void ApplyAnimation();
 

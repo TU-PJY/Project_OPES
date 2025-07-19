@@ -14,9 +14,10 @@ private:
 	FBX         scorpionFBX{ MESH.scorpion };
 	XMFLOAT3    position{};
 	XMFLOAT3    rotation{};
-	XMFLOAT3    size{ 2.0, 2.0, 2.0 };
+	XMFLOAT3    rotationDest{};
+	XMFLOAT3    size{ 3.0, 3.0, 3.0 };
 
-	int         currentState{ SCOR_DEATH };
+	int         currentState{ SCOR_IDLE };
 	int         prevState{ SCOR_IDLE };
 
 	int         totalHP{ 80 };
@@ -26,11 +27,15 @@ private:
 	TerrainUtil terrainUtil{};
 	std::string currentMapName{};
 	GameObject* currentTerrain{};
+	std::vector<OOBB> mapBounds{};
 
 	AABB        frustumAABB{};
 	bool        inFrustum{};
 
 	OOBB        hitBox[3]{};
+
+	BoundSphere lookRange{};
+	BoundSphere scorBound{};
 
 
 public:
@@ -39,8 +44,10 @@ public:
 	void updateBound(float Delta);
 	void updateIndicator();
 	void updateTerrain();
+	void updateDetectPlayer();
 	void updateState();
 	void updateAnimation(float Delta);
+	void updateMove(float Delta);
 	void Update(float Delta) override;
 	void Render() override;
 };

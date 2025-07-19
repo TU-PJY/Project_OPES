@@ -224,9 +224,6 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]">
       <UniqueIdentifier>{a99e71b7-1e0d-418d-a041-6af4eec650bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Spider ]">
-      <UniqueIdentifier>{617c6944-2a09-4ee3-a4f5-a469829d0e7f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]">
       <UniqueIdentifier>{abd4ba8e-b8dd-4470-9ac2-e061fa363821}</UniqueIdentifier>
     </Filter>
@@ -247,6 +244,9 @@
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]">
       <UniqueIdentifier>{59746ad1-9637-47fa-ba56-66fd02e9bcaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]">
+      <UniqueIdentifier>{617c6944-2a09-4ee3-a4f5-a469829d0e7f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -431,7 +431,7 @@
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]</Filter>
     </ClInclude>
     <ClInclude Include="Scorpion.h">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Spider ]</Filter>
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]</Filter>
@@ -649,7 +649,7 @@
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]</Filter>
     </ClCompile>
     <ClCompile Include="Scorpion.cpp">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Spider ]</Filter>
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]</Filter>

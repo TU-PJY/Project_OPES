@@ -44,7 +44,7 @@ private:
 	// 앞, 옆, 최대 이동 속도
 	float    forwardSpeed{};
 	float    strafeSpeed{};
-	float    maxSpeed{ 10.0 };
+	float    maxSpeed{};
 
 	// 체력
 	int totalHP{ 200 };
@@ -86,6 +86,7 @@ public:
 	void Render() override;
 	XMFLOAT3 GetPosition() override;
 	OOBB GetOOBB() override;
+	XMFLOAT3 GetSize() override;
 	void InputRecoil(float Value) override;
 	void GiveDamage(int damage) override;
 };

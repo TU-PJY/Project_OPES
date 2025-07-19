@@ -213,11 +213,11 @@ void FBX::Render(int Index) {
 }
 
 
-XMFLOAT3 FBX::GetInplaceDelta(const XMFLOAT3& Size) {
+XMFLOAT3 FBX::GetInplaceDelta(const XMFLOAT3& Scale) {
 	XMFLOAT3 ReturnValue{};
-	ReturnValue.x = InplaceDelta.x * Size.x;
-	ReturnValue.y = InplaceDelta.y * Size.y;
-	ReturnValue.z = InplaceDelta.z * Size.z;
+	ReturnValue.x = InplaceDelta.x * Scale.x;
+	ReturnValue.y = InplaceDelta.y * Scale.y;
+	ReturnValue.z = InplaceDelta.z * Scale.z;
 	return ReturnValue;
 }
 

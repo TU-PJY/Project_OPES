@@ -87,6 +87,11 @@ void Math::BillboardLookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLO
 	VectorStruct.Look = Vec3::Normalize(XMFLOAT3(Matrix._31, Matrix._32, Matrix._33));
 }
 
+float Math::LerpDegrees(float a, float b, float t) {
+	float delta = fmodf(b - a + 540.0f, 360.0f) - 180.0f;
+	return a + delta * t;
+}
+
 // 광선 벡터를 두 위치를 사용해 계산한다.
 Ray Math::CalcRayVector(const XMFLOAT3& OriginPosition, const XMFLOAT3& TargetPosition) {
 	XMVECTOR Origin = XMLoadFloat3(&OriginPosition);

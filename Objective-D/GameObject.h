@@ -69,6 +69,7 @@ public:
 	virtual Mesh* GetObjectMesh() { return {}; }
 	virtual XMFLOAT3 GetPosition() { return {}; }
 	virtual XMFLOAT3 GetRotation() { return {}; }
+	virtual XMFLOAT3 GetSize() { return {}; }
 	virtual AABB GetAABB() { return {}; }
 	virtual OOBB GetOOBB() { return {}; }
 	virtual OOBB GetOOBB2() { return {}; }
@@ -107,6 +108,7 @@ public:
 	virtual void SetState(int State) {}
 
 	// 인디케이터 함수
+	virtual void SetRenderState(bool Flag) {}
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
 	virtual void InputHP(int fullHP, int currentHP) {}
 	virtual void InputAmmo(int fullAmmo, int currentAmmo) {}

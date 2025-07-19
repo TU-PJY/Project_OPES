@@ -23,6 +23,9 @@ void HP_Indicator::InputHP(int fullHP, int currentHP){
 }
 
 void HP_Indicator::Render() {
+	if (!renderState)
+		return;
+
 	BeginRender();
 	Transform::Move(TranslateMatrix, position);
 	Math::BillboardLookAt(RotateMatrix, vec, position, camera.GetPosition());
@@ -37,4 +40,8 @@ void HP_Indicator::Render() {
 	Transform::Scale(ScaleMatrix, length * renderSize, 0.15 * renderSize, 1.0);
 	SetColor(1.0, 0.0, 0.0);
 	Render3D(SYSRES.BillboardMesh, TEX.ColorTex);
+}
+
+void HP_Indicator::SetRenderState(bool Flag) {
+	renderState = Flag;
 }
