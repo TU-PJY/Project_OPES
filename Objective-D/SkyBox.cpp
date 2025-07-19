@@ -6,6 +6,6 @@ void SkyBox::Render() {
 	FlipTexture(FLIP_TYPE_NONE);
 	SetLightUse(DISABLE_LIGHT);
 	Transform::Move(TranslateMatrix, camera.GetPosition());
-	Transform::Scale(ScaleMatrix, XMFLOAT3(300.0, 300.0, 300.0));
+	Transform::Scale(ScaleMatrix, XMFLOAT3(400.0, 400.0, 400.0));
 	Render3D(SYSRES.SkyboxMesh, TEX.skyBox);
 }
