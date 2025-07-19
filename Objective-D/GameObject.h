@@ -43,8 +43,8 @@ public:
 	void RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue = 1.0, int DepthTestFlag = DEPTH_TEST_DEFAULT);
 	void RenderFBX(FBX& TargetFBX, Texture* TexturePtr, float AlphaValue = 1.0, int DepthTestFlag = DEPTH_TEST_DEFAULT);
 	int PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance);
-	void Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue=1.0f, int DepthTestFlag=DEPTH_TEST_DEFAULT);
-	void Render2D(Texture* TexturePtr, float AlphaValue=1.0f, bool EnableAspect=true);
+	void Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue = 1.0f, int DepthTestFlag = DEPTH_TEST_DEFAULT);
+	void Render2D(Texture* TexturePtr, float AlphaValue = 1.0f, bool EnableAspect = true);
 	void UpdateMotionRotation(float& RotationX, float& RotationY, float DeltaX, float DeltaY);
 	void UpdateMotionRotation(XMFLOAT3& Rotation, float DeltaX, float DeltaY);
 	void UpdatePickMatrix();
@@ -80,6 +80,16 @@ public:
 	// 크로스헤어 반동 부여 함수
 	virtual void InputRecoil(float Value) {}
 
+	// 총기 함수
+	virtual void enableZoom() {}
+	virtual void disableZoom() {}
+	virtual void inputRotation(const XMFLOAT3& rotation) {}
+	virtual void pullTrigger() {}
+	virtual void releaseTrigger() {}
+	virtual void inputMoveState(bool moveState) {}
+	virtual int getTotalAmmo() { return{}; }
+	virtual int getCurrentAmmo() { return{}; }
+
 	// 크로스헤어 렌더링 활성화/비활성화
 	virtual void EnableRender() {}
 	virtual void DisableRender() {}
@@ -96,9 +106,11 @@ public:
 	virtual void GiveDamage(int hp) {}
 	virtual void SetState(int State) {}
 
-	// HP 인디케이터 함수
+	// 인디케이터 함수
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
 	virtual void InputHP(int fullHP, int currentHP) {}
+	virtual void InputAmmo(int fullAmmo, int currentAmmo) {}
+	virtual void InputGrenade(int value) {}
 	virtual void SetSize(float Value) {}
 
 	// 서버 테스트

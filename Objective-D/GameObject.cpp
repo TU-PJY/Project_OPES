@@ -322,7 +322,7 @@ void GameObject::SetCamera() {
 	// 렌더 타입에 따라 다른 행렬을 초기화 한다.
 	switch (RenderType) {
 	case RENDER_TYPE_3D: case RENDER_TYPE_3D_STATIC:
-		camera.GeneratePerspectiveMatrix(0.1f, 800.0f, ASPECT, 45.0f + globalFovOffset);
+		camera.GeneratePerspectiveMatrix(0.1f, 800.0f, ASPECT, 55.0f + globalFovOffset);
 		break;
 
 	case RENDER_TYPE_3D_ORTHO:

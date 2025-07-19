@@ -6,6 +6,7 @@
 #include "CenterBuilding.h"
 #include "RoadBlock.h"
 #include "Player.h"
+#include "Player1st.h"
 #include "CrossHair.h"
 #include "Map1DefenseIndicator.h"
 #include "MuzzleFlash.h"
@@ -52,8 +53,9 @@ void Level1::Start() {
 			scene.AddObject(new DefenseModeMonsterGenerator("map1", GLOBAL.map1DefenseEnemyRemained), "defenseModeMonsterGenerator", LAYER1);
 		}
 
-		scene.AddObject(new CrossHair, "crosshair", LAYERUI);
-		scene.AddObject(new Player("map1"), "player", LAYER_PLAYER, true);
+		//scene.AddObject(new CrossHair, "crosshair", LAYERUI);
+		scene.AddObject(new Player1st("map1", CHARACTER_MG), "player_1st", LAYER_PLAYER, true);
+		//scene.AddObject(new Player("map1"), "player", LAYER_PLAYER, true);
 
 		if(!skipDefenseMode)
 			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);

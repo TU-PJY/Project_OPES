@@ -55,12 +55,20 @@ typedef struct{
 	float    Distance;
 }Ray;
 
+// 플레이어 상태 열거형
 enum PlayerState {
 	STATE_IDLE,
 	STATE_MOVE,
 	STATE_IDLE_SHOOT,
 	STATE_MOVE_SHOOT,
 	STATE_DEATH
+};
+
+// 플레이어 캐릭터 타입 열거형
+enum PlayerCharacterType {
+	CHARACTER_MG,  // 기관총 사수
+	CHARACTER_DMR, // 지정 사수
+	CHARACTER_ENG  // 엔지니어   
 };
 
 // 렌더링 타입 열거형

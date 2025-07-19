@@ -233,6 +233,21 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]">
       <UniqueIdentifier>{d1ac7033-8372-4a00-9dac-79a0096f0060}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Player 1st ]">
+      <UniqueIdentifier>{3fbd529c-6ae9-4db3-a31f-33c154875a38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]">
+      <UniqueIdentifier>{20878855-40b9-49d9-919f-ce369466c09f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ HeavyMachineGun ]">
+      <UniqueIdentifier>{030ac226-ca5c-4120-b4ba-daf4b44b5744}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ 0_Super ]">
+      <UniqueIdentifier>{55ebca3c-9928-48db-a1a8-be1fae4be4c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]">
+      <UniqueIdentifier>{59746ad1-9637-47fa-ba56-66fd02e9bcaf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -376,7 +391,6 @@
     <ClInclude Include="Map3.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Maps ]</Filter>
     </ClInclude>
-    <ClInclude Include="..\Server_OPES\Packet.h" />
     <ClInclude Include="CenterBuilding.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Building ]</Filter>
     </ClInclude>
@@ -424,6 +438,21 @@
     </ClInclude>
     <ClInclude Include="PlayerHit.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Player1st.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Player 1st ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Gun.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ 0_Super ]</Filter>
+    </ClInclude>
+    <ClInclude Include="HeavyMachineGun.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ HeavyMachineGun ]</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Server_OPES\Packet.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerIndicator.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -627,6 +656,18 @@
     </ClCompile>
     <ClCompile Include="PlayerHit.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Player1st.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Player 1st ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Gun.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ 0_Super ]</Filter>
+    </ClCompile>
+    <ClCompile Include="HeavyMachineGun.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ HeavyMachineGun ]</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerIndicator.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

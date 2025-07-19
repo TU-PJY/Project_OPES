@@ -176,6 +176,8 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="EditHelper.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Gun.h" />
+    <ClInclude Include="HeavyMachineGun.h" />
     <ClInclude Include="HP_Indicator.h" />
     <ClInclude Include="ImageShader.h" />
     <ClInclude Include="LineBrush.h" />
@@ -195,7 +197,9 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="PickingUtil.h" />
     <ClInclude Include="PlantMonster.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Player1st.h" />
     <ClInclude Include="PlayerHit.h" />
+    <ClInclude Include="PlayerIndicator.h" />
     <ClInclude Include="PoisonBall.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RoadBlock.h" />
@@ -240,6 +244,8 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="FBXUtil.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Gun.cpp" />
+    <ClCompile Include="HeavyMachineGun.cpp" />
     <ClCompile Include="HP_Indicator.cpp" />
     <ClCompile Include="ImageShader.cpp" />
     <ClCompile Include="Level2.cpp" />
@@ -261,7 +267,9 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="GameResource.cpp" />
     <ClCompile Include="PlantMonster.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Player1st.cpp" />
     <ClCompile Include="PlayerHit.cpp" />
+    <ClCompile Include="PlayerIndicator.cpp" />
     <ClCompile Include="PoisonBall.cpp" />
     <ClCompile Include="RandomUtil.cpp" />
     <ClCompile Include="Resterizers.cpp" />
