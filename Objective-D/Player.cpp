@@ -128,6 +128,9 @@ void Player::Update(float FrameTime) {
 	// 터레인 충돌 처리 업데이트
 	UpdateTerrainCollision(FrameTime);
 
+	// 플레이어 바운딩 스페어 업데이트
+	player_sphere.Update(XMFLOAT3(playerPosition.x, playerPosition.y + 0.5, playerPosition.z), 1.0);
+
 	// 총 - 맵 오브젝트 충돌 처리 업데이트
 	UpdateGunCollision();
 	 
@@ -214,9 +217,6 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 	playerPosition.x = cameraPosition.x;
 	playerPosition.z = cameraPosition.z;
 	
-	// 플레이어 바운딩 스페어 업데이트
-	player_sphere.Update(XMFLOAT3(playerPosition.x, playerPosition.y + 1.0, playerPosition.z), 1.0);
-
 	currentServerState = currentPlayerState;
 }
 

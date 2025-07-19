@@ -190,8 +190,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 	if (defenseModeState) {
 		if (auto centerBuilding = scene.Find("center_building"); centerBuilding) {
 			XMFLOAT3 centerBuildingPosition = centerBuilding->GetPosition();
-			float destRotation = Math::CalcDegree2D(position.z, position.x, centerBuildingPosition.z, centerBuildingPosition.x);
-			rotation.y = destRotation;
+			destRotation.y = Math::CalcDegree2D(position.z, position.x, centerBuildingPosition.z, centerBuildingPosition.x);
 			targetPosition = centerBuildingPosition;
 		}
 	}
@@ -253,7 +252,7 @@ void PlantMonster::Render() {
 	for (int i = 0; i < 3; i++)
 		hitBox[i].Render();
 
-	lookRange.Render();
+	//lookRange.Render();
 }
 
 bool PlantMonster::CheckHit(BoundSphere& Sphere, int damage) {

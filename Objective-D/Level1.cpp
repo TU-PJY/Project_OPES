@@ -21,7 +21,7 @@ namespace Level1 {
 bool editMode = false;
 
 // 활성화 시 디펜스 모드 건너뜀
-bool skipDefenseMode = true;
+bool skipDefenseMode = false;
 
 void Level1::Start() {
 	globalFovOffset = 0.0;
