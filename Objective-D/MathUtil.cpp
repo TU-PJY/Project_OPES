@@ -87,6 +87,51 @@ void Math::BillboardLookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLO
 	VectorStruct.Look = Vec3::Normalize(XMFLOAT3(Matrix._31, Matrix._32, Matrix._33));
 }
 
+// 광선 벡터를 두 위치를 사용해 계산한다.
+Ray Math::CalcRayVector(const XMFLOAT3& OriginPosition, const XMFLOAT3& TargetPosition) {
+	XMVECTOR Origin = XMLoadFloat3(&OriginPosition);
+	XMVECTOR Target = XMLoadFloat3(&TargetPosition);
+	XMVECTOR Direction = XMVector3Normalize(Target - Origin);
+
+	Ray OutRay{};
+	OutRay.Origin = Origin;
+	OutRay.Direction = Direction;
+	OutRay.Distance = CalcDistance3D(OriginPosition, TargetPosition);
+
+	return OutRay;
+}
+
+// 광선 벡터가 바운드와 충돌하는지 검사한다. CalcRayVector()에서 계산된 거리까지만 검사한다.
+bool Math::CheckRayCollision(Ray& RayVector, OOBB& oobb) {
+	static int count{};
+	float Distance{};
+	if (oobb.oobb.Intersects(RayVector.Origin, RayVector.Direction, Distance)) {
+		if (Distance <= RayVector.Distance) {
+			std::cout << "collide " << count << std::endl;
+			count++;
+			return true;
+		}
+		return false;
+	}
+	return false;
+}
+
+bool Math::CheckRayCollision(Ray& RayVector, AABB& aabb) {
+	float Distance;
+	aabb.aabb.Intersects(RayVector.Origin, RayVector.Direction, Distance);
+	if (Distance <= RayVector.Distance)
+		return true;
+	return false;
+}
+
+bool Math::CheckRayCollision(Ray& RayVector, BoundSphere& sphere) {
+	float Distance;
+	sphere.sphere.Intersects(RayVector.Origin, RayVector.Direction, Distance);
+	if (Distance <= RayVector.Distance)
+		return true;
+	return false;
+}
+
 // 회전각도로 레이를 계산한다.
 XMVECTOR Math::CalcRayDirection(XMFLOAT3& Rotation) {
 	float RotationX = XMConvertToRadians(Rotation.x);
@@ -342,20 +387,13 @@ XMFLOAT3 GetForwardVectorFromRotation(float yawDegrees, float pitchDegrees) {
 	float yaw = XMConvertToRadians(yawDegrees);
 	float pitch = XMConvertToRadians(pitchDegrees);
 
-	// 회전 행렬: Yaw → Pitch 순서
-	XMMATRIX yawMatrix = XMMatrixRotationY(yaw);
-	XMMATRIX pitchMatrix = XMMatrixRotationX(pitch);
+	XMFLOAT3 forward;
 
-	// 회전 행렬 합성
-	XMMATRIX rotation = pitchMatrix * yawMatrix;
+	forward.x = cosf(pitch) * sinf(yaw);
+	forward.y = sinf(pitch);
+	forward.z = cosf(pitch) * cosf(yaw);
 
-	// Z+ 정면 기준 벡터
-	XMVECTOR forward = XMVector3TransformNormal(
-		XMVectorSet(0, 0, 1, 0), rotation);
-
-	XMFLOAT3 result;
-	XMStoreFloat3(&result, XMVector3Normalize(forward));
-	return result;
+	return forward;
 }
 
 void Math::MoveInDirection(XMFLOAT3& position, float yawDegrees, float pitchDegrees, float speed, float deltaTime) {

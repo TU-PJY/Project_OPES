@@ -125,7 +125,7 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
 	// polygon scifi player asset - heavy
-	/*LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", 
+	LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", 
 		"Resources//Animation Data//heavy_idle.pca", "", false);
 
 	LoadAnimatedFBX(MESH.heavyMove, "Resources//Models//player//heavy//heavy_move.fbx", 
@@ -135,7 +135,7 @@ void LoadMesh(DeviceSystem& System) {
 		"Resources//Animation Data///heavy_shoot.pca", "", false);
 
 	LoadAnimatedFBX(MESH.heavyDeath, "Resources//Models//player//heavy//heavy_death.fbx", 
-		"Resources//Animation Data///heavy_death.pca", "", false);*/
+		"Resources//Animation Data///heavy_death.pca", "", false);
 }
 /////////////////////////////////////////////////////////////////////////////////
 

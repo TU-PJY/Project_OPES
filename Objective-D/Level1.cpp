@@ -18,7 +18,10 @@ namespace Level1 {
 	std::deque<GameObject*> ControlObjectList; 
 }
 
-bool editMode = true;
+bool editMode = false;
+
+// 활성화 시 디펜스 모드 건너뜀
+bool skipDefenseMode = true;
 
 void Level1::Start() {
 	globalFovOffset = 0.0;
@@ -32,7 +35,11 @@ void Level1::Start() {
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
 	scene.AddObject(new Map1, "map1", LAYER1, true);
 	scene.AddObject(new CenterBuilding("map1", -2.0), "center_building", LAYER1);
-	scene.AddObject(new MonsterSpawner("map1", editMode), "monsterSpawner", LAYER1, true);
+
+	if(skipDefenseMode)
+		scene.AddObject(new MonsterSpawner("map1", true), "monsterSpawner", LAYER1, true);
+	else
+		scene.AddObject(new MonsterSpawner("map1", editMode), "monsterSpawner", LAYER1, editMode);
 
 	if (editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
@@ -40,13 +47,16 @@ void Level1::Start() {
 	}
 	else {
 		// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
-		scene.AddObject(new RoadBlock(XMFLOAT3(-91.0, 5.0, -93.0), 20.0, 10), "roadBlock", LAYER1);
-		scene.AddObject(new DefenseModeMonsterGenerator("map1", GLOBAL.map1DefenseEnemyRemained), "defenseModeMonsterGenerator", LAYER1);
+		if (!skipDefenseMode) {
+			scene.AddObject(new RoadBlock(XMFLOAT3(-91.0, 5.0, -93.0), 20.0, 10), "roadBlock", LAYER1);
+			scene.AddObject(new DefenseModeMonsterGenerator("map1", GLOBAL.map1DefenseEnemyRemained), "defenseModeMonsterGenerator", LAYER1);
+		}
 
 		scene.AddObject(new CrossHair, "crosshair", LAYERUI);
 		scene.AddObject(new Player("map1"), "player", LAYER_PLAYER, true);
 
-		scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);
+		if(!skipDefenseMode)
+			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);
 	}
 
 }

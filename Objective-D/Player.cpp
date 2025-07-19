@@ -29,6 +29,8 @@ Player::Player(std::string MapObjectName) {
 	// 오버헤드 감소를 위해 미리 크로스헤어 오브젝트 포인터를 저장한다.
 	if (auto Object = scene.Find("crosshair"))
 		crosshair = Object;
+
+	playerBound.SetUpdateFrequency(24);
 }
 
 void Player::InputMouseMotion(MotionEvent& Event) {
@@ -82,13 +84,13 @@ void Player::InputKey(KeyEvent& Event) {
 
 // 현재 위치, y회전값, x회전값, 대미지, 현재 맵 이름을 전달한다.
 void Player::createBulletObject() {
-	scene.AddObject(new Bullet(position, rotation.y, rotation.x, 10, currentTerrainName), "bullet", LAYER1);
+	scene.AddObject(new Bullet(cameraPosition, rotation.y, rotation.x, 10, currentTerrainName), "bullet", LAYER1);
 }
 
 // 서버 부하를 방지하기 위해 0.05초 간격으로 패킷 전송 
 // 개발을 위해 잠시 비활성화
 void Player::SendPacket(float Delta) {
-	//std::cout << position.x << " " << position.y << " " << position.z << std::endl;
+	std::cout << cameraPosition.x << " " << cameraPosition.y << " " << cameraPosition.z << std::endl;
 
 	/*sendDelay += Delta;
 
@@ -136,6 +138,9 @@ void Player::Update(float FrameTime) {
 
 	UpdateFire(FrameTime);
 
+	// 플레이어 OOBB 업데이트
+	updateBound(FrameTime);
+
 	// 서버로 패킷 전송
 	SendPacket(FrameTime);
 }
@@ -143,7 +148,7 @@ void Player::Update(float FrameTime) {
 void Player::Render() {
 	// 1인칭 총 렌더링
 	BeginRender();
-	Transform::Move(TranslateMatrix, position);
+	Transform::Move(TranslateMatrix, cameraPosition);
 	Transform::Rotate(TranslateMatrix, gunRotation.x, gunRotation.y + gunRotationOffset, gunRotation.z);
 	Transform::Move(TranslateMatrix, gunPositionOffset.x, gunPositionOffset.y, gunPositionOffset.z + gunOffset);
 	Render3D(MESH.machine_gun, TEX.scifi);
@@ -158,9 +163,17 @@ void Player::Render() {
 		Render3D(MESH.gun_flame, TEX.gun_flame);
 		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
 	}
-
 	gunOOBB.Update(MESH.machine_gun, TranslateMatrix, RotateMatrix, ScaleMatrix, true);
 	gunOOBB.Render();
+	//player_sphere.Render();
+
+	// 플레이어 바운드박스 업데이트
+	BeginRender();
+	Transform::Move(TranslateMatrix, playerPosition);
+	Transform::Rotate(RotateMatrix, XMFLOAT3(0.0, rotation.y, 0.0));
+	Transform::Scale(ScaleMatrix, XMFLOAT3(3.0, 3.0, 3.0));
+	playerBound.UpdateAnimated(playerFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 0);
+	playerBound.Render();
 }
 
 void Player::UpdateMoveSpeed(float FrameTime) {
@@ -181,13 +194,7 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 	if ((!moveRightState && !moveLeftState) || (moveRightState && moveLeftState)) 
 		strafeSpeed = std::lerp(strafeSpeed, 0.0, 10.0 * FrameTime);
 
-	// 플레이어 바운딩 스페어 업데이트
-	player_sphere.Update(position, 2.0);
-
-	// OOBB와 충돌을 체크하면서 이동
-	Math::MoveWithSlide(position, rotation.y, forwardSpeed, strafeSpeed, player_sphere, map_oobb_data, FrameTime);
-
-	if ((moveFrontState && !moveBackState) || (moveBackState && !moveFrontState) || 
+	if ((moveFrontState && !moveBackState) || (moveBackState && !moveFrontState) ||
 		(moveRightState && !moveLeftState) || (moveLeftState && !moveRightState)) {
 		if (triggerState)
 			currentPlayerState = STATE_MOVE_SHOOT;
@@ -200,6 +207,15 @@ void Player::UpdateMoveSpeed(float FrameTime) {
 		else
 			currentPlayerState = STATE_IDLE;
 	}
+
+	// OOBB와 충돌을 체크하면서 이동
+	Math::MoveWithSlide(cameraPosition, rotation.y, forwardSpeed, strafeSpeed, player_sphere, map_oobb_data, FrameTime);
+	playerPosition.x = cameraPosition.x;
+	playerPosition.z = cameraPosition.z;
+	
+
+	// 플레이어 바운딩 스페어 업데이트
+	player_sphere.Update(XMFLOAT3(cameraPosition.x, cameraPosition.y, cameraPosition.z), 1.0);
 
 	currentServerState = currentPlayerState;
 }
@@ -264,9 +280,15 @@ void Player::UpdateGun(float FrameTime) {
 void Player::UpdateTerrainCollision(float FrameTime) {
 	// 플레이어 높이가 항상 터레인 위에 위치하도록 한다
 	if (auto terrain = scene.Find(currentTerrainName); terrain) {
-		terr.InputPosition(position);
-		terr.ClampToTerrain(terrain->GetTerrain(), position, 3.0);
+		terr.InputPosition(cameraPosition);
+		terr.ClampToTerrain(terrain->GetTerrain(), cameraPosition, 4.5);
+		terr.ClampToTerrain(terrain->GetTerrain(), playerPosition, 0.0);
 	}
+}
+
+void Player::updateBound(float Delta) {
+	playerBound.UpdateDelta(Delta);
+	playerFBX.UpdateAnimation(Delta);
 }
 
 void Player::UpdateGunCollision() {
@@ -287,7 +309,7 @@ void Player::UpdateCameraRotation() {
 
 	// 벡터 및 카메라 추적 업데이트
 	Math::UpdateVector(vec, rotation);
-	camera.Track(position, vec, 0);
+	camera.Track(cameraPosition, vec, 0);
 }
 
 void Player::UpdateWalkMotion(float FrameTime) {

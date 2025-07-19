@@ -20,6 +20,7 @@ private:
 	XMFLOAT3    targetPosition{};
 	float       terrainHeight{};
 	XMFLOAT3    rotation{};
+	XMFLOAT3    destRotation{};
 	XMFLOAT3    size{ XMFLOAT3(3.0, 3.0, 3.0) };
 
 	// 각종 상태
@@ -51,6 +52,11 @@ private:
 	
 	// 현재 객체가 소유하는 hp 표시기 오브젝트 포인터
 	GameObject* hpIndicator{};
+
+	std::string currentMapName{};
+
+	// 맵이 가지는 바운드박스 데이터
+	std::vector<OOBB> mapBoundData{};
 
 public:
 	void updateHitBox(float Delta);

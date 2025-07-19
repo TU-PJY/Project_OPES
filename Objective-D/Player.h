@@ -6,8 +6,13 @@
 
 class Player : public GameObject {
 private:
+	// 바운드박스용 fbx, 렌더링 없이 바운드박스 업데이트용으로 사용한다.
+	FBX         playerFBX{ MESH.heavyIdle };
+	OOBB        playerBound{};
+	XMFLOAT3    playerPosition{};
+
 	// 위치
-	XMFLOAT3    position{ -140.0, 20.0, -130.0 };
+	XMFLOAT3    cameraPosition{ -140.0, 20.0, -130.0 };
 
 	// 각도 (바라보는 각도)
 	XMFLOAT3    rotation{};
@@ -111,7 +116,7 @@ private:
 	// 맵 벽 oobb 데이터
 	std::vector<OOBB> map_oobb_data{};
 
-	// 플레이어 충돌 범위
+	// 플레이어 맵 터레인 충돌 범위
 	BoundSphere       player_sphere{};
 
 	// 총 바운드 박스
@@ -141,16 +146,27 @@ public:
 	void UpdateGun(float FrameTime);
 	void UpdateCameraRotation();
 	void UpdateTerrainCollision(float FrameTime);
+	void updateBound(float Delta);
 	void UpdateGunCollision();
 	void UpdateWalkMotion(float FrameTime);
 	void UpdateShootMotion(float FrameTime);
-	void Update(float FrameTime) override;
-	void Render();
 	void UpdateCamera(float FrameTime);
+	void Render();
+	void Update(float FrameTime) override;
+
 	XMFLOAT3 GetPosition() {
-		return  position;
-	};
+		return  cameraPosition;
+	}
+
 	XMFLOAT3 GetRotation() {
 		return  rotation;
-	};
+	}
+
+	OOBB GetOOBB() {
+		return playerBound;
+	}
+
+	BoundSphere GetBoundSphere() {
+		return player_sphere;
+	}
 };

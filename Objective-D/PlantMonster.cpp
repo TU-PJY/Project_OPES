@@ -9,8 +9,9 @@ void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH)
 		return;
 
-	frustumBound.Update(position, 10.0);
-	lookRange.Update(position, 10.0);
+	// 디펜스 모드일때만 실시간으로 프러스텀 바운드를 업데이트 한다.
+	if(defenseModeState)
+		frustumBound.Update(position, 10.0);
 
 	for (int i = 0; i < 3; i++)
 		hitBox[i].UpdateDelta(Delta);
@@ -24,6 +25,40 @@ void PlantMonster::updateTargetDetect() {
 	// 디펜스 모드 시에는 중앙 건물만을 공격하므로 플레이어 인식 안 함
 	if (defenseModeState)
 		return;
+
+	size_t layerSize = scene.LayerSize(LAYER_PLAYER);
+	for (int i = 0; i < layerSize; i++) {
+		if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
+			// 시야 범위 내에서 플레이어가 감지되는지 확인
+			if (lookRange.CheckCollision(player->GetOOBB())) {
+
+				// 플레이어가 감지되면 자신과 플레이어 사이의 광선벡터 계산
+				XMFLOAT3 playerPosition = camera.GetPosition();
+				Ray rayVector = Math::CalcRayVector(position, playerPosition);
+				bool isBlocking{};
+
+				// 광선이 맵 바운드박스에 충돌하면 IDLE 유지, 그렇지 않다면 ATTACK으로 상태 변경
+				for (auto& B : mapBoundData) {
+					if (Math::CheckRayCollision(rayVector, B)) {
+						currentState = PLANT_IDLE;
+						isBlocking = true;
+						break;
+					}
+				}
+
+				if (!isBlocking) {
+					currentState = PLANT_ATTACK;
+					// 플레이어 방향의 각도로 목표 각도 설정
+					destRotation = Math::CalcDegree3D(position, playerPosition);
+					targetPosition = playerPosition;
+				}
+			}
+
+			// 플레이어가 시야 밖으로 나가면 다시 IDLE로 상태 변경
+			else
+				currentState = PLANT_IDLE;
+		}
+	}
 }
 
 // 공격 타이밍 업데이트
@@ -35,16 +70,20 @@ void PlantMonster::updateAttack(float Delta) {
 	}
 
 	// 공격 모션에 맞추어 독 구체를 발사한다.
+	// 공격 대상을 향해 발사한다.
 	// 구체 발사 후 애니메이션의 같은 구간에 도달할 때까지 발사하지 않는다.
 	if (plantFBX.GetTimeSectionPassed(plantFBX.GetCurrentAnimationTime() - 0.65f)) {
 		if (!shootState) {
 			XMFLOAT3 createPosition = Math::CalcForwardOffset(position, rotation.y, 2.0f, size.y * 0.9);
-			scene.AddObject(new PoisonBall(createPosition, targetPosition, true), "poisonBall", LAYER3);
+			scene.AddObject(new PoisonBall(createPosition, targetPosition, currentMapName, true), "poisonBall", LAYER3);
 			shootState = true;
 		}
 	}
 	else
 		shootState = false;
+
+	// 목표 각도로 회전한다.
+	rotation.y = std::lerp(rotation.y, destRotation.y, 15.0 * Delta);
 }
 
 // hp 표시기 업데이트 진행
@@ -139,6 +178,10 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 		//  땅에서 나오는 상태일 경우 높이를 땅 속으로 옮긴다.
 		if (!behaviorEnabledState)
 			position.y -= 10.0;
+
+		mapBoundData = terrain->GetMapWallOOBB();
+
+		currentMapName = terrainName;
 	}
 	else 
 		position = tempPosition;
@@ -158,6 +201,13 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 
 	for (int i = 0; i < 3; i++)
 		hitBox[i].SetUpdateFrequency(24);
+
+	// 어드벤처 모드에서만 시야를 설정한다.
+	if (!defenseModeState)
+		lookRange.Update(XMFLOAT3(position.x, position.y + size.y, position.z), 50.0);
+
+	// 프러스텀 바운드 설정
+	frustumBound.Update(position, 10.0);
 }
 
 PlantMonster::~PlantMonster() {
@@ -203,7 +253,7 @@ void PlantMonster::Render() {
 	for (int i = 0; i < 3; i++)
 		hitBox[i].Render();
 
-	//frustumBound.Render();
+	lookRange.Render();
 }
 
 bool PlantMonster::CheckHit(BoundSphere& Sphere, int damage) {

@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "MathUtil.h"
+#include "TerrainUtil.h"
 
 class PoisonBall : public GameObject {
 private:
@@ -11,12 +12,23 @@ private:
 	BoundSphere bs{};
 	bool        defenseModeState{};
 
+	float       moveAngleX{};
+	float       moveAngleY{};
+
 	float       opacity{ 1.0 };
 	XMFLOAT3    size{ 1.0, 1.0, 1.0 };
-	bool        disapperState{};
+	bool        disappearState{};
+
+	std::vector<OOBB> mapBoundData{};
+	std::string       currentMapName{};
+	TerrainUtil       terrainUtil;
+	GameObject*       currentTerrain{};
+
+	// 面倒贸府侩 官款靛
+	BoundSphere       poisonSphere{};
 
 public:
-	PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, bool defenseMode=false);
+	PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, const std::string& terrainName, bool defenseMode=false);
 	void updateCollision();
 	void updateMove(float Delta);
 	void updateDisappear(float Delta);

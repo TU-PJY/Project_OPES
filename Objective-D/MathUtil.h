@@ -8,6 +8,10 @@ namespace Math {
 	void InitVector(ObjectVector& VectorStruct);
 	void LookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLOAT3& ThisPosition, XMFLOAT3& TargetPosition, XMFLOAT3& TargetUpVector);
 	void BillboardLookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLOAT3& ThisPosition, XMFLOAT3& TargetPosition);
+	Ray CalcRayVector(const XMFLOAT3& OriginPosition, const XMFLOAT3& TargetPosition);
+	bool CheckRayCollision(Ray& RayVector, OOBB& oobb);
+	bool CheckRayCollision(Ray& RayVector, AABB& aabb);
+	bool CheckRayCollision(Ray& RayVector, BoundSphere& sphere);
 	XMVECTOR CalcRayDirection(XMFLOAT3& Rotation);
 	XMVECTOR CalcRayOrigin(XMFLOAT3& Position);
 	bool CheckRayCollision(XMVECTOR& rayOrigin, XMVECTOR& rayDirection, const AABB& Other);

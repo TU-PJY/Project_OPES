@@ -52,6 +52,7 @@ using StringDataVec = std::vector<std::string>;
 typedef struct{
 	XMVECTOR Origin;     // 시작 위치
 	XMVECTOR Direction;  // 정규화된 방향
+	float    Distance;
 }Ray;
 
 enum PlayerState {

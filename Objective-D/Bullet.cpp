@@ -14,7 +14,7 @@ Bullet::Bullet(const XMFLOAT3& createPosition, float degreesY, float degreesX, i
 	}
 
 	this->degreesY = degreesY;
-	this->degreesX = degreesX;
+	this->degreesX = -degreesX;
 	this->bulletDamage = damage;
 }
 
