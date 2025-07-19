@@ -15,6 +15,7 @@ void EditHelper::Update(float Delta) {
 
 	XMFLOAT3 currentCamPosition = camera.GetPosition();
 	float currentCamRotation = XMConvertToDegrees(camera.GetYaw());
+	currentCamRotation -= 180.0;
 	Math::Normalize2DAngleTo360(currentCamRotation);
 
 	std::ostringstream ossX;
@@ -37,20 +38,20 @@ void EditHelper::Update(float Delta) {
 		"(" + ossPickX.str() + ", " + ossPickY.str() + ", " + ossPickZ.str() + ")";
 
 	//Z+
-	compassPos[0].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation - 270.0)) * 0.25;
-	compassPos[0].y = compassCenter.y + sinf(XMConvertToRadians(currentCamRotation - 270.0)) * 0.25;
+	compassPos[0].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation - 270.0 + 180.0)) * 0.25;
+	compassPos[0].y = compassCenter.y + sinf(XMConvertToRadians(currentCamRotation - 270.0 + 180.0)) * 0.25;
 
 	//Z-
-	compassPos[1].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation - 90.0)) * 0.25;
-	compassPos[1].y = compassCenter.y + sinf(XMConvertToRadians(currentCamRotation - 90.0)) * 0.25;
+	compassPos[1].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation - 90.0 + 180.0)) * 0.25;
+	compassPos[1].y = compassCenter.y + sinf(XMConvertToRadians(currentCamRotation - 90.0 + 180.0)) * 0.25;
 
 	// X+
-	compassPos[2].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation)) * 0.25;
-	compassPos[2].y = compassCenter.y + sinf(XMConvertToRadians(currentCamRotation)) * 0.25;
+	compassPos[2].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation + 180.0)) * 0.25;
+	compassPos[2].y = compassCenter.y + sinf(XMConvertToRadians(currentCamRotation + 180.0)) * 0.25;
 
 	// X-
-	compassPos[3].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation - 180.0)) * 0.25;
-	compassPos[3].y = compassCenter.y + sinf(XMConvertToRadians(currentCamRotation - 180.0)) * 0.25;
+	compassPos[3].x = compassCenter.x + cosf(XMConvertToRadians(currentCamRotation - 180.0 + 180.0)) * 0.25;
+	compassPos[3].y = compassCenter.y + sinf(XMConvertToRadians(currentCamRotation - 180.0 + 180.0)) * 0.25;
 }
 
 void EditHelper::Render() {

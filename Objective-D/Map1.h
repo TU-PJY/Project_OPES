@@ -47,7 +47,7 @@ public:
 	void InputKey(KeyEvent& Event) override {
 		if (Event.Type == WM_KEYDOWN) {
 			switch (Event.Key) {
-			case 'R':
+			case VK_F3:
 				Load();
 				break;
 
@@ -163,16 +163,8 @@ public:
 		}
 
 		// oobb 렌더링
-		//for (auto& O : OOBBVec)
-			//O.Render();
-
-		//// 테스트용 플레이어 모델
-		//BeginRender();
-		//SetColor(0.0, 0.0, 0.0);
-		//Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
-		//Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);
-		//Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
-		//Render3D(MESH.TestMesh, TEX.TestTex);
+		for (auto& O : OOBBVec)
+			O.Render();
 	}
 
 	void Load() {
@@ -260,7 +252,7 @@ public:
 
 		OOBBVec.clear();
 		OOBBDataScript.Release();
-		OOBBDataScript.Load("Resources//Scripts//map1//map1-oobb.xml");
+		OOBBDataScript.Load("Resources//Scripts//map1//map1-bounds.xml");
 
 		auto LoadOOBBData = [&](CategoryPtr Category) {
 			OOBB oobb;
@@ -268,13 +260,13 @@ public:
 			XMFLOAT3 Size;
 			float Degree;
 
-			Position.y = 3.0;
-			Position.x = OOBBDataScript.GetDigitData(Category, "X");
-			Position.z = OOBBDataScript.GetDigitData(Category, "Z");
-			Size.y = 20.0;
-			Size.x = OOBBDataScript.GetDigitData(Category, "SizeX");
-			Size.z = OOBBDataScript.GetDigitData(Category, "SizeZ");
-			Degree = OOBBDataScript.GetDigitData(Category, "Rotation");
+			Position.x = OOBBDataScript.GetDigitData(Category, "x");
+			Position.y = OOBBDataScript.GetDigitData(Category, "y");
+			Position.z = OOBBDataScript.GetDigitData(Category, "z");
+			Size.x = OOBBDataScript.GetDigitData(Category, "sx");
+			Size.y = OOBBDataScript.GetDigitData(Category, "sy");
+			Size.z = OOBBDataScript.GetDigitData(Category, "sz");
+			Degree = OOBBDataScript.GetDigitData(Category, "r");
 
 			oobb.Update(Position, Size, XMFLOAT3(0.0, Degree, 0.0));
 			OOBBVec.emplace_back(oobb);

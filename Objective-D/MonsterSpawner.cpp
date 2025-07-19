@@ -19,7 +19,6 @@ void MonsterSpawner::InputKey(KeyEvent& Event) {
 	if (Event.Type == WM_KEYDOWN && Event.Key == VK_F5) {
 		if (currentMapName.compare("map1") == 0) {
 			scene.DeleteObject("plantMonster", DELETE_RANGE_ALL);
-			//scene.DeleteObject("troll", DELETE_RANGE_ALL);
 		}
 
 		LoadDataAndSpawnMonster();

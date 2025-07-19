@@ -72,7 +72,7 @@ void Bullet::Render() {
 	Transform::Move(TranslateMatrix, position);
 	Math::LookAt(RotateMatrix, vec, position, camera.GetPosition(), camera.GetUpVector());
 	Transform::Scale(ScaleMatrix, XMFLOAT3(0.2, 0.2, 0.2));
-	SetColor(XMFLOAT3(1.0, 1.0, 0.0));
+	SetColor(XMFLOAT3(1.0, 0.6, 0.0));
 	Render3D(SYSRES.BillboardMesh, TEX.ColorTex, bulletOpacity);
 
 	bulletBound.Render();

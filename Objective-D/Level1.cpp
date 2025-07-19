@@ -18,7 +18,7 @@ namespace Level1 {
 	std::deque<GameObject*> ControlObjectList; 
 }
 
-bool editMode = false;
+bool editMode = true;
 
 void Level1::Start() {
 	globalFovOffset = 0.0;
@@ -30,7 +30,7 @@ void Level1::Start() {
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
 
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
-	scene.AddObject(new Map1, "map1", LAYER1);
+	scene.AddObject(new Map1, "map1", LAYER1, true);
 	scene.AddObject(new CenterBuilding("map1", -2.0), "center_building", LAYER1);
 	scene.AddObject(new MonsterSpawner("map1", editMode), "monsterSpawner", LAYER1, true);
 
