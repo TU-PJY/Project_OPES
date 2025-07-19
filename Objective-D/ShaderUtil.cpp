@@ -85,6 +85,12 @@ void Shader::RenderDefault(ID3D12GraphicsCommandList* CmdList) {
 	OnPrepareRender(CmdList, PSDefault);
 }
 
+// 깊이 쓰기 미포함 파이프라인 적용
+void Shader::RenderTransparentDefault(ID3D12GraphicsCommandList* CmdList) {
+	OnPrepareRender(CmdList, PSTransparentDefault);
+}
+
+
 // 총 불꽃 오브젝트용 파이프라인 적용
 void Shader::RenderCullingNone(ID3D12GraphicsCommandList* CmdList) {
 	OnPrepareRender(CmdList, PSCullingNone);

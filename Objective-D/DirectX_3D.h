@@ -18,6 +18,8 @@
 #include <wrl.h>
 #include <shellapi.h>
 #include <Mmsystem.h>
+#include <array>
+#include <deque>
 
 #include <fstream>
 #include <vector>
@@ -30,6 +32,7 @@
 #include "WICTextureLoader12.h"
 #include "DDSTextureLoader12.h"
 #include "ConstantBuffers.h"
+#include "Config.h"
 
 #include <d3d12.h>
 #include <dxgi1_4.h>
@@ -83,6 +86,7 @@ enum RenderTypeEnum {
 // 깊이 검사 타입 열거형
 enum DepthTestTypeEnum {
 	DEPTH_TEST_DEFAULT,
+	DEPTH_TEST_NOWRITE,
 	DEPTH_TEST_NONE,
 	DEPTH_TEST_NO_CULLING
 };

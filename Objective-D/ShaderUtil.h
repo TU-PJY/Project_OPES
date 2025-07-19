@@ -23,12 +23,14 @@ public:
 	D3D12_RASTERIZER_DESC CreateNoneCullingRasterizerState();
 	virtual D3D12_BLEND_DESC CreateBlendState();
 	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	D3D12_DEPTH_STENCIL_DESC CreateTransparentDepthStencilState();
 	D3D12_DEPTH_STENCIL_DESC CreateNoneDepthStencilState();
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader(ID3DBlob** ShaderBlob);
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader(ID3DBlob** ShaderBlob);
 	virtual D3D12_SHADER_BYTECODE CreateGeometryShader(ID3DBlob** ShaderBlob);
 	D3D12_SHADER_BYTECODE Shader::CompileShaderFromFile(WCHAR* FileName, LPCSTR Shadername, LPCSTR ShaderProfile, ID3DBlob** ShaderBlob);
 	void CreateDefaultPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature);
+	void CreateTransparentDefaultPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature);
 	void CreateNoneCullingPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature);
 	void CreateWireframePS(ID3D12Device* Device, ID3D12RootSignature* RootSignature);
 	void CreateParticlePS(ID3D12Device* Device, ID3D12RootSignature* RootSignature);
@@ -37,6 +39,7 @@ public:
 	void RenderWireframe(ID3D12GraphicsCommandList* CmdList);
 	void RenderDepthNone(ID3D12GraphicsCommandList* CmdList);
 	void RenderDefault(ID3D12GraphicsCommandList* CmdList);
+	void RenderTransparentDefault(ID3D12GraphicsCommandList* CmdList);
 	void RenderCullingNone(ID3D12GraphicsCommandList* CmdList);
 	void RenderParticle(ID3D12GraphicsCommandList* CmdList);
 	virtual void CreateShaderVariables(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList) {}
@@ -45,6 +48,7 @@ public:
 
 protected:
 	ID3D12PipelineState* PSDefault{};
+	ID3D12PipelineState* PSTransparentDefault{};
 	ID3D12PipelineState* PSDepthNone{};
 	ID3D12PipelineState* PSCullingNone{};
 	ID3D12PipelineState* PSWireframe{};

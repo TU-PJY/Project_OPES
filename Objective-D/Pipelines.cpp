@@ -34,6 +34,38 @@ void Shader::CreateDefaultPS(ID3D12Device* Device, ID3D12RootSignature* RootSign
 		delete[] PipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
+// 투명 픽셀이 존재하는 텍스처 렌더링 시 사용하는 파이프라인
+void Shader::CreateTransparentDefaultPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
+	ID3DBlob* VertexShaderBlob = NULL, * PixelShaderBlob = NULL;
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC PipelineStateDesc;
+	::ZeroMemory(&PipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+	PipelineStateDesc.pRootSignature = RootSignature;
+	PipelineStateDesc.VS = CreateVertexShader(&VertexShaderBlob);
+	PipelineStateDesc.PS = CreatePixelShader(&PixelShaderBlob);
+	PipelineStateDesc.RasterizerState = CreateRasterizerState();
+	PipelineStateDesc.BlendState = CreateBlendState();
+	PipelineStateDesc.DepthStencilState = CreateTransparentDepthStencilState();
+	PipelineStateDesc.InputLayout = CreateInputLayout();
+	PipelineStateDesc.SampleMask = UINT_MAX;
+	PipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	PipelineStateDesc.NumRenderTargets = 1;
+	PipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	PipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	PipelineStateDesc.SampleDesc.Count = 1;
+	PipelineStateDesc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+	Device->CreateGraphicsPipelineState(&PipelineStateDesc, __uuidof(ID3D12PipelineState), (void**)&PSTransparentDefault);
+
+	if (VertexShaderBlob)
+		VertexShaderBlob->Release();
+
+	if (PixelShaderBlob)
+		PixelShaderBlob->Release();
+
+	if (PipelineStateDesc.InputLayout.pInputElementDescs)
+		delete[] PipelineStateDesc.InputLayout.pInputElementDescs;
+}
+
 // 총 불꽃 오브젝트용 파이프라인
 void Shader::CreateNoneCullingPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
 	ID3DBlob* VertexShaderBlob = NULL, * PixelShaderBlob = NULL;

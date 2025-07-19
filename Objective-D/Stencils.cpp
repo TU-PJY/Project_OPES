@@ -24,6 +24,16 @@ D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState() {
 	return(DepthStencilDesc);
 }
 
+// 투명 픽셀이 존재하는 텍스처를 렌더링할 때 사용하는 스텐실을 생성한다.
+D3D12_DEPTH_STENCIL_DESC Shader::CreateTransparentDepthStencilState() {
+	D3D12_DEPTH_STENCIL_DESC desc{};
+	desc.DepthEnable = TRUE;
+	desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; // ? 깊이 기록 비활성화
+	desc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	desc.StencilEnable = FALSE;
+	return desc;
+}
+
 // 깊이 검사를 비활성화한 스텐실을 생성한다.
 D3D12_DEPTH_STENCIL_DESC Shader::CreateNoneDepthStencilState() {
 	D3D12_DEPTH_STENCIL_DESC DepthStencilDesc;

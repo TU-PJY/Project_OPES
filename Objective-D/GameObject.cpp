@@ -123,11 +123,15 @@ void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, 
 
 	switch (DepthTestFlag) {
 	case DEPTH_TEST_DEFAULT:
-		ObjectShader->RenderDefault(GlobalCommandList);  
+			ObjectShader->RenderDefault(GlobalCommandList);
+		break;
+
+	case DEPTH_TEST_NOWRITE:
+		ObjectShader->RenderTransparentDefault(GlobalCommandList);
 		break;
 
 	case DEPTH_TEST_NONE:
-		ObjectShader->RenderDepthNone(GlobalCommandList); 
+		ObjectShader->RenderDepthNone(GlobalCommandList);
 		break;
 
 	case DEPTH_TEST_NO_CULLING:
@@ -231,6 +235,10 @@ void GameObject::RenderFBX(FBX& TargetFBX, Texture* TexturePtr, float AlphaValue
 		switch (DepthTestFlag) {
 		case DEPTH_TEST_DEFAULT:
 			ObjectShader->RenderDefault(GlobalCommandList);
+			break;
+
+		case DEPTH_TEST_NOWRITE:
+			ObjectShader->RenderTransparentDefault(GlobalCommandList);
 			break;
 
 		case DEPTH_TEST_NONE:

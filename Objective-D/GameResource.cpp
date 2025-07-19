@@ -219,6 +219,8 @@ void InitObjectShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) 
 	ObjectShader = new Object_Shader();
 	// 기본 파이프라인 생성
 	ObjectShader->CreateDefaultPS(Device, RootSignature);
+	// 깊이 쓰기 미포함 파이프라인 샌성
+	ObjectShader->CreateTransparentDefaultPS(Device, RootSignature);
 	// 깊이 검사 미포함 파이프라인 생성
 	ObjectShader->CreateNoneDepthPS(Device, RootSignature);
 	// 1인칭 파이프라인 생성
