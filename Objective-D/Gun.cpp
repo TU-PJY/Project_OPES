@@ -48,7 +48,7 @@ void Gun::updateGun(float Delta) {
 	if (zoomState) {
 		positionOffset.x = std::lerp(positionOffset.x, 0.0, Delta * 20.0);
 		positionOffset.y = std::lerp(positionOffset.y, -0.22, Delta * 20.0);
-		positionOffset.z = std::lerp(positionOffset.z, 0.4, Delta * 20.0);
+		positionOffset.z = std::lerp(positionOffset.z, 0.2, Delta * 20.0);
 	}
 	else {
 		positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 20.0);
