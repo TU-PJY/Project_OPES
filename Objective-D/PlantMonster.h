@@ -6,6 +6,7 @@ class PlantMonster : public GameObject {
 private:
 	enum PlantMonsterState {
 		PLANT_IDLE,
+		PLANT_MOVE, // 상태 개수 맞추기 위함
 		PLANT_ATTACK,
 		PLANT_DEATH,
 		PLANT_LIFT

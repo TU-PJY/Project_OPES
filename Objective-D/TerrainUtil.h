@@ -15,6 +15,7 @@ public:
 	void ClampToTerrain(const TerrainUtil& Other, XMFLOAT3& PositionValue, float HeightOffsetValue);
 	bool CheckCollision(const TerrainUtil& Other);
 	XMFLOAT3 CheckCollisionRay(const TerrainUtil& Other);
+	void ExportTerrainData(const std::string& OutFileName);
 
 private:
 	XMFLOAT3 Position{};

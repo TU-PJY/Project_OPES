@@ -1,6 +1,5 @@
 #pragma once
 #define _CRT_SECURE_NO_WARNINGS
-#include "DirectX_3D.h"
 #include "tinyxml/tinyxml.h"
 #include <iostream>
 #include <string>
@@ -20,8 +19,6 @@ public:
 	void Load(std::string FileName);
 	float LoadDigitData(std::string CategoryName, std::string DataName);
 	std::string LoadStringData(std::string CategoryName, std::string DataName);
-	DigitDataVec LoadCategoryDigitData(std::string CategoryName);
-	StringDataVec LoadCategoryStringData(std::string CategoryName);
 
 	template<typename Function>
 	void LoadAllData(Function Func) {

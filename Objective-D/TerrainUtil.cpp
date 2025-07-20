@@ -41,12 +41,12 @@ void TerrainUtil::SetHeightToTerrain(XMFLOAT3& PositionValue) {
 
 // 대상 높이를 터레인 높이에 고정시킨다.
 void TerrainUtil::ClampToTerrain(const TerrainUtil& Other, XMFLOAT3& PositionValue, float HeightOffsetValue) {
-	PositionValue.y = Other.TerrainMesh->GetHeightAtPosition(Other.TerrainMesh, Position.x, Position.z, Other.TerrainMatrix) + HeightOffsetValue;
+	PositionValue.y = Other.TerrainMesh->GetHeightAtPosition(Position.x, Position.z) + HeightOffsetValue;
 }
 
 // 입력한 높이가 터레인의 바닥 높이보다 낮은지 검사한다. 낮을 경우 true를 리턴한다.
 bool TerrainUtil::CheckCollision(const TerrainUtil& Other) {
-	float Height = Other.TerrainMesh->GetHeightAtPosition(Other.TerrainMesh, Position.x, Position.z, Other.TerrainMatrix) + HeightOffset;
+	float Height = Other.TerrainMesh->GetHeightAtPosition(Position.x, Position.z) + HeightOffset;
 
 	if (Position.y < Height) {
 		Position.y = Height;
@@ -60,4 +60,23 @@ XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other) {
 	XMFLOAT3 ReturnValue{};
 	Other.TerrainMesh->PickTerrainFromCamera(camera.GetViewMatrix(), ReturnValue);
 	return ReturnValue;
+}
+
+void TerrainUtil::ExportTerrainData(const std::string& OutFileName) {
+	std::ofstream Out{ OutFileName };
+	if (!Out.is_open())
+		return;
+
+	if (!TerrainMesh->HeightCache.empty()) {
+		for (auto const& P : TerrainMesh->HeightCache) {
+			XMFLOAT3 OutData = P;
+
+			Out << "<point x=\"" << P.x
+				<< "\" y=\"" << P.y
+				<< "\" z=\"" << P.z
+				<< "\" />\n";
+		}
+	}
+
+	Out.close();
 }

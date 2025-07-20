@@ -8,7 +8,8 @@ private:
 		SCOR_IDLE,
 		SCOR_WALK,
 		SCOR_ATTACK,
-		SCOR_DEATH
+		SCOR_DEATH,
+		SCOR_LIFT // 상태 개수 맞추기 위함
 	};
 
 	FBX         scorpionFBX{ MESH.scorpion };
