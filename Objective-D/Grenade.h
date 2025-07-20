@@ -18,13 +18,12 @@ private:
 
 	GameObject* currentTerrain{};
 	TerrainUtil terrainUtil{};
-	std::string currentMapName{};
 	std::vector<OOBB> mapBounds{};
 
 	AABB        grenadeBound{};
 
 public:
-	Grenade(const std::string& terrainName, const XMFLOAT3& createPosition, const XMFLOAT3& rotation);
+	Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation);
 	XMVECTOR getNormalFromAngle(const XMFLOAT3& angleDeg);
 	XMFLOAT3 getDirectionFromRotation(const XMFLOAT3& angleDeg);
 	XMFLOAT3 getEulerFromVelocity(const XMFLOAT3& velocity);

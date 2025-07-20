@@ -54,8 +54,6 @@ private:
 	// 현재 객체가 소유하는 hp 표시기 오브젝트 포인터
 	GameObject* hpIndicator{};
 
-	std::string currentMapName{};
-
 	// 맵이 가지는 바운드박스 데이터
 	std::vector<OOBB> mapBoundData{};
 
@@ -69,11 +67,12 @@ public:
 	void updateIndicatorHP();
 	void updateLiftFromGround(float Delta);
 	void updateAnimation(float Delta);
-	void updateDeleteDelay(float Delta);
+	void updateDeath(float Delta);
 
-	PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, unsigned int ID, bool appearFromGround =false);
+	PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool appearFromGround =false);
 	~PlantMonster();
 	void Update(float Delta) override;
 	void Render()            override;
-	bool CheckHit(BoundSphere& Sphere, int damage) override;
+	void GiveDamage(int Damage) override;
+	bool CheckHit(float& distance) override;
 };

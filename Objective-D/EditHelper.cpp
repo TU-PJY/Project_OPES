@@ -2,16 +2,16 @@
 #include "CameraUtil.h"
 #include "MathUtil.h"
 
-EditHelper::EditHelper(const std::string& currentMapName) {
+EditHelper::EditHelper() {
 	text.EnableShadow();
 	text.SetShadow(XMFLOAT2(0.008, -0.008), 1.0);
-	this->currentMapName = currentMapName;
 }
 
 void EditHelper::Update(float Delta) {
 	XMFLOAT3 pickPosition{};
-	if (auto terrain = scene.Find(currentMapName); terrain)
-		pickPosition = terrainUtil.CheckCollisionRay(terrain->GetTerrain());
+	float distance{};
+	if (auto terrain = scene.Find(GLOBAL.mapName); terrain)
+		pickPosition = terrainUtil.CheckCollisionRay(terrain->GetTerrain(), distance);
 
 	XMFLOAT3 currentCamPosition = camera.GetPosition();
 	float currentCamRotation = XMConvertToDegrees(camera.GetYaw());

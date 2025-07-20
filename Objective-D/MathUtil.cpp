@@ -162,9 +162,8 @@ bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const 
 }
 
 // 레이가 바운딩 박스와 충돌하는지 검사한다
-bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const OOBB& Other) {
-	float Distance;
-	return Other.oobb.Intersects(RayOrigin, RayDirection, Distance);
+bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, float& distance, const OOBB& Other) {
+	return Other.oobb.Intersects(RayOrigin, RayDirection, distance);
 }
 
 // 레이가 바운딩 박스와 충돌하는지 검사한다

@@ -2,78 +2,63 @@
 #include "MathUtil.h"
 #include "CameraUtil.h"
 #include "ClampUtil.h"
+#include "PickingUtil.h"
 
-Bullet::Bullet(const XMFLOAT3& createPosition, float degreesY, float degreesX, int damage, const std::string& terrainName) {
-	position = createPosition;
-	startPosition = position;
-	currentMapName = terrainName;
-
-	if (auto terrain = scene.Find(terrainName); terrain) {
+Bullet::Bullet(int damage) {
+	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
 		currentTerrain = terrain;
-		mapOOBBData = terrain->GetMapWallOOBB();
+		mapBounds = terrain->GetMapWallOOBB();
 	}
 
-	this->degreesY = degreesY;
-	this->degreesX = -degreesX;
-	this->bulletDamage = damage;
-}
-
-void Bullet::updateTerrainCollision() {
-	if (currentTerrain) {
-		terrainUtil.InputPosition(position);
-		if (terrainUtil.CheckCollision(currentTerrain->GetTerrain()))
-			scene.DeleteObject(this);
-	}
+	bulletDamage = damage;
 }
 
 void Bullet::updateCollision() {
-	if (currentMapName.compare("map1") == 0) {
-		size_t size = scene.LayerSize(LAYER2);
-		for (int i = 0; i < size; i++) {
-			if (auto enemy = scene.FindMulti("plantMonster", LAYER2, i); enemy) {
-				if (enemy->CheckHit(bulletBound, bulletDamage)) {
-					scene.DeleteObject(this);
-					return;
-				}
+	// 먼저 터레인과 맵 오브젝트에 광선이 충돌하는지 검사 후, 충돌하면 충돌 타겟 후보에 추가한다.
+	if (currentTerrain) {
+		float terrainDistance{};
+		XMFLOAT3 pickPosition = terrainUtil.CheckCollisionRay(currentTerrain->GetTerrain(), terrainDistance);
+
+		// 실제로 충돌 했을 때만 추가
+		if(terrainDistance > 0.0)
+			rayTarget.Add(nullptr, terrainDistance);
+
+		float mapObjectDistance{};
+		for (auto& B : mapBounds) {
+			if (PickingUtil::PickByViewportOOBB(XMFLOAT2(0.0, 0.0), mapObjectDistance, B)) {
+				rayTarget.Add(nullptr, mapObjectDistance);
+				break;
 			}
 		}
 	}
 
-	for (auto& O : mapOOBBData) {
-		if (bulletBound.CheckCollision(O)) {
-			scene.DeleteObject(this);
-			return;
+	// 그 다음 몬스터들이 광선과 충돌하면 충돌 타켓 후보에 추가한다.
+	if (GLOBAL.mapName.compare("map1") == 0) {
+		size_t size = scene.LayerSize(LAYER2);
+		for (int i = 0; i < size; i++) {
+			if (auto object = scene.FindMulti("plantMonster", LAYER2, i); object) {
+				float distance{};
+				if (object->CheckHit(distance)) 
+					rayTarget.Add(object, distance);
+			}
+
+			if (auto object = scene.FindMulti("scorpion", LAYER2, i); object) {
+				float distance{};
+				if (object->CheckHit(distance)) 
+					rayTarget.Add(object, distance);
+			}
 		}
 	}
-}
 
-void Bullet::updateBound() {
-	bulletBound.Update(position, 0.2);
+	// 가장 가까운 거리를 가지는 타겟이 지형이나 맵 오브젝트라면 nullptr을 리턴하여 어떠한 몬스터도 대미지를 입지 않게 된다.
+	auto ptr = rayTarget.GetNearestTarget();
+	if (ptr)
+		ptr->GiveDamage(bulletDamage);
+
+	// 최종적으로 삭제
+	scene.DeleteObject(this);
 }
 
 void Bullet::Update(float Delta) {
-	bulletOpacity += Delta * 15.0;
-	Clamp::LimitValue(bulletOpacity, 1.0, CLAMP_DIR_GREATER);
-
-	Math::MoveInDirection(position, degreesY, degreesX, 250.0, Delta);
-
-	if (Math::CalcDistance3D(position, startPosition) >= 300.0) {
-		scene.DeleteObject(this);
-		return;
-	}
-
-	updateBound();
 	updateCollision();
-	updateTerrainCollision();
-}
-
-void Bullet::Render() {
-	BeginRender();
-	Transform::Move(TranslateMatrix, position);
-	Math::LookAt(RotateMatrix, vec, position, camera.GetPosition(), camera.GetUpVector());
-	Transform::Scale(ScaleMatrix, XMFLOAT3(0.2, 0.2, 0.2));
-	SetColor(XMFLOAT3(1.0, 0.6, 0.0));
-	Render3D(SYSRES.BillboardMesh, TEX.ColorTex, bulletOpacity);
-
-	bulletBound.Render();
 }

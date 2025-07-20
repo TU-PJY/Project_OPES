@@ -34,6 +34,10 @@ typedef struct {
 	int map3DefenseEnemyRemained;
 	bool map3DefenseState;
 
+	// 전역에서 사용되는 맵 객체 이름
+	std::string mapName;
+
+
 }GlobalValue;
 extern GlobalValue GLOBAL;
 

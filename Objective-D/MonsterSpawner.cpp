@@ -3,8 +3,7 @@
 #include "Scorpion.h"
 
 // 현재 맵에 따라 다른 몬스터 데이터를 로드하도록 한다.
-MonsterSpawner::MonsterSpawner(const std::string& currentMapName, bool editMode) {
-	this->currentMapName = currentMapName;
+MonsterSpawner::MonsterSpawner(bool editMode) {
 	this->editMode = editMode;
 
 	if(this->editMode)
@@ -18,7 +17,7 @@ void MonsterSpawner::InputKey(KeyEvent& Event) {
 		return;
 
 	if (Event.Type == WM_KEYDOWN && Event.Key == VK_F5) {
-		if (currentMapName.compare("map1") == 0) {
+		if (GLOBAL.mapName.compare("map1") == 0) {
 			scene.DeleteObject("plantMonster", DELETE_RANGE_ALL);
 			scene.DeleteObject("scorpion", DELETE_RANGE_ALL);
 		}
@@ -34,7 +33,7 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 	type.clear();
 	currentCreateDelay = 0.0;
 
-	if (currentMapName.compare("map1") == 0)
+	if (GLOBAL.mapName.compare("map1") == 0)
 		script.Load("Resources//Scripts//map1//map1-monster.xml");
 
 	auto custumLoad = [&](CategoryPtr Category)
@@ -58,12 +57,12 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 
 	unsigned int currentID{};
 
-	if (currentMapName.compare("map1") == 0) {
+	if (GLOBAL.mapName.compare("map1") == 0) {
 		for (int i = 0; i < size; i++) {
 			if (type[i] == 1)
-				scene.AddObject(new PlantMonster(position[i], "map1", currentID, false), "plantMonster", LAYER2);
+				scene.AddObject(new PlantMonster(position[i], currentID, false), "plantMonster", LAYER2);
 			if(type[i] == 2)
-				scene.AddObject(new Scorpion(position[i], "map1", currentID), "scorpion", LAYER2);
+				scene.AddObject(new Scorpion(position[i], currentID), "scorpion", LAYER2);
 
 			currentID++;
 		}
@@ -76,7 +75,7 @@ void MonsterSpawner::Update(float Delta) {
 	if (editMode)
 		return;
 	
-	if (currentMapName.compare("map1") == 0 && GLOBAL.map1DefenseEnemyRemained == 0) {
+	if (GLOBAL.mapName.compare("map1") == 0 && GLOBAL.map1DefenseEnemyRemained == 0) {
 		LoadDataAndSpawnMonster();
 		scene.DeleteObject(this);
 	}

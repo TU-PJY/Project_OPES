@@ -12,10 +12,9 @@ void SendMovePacket(float x, float y, float z);
 void SendViewingAnglePacket(float x, float y, float z);
 void SendAnimaionPacket(unsigned short playerState);
 
-Player1st::Player1st(const std::string& terrainName, int characterType) {
+Player1st::Player1st(int characterType) {
 	// 현재 맵에서 데이터 받아오기
-	if (auto terrain = scene.Find(terrainName); terrain) {
-		currentMapName = terrainName;
+	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
 		currentTerrain = terrain;
 		mapBounds = terrain->GetMapWallOOBB();
 
@@ -130,7 +129,7 @@ void Player1st::InputMouse(MouseEvent& Event) {
 	case WM_MBUTTONDOWN:
 	{
 		XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
-		scene.AddObject(new Grenade(currentMapName, cameraPosition, rotation), "grenade", LAYER2);
+		scene.AddObject(new Grenade(cameraPosition, rotation), "grenade", LAYER2);
 	}
 		break;
 	}

@@ -24,35 +24,35 @@ bool editMode = false;
 bool skipDefenseMode = true;
 
 void Level1::Start() {
-	globalFovOffset = 0.0;
+	scene.SetupMode("Level1", Destructor, ControlObjectList);
 
-	// 맵1 디펜스 모드에 등장하는 몬스터 수를 20마리로 설정
+	globalFovOffset = 0.0;
+	GLOBAL.mapName = "map1";
 	GLOBAL.map1DefenseEnemyRemained = 20;
 	GLOBAL.map1DefenseState = true;
 
-	scene.SetupMode("Level1", Destructor, ControlObjectList);
-
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
-	scene.AddObject(new Map1, "map1", LAYER1, true);
-	scene.AddObject(new CenterBuilding("map1", -2.0), "center_building", LAYER1);
+	scene.AddObject(new Map1, GLOBAL.mapName, LAYER1, true);
+	scene.AddObject(new CenterBuilding(-2.0), "center_building", LAYER1);
 
 	if(skipDefenseMode)
-		scene.AddObject(new MonsterSpawner("map1", true), "monsterSpawner", LAYER1, true);
+		scene.AddObject(new MonsterSpawner(true), "monsterSpawner", LAYER1, true);
 	else
-		scene.AddObject(new MonsterSpawner("map1", editMode), "monsterSpawner", LAYER1, editMode);
+		scene.AddObject(new MonsterSpawner(editMode), "monsterSpawner", LAYER1, editMode);
 
 	if (editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
-		scene.AddObject(new EditHelper("map1"), "editHelper", LAYERUI);
+		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else {
-		// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
 		if (!skipDefenseMode) {
 			scene.AddObject(new RoadBlock(XMFLOAT3(-91.0, 5.0, -93.0), 20.0, 10), "roadBlock", LAYER1);
-			scene.AddObject(new DefenseModeMonsterGenerator("map1", GLOBAL.map1DefenseEnemyRemained), "defenseModeMonsterGenerator", LAYER1);
+
+			// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
+			scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 		}
 
-		scene.AddObject(new Player1st("map1", CHARACTER_MG), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
 
 		if(!skipDefenseMode)
 			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);

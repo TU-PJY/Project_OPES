@@ -221,9 +221,6 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]">
       <UniqueIdentifier>{a99e71b7-1e0d-418d-a041-6af4eec650bf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]">
-      <UniqueIdentifier>{abd4ba8e-b8dd-4470-9ac2-e061fa363821}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]">
       <UniqueIdentifier>{d1ac7033-8372-4a00-9dac-79a0096f0060}</UniqueIdentifier>
     </Filter>
@@ -253,6 +250,12 @@
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Grenade ]">
       <UniqueIdentifier>{d198f370-5c86-43b0-8be7-f4d8b296b260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ D3D12 ]\[6] - [ Util ]\[ RayTarget ]">
+      <UniqueIdentifier>{c14ed16d-13ab-4bd5-976a-19aafbaa3392}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Bullet ]">
+      <UniqueIdentifier>{abd4ba8e-b8dd-4470-9ac2-e061fa363821}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -436,9 +439,6 @@
     <ClInclude Include="Scorpion.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerHit.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]</Filter>
     </ClInclude>
@@ -465,6 +465,12 @@
     </ClInclude>
     <ClInclude Include="Grenade.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Grenade ]</Filter>
+    </ClInclude>
+    <ClInclude Include="RayTargetUtil.h">
+      <Filter>[ D3D12 ]\[6] - [ Util ]\[ RayTarget ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Bullet ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -660,9 +666,6 @@
     <ClCompile Include="Scorpion.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Bullet ]</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerHit.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]</Filter>
     </ClCompile>
@@ -686,6 +689,12 @@
     </ClCompile>
     <ClCompile Include="Grenade.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Grenade ]</Filter>
+    </ClCompile>
+    <ClCompile Include="RayTargetUtil.cpp">
+      <Filter>[ D3D12 ]\[6] - [ Util ]\[ RayTarget ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Bullet ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

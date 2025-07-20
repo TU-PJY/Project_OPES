@@ -20,7 +20,6 @@ private:
 	bool        disappearState{};
 
 	std::vector<OOBB> mapBoundData{};
-	std::string       currentMapName{};
 	TerrainUtil       terrainUtil;
 	GameObject*       currentTerrain{};
 
@@ -28,7 +27,7 @@ private:
 	BoundSphere       poisonSphere{};
 
 public:
-	PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, const std::string& terrainName, bool defenseMode=false);
+	PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, bool defenseMode=false);
 	void updateCollision();
 	void updateMove(float Delta);
 	void updateDisappear(float Delta);

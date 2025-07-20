@@ -117,10 +117,11 @@ bool PickingUtil::PickByCursorOOBB(LPARAM lParam, const OOBB& Other) {
 	PickPoint.y = -(((2.0f * HIWORD(lParam)) / (float)SCREEN_HEIGHT) - 1) / camera.ProjectionMatrix._22;
 	PickPoint.z = 1.0f;
 
+	float distance;
 	XMVECTOR Origin, Direction;
 	GenBoundboxPickingRay(XMLoadFloat3(&PickPoint), XMLoadFloat4x4(&camera.ViewMatrix), Origin, Direction);
 
-	return Math::CheckRayCollision(Origin, Direction, Other);
+	return Math::CheckRayCollision(Origin, Direction, distance, Other);
 }
 
 bool PickingUtil::PickByCursorRange(LPARAM lParam, const BoundSphere& Other) {
@@ -158,7 +159,8 @@ bool PickingUtil::PickByWinCoordOOBB(int X, int Y, const OOBB& Other) {
 	XMVECTOR Origin, Direction;
 	GenBoundboxPickingRay(XMLoadFloat3(&PickPoint), XMLoadFloat4x4(&camera.ViewMatrix), Origin, Direction);
 
-	return Math::CheckRayCollision(Origin, Direction, Other);
+	float distance;
+	return Math::CheckRayCollision(Origin, Direction, distance, Other);
 }
 
 bool PickingUtil::PickByWinCoordRange(int X, int Y, const BoundSphere& Other) {
@@ -187,11 +189,11 @@ bool PickingUtil::PickByViewportAABB(float X, float Y, const AABB& Other) {
 	return Math::CheckRayCollision(Origin, Direction, Other);
 }
 
-bool PickingUtil::PickByViewportOOBB(const XMFLOAT2& Position, const OOBB& Other) {
-	return PickByViewportOOBB(Position.x, Position.y, Other);
+bool PickingUtil::PickByViewportOOBB(const XMFLOAT2& Position, float& distance, const OOBB& Other) {
+	return PickByViewportOOBB(Position.x, Position.y, distance, Other);
 }
 
-bool PickingUtil::PickByViewportOOBB(float X, float Y, const OOBB& Other) {
+bool PickingUtil::PickByViewportOOBB(float X, float Y, float& distance, const OOBB& Other) {
 	XMFLOAT3 PickPoint{};
 	PickPoint.x = (((2.0f * ConvertXToWinCoord(X)) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;
 	PickPoint.y = -(((2.0f * ConvertYToWinCoord(Y)) / (float)SCREEN_HEIGHT) - 1) / camera.ProjectionMatrix._22;
@@ -200,7 +202,7 @@ bool PickingUtil::PickByViewportOOBB(float X, float Y, const OOBB& Other) {
 	XMVECTOR Origin, Direction;
 	GenBoundboxPickingRay(XMLoadFloat3(&PickPoint), XMLoadFloat4x4(&camera.ViewMatrix), Origin, Direction);
 
-	return Math::CheckRayCollision(Origin, Direction, Other);
+	return Math::CheckRayCollision(Origin, Direction, distance, Other);
 }
 
 bool PickingUtil::PickByViewportRange(float X, float Y, const BoundSphere& Other) {

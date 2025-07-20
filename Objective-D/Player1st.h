@@ -51,7 +51,6 @@ private:
 	int currentHP{ 200 };
 
 	// 현재 터레인 객체 이름/포인터 및 터레인 유틸
-	std::string currentMapName{};
 	GameObject* currentTerrain{};
 	TerrainUtil terrainUtil{};
 
@@ -75,7 +74,7 @@ private:
 	int               sendOrder{1};
 
 public:
-	Player1st(const std::string& terrainName, int characterType);
+	Player1st(int characterType);
 	~Player1st();
 	void sendPacket(float Delta);
 	void InputMouseMotion(MotionEvent& Event) override;

@@ -292,10 +292,7 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 	return height;
 }
 
-bool Mesh::PickTerrainFromCamera(
-	const XMFLOAT4X4& cameraViewMatrix,
-	XMFLOAT3& outHit      // 교차 지점이 담길 출력 파라미터
-) {
+bool Mesh::PickTerrainFromCamera(const XMFLOAT4X4& cameraViewMatrix, XMFLOAT3& outHit, float& Distance) {
 	// 1) Ray 원점/방향 계산
 	XMMATRIX view = XMLoadFloat4x4(&cameraViewMatrix);
 	XMMATRIX invView = XMMatrixInverse(nullptr, view);
@@ -323,6 +320,7 @@ bool Mesh::PickTerrainFromCamera(
 		if (RayIntersectsTriangle(orig, dir, v0, v1, v2, t)) {
 			if (t < bestT) {
 				bestT = t;
+				Distance = bestT;
 				bestPoint = orig + dir * t;
 			}
 		}

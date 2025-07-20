@@ -85,7 +85,7 @@ void Player::InputKey(KeyEvent& Event) {
 
 // 현재 위치, y회전값, x회전값, 대미지, 현재 맵 이름을 전달한다.
 void Player::createBulletObject() {
-	scene.AddObject(new Bullet(cameraPosition, rotation.y, rotation.x, 10, currentTerrainName), "bullet", LAYER1);
+	//scene.AddObject(new Bullet(cameraPosition, rotation.y, rotation.x, 10), "bullet", LAYER1);
 }
 
 // 서버 부하를 방지하기 위해 0.05초 간격으로 패킷 전송 

@@ -9,7 +9,7 @@ constexpr bool AnimationDataExtractMode = false;
 // 애니메이션 데이터 추출 프레임
 // 데이터를 추출하는 간격을 설정한다. 높은 프레임일수록 추출이 더 오래걸리지만 그 만큼 더 부드러운 애니메이션을 사용할 수 있다.
 // 스키닝 업데이트와 공용으로 사용한다.
-constexpr int AnimationExtractFrame = 60;
+constexpr int AnimationExtractFrame = 45;
 ///////////////////////////////////////////
 
 
@@ -29,7 +29,7 @@ constexpr bool START_WITH_FULL_SCREEN = false;
 constexpr bool DEV_EXIT = true;
 
 // 최대 프레임 제한을 설정한다. 0으로 설정 시 최대 프레임으로 동작한다.
-constexpr float FRAME_LIMITS = 165;
+constexpr float FRAME_LIMITS = 60;
 
 // 바운드박스 표시 여부를 설정한다.
 //#define SHOW_BOUND_BOX

@@ -10,10 +10,9 @@ private:
 	XMFLOAT2    compassCenter{ XMFLOAT2(ASPECT * 1.0 - 0.6, -1.0 + 0.6) };
 	XMFLOAT2    compassPos[4]{};
 	TerrainUtil terrainUtil{};
-	std::string currentMapName{};
 
 public:
-	EditHelper(const std::string& currentMapName);
+	EditHelper();
 	void Update(float Delta) override;
 	void Render() override;
 };

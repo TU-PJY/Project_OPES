@@ -2,19 +2,18 @@
 #include "CameraUtil.h"
 
 // 생성 시 날아갈 대상과의 각도를 계산한다.
-PoisonBall::PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, const std::string& terrainName, bool defenseMode) {
+PoisonBall::PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, bool defenseMode) {
 	position = createPosition;
 	originPosition = createPosition;
 	destPosition = targetPosition;
 	Math::InitVector(vec);
 	defenseModeState = defenseMode;
-	currentMapName = terrainName;
 
 	XMFLOAT3 degrees = Math::CalcDegree3D(position, destPosition);
 	moveAngleX = degrees.x;
 	moveAngleY = degrees.y;
 
-	if (auto terrain = scene.Find(terrainName); terrain) {
+	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
 		mapBoundData = terrain->GetMapWallOOBB();
 		currentTerrain = terrain;
 	}

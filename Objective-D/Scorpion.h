@@ -26,7 +26,6 @@ private:
 	GameObject* hpIndicator{};
 
 	TerrainUtil terrainUtil{};
-	std::string currentMapName{};
 	GameObject* currentTerrain{};
 	std::vector<OOBB> mapBounds{};
 
@@ -44,7 +43,7 @@ private:
 
 
 public:
-	Scorpion(const XMFLOAT3& createPosition, const std::string& terrainName, unsigned int ID);
+	Scorpion(const XMFLOAT3& createPosition, unsigned int ID);
 	~Scorpion();
 	void updateBound(float Delta);
 	void updateIndicator();
@@ -53,7 +52,10 @@ public:
 	void updateState();
 	void updateAnimation(float Delta);
 	void updateMove(float Delta);
+	void updateDeath();
 	void Update(float Delta) override;
 	void Render() override;
+	bool CheckHit(float& distance) override;
+	void GiveDamage(int damage) override;
 };
 

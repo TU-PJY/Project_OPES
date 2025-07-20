@@ -8,8 +8,12 @@
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
 void Level2::Start() {
-	globalFovOffset = 0.0;
 	scene.SetupMode("Level2", Destructor, ControlObjectList);
+
+	globalFovOffset = 0.0;
+	GLOBAL.mapName = "map2";
+	GLOBAL.map2DefenseState = true;
+	GLOBAL.map2DefenseEnemyRemained = 20;
 
 	// 맵이 반드시 Player보다 먼저 추가되어야 한다
 	// 플레이어 객체 생성자에서 맵 데이터를 받아야 하기 때문

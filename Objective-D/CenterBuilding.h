@@ -12,7 +12,7 @@ private:
 	GameObject* hpIndicator{};
 
 public:
-	CenterBuilding(std::string map_name, float height_offset);
+	CenterBuilding(float height_offset);
 	~CenterBuilding();
 	void Update(float Delta) override;
 	void Render() override;

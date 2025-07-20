@@ -2,8 +2,8 @@
 #include "Scene.h"
 #include "HP_Indicator.h"
 
-CenterBuilding::CenterBuilding(std::string map_name, float height_offset) {
-	if (auto terrain = scene.Find(map_name); terrain) {
+CenterBuilding::CenterBuilding(float height_offset) {
+	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
 		TerrainUtil terrainUtil;
 		terrainUtil.InputPosition(position, height_offset);
 		terrainUtil.ClampToTerrain(terrain->GetTerrain(), position, height_offset);

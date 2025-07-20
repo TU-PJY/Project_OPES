@@ -16,7 +16,7 @@ public:
 	bool CheckCollision(const TerrainUtil& Other);
 	XMFLOAT3 GetNormalAtPoint(const TerrainUtil& Other);
 	XMFLOAT3 GetAngleAtPoint(const TerrainUtil& Other);
-	XMFLOAT3 CheckCollisionRay(const TerrainUtil& Other);
+	XMFLOAT3 CheckCollisionRay(const TerrainUtil& Other, float& Distance);
 	void ExportTerrainData(const std::string& OutFileName);
 
 private:

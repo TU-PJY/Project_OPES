@@ -1,12 +1,13 @@
 #include "Scorpion.h"
 #include "HP_Indicator.h"
 #include "CameraUtil.h"
+#include "PickingUtil.h"
+
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 
-Scorpion::Scorpion(const XMFLOAT3& createPosition, const std::string& terrainName, unsigned int ID) {
+Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
-	currentMapName = terrainName;
-	if (auto terrain = scene.Find(terrainName); terrain) {
+	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
 		currentTerrain = terrain;
 		mapBounds = terrain->GetMapWallOOBB();
 	}
@@ -25,6 +26,9 @@ Scorpion::~Scorpion() {
 }
 
 void Scorpion::updateBound(float Delta) {
+	if (currentState == SCOR_DEATH)
+		return;
+
 	frustumAABB.Update(XMFLOAT3(position.x, position.y + size.y, position.z), XMFLOAT3(size.x * 2.0, size.y * 0.8, size.z * 2.0));
 	inFrustum = camera.CheckFrustum(frustumAABB);
 
@@ -38,8 +42,14 @@ void Scorpion::updateBound(float Delta) {
 }
 
 void Scorpion::updateIndicator() {
-	hpIndicator->InputPosition(position, size.y * 1.7);
-	hpIndicator->InputHP(totalHP, currentHP);
+	if (currentState == SCOR_DEATH)
+		return;
+
+	if (hpIndicator) {
+		hpIndicator->InputPosition(position, size.y * 1.7);
+		hpIndicator->InputHP(totalHP, currentHP);
+		hpIndicator->SetRenderState(inFrustum);
+	}
 }
 
 void Scorpion::updateTerrain() {
@@ -49,11 +59,13 @@ void Scorpion::updateTerrain() {
 	if (currentTerrain) {
 		terrainUtil.InputPosition(position);
 		terrainUtil.ClampToTerrain(currentTerrain->GetTerrain(), position, 0.0);
-		hpIndicator->SetRenderState(inFrustum);
 	}
 }
 
 void Scorpion::updateDetectPlayer() {
+	if (currentState == SCOR_DEATH)
+		return;
+
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 	for (int i = 0; i < size; i++) {
 		if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
@@ -129,9 +141,20 @@ void Scorpion::updateAnimation(float Delta) {
 }
 
 void Scorpion::updateMove(float Delta) {
+	if (currentState == SCOR_DEATH)
+		return;
+
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
 	if (currentState == SCOR_WALK) 
 		Math::MoveWithSlide(position, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
+}
+
+void Scorpion::updateDeath() {
+	if (currentState != SCOR_DEATH)
+		return;
+
+	if (scorpionFBX.GetAnimationEndState())
+		scene.DeleteObject(this);
 }
 
 void Scorpion::Update(float Delta) {
@@ -142,6 +165,7 @@ void Scorpion::Update(float Delta) {
 	updateAnimation(Delta);
 	updateDetectPlayer();
 	updateMove(Delta);
+	updateDeath();
 }
 
 void Scorpion::Render() {
@@ -161,4 +185,28 @@ void Scorpion::Render() {
 		hitBox[i].Render();
 
 	frustumAABB.Render();
+}
+
+bool Scorpion::CheckHit(float& distance) {
+	if (currentState == SCOR_DEATH)
+		return false;
+
+	for (int i = 0; i < 3; i++) {
+		if (PickingUtil::PickByViewportOOBB(XMFLOAT2(0.0, 0.0), distance, hitBox[i]))
+			return true;
+	}
+
+	return false;
+}
+
+void Scorpion::GiveDamage(int damage) {
+	currentHP -= damage;
+
+	if (currentHP <= 0) {
+		if (hpIndicator) {
+			scene.DeleteObject(hpIndicator);
+			hpIndicator = nullptr;
+		}
+		currentState = SCOR_DEATH;
+	}
 }

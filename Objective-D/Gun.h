@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "RayTargetUtil.h"
 
 // 모든 총이 상속받는 부모 클래스
 // 총 객체 생성 시 spec부분만 재정의해서 사용한다.
@@ -42,6 +43,9 @@ protected:
 	// 사용자 객체의 포인터, 주로 Player1st
 	GameObject* userPtr{};
 
+	// 레이캐스팅 유틸
+	RayTarget rayTarget{};
+
 public:
 	void enableZoom() override;
 	void disableZoom() override;
@@ -55,6 +59,7 @@ public:
 	int getCurrentAmmo() override;
 
 	void updateGun(float Delta);
+	void updateRaycast();
 	void updateFire(float Delta);
 	void updateAnimation(float Delta);
 	void Update(float Delta) override;

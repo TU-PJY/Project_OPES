@@ -101,6 +101,8 @@ public:
 
 	// 몬스터 함수
 	virtual bool CheckHit(BoundSphere& Sphere, int damage) { return{}; }
+	virtual bool CheckHit(XMVECTOR& start, XMVECTOR& direction, int damage) { return{}; }
+	virtual bool CheckHit(float& distance) { return {}; }
 	virtual bool ChangeHP(int hp) { return {}; }
 	virtual int GetID() { return {}; }
 	virtual bool GetDeathState() { return {}; }

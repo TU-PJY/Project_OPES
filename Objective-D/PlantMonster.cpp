@@ -77,7 +77,7 @@ void PlantMonster::updateAttack(float Delta) {
 	if (plantFBX.GetTimeSectionPassed(plantFBX.GetCurrentAnimationTime() - 0.65f)) {
 		if (!shootState) {
 			XMFLOAT3 createPosition = Math::CalcForwardOffset(position, rotation.y, 2.0f, size.y * 0.9);
-			scene.AddObject(new PoisonBall(createPosition, targetPosition, currentMapName, true), "poisonBall", LAYER3);
+			scene.AddObject(new PoisonBall(createPosition, targetPosition, true), "poisonBall", LAYER3);
 			shootState = true;
 		}
 	}
@@ -136,12 +136,12 @@ void PlantMonster::updateAnimation(float Delta) {
 }
 
 // 죽음 상태 업데이트 진행
-void PlantMonster::updateDeleteDelay(float Delta) {
+void PlantMonster::updateDeath(float Delta) {
 	if (currentState != PLANT_DEATH)
 		return;
 
-	deleteDelayTime += Delta;
-	if (deleteDelayTime >= 2.3) 
+	// 죽는 애니메이션 재생이 끝나면 스스로 삭제한다.
+	if (plantFBX.GetAnimationEndState()) 
 		scene.DeleteObject(this);
 }
 
@@ -152,7 +152,7 @@ void PlantMonster::updateDeleteDelay(float Delta) {
 // createPosition: 처음 생성될 때 스폰되는 위치
 // terrainName: 현재 맵의 터레인 객체 이름
 // appearFromGround: 활성화 시 땅 속에서 나옴
-PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, unsigned int ID, bool appearFromGround) {
+PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool appearFromGround) {
 	// 원본에서 인스턴스 복사
 	plantFBX.SelectFBXMesh(MESH.plantMonster);
 
@@ -170,7 +170,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 	TerrainUtil terrainUtil;
 
 	// 고정형 몬스터이므로 생성 이후로는 터레인 업데이트를 진행하지 않는다.
-	if (auto terrain = scene.Find(terrainName); terrain) {
+	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
 		terrainUtil.InputPosition(tempPosition);
 		terrainUtil.ClampToTerrain(terrain->GetTerrain(), tempPosition, 0.0);
 		position = tempPosition;
@@ -183,8 +183,6 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 			position.y -= 10.0;
 
 		mapBoundData = terrain->GetMapWallOOBB();
-
-		currentMapName = terrainName;
 	}
 	else 
 		position = tempPosition;
@@ -230,7 +228,7 @@ void PlantMonster::Update(float Delta) {
 	if (behaviorEnabledState) {
 		updateTargetDetect();
 		updateAttack(Delta);
-		updateDeleteDelay(Delta);
+		updateDeath(Delta);
 	}
 
 	updateIndicatorHP();
@@ -260,36 +258,32 @@ void PlantMonster::Render() {
 	//lookRange.Render();
 }
 
-bool PlantMonster::CheckHit(BoundSphere& Sphere, int damage) {
+bool PlantMonster::CheckHit(float& distance) {
 	if (currentState == PLANT_DEATH)
 		return false;
 
-	bool hit{};
 	for (int i = 0; i < 3; i++) {
-		if (hitBox[i].CheckCollision(Sphere)) {
-			hit = true;
-			break;
-		}
-	}
-
-	if (hit) {
-		currentHP -= damage;
-		if (currentHP <= 0) {
-			currentState = PLANT_DEATH;
-			if (hpIndicator) {
-				scene.DeleteObject(hpIndicator);
-				hpIndicator = nullptr;
-			}
-
-			// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
-			if (defenseModeState) {
-				GLOBAL.map1DefenseEnemyRemained--;
-				if (GLOBAL.map1DefenseEnemyRemained == 0)
-					GLOBAL.map1DefenseState = false;
-			}
-		}
-		return true;
+		if (PickingUtil::PickByViewportOOBB(XMFLOAT2(0.0, 0.0), distance, hitBox[i]))
+			return true;
 	}
 
 	return false;
+}
+
+void PlantMonster::GiveDamage(int damage) {
+	currentHP -= damage;
+	if (currentHP <= 0) {
+		currentState = PLANT_DEATH;
+		if (hpIndicator) {
+			scene.DeleteObject(hpIndicator);
+			hpIndicator = nullptr;
+		}
+
+		// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
+		if (defenseModeState) {
+			GLOBAL.map1DefenseEnemyRemained--;
+			if (GLOBAL.map1DefenseEnemyRemained == 0)
+				GLOBAL.map1DefenseState = false;
+		}
+	}
 }

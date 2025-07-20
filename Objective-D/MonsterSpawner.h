@@ -4,7 +4,6 @@
 
 class MonsterSpawner : public GameObject {
 private:
-	std::string           currentMapName{};
 	ScriptUtil            script{};
 	std::vector<XMFLOAT3> position{};
 	std::vector<int>      type{};
@@ -15,7 +14,7 @@ private:
 
 
 public:
-	MonsterSpawner(const std::string& currentMapName, bool editMode);
+	MonsterSpawner(bool editMode);
 	void InputKey(KeyEvent& Event) override;
 	void LoadDataAndSpawnMonster();
 	void Update(float Delta);

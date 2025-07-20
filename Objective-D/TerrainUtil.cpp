@@ -69,9 +69,9 @@ XMFLOAT3 TerrainUtil::GetAngleAtPoint(const TerrainUtil& Other) {
 	return Angle;
 }
 
-XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other) {
+XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other, float& Distance) {
 	XMFLOAT3 ReturnValue{};
-	Other.TerrainMesh->PickTerrainFromCamera(camera.GetViewMatrix(), ReturnValue);
+	Other.TerrainMesh->PickTerrainFromCamera(camera.GetViewMatrix(), ReturnValue, Distance);
 	return ReturnValue;
 }
 

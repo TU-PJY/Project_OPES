@@ -1,5 +1,6 @@
 #include "HeavyMachineGun.h"
 #include "ClampUtil.h"
+#include "Bullet.h"
 
 void Gun::enableZoom() {
 	zoomState = true;
@@ -76,6 +77,7 @@ void Gun::updateFire(float Delta) {
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
 		if (userPtr) userPtr->InputRecoil(recoil);
+		scene.AddObject(new Bullet(damage), "bullet", LAYER1);
 		fireEnableState = false;
 	}
 }

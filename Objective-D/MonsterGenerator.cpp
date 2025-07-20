@@ -3,9 +3,8 @@
 #include "PlantMonster.h"
 
 
-DefenseModeMonsterGenerator::DefenseModeMonsterGenerator(const std::string& mapName, int numMaxGenerate) {
-	currentMapName = mapName;
-	maxGenerateCount = numMaxGenerate;
+DefenseModeMonsterGenerator::DefenseModeMonsterGenerator() {
+	maxGenerateCount = GLOBAL.map1DefenseEnemyRemained;
 }
 
 void DefenseModeMonsterGenerator::Update(float Delta) {
@@ -20,8 +19,8 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 		randomPosition.x = RandomXZ.x;
 		randomPosition.z = RandomXZ.y;
 
-		if (currentMapName.compare("map1") == 0)
-			scene.AddObject(new PlantMonster(randomPosition, currentMapName, true), "plantMonster", LAYER2);
+		if (GLOBAL.mapName.compare("map1") == 0)
+			scene.AddObject(new PlantMonster(randomPosition, 0, true), "plantMonster", LAYER2);
 
 		currentGenerateCount++;
 

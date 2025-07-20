@@ -1,9 +1,8 @@
 ﻿#include "Grenade.h"
 #include "MathUtil.h"
 
-Grenade::Grenade(const std::string& terrainName, const XMFLOAT3& createPosition, const XMFLOAT3& rotation) {
-	currentMapName = terrainName;
-	if (auto terrain = scene.Find(terrainName); terrain) {
+Grenade::Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation) {
+	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
 		currentTerrain = terrain;
 		mapBounds = terrain->GetMapWallOOBB();
 	}

@@ -7,9 +7,8 @@ private:
 	float       destGenerateTime{ 2.0 };
 	int         currentGenerateCount{};
 	int         maxGenerateCount{};
-	std::string currentMapName{};
 
 public:
-	DefenseModeMonsterGenerator(const std::string& mapName, int numMaxGenerate);
+	DefenseModeMonsterGenerator();
 	void Update(float Delta) override;
 };
