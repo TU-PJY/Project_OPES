@@ -13,6 +13,9 @@ enum class PacketType {
     MONSTER_STATE,
 };
 
+constexpr int MONSTER_TYPE1 = 1;
+constexpr int MONSTER_TYPE2 = 2;
+
 // 채팅 패킷 구조체
 struct ChatPacket_StoC {
     PacketType type;  // 항상 PacketType::CHAT
@@ -89,7 +92,9 @@ struct Player2Monster {
 };
 
 struct MonsterStatePacket {
-    PacketType type = PacketType::MONSTER_STATE;
+    PacketType Ptype = PacketType::MONSTER_STATE;
+    unsigned int Mtype;
+    unsigned int state;
     unsigned int id;
     float x, y, z;
     int hp;
