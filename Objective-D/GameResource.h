@@ -66,6 +66,7 @@ typedef struct {
 	// polygon scifi asset
 	Mesh* machine_gun;
 	Mesh* dot_machine_gun;
+	Mesh* grenade;
 
 	// polygon scifi asset - heavy
 	FBXMesh heavyIdle;

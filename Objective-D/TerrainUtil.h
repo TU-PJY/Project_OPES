@@ -14,6 +14,8 @@ public:
 	void SetHeightToTerrain(XMFLOAT3& PositionValue);
 	void ClampToTerrain(const TerrainUtil& Other, XMFLOAT3& PositionValue, float HeightOffsetValue);
 	bool CheckCollision(const TerrainUtil& Other);
+	XMFLOAT3 GetNormalAtPoint(const TerrainUtil& Other);
+	XMFLOAT3 GetAngleAtPoint(const TerrainUtil& Other);
 	XMFLOAT3 CheckCollisionRay(const TerrainUtil& Other);
 	void ExportTerrainData(const std::string& OutFileName);
 

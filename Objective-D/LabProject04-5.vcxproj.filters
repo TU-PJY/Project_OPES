@@ -251,6 +251,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ OtherPlayer ]">
       <UniqueIdentifier>{27d2b173-c0cb-4cd9-8f28-a68e948555fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Grenade ]">
+      <UniqueIdentifier>{d198f370-5c86-43b0-8be7-f4d8b296b260}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -459,6 +462,9 @@
     </ClInclude>
     <ClInclude Include="OtherPlayer.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ OtherPlayer ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Grenade.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Grenade ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -677,6 +683,9 @@
     </ClCompile>
     <ClCompile Include="OtherPlayer.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ OtherPlayer ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Grenade.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Grenade ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

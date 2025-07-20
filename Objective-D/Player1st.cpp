@@ -6,6 +6,8 @@
 #include "HeavyMachineGun.h"
 #include "PlayerIndicator.h"
 
+#include "Grenade.h"
+
 void SendMovePacket(float x, float y, float z);
 void SendViewingAnglePacket(float x, float y, float z);
 void SendAnimaionPacket(unsigned short playerState);
@@ -123,6 +125,13 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		if (weaponPtr) weaponPtr->disableZoom();
 		zoomState = false;
 		destFOV = 0.0;
+		break;
+
+	case WM_MBUTTONDOWN:
+	{
+		XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
+		scene.AddObject(new Grenade(currentMapName, cameraPosition, rotation), "grenade", LAYER2);
+	}
 		break;
 	}
 }

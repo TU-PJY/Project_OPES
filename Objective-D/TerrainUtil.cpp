@@ -35,13 +35,14 @@ void TerrainUtil::InputPosition(XMFLOAT3& PositionValue, float HeightOffsetValue
 }
 
 // 터레인과 충돌 시 대상 높이를 터레인 높이로 변경한다.
-void TerrainUtil::SetHeightToTerrain(XMFLOAT3& PositionValue) {
-	PositionValue.y = Position.y + HeightOffset;
-}
 
 // 대상 높이를 터레인 높이에 고정시킨다.
 void TerrainUtil::ClampToTerrain(const TerrainUtil& Other, XMFLOAT3& PositionValue, float HeightOffsetValue) {
 	PositionValue.y = Other.TerrainMesh->GetHeightAtPosition(Position.x, Position.z) + HeightOffsetValue;
+}
+
+void TerrainUtil::SetHeightToTerrain(XMFLOAT3& PositionValue) {
+	PositionValue.y = Position.y + HeightOffset;
 }
 
 // 입력한 높이가 터레인의 바닥 높이보다 낮은지 검사한다. 낮을 경우 true를 리턴한다.
@@ -54,6 +55,18 @@ bool TerrainUtil::CheckCollision(const TerrainUtil& Other) {
 	}
 
 	return false;
+}
+
+// 현재 지점에서 터레인의 각도를 계산한다.
+XMFLOAT3 TerrainUtil::GetNormalAtPoint(const TerrainUtil& Other) {
+	XMFLOAT3 Normal = Other.TerrainMesh->GetNormalAtPosition(Position.x, Position.z);
+	return Normal;
+}
+
+// 현재 지점에서 터레인의 각도를 계산한다.
+XMFLOAT3 TerrainUtil::GetAngleAtPoint(const TerrainUtil& Other) {
+	XMFLOAT3 Angle = Other.TerrainMesh->GetAngleAtPosition(Position.x, Position.z);
+	return Angle;
 }
 
 XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other) {

@@ -120,6 +120,7 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.center_building, "Resources//Models//building//center.fbx");
 	LoadMultiStaticFBX(MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
 	LoadMultiStaticFBX(MESH.dot_machine_gun, "Resources//Models//weapon//dot-MG.fbx");
+	LoadMultiStaticFBX(MESH.grenade, "Resources//Models//weapon//grenade.fbx");
 
 	// gun flame
 	LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");

@@ -131,9 +131,108 @@ void Mesh::SetHeightCache(Mesh* terrainMesh, const XMFLOAT4X4& worldMatrix) {
 			HeightCache.push_back(worldVertex);
 		}
 
+		for (size_t i = 0; i < HeightCache.size(); i += 3) {
+			XMFLOAT3& v0 = HeightCache[i];
+			XMFLOAT3& v1 = HeightCache[i + 1];
+			XMFLOAT3& v2 = HeightCache[i + 2];
+
+			XMVECTOR a = XMLoadFloat3(&v0);
+			XMVECTOR b = XMLoadFloat3(&v1);
+			XMVECTOR c = XMLoadFloat3(&v2);
+
+			XMVECTOR ab = b - a;
+			XMVECTOR ac = c - a;
+
+			XMVECTOR normal = XMVector3Cross(ab, ac);
+			if (XMVectorGetY(normal) < 0.0f) {
+				std::swap(v1, v2); // 법선 방향 반전
+			}
+		}
+
 		HeightCacheSaved = true;
 	}
 }
+
+XMFLOAT3 Mesh::GetNormalAtPosition(float x, float z) {
+	size_t size = HeightCache.size();
+
+	std::atomic<bool> found = false;
+	std::optional<XMFLOAT3> result;
+
+	std::vector<size_t> indices;
+	for (size_t i = 0; i < size; i += 3)
+		indices.push_back(i); // 병렬 탐색용 인덱스 리스트
+
+	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t i) {
+		if (found.load(std::memory_order_relaxed)) return;
+
+		XMFLOAT3 v0 = HeightCache[i];
+		XMFLOAT3 v1 = HeightCache[i + 1];
+		XMFLOAT3 v2 = HeightCache[i + 2];
+
+		if (IsPointInTriangle(XMFLOAT2(x, z), XMFLOAT2(v0.x, v0.z), XMFLOAT2(v1.x, v1.z), XMFLOAT2(v2.x, v2.z))) {
+			XMVECTOR a = XMLoadFloat3(&v0);
+			XMVECTOR b = XMLoadFloat3(&v1);
+			XMVECTOR c = XMLoadFloat3(&v2);
+
+			XMVECTOR ab = b - a;
+			XMVECTOR ac = c - a;
+
+			XMVECTOR normal = XMVector3Normalize(XMVector3Cross(ab, ac));
+
+			XMFLOAT3 normalF;
+			XMStoreFloat3(&normalF, normal);
+
+			if (!found.exchange(true))
+				result = normalF;
+		}
+	});
+
+	return result.value_or(XMFLOAT3(0.0f, 1.0f, 0.0f)); // 기본값: 평지 노멀
+}
+
+XMFLOAT3 Mesh::GetAngleAtPosition(float x, float z) {
+	size_t size = HeightCache.size();
+	std::atomic<bool> found = false;
+	std::optional<XMFLOAT3> result;
+
+	std::vector<size_t> indices;
+	for (size_t i = 0; i < size; i += 3)
+		indices.push_back(i);
+
+	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t i) {
+		if (found.load(std::memory_order_relaxed)) return;
+
+		XMFLOAT3 v0 = HeightCache[i];
+		XMFLOAT3 v1 = HeightCache[i + 1];
+		XMFLOAT3 v2 = HeightCache[i + 2];
+
+		if (IsPointInTriangle(XMFLOAT2(x, z), XMFLOAT2(v0.x, v0.z), XMFLOAT2(v1.x, v1.z), XMFLOAT2(v2.x, v2.z))) {
+			XMVECTOR a = XMLoadFloat3(&v0);
+			XMVECTOR b = XMLoadFloat3(&v1);
+			XMVECTOR c = XMLoadFloat3(&v2);
+
+			XMVECTOR ab = b - a;
+			XMVECTOR ac = c - a;
+
+			//  교차 순서 반전 or 보정
+			XMVECTOR normal = XMVector3Normalize(XMVector3Cross(ac, ab));
+
+			// 보정: y가 음수이면 뒤집힘
+			if (XMVectorGetY(normal) < 0.0f)
+				normal *= -1.0f;
+
+			XMFLOAT3 normalF;
+			XMStoreFloat3(&normalF, normal);
+
+			if (!found.exchange(true))
+				result = normalF;
+		}
+	});
+
+	return result.value_or(XMFLOAT3(0.0f, 1.0f, 0.0f));
+}
+
 
 // 현재 지점의 높이를 구한다.
 float Mesh::GetHeightAtPosition(float x, float z) {
