@@ -8,8 +8,8 @@ private:
 	FBX shootFBX{};
 	FBX deathFBX{};
 
-	XMFLOAT3 position{ -140.0, 0.0, -130.0 };
-	XMFLOAT3 positionDest{ -140.0, 0.0, -130.0 };
+	XMFLOAT3 position{ -140.0, -1.483, -130.0 };
+	XMFLOAT3 positionDest{ -140.0, -1.483, -130.0 };
 	XMFLOAT3 rotation{};
 	XMFLOAT3 rotationDest{};
 	XMFLOAT3 size{ 2.0, 2.0, 2.0 };
