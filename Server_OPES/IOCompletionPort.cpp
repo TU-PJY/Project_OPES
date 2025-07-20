@@ -151,6 +151,10 @@ bool IOCompletionPort::StartServer() {
 }
 void IOCompletionPort::NPCAIThread() {
     
+
+
+
+
 }
 //void IOCompletionPort::AcceptThread() {
 //    while (isRunning) {
@@ -262,13 +266,21 @@ void IOCompletionPort::NPCAIThread() {
 //    }
 //}
 void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
-    std::lock_guard<std::mutex> lock(roomMutex);
+    //std::lock_guard<std::mutex> lock(roomMutex);
 
     Room newRoom;
     nextRoomID++;
     newRoom.roomID = nextRoomID;
     newRoom.clients = members;
-
+    //for (const auto& m : monsterData) {
+    //    MonsterData copy = m;
+    //    newRoom.monsters.push_back(copy);
+    //}
+    //->이거에 대한 접근 예시
+    //auto& room = rooms[2];
+    //if (!room.monsters.empty()) {
+    //    std::cout << "HP: " << room.monsters[0].hp << std::endl;
+    //}
     for (auto* client : members) {
         client->roomID = newRoom.roomID;
         // 방 입장 메시지 전송
@@ -811,7 +823,7 @@ void IOCompletionPort::WorkThread() {
                 //}
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
-                std::cout << pkt->Mtype << "/" << pkt->state << std:: endl;
+                std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;

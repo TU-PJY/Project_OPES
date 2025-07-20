@@ -71,6 +71,7 @@ struct stClientInfo {
 struct Room {
     int roomID;
     std::vector<stClientInfo*> clients;
+    std::vector<MonsterData> monsters;
 };
 class IOCompletionPort {
 public:

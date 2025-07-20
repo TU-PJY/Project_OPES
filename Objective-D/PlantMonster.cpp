@@ -3,7 +3,7 @@
 #include "MathUtil.h"
 #include "PickingUtil.h"
 #include "PoisonBall.h"
-
+void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH)
@@ -127,7 +127,7 @@ void PlantMonster::updateAnimation(float Delta) {
 		case PLANT_LIFT:
 			plantFBX.SelectAnimation("Magic01charge"); break;
 		}
-
+		SendMonstertypePacket(1, currentState,ID);
 		prevState = currentState;
 	}
 
