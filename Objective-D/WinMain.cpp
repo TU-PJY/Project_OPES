@@ -110,8 +110,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			PacketProcessList.emplace(work);
 		}
-			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
-				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));*/
+			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
+				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 	}
 
 	else if (*type == PacketType::VIEW_ANGLE) {
@@ -123,8 +123,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			PacketProcessList.emplace(work);
 		}
-			/*if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
-				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));*/
+			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
+				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
 		
 	}
 
@@ -137,6 +137,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			PacketProcessList.emplace(work);
 		}
+
+		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
+			Found->InputState(aniPacket->animationType);
 	}
 
 	else if (*type == PacketType::PLAYER_TO_MOSTER) {

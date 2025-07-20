@@ -72,6 +72,8 @@ void OtherPlayer::Update(float Delta) {
 			deathFBX.SelectFBXMesh(MESH.heavyDeath);
 			break;
 		}
+
+		initState = true;
 	}
 }
 
