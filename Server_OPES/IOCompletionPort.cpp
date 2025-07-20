@@ -138,23 +138,110 @@ bool IOCompletionPort::StartServer() {
         };
     monsterDataScript.LoadAllData(LoadMonsterData);
 
-
-
-    //npcThread = std::thread([this]() { NPCAIThread(); });
-
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
-
+    npcThread = std::thread([this]() { NPCAIThread(); });
+    //npcThread = std::thread([this]() {
+    //    try {
+    //        NPCAIThread();
+    //    }
+    //    catch (const std::exception& e) {
+    //        std::cerr << "[NPCThread 예외] " << e.what() << "\n";
+    //    }
+    //    });
     std::cout << "서버가 시작되었습니다.\n";
     return true;
 }
-void IOCompletionPort::NPCAIThread() {
+void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
     
+    for (auto* client : clients) {
+        if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
+            continue;
+        MovePacket_StoC* packet = new MovePacket_StoC{};
+        packet->type = PacketType::MONSTER_MOVE;  // 필요시 MONSTER_MOVE로 별도 정의 가능
+        packet->id = m.id;
+        packet->x = m.createPointX;
+        packet->y = 0.0f;  // 고정값 혹은 높이 정보가 있다면 그 값으로
+        packet->z = m.createPointZ;
+        stOverlappedEx* sendOver = new stOverlappedEx{};
+        ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+        sendOver->operation = IOOperation::SEND;
+        sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+        sendOver->wsaBuf.len = sizeof(MovePacket_StoC);
+        sendOver->cleanup = [packet, sendOver]() {
+            std::cout << "[디버그] cleanup called for monster move packet\n";
+            delete packet;
+            delete sendOver;
+         };
 
+        int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+            &sendOver->overlapped, NULL);
 
+        //if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        //    std::cerr << "[에러] WSASend 실패(MonsterMove): " << WSAGetLastError() << std::endl;
+        //    closesocket(client->socketClient);
+        //    RemoveClient(client);
+        //    delete packet;
+        //    delete sendOver;
+        //}
+        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+            std::cerr << "[에러] WSASend 실패(MonsterMove): " << WSAGetLastError() << std::endl;
 
+            if (!client->alreadyRemoved) {
+                closesocket(client->socketClient);
+                RemoveClient(client);
+            }
 
+            // cleanup 람다 등록했으므로 delete 중복 금지
+            // delete packet;
+            // delete sendOver;
+        }
+    }
+}
+
+void IOCompletionPort::NPCAIThread() {
+    const float speed = 0.05f;
+    const int frameTimeMs = 1000;
+    //SendData_MonsterMoveToAllClients(monsterData[0]);
+    while (isRunning) {
+        auto frameStart = std::chrono::steady_clock::now();
+
+        for (auto& m : monsterData) {
+            // 조건: 스콜피온이면서 추적 상태
+            if (m.monsterType == 2 && m.state == 1) {
+                stClientInfo* target = nullptr;
+
+                for (auto* c : clients) {
+                    if (!c) continue;
+                    if (c->id == m.targetClientId) {
+                        target = c;
+                        break;
+                    }
+                }
+
+                if (target) {
+                    float dx = target->x - m.createPointX;
+                    float dz = target->z - m.createPointZ;
+                    float dist = std::sqrt(dx * dx + dz * dz);
+
+                    if (dist > 1e-3f) {
+                        m.createPointX += dx / dist * speed;
+                        m.createPointZ += dz / dist * speed;
+                        SendData_MonsterMoveToAllClients(m);
+                        std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
+                            << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
+                 
+                    }
+                }
+            }
+        }
+
+        auto frameEnd = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(frameEnd - frameStart).count();
+        if (duration < frameTimeMs)
+            std::this_thread::sleep_for(std::chrono::milliseconds(frameTimeMs - duration));
+    }
 }
 //void IOCompletionPort::AcceptThread() {
 //    while (isRunning) {
@@ -824,6 +911,22 @@ void IOCompletionPort::WorkThread() {
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
                 std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+
+                // 몬스터 상태 저장
+                for (auto& m : monsterData) {
+                    if (m.id == pkt->id) {
+                        m.state = pkt->state;
+
+                        if (pkt->state == 1 && pkt->Mtype == 2) {
+                            m.targetClientId = client->id;  // 해당 클라이언트를 추적 대상으로 설정
+                        }
+                        else {
+                            m.targetClientId = -1;  // 추적 멈춤
+                        }
+
+                        break;
+                    }
+                }
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
