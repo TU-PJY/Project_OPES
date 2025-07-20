@@ -32,13 +32,13 @@ void OtherPlayer::updateAnimation(float Delta) {
 
 	switch (currentState) {
 	case STATE_IDLE:
-		idleFBX.UpdateAnimation(Delta, !inFrustum); break;
+		idleFBX.UpdateAnimation(Delta, false, !inFrustum); break;
 	case STATE_MOVE:
-		moveFBX.UpdateAnimation(Delta, !inFrustum); break;
+		moveFBX.UpdateAnimation(Delta, false, !inFrustum); break;
 	case STATE_IDLE_SHOOT:
-		shootFBX.UpdateAnimation(Delta, !inFrustum); break;
+		shootFBX.UpdateAnimation(Delta, false, !inFrustum); break;
 	case STATE_MOVE_SHOOT:
-		moveFBX.UpdateAnimation(Delta, !inFrustum); break;
+		moveFBX.UpdateAnimation(Delta, false, !inFrustum); break;
 	}
 }
 
