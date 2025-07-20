@@ -10,11 +10,23 @@
 #include<algorithm>
 #include <chrono>
 #include<functional>
+#include "TerrainUtil.h"
+#include "ScriptUtil.h"
+
 #include"Packet.h"
 #define MAX_SOCKBUF 1024  
 #define SERVER_PORT 9000
 //#define MAX_WORKERTHREAD 4  
 constexpr std::size_t MAX_CLIENTS = 5000;
+
+// 몬스터의 타입과 초기 스폰 위치를 저장하는 구조체
+typedef struct {
+    int monsterType;
+    float createPointX;
+    float createPointZ;
+    unsigned int id;
+    int hp;
+}MonsterData;
 
 enum class IOOperation {
     ACCEPT,  // 추가됨
@@ -54,22 +66,7 @@ struct stClientInfo {
         //-130.0, 20.0, -130.0 
     }
 };
-struct stNPC {
-    unsigned int id;
-    float x, y, z;
-    float origin_x, origin_y, origin_z; //원래 위치 저장
-    int hp;
-    bool isAlive = true;
-    float speed = 1.0f;
-    int targetPlayerId = -1;
 
-    std::mutex npcMutex;
-   std::chrono::steady_clock::time_point lastSent = std::chrono::steady_clock::now();
-};
-
-extern std::vector<std::unique_ptr<stNPC>> npcs;
-extern std::thread npcThread;
-extern std::mutex npcMutex;
 
 struct Room {
     int roomID;
@@ -102,7 +99,6 @@ public:
     void RemoveClient(stClientInfo* c);
 
     void NPCAIThread();
-    void SendData_NPCState(const stNPC& npc);
 private:
     
     
@@ -126,6 +122,7 @@ private:
 
     void WorkThread();
     void PostAccept();
+    
     //void AcceptThread();
 
 };

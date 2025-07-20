@@ -2,11 +2,25 @@
 //#include"Packet.h"
 #include <iostream>
 #include <mswsock.h> // AcceptEx
+#include <DirectXMath.h>
 #pragma comment(lib, "Mswsock.lib")
 
-std::vector<std::unique_ptr<stNPC>> npcs;
+using namespace DirectX;
+
+// 맵 데이터를 읽기 위한 스크립트 객체
+ScriptUtil terrainScript;
+
+// 현재 로드된 터레인 정점 벡터
+std::vector<XMFLOAT3> terrainData;
+
+// 몬스터 생성 데이터를 읽기 위한 스크립트 객체
+ScriptUtil monsterDataScript;
+
+// 현재 로드된 몬스터 생성 타입 및 위치
+std::vector<MonsterData> monsterData;
+
 std::thread npcThread;
-std::mutex npcMutex;
+
 
 extern LPFN_ACCEPTEX lpfnAcceptEx = nullptr; // 전역으로 AcceptEx 포인터
 IOCompletionPort::IOCompletionPort() {}
@@ -88,25 +102,42 @@ bool IOCompletionPort::StartServer() {
         std::cerr << "[에러] CreateIoCompletionPort() 실패: " << GetLastError() << "\n";
         return false;
     }
-    //npc생성
-    for (int i = 0; i < MAX_NPC; ++i) {
-        auto npc = std::make_unique<stNPC>(); // 힙에 NPC 동적 생성
 
-        npc->id = i;
-        npc->x = static_cast<float>(rand() % 100 - 50);
-        npc->y = 20.0f;
-        npc->z = static_cast<float>(rand() % 100 - 50);
 
-        npc->origin_x = npc->x;
-        npc->origin_y = npc->y;
-        npc->origin_z = npc->z;
+    // 맵 터레인 데이터 로드
+    terrainScript.Release();
+    terrainData.clear();
 
-        npc->hp = 100;
+    terrainScript.Load("mapData//terrain_map1.xml");
+    auto LoadBehavior = [&](CategoryPtr Category)
+        {
+            XMFLOAT3 loadedVertex{};
+            loadedVertex.x = terrainScript.LoadDigitData(Category, "x");
+            loadedVertex.y = terrainScript.LoadDigitData(Category, "y");
+            loadedVertex.z = terrainScript.LoadDigitData(Category, "z");
+            terrainData.emplace_back(loadedVertex);
+        };
+    terrainScript.LoadAllData(LoadBehavior);
 
-        npcs.push_back(std::move(npc)); // unique_ptr 이동
-    }
 
-    npcThread = std::thread([this]() { NPCAIThread(); });
+    // 몬스터 타입 및 생성 위치 로드
+    monsterDataScript.Release();
+    monsterData.clear();
+
+    monsterDataScript.Load("mapData//monster_map1.xml");
+    auto LoadMonsterData = [&](CategoryPtr Category)
+        {
+            MonsterData loadedData{};
+            loadedData.monsterType = (int)monsterDataScript.LoadDigitData(Category, "type");
+            loadedData.createPointX = monsterDataScript.LoadDigitData(Category, "x");
+            loadedData.createPointZ = monsterDataScript.LoadDigitData(Category, "z");
+            monsterData.emplace_back(loadedData);
+        };
+    monsterDataScript.LoadAllData(LoadMonsterData);
+
+
+
+    //npcThread = std::thread([this]() { NPCAIThread(); });
 
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
@@ -116,79 +147,7 @@ bool IOCompletionPort::StartServer() {
     return true;
 }
 void IOCompletionPort::NPCAIThread() {
-    while (isRunning) {
-        std::lock_guard<std::mutex> lock(npcMutex);
-        for (auto& npcPtr : npcs) {
-            auto& npc = *npcPtr;
-            if (!npc.isAlive) continue;
-
-            stClientInfo* nearest = nullptr;
-            float minDist = 10000.0f;
-
-            // 타겟 다시 찾기
-            for (auto* player : clients) {
-                if (!player) continue;
-                float dx = player->x - npc.x;
-                float dz = player->z - npc.z;
-                float dist = sqrt(dx * dx + dz * dz);
-
-                if (dist < minDist) {
-                    minDist = dist;
-                    nearest = player;
-                }
-            }
-
-            if (nearest && minDist < 30.0f) {
-                npc.targetPlayerId = nearest->id;
-            }
-            else if (nearest && minDist >= 40.0f) {
-                npc.targetPlayerId = -1; // 거리가 너무 멀면 추적 해제
-            }
-
-            if (npc.targetPlayerId != -1) {
-                // 추적 중
-                stClientInfo* target = nullptr;
-                for (auto* player : clients) {
-                    if (player && player->id == npc.targetPlayerId) {
-                        target = player;
-                        break;
-                    }
-                }
-                if (target) {
-                    float dx = target->x - npc.x;
-                    float dz = target->z - npc.z;
-                    float len = sqrt(dx * dx + dz * dz);
-                    if (len > 0.01f) {
-                        dx /= len; dz /= len;//방향만 유지하고 거리 정보를 제거
-                        npc.x += dx * npc.speed;
-                        npc.z += dz * npc.speed;
-                    }
-
-                    if (len < 1.5f) {
-                        std::cout << "[NPC 충돌] 플레이어 " << target->id << " 공격!\n";
-                    }
-                }
-            }
-            else {
-                // 원래 자리로 복귀
-                float dx = npc.origin_x - npc.x;
-                float dz = npc.origin_z - npc.z;
-                float len = sqrt(dx * dx + dz * dz);
-                if (len > 0.01f) {
-                    dx /= len; dz /= len;
-                    npc.x += dx * npc.speed;
-                    npc.z += dz * npc.speed;
-                }
-            }
-            auto now = std::chrono::steady_clock::now();
-            if (duration_cast<std::chrono::milliseconds>(now - npc.lastSent).count() > 200) {
-                //SendData_NPCState(npc);
-                npc.lastSent = now;
-            }
-        }
-
-        std::this_thread::sleep_for(std::chrono::milliseconds(100));
-    }
+    
 }
 //void IOCompletionPort::AcceptThread() {
 //    while (isRunning) {
@@ -391,39 +350,7 @@ void IOCompletionPort::RemoveClient(stClientInfo* c)
 }
 
 
-void IOCompletionPort::SendData_NPCState(const stNPC& npc) {
-    MonsterStatePacket packet;
-    packet.id = npc.id;
-    packet.x = npc.x;
-    packet.y = npc.y;
-    packet.z = npc.z;
-    packet.hp = npc.hp;
 
-    for (auto* client : clients) {
-        if (!client) continue;
-
-        stOverlappedEx* sendOver = new stOverlappedEx();
-        ZeroMemory(&sendOver->overlapped, sizeof(WSAOVERLAPPED));
-        sendOver->operation = IOOperation::SEND;
-
-        auto* packetCopy = new MonsterStatePacket(packet); // 복사본을 따로 생성
-        sendOver->wsaBuf.buf = reinterpret_cast<char*>(packetCopy);
-        sendOver->wsaBuf.len = sizeof(MonsterStatePacket);
-
-        DWORD size_sent = 0;
-        int ret = WSASend(client->socketClient,
-            &sendOver->wsaBuf, 1, &size_sent, 0,
-            &sendOver->overlapped,NULL);
-
-        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-            std::cerr << "[에러] WSASend 실패 (MONSTER_STATE): " << WSAGetLastError() << "\n";
-            closesocket(client->socketClient);
-            RemoveClient(client);
-            delete reinterpret_cast<MonsterStatePacket*>(sendOver->wsaBuf.buf);
-            delete sendOver;
-        }
-    }
-}
 
 
 
@@ -899,7 +826,7 @@ void IOCompletionPort::DestroyThread() {
     if (workerThread.joinable()) workerThread.join();
 
     if (accepterThread.joinable()) accepterThread.join();
-    if (npcThread.joinable()) npcThread.join();
+   // if (npcThread.joinable()) npcThread.join();
 
     std::cout << "서버 종료 완료.\n";
 }

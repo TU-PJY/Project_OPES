@@ -13,6 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="[tinyxml]">
+      <UniqueIdentifier>{24755672-4115-467d-b460-8ce1f59b23d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ ScriptUtil ]">
+      <UniqueIdentifier>{412888f4-99ee-4cd3-a6f9-16dc7274c522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ Terrain ]">
+      <UniqueIdentifier>{9c910a1a-d8e9-4a30-bd60-3665f9571ee8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -21,6 +30,24 @@
     <ClCompile Include="IOCompletionPort.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="tinyxml\tinystr.cpp">
+      <Filter>[tinyxml]</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxml.cpp">
+      <Filter>[tinyxml]</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxmlerror.cpp">
+      <Filter>[tinyxml]</Filter>
+    </ClCompile>
+    <ClCompile Include="tinyxml\tinyxmlparser.cpp">
+      <Filter>[tinyxml]</Filter>
+    </ClCompile>
+    <ClCompile Include="ScriptUtil.cpp">
+      <Filter>[ ScriptUtil ]</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainUtil.cpp">
+      <Filter>[ Terrain ]</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IOCompletionPort.h">
@@ -28,6 +55,18 @@
     </ClInclude>
     <ClInclude Include="Packet.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml\tinystr.h">
+      <Filter>[tinyxml]</Filter>
+    </ClInclude>
+    <ClInclude Include="tinyxml\tinyxml.h">
+      <Filter>[tinyxml]</Filter>
+    </ClInclude>
+    <ClInclude Include="ScriptUtil.h">
+      <Filter>[ ScriptUtil ]</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainUtil.h">
+      <Filter>[ Terrain ]</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
