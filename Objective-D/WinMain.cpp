@@ -72,106 +72,10 @@ typedef struct {
 
 std::queue<PacketWork> PacketProcessList;
 
-//class OtherPlayer : public GameObject {
-//public:
-//	XMFLOAT3 position{};
-//	XMFLOAT3 rotation{};
-//	XMFLOAT3 dest_position{};
-//	XMFLOAT3 dest_rotation{};
-//
-//	FBX heavy_idle{ MESH.heavyIdle, false };
-//	FBX heavy_move{ MESH.heavyMove, false };
-//	FBX heavy_shoot{ MESH.heavyShoot, false };
-//	FBX heavy_death{ MESH.heavyDeath, false };
-//
-//	int current_state = STATE_IDLE;
-//	int prev_state = STATE_IDLE;
-//
-//	unsigned int player_id{};
-//
-//	OtherPlayer(unsigned int ID) {
-//		player_id = ID;
-//	}
-//
-//	void InputPosition(XMFLOAT3& value) override {
-//		dest_position = value;
-//	}
-//
-//	void InputRotation(XMFLOAT3& value) override {
-//		dest_rotation = value;
-//	}
-//
-//	void InputState(unsigned int state) override {
-//		current_state = state;
-//	}
-//
-//	
-//	void Update(float FrameTime) {
-//		if()
-//		if (prev_state != current_state) {
-//			prev_state = current_state;
-//			switch (current_state) {
-//			case STATE_IDLE:
-//				heavy_idle.ResetAnimation(); break;
-//			case STATE_MOVE: case STATE_MOVE_SHOOT:
-//				heavy_move.ResetAnimation(); break;
-//			case STATE_IDLE_SHOOT:
-//				heavy_shoot.ResetAnimation(); break;
-//			case STATE_DEATH:
-//				heavy_death.ResetAnimation(); break;
-//			}
-//		}
-//
-//		switch (current_state) {
-//		case STATE_IDLE:
-//			heavy_idle.UpdateAnimation(FrameTime); break;
-//		case STATE_MOVE: case STATE_MOVE_SHOOT:
-//			heavy_move.UpdateAnimation(FrameTime); break;
-//		case STATE_IDLE_SHOOT:
-//			heavy_shoot.UpdateAnimation(FrameTime * 8.0); break;
-//		case STATE_DEATH:
-//			heavy_death.UpdateAnimation(FrameTime); break;
-//		}
-//
-//		Math::LerpXMFLOAT3(position, dest_position, 5.0, FrameTime);
-//		Math::LerpXMFLOAT3(rotation, dest_rotation, 5.0, FrameTime);
-//	}
-//
-//	void Render() {
-//		BeginRender();
-//
-//		switch (current_state) {
-//		case STATE_IDLE:
-//			heavy_idle.ApplyAnimation(); break;
-//		case STATE_MOVE: case STATE_MOVE_SHOOT:
-//			heavy_move.ApplyAnimation(); break;
-//		case STATE_IDLE_SHOOT:
-//			heavy_shoot.ApplyAnimation(); break;
-//		case STATE_DEATH:
-//			heavy_death.ApplyAnimation(); break;
-//		}
-//		
-//		Transform::Move(TranslateMatrix, position);
-//		Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
-//		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
-//		switch (current_state) {
-//		case STATE_IDLE:
-//			RenderFBX(heavy_idle, TEX.scifi); break;
-//		case STATE_MOVE: case STATE_MOVE_SHOOT:
-//			RenderFBX(heavy_move, TEX.scifi); break;
-//		case STATE_IDLE_SHOOT:
-//			RenderFBX(heavy_shoot, TEX.scifi); break;
-//		case STATE_DEATH:
-//			RenderFBX(heavy_death, TEX.scifi); break;
-//		}
-//	}
-//};
-
 bool IsNewPlayer(unsigned int ID) {
 	if (!ID_List.contains(ID)) {
 		ID_List.insert(ID);
-		scene.AddObject(new OtherPlayer(ID), std::to_string(ID), LAYER_PLAYER);
-
+		scene.AddObject(new OtherPlayer(CHARACTER_MG), std::to_string(ID), LAYER_PLAYER);
 		return true;
 	}
 

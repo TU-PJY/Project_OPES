@@ -22,6 +22,8 @@ private:
 	AABB frustumAABB{};
 	bool inFrustum{};
 
+	bool initState{};
+
 public:
 	OtherPlayer(int characterType);
 	void updateState();

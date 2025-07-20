@@ -3,19 +3,13 @@
 
 // 캐릭터 타입에 따라 다른 fbx를 초기화 한다.
 OtherPlayer::OtherPlayer(int characterType) {
-	switch (characterType) {
-	case CHARACTER_MG:
-		idleFBX.SelectFBXMesh(MESH.heavyIdle);
-		moveFBX.SelectFBXMesh(MESH.heavyMove);
-		shootFBX.SelectFBXMesh(MESH.heavyShoot);
-		deathFBX.SelectFBXMesh(MESH.heavyDeath);
-		break;
-	}
-
 	this->characterType = characterType;
 }
 
 void OtherPlayer::updateState() {
+	if (!initState)
+		return;
+
 	if (prevState != currentState) {
 		switch (currentState) {
 		case STATE_IDLE:
@@ -33,6 +27,9 @@ void OtherPlayer::updateState() {
 }
 
 void OtherPlayer::updateAnimation(float Delta) {
+	if (!initState)
+		return;
+
 	switch (currentState) {
 	case STATE_IDLE:
 		idleFBX.UpdateAnimation(Delta, !inFrustum); break;
@@ -46,11 +43,17 @@ void OtherPlayer::updateAnimation(float Delta) {
 }
 
 void OtherPlayer::updateRenderValue(float Delta) {
+	if (!initState)
+		return;
+
 	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
 	Math::LerpXMFLOAT3(rotation, rotationDest, 10.0, Delta);
 }
 
 void OtherPlayer::updateBound() {
+	if (!initState)
+		return;
+
 	frustumAABB.Update(position, size);
 	inFrustum = camera.CheckFrustum(frustumAABB);
 }
@@ -59,10 +62,21 @@ void OtherPlayer::Update(float Delta) {
 	updateState();
 	updateRenderValue(Delta);
 	updateBound();
+
+	if (!initState) {
+		switch (characterType) {
+		case CHARACTER_MG:
+			idleFBX.SelectFBXMesh(MESH.heavyIdle);
+			moveFBX.SelectFBXMesh(MESH.heavyMove);
+			shootFBX.SelectFBXMesh(MESH.heavyShoot);
+			deathFBX.SelectFBXMesh(MESH.heavyDeath);
+			break;
+		}
+	}
 }
 
 void OtherPlayer::Render() {
-	if (!inFrustum)
+	if (!initState || !inFrustum)
 		return;
 
 	BeginRender();
@@ -86,13 +100,22 @@ void OtherPlayer::Render() {
 }
 
 void OtherPlayer::InputPosition(XMFLOAT3& position) {
+	if (!initState)
+		return;
+
 	positionDest = position;
 }
 
 void OtherPlayer::InputRotation(XMFLOAT3& rotation) {
+	if (!initState)
+		return;
+
 	rotationDest = rotation;
 }
 
 void OtherPlayer::InputState(unsigned int state) {
+	if (!initState)
+		return;
+
 	currentState = state;
 }
