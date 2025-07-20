@@ -20,13 +20,17 @@
 constexpr std::size_t MAX_CLIENTS = 5000;
 
 // 몬스터의 타입과 초기 스폰 위치를 저장하는 구조체
-typedef struct {
-    int monsterType;
-    float createPointX;
-    float createPointZ;
-    unsigned int id;
-    int hp;
-}MonsterData;
+struct MonsterData {
+    int monsterType = 0;
+    unsigned int state = 0;
+    float createPointX = 0.0f;
+    float createPointZ = 0.0f;
+    float x = 0.0f; // 현재 위치
+    float z = 0.0f;
+    unsigned int id = 0;
+    int targetClientId = -1;
+    int hp = 100;
+};
 
 enum class IOOperation {
     ACCEPT,  // 추가됨
@@ -93,6 +97,7 @@ public:
     void NotifyOthersAboutNewClient(stClientInfo* newClient);
     void SendExistingClientsToNewClient(stClientInfo* newClient);
     void SendData_MonsterState(stClientInfo* recvingClient,unsigned int monsterType, unsigned int monsterState, unsigned int id);
+    void SendData_MonsterMoveToAllClients(const MonsterData& m);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 
@@ -100,7 +105,6 @@ public:
     bool AddClient(stClientInfo* c); 
     void RemoveClient(stClientInfo* c);
 
-    void NPCAIThread();
 private:
     
     
@@ -123,6 +127,7 @@ private:
     std::mutex roomMutex;
 
     void WorkThread();
+    void NPCAIThread();
     void PostAccept();
     
     //void AcceptThread();

@@ -134,13 +134,15 @@ bool IOCompletionPort::StartServer() {
             loadedData.createPointZ = monsterDataScript.LoadDigitData(Category, "z");
             loadedData.hp = 100; // 기본 HP 할당
             loadedData.id = monsterIdCounter++; // 고유 ID 부여
+            loadedData.targetClientId = -1;
+            loadedData.state = 0;
             monsterData.emplace_back(loadedData);
         };
     monsterDataScript.LoadAllData(LoadMonsterData);
 
 
 
-    //npcThread = std::thread([this]() { NPCAIThread(); });
+    npcThread = std::thread([this]() { NPCAIThread(); });
 
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
@@ -149,13 +151,49 @@ bool IOCompletionPort::StartServer() {
     std::cout << "서버가 시작되었습니다.\n";
     return true;
 }
-void IOCompletionPort::NPCAIThread() {
+void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
     
-
-
-
-
 }
+void IOCompletionPort::NPCAIThread() {
+    const float speed = 0.05f;
+    const int frameTimeMs = 50;
+
+    while (isRunning) {
+        auto frameStart = std::chrono::steady_clock::now();
+
+        for (auto& m : monsterData) {
+            // 조건: 스콜피온이면서 추적 상태
+            if (m.monsterType == 2 && m.state == 1 ) {
+                stClientInfo* target = nullptr;
+
+                for (auto* c : clients) {
+                    if (!c) continue;
+                    if (c->id == m.targetClientId) {
+                        target = c;
+                        break;
+                    }
+                }
+
+                if (target) {
+                    float dx = target->x - m.x;
+                    float dz = target->z - m.z;
+                    float dist = std::sqrt(dx * dx + dz * dz);
+
+                    if (dist > 1e-3f) {
+                        m.x += dx / dist * speed;
+                        m.z += dz / dist * speed;
+                    }
+                }
+            }
+        }
+
+        auto frameEnd = std::chrono::steady_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(frameEnd - frameStart).count();
+        if (duration < frameTimeMs)
+            std::this_thread::sleep_for(std::chrono::milliseconds(frameTimeMs - duration));
+    }
+}
+
 //void IOCompletionPort::AcceptThread() {
 //    while (isRunning) {
 //        SOCKADDR_IN clientAddr;
@@ -824,7 +862,21 @@ void IOCompletionPort::WorkThread() {
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
                 std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
-                // 데미지 패킷을 모든 클라이언트에게 전송
+                // 몬스터 상태 저장
+                for (auto& m : monsterData) {
+                    if (m.id == pkt->id) {
+                        m.state = pkt->state;
+
+                        if (pkt->state == 1 && pkt->Mtype == 2) {
+                            m.targetClientId = client->id;  // 해당 클라이언트를 추적 대상으로 설정
+                        }
+                        else {
+                            m.targetClientId = -1;  // 추적 멈춤
+                        }
+
+                        break;
+                    }
+                }
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
@@ -896,7 +948,7 @@ void IOCompletionPort::DestroyThread() {
     if (workerThread.joinable()) workerThread.join();
 
     if (accepterThread.joinable()) accepterThread.join();
-   // if (npcThread.joinable()) npcThread.join();
+    if (npcThread.joinable()) npcThread.join();
 
     std::cout << "서버 종료 완료.\n";
 }
