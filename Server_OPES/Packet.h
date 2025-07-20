@@ -11,6 +11,7 @@ enum class PacketType {
     ANIMATION,
     PLAYER_TO_MOSTER,
     MONSTER_STATE,
+    MONSTER_MOVE,
 };
 
 constexpr int MONSTER_TYPE1 = 1;//²É

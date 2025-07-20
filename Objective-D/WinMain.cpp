@@ -158,6 +158,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "몬스터type:" << packet->Mtype << ", state:" << packet->state << "/" << packet->x << "," << packet->z << std::endl;
 		
 	}
+	else if (*type == PacketType::MONSTER_MOVE) {
+		MovePacket_StoC* packet = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
+
+		std::cout << "몬스터id:" << packet->id <<"  (" << packet->x << "," << packet->z << std::endl;
+
+	}
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
 		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
@@ -297,6 +303,7 @@ void SendMovePacket(float x, float y,float z) {
 				delete send_over;  // 오류 발생 시 할당 해제
 			}
 		}
+		
 	}
 }
 void SendViewingAnglePacket(float x, float y, float z) {

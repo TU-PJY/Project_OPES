@@ -20,13 +20,15 @@
 constexpr std::size_t MAX_CLIENTS = 5000;
 
 // 몬스터의 타입과 초기 스폰 위치를 저장하는 구조체
-typedef struct {
+struct MonsterData {
     int monsterType;
     float createPointX;
     float createPointZ;
-    unsigned int id;
+    unsigned int id = 0;
+    int targetClientId = -1;
+    unsigned int state = 0;
     int hp;
-}MonsterData;
+};
 
 enum class IOOperation {
     ACCEPT,  // 추가됨
@@ -93,6 +95,7 @@ public:
     void NotifyOthersAboutNewClient(stClientInfo* newClient);
     void SendExistingClientsToNewClient(stClientInfo* newClient);
     void SendData_MonsterState(stClientInfo* recvingClient,unsigned int monsterType, unsigned int monsterState, unsigned int id);
+    void SendData_MonsterMoveToAllClients(const MonsterData& m);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 
