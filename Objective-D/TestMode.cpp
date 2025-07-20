@@ -11,10 +11,7 @@
 
 class TestObject : public GameObject {
 public:
-	FBX fbx{ MESH.heavyIdle };
-	XMFLOAT3 size{ 3.0, 3.0, 3.0 };
-	XMFLOAT3 position{};
-	BoundSphere bs{};
+
 
 	TestObject() {
 
@@ -28,17 +25,11 @@ public:
 	}
 
 	void Update(float Delta) {
-		fbx.UpdateAnimation(Delta);
-		XMFLOAT3 boundPosition = Math::CalcForwardOffset(position, 45.0, 4.0, size.y * 0.5);
-	//	bs.Update(boundPosition, 3.0);
 	}
 
 	void Render() {
 		BeginRender();
-		//Transform::Scale(ScaleMatrix, size);
-		////Transform::Rotate(RotateMatrix, 0.0, 45.0, 0.0);
-		RenderFBX(fbx, TEX.scifi);
-		//bs.Render();
+		Render3D(MESH.grenade, TEX.scifi);
 	}
 };
 

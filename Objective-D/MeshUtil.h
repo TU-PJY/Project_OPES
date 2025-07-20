@@ -139,6 +139,8 @@ public:
 	int CheckRayIntersection(XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection, float* pfNearHitDistance);
 	void ClearHeightCache();
 	void SetHeightCache(Mesh* terrainMesh, const XMFLOAT4X4& worldMatrix);
+	XMFLOAT3 GetNormalAtPosition(float x, float z);
+	XMFLOAT3 GetAngleAtPosition(float x, float z);
 	void CreateSkyboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList);
 	void CreateImagePannelMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList);
 	void CreateBoundboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList);

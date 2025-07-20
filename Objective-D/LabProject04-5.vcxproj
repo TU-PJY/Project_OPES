@@ -176,6 +176,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="EditHelper.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Grenade.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="HeavyMachineGun.h" />
     <ClInclude Include="HP_Indicator.h" />
@@ -245,6 +246,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="FBXUtil.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Grenade.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="HeavyMachineGun.cpp" />
     <ClCompile Include="HP_Indicator.cpp" />
