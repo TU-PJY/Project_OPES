@@ -25,9 +25,9 @@ private:
 
 public:
 	Grenade(const std::string& terrainName, const XMFLOAT3& createPosition, const XMFLOAT3& rotation);
-	XMVECTOR GetNormalFromAngle(const XMFLOAT3& angleDeg);
-	XMFLOAT3 GetDirectionFromRotation(const XMFLOAT3& angleDeg);
-	XMFLOAT3 GetEulerFromVelocity(const XMFLOAT3& velocity);
+	XMVECTOR getNormalFromAngle(const XMFLOAT3& angleDeg);
+	XMFLOAT3 getDirectionFromRotation(const XMFLOAT3& angleDeg);
+	XMFLOAT3 getEulerFromVelocity(const XMFLOAT3& velocity);
 	void updateMove(float Delta);
 	void updateBound();
 	void updateCollision();

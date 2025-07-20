@@ -9,7 +9,7 @@ Grenade::Grenade(const std::string& terrainName, const XMFLOAT3& createPosition,
 	}
 
 	position = createPosition;
-	XMFLOAT3 direction = GetDirectionFromRotation(rotation);
+	XMFLOAT3 direction = getDirectionFromRotation(rotation);
 	velocity = XMFLOAT3(
 		direction.x * 30.0,
 		direction.y * 30.0,
@@ -73,7 +73,7 @@ void Grenade::updateMove(float Delta) {
 	}
 }
 
-XMVECTOR Grenade::GetNormalFromAngle(const XMFLOAT3& angleDeg) {
+XMVECTOR Grenade::getNormalFromAngle(const XMFLOAT3& angleDeg) {
 	// Pitch = X축 회전, Roll = Z축 회전 (Y축은 회전에 영향 없음)
 	float pitchRad = XMConvertToRadians(angleDeg.x);
 	float rollRad = XMConvertToRadians(angleDeg.z);
@@ -86,7 +86,7 @@ XMVECTOR Grenade::GetNormalFromAngle(const XMFLOAT3& angleDeg) {
 	return XMVector3TransformNormal(up, rot);  // 회전된 법선
 }
 
-XMFLOAT3 Grenade::GetDirectionFromRotation(const XMFLOAT3& angleDeg) {
+XMFLOAT3 Grenade::getDirectionFromRotation(const XMFLOAT3& angleDeg) {
 	float pitch = XMConvertToRadians(angleDeg.x); // up/down
 	float yaw   = XMConvertToRadians(angleDeg.y); // left/right
 
@@ -103,7 +103,7 @@ XMFLOAT3 Grenade::GetDirectionFromRotation(const XMFLOAT3& angleDeg) {
 	return result;
 }
 
-XMFLOAT3 Grenade::GetEulerFromVelocity(const XMFLOAT3& velocity) {
+XMFLOAT3 Grenade::getEulerFromVelocity(const XMFLOAT3& velocity) {
 	XMVECTOR dir = XMVector3Normalize(XMLoadFloat3(&velocity));
 
 	float yaw = atan2f(XMVectorGetX(dir), XMVectorGetZ(dir));       // Y축 회전
