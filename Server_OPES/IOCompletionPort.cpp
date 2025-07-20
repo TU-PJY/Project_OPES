@@ -690,8 +690,7 @@ void IOCompletionPort::WorkThread() {
             //clients.push_back(newClient);
             AddClient(newClient);
             // 기존 처리 함수 호출
-            NotifyOthersAboutNewClient(newClient);
-            SendExistingClientsToNewClient(newClient);
+            
             std::cout << "입장:" << idCount << std::endl;
             {
                 std::lock_guard<std::mutex> lock(waitMutex);
@@ -701,13 +700,17 @@ void IOCompletionPort::WorkThread() {
                     waitingClients.erase(waitingClients.begin(), waitingClients.begin() + 3);
                     CreateRoom(roomMembers);
                     for (auto& client : roomMembers) {
-                        SendData_EnterRoom(client);
+                        SendData_EnterRoom(client);  // 여기서 먼저 룸 ID를 클라이언트에 전송
+                        NotifyOthersAboutNewClient(client);
+                        SendExistingClientsToNewClient(client);
                         RegisterRecv(client);
                     }
                 }
                 else {
+                    SendData_EnterRoom(newClient);  // 대기 중인 상태 전송 (roomID == 0)
+                    NotifyOthersAboutNewClient(newClient);
+                    SendExistingClientsToNewClient(newClient);
                     RegisterRecv(newClient);
-                    SendData_EnterRoom(newClient);
                 }
             }
 
