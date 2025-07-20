@@ -58,8 +58,8 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 
 	if (currentMapName.compare("map1") == 0) {
 		for (int i = 0; i < size; i++) {
-			//if (type[i] == 1)
-				//scene.AddObject(new PlantMonster(position[i], "map1", false), "plantMonster", LAYER2);
+			if (type[i] == 1)
+				scene.AddObject(new PlantMonster(position[i], "map1", false), "plantMonster", LAYER2);
 			if(type[i] == 2)
 				scene.AddObject(new Scorpion(position[i], "map1"), "scorpion", LAYER2);
 		}

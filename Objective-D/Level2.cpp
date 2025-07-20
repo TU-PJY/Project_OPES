@@ -2,7 +2,6 @@
 
 #include "Map2.h"
 #include "CameraController.h"
-#include "Player.h"
 #include "CrossHair.h"
 #include "SkyBox.h"
 
@@ -23,7 +22,7 @@ void Level2::Start() {
 	if (!dev_mode_enabled) {
 		// 크로스헤어는 항상 보여야 하므로 상위 레이어에 추가
 		scene.AddObject(new CrossHair, "crosshair", LAYER3);
-		scene.AddObject(new Player("map2"), "player", LAYER1, true);
+		//scene.AddObject(new Player("map2"), "player", LAYER1, true);
 	}
 	else
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);

@@ -30,6 +30,8 @@ void Scorpion::updateBound(float Delta) {
 
 	lookRange.Update(position, 60.0);
 	scorBound.Update(XMFLOAT3(position.x, position.y + 0.5, position.z), 1.0);
+	XMFLOAT3 attackBoundPosition = Math::CalcForwardOffset(position, rotation.y, 4.0, size.y * 0.5);
+	attackBound.Update(attackBoundPosition, 3.0);
 }
 
 void Scorpion::updateIndicator() {
@@ -52,7 +54,8 @@ void Scorpion::updateDetectPlayer() {
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 	for (int i = 0; i < size; i++) {
 		if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
-			if (lookRange.CheckCollision(player->GetOOBB())) {
+			auto playerOOBB = player->GetOOBB();
+			if (lookRange.CheckCollision(playerOOBB)) {
 				XMFLOAT3 playerPosition = player->GetPosition();
 				playerPosition.y += player->GetSize().y * 1.5;
 				Ray newRay = Math::CalcRayVector(position, playerPosition);
@@ -68,8 +71,16 @@ void Scorpion::updateDetectPlayer() {
 
 				if (!isBlocked) {
 					rotationDest = Math::CalcDegree3D(position, playerPosition);
-					Math::Normalize2DAngleTo360(rotationDest.y);
-					currentState = SCOR_WALK;
+
+					// 공격 범위에 플레이어 바운드가 닿으면 공격 상태 활성화
+					if (attackBound.CheckCollision(playerOOBB))
+						currentState = SCOR_ATTACK;
+
+					// 아니라면 추격 상태로 전환
+					else {
+						Math::Normalize2DAngleTo360(rotationDest.y);
+						currentState = SCOR_WALK;
+					}
 				}
 			}
 
@@ -94,7 +105,7 @@ void Scorpion::updateState() {
 
 		case SCOR_ATTACK:
 			scorpionFBX.SelectAnimation("Attack 1");
-			scorpionFBX.SetSpeed(1.0);
+			scorpionFBX.SetSpeed(2.0);
 			break;
 
 		case SCOR_DEATH:
@@ -147,5 +158,4 @@ void Scorpion::Render() {
 		hitBox[i].Render();
 
 	frustumAABB.Render();
-
 }

@@ -5,7 +5,6 @@
 #include "CameraController.h"
 #include "CenterBuilding.h"
 #include "RoadBlock.h"
-#include "Player.h"
 #include "Player1st.h"
 #include "CrossHair.h"
 #include "Map1DefenseIndicator.h"

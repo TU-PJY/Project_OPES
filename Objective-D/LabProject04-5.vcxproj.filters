@@ -197,9 +197,6 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Plant Monster ]">
       <UniqueIdentifier>{2e3ed06f-a3c8-43eb-ac58-a04f9a235e9e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Player ]">
-      <UniqueIdentifier>{0e3eacd1-45f7-4761-8928-8b05d1d1d88e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]">
       <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
     </Filter>
@@ -247,6 +244,9 @@
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]">
       <UniqueIdentifier>{617c6944-2a09-4ee3-a4f5-a469829d0e7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ z_Deprecated ]">
+      <UniqueIdentifier>{17bf0594-a0de-4161-a0d2-8fed6688a2fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -376,9 +376,6 @@
     <ClInclude Include="CrossHair.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ CrossHair ]</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Player ]</Filter>
-    </ClInclude>
     <ClInclude Include="ClampUtil.h">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
     </ClInclude>
@@ -453,6 +450,9 @@
     </ClInclude>
     <ClInclude Include="PlayerIndicator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ z_Deprecated ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -591,9 +591,6 @@
     <ClCompile Include="CrossHair.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ CrossHair ]</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Player ]</Filter>
-    </ClCompile>
     <ClCompile Include="ClampUtil.cpp">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Clamp Util ]</Filter>
     </ClCompile>
@@ -668,6 +665,9 @@
     </ClCompile>
     <ClCompile Include="PlayerIndicator.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ z_Deprecated ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

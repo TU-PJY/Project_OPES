@@ -36,6 +36,7 @@ private:
 
 	BoundSphere lookRange{};
 	BoundSphere scorBound{};
+	BoundSphere attackBound{};
 
 
 public:

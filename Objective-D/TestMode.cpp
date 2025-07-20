@@ -11,12 +11,13 @@
 
 class TestObject : public GameObject {
 public:
-	FBX fbx{ MESH.heavyIdle };
-	OOBB oobb{};
+	FBX fbx{ MESH.scorpion };
+	XMFLOAT3 size{ 3.0, 3.0, 3.0 };
+	XMFLOAT3 position{};
 	BoundSphere bs{};
 
 	TestObject() {
-		oobb.SetUpdateFrequency(24);
+
 	}
 
 	void InputKey(KeyEvent& Event) {
@@ -27,18 +28,17 @@ public:
 	}
 
 	void Update(float Delta) {
-		oobb.UpdateDelta(Delta);
-		bs.Update(XMFLOAT3(0.0, 4.5, 0.0), 1.0);
 		fbx.UpdateAnimation(Delta);
+		XMFLOAT3 boundPosition = Math::CalcForwardOffset(position, 45.0, 4.0, size.y * 0.5);
+		bs.Update(boundPosition, 3.0);
 	}
 
 	void Render() {
 		BeginRender();
-		Transform::Scale(ScaleMatrix, XMFLOAT3(3.0, 3.0, 3.0));
-		RenderFBX(fbx, TEX.scifi);
-		oobb.UpdateAnimated(fbx, TranslateMatrix, RotateMatrix, ScaleMatrix, 0);
-		oobb.Render();
-	//	bs.Render();
+		Transform::Scale(ScaleMatrix, size);
+		Transform::Rotate(RotateMatrix, 0.0, 45.0, 0.0);
+		RenderFBX(fbx, TEX.scorpion);
+		bs.Render();
 	}
 };
 
