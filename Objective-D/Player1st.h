@@ -71,7 +71,8 @@ private:
 	// 서버용 변수
 	// 30프레임 간격으로 패킷을 전송한다.
 	float             currentPacketSendDelay{};
-	float             packetSendDelay{ 1.0 / 30.0 };
+	float             packetSendDelay{ 1.0 / 60.0 };
+	int               sendOrder{1};
 
 public:
 	Player1st(const std::string& terrainName, int characterType);

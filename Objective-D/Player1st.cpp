@@ -6,6 +6,10 @@
 #include "HeavyMachineGun.h"
 #include "PlayerIndicator.h"
 
+void SendMovePacket(float x, float y, float z);
+void SendViewingAnglePacket(float x, float y, float z);
+void SendAnimaionPacket(unsigned short playerState);
+
 Player1st::Player1st(const std::string& terrainName, int characterType) {
 	// 현재 맵에서 데이터 받아오기
 	if (auto terrain = scene.Find(terrainName); terrain) {
@@ -50,8 +54,27 @@ void Player1st::sendPacket(float Delta) {
 	if (currentPacketSendDelay >= packetSendDelay) {
 		currentPacketSendDelay -= packetSendDelay;
 
-		// 패킷 전송
-		
+		switch (sendOrder) {
+		case 1:
+			if (currentState == STATE_MOVE || currentState == STATE_MOVE_SHOOT)
+				SendMovePacket(playerPosition.x, playerPosition.y, playerPosition.z);
+			break;
+
+		case 2:
+			if (prevRotation.y != currentRotation.y) {
+				SendViewingAnglePacket(currentRotation.x, currentRotation.y, currentRotation.z);
+				prevRotation = currentRotation;
+			}
+			break;
+
+		case 3:
+			SendAnimaionPacket(currentState);
+			break;
+		}
+
+		sendOrder += 1;
+		if (sendOrder > 3)
+			sendOrder = 1;
 	}
 }
 

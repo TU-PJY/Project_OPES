@@ -36,10 +36,10 @@ void Level1::Start() {
 	scene.AddObject(new Map1, "map1", LAYER1, true);
 	scene.AddObject(new CenterBuilding("map1", -2.0), "center_building", LAYER1);
 
-	if(skipDefenseMode)
-		scene.AddObject(new MonsterSpawner("map1", true), "monsterSpawner", LAYER1, true);
-	else
-		scene.AddObject(new MonsterSpawner("map1", editMode), "monsterSpawner", LAYER1, editMode);
+	//if(skipDefenseMode)
+	//	scene.AddObject(new MonsterSpawner("map1", true), "monsterSpawner", LAYER1, true);
+	//else
+	//	scene.AddObject(new MonsterSpawner("map1", editMode), "monsterSpawner", LAYER1, editMode);
 
 	if (editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);

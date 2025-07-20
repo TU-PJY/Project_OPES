@@ -93,12 +93,12 @@ void Player::createBulletObject() {
 void Player::SendPacket(float Delta) {
 	std::cout << cameraPosition.x << " " << cameraPosition.y << " " << cameraPosition.z << std::endl;
 
-	/*sendDelay += Delta;
+	sendDelay += Delta;
 
 	if (sendDelay >= 0.025) {
 		if (sendOrder == 1) {
 			if (currentPlayerState == STATE_MOVE || currentPlayerState == STATE_MOVE_SHOOT)
-				SendMovePacket(position.x, position.y - 3.0, position.z);
+				SendMovePacket(playerPosition.x, playerPosition.y, playerPosition.z);
 		}
 
 		else if (sendOrder == 2) {
@@ -117,7 +117,7 @@ void Player::SendPacket(float Delta) {
 
 		float over_time = 0.025 - sendDelay;
 		sendDelay = over_time;
-	}*/
+	}
 }
 
 void Player::Update(float FrameTime) {

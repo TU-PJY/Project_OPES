@@ -408,7 +408,7 @@ void SendViewingAnglePacket(float x, float y, float z) {
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
-				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
+				std::cerr << "[클라이언트] 회전 패킷 전송 오류: " << err << "\n";
 				delete send_over;  // 오류 발생 시 할당 해제
 			}
 		}
@@ -436,7 +436,7 @@ void SendAnimaionPacket(unsigned short playerState) {
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
-				std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
+				std::cerr << "[클라이언트] 상태 패킷 전송 오류: " << err << "\n";
 				delete send_over;  // 오류 발생 시 할당 해제
 			}
 		}
