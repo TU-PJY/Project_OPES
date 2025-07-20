@@ -38,6 +38,7 @@ public:
 		Transform::Scale(ScaleMatrix, 0.3, 0.2, 0.3);
 
 		terrainUT.InputData(TranslateMatrix, RotateMatrix, ScaleMatrix, MESH.TerrainMesh1);
+	//	terrainUT.ExportTerrainData("terrain_map1.xml");
 	}
 
 	TerrainUtil GetTerrain() override {

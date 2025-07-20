@@ -45,38 +45,6 @@ std::string ScriptUtil::LoadStringData(std::string CategoryName, std::string Dat
 	return GetStringData(FindCategory(CategoryName), DataName);
 }
 
-DigitDataVec ScriptUtil::LoadCategoryDigitData(std::string CategoryName) {
-	DigitDataVec LoadedData{};
-	TiXmlElement* Category = FindCategory(CategoryName);
-
-	if (!Category)
-		return {};
-
-	TiXmlAttribute* Attribute = Category->FirstAttribute();
-	while (Attribute) {
-		LoadedData.emplace_back(std::stof(Attribute->Value()));
-		Attribute = Attribute->Next();
-	}
-
-	return LoadedData;
-}
-
-StringDataVec ScriptUtil::LoadCategoryStringData(std::string CategoryName) {
-	StringDataVec LoadedData{};
-	TiXmlElement* Category = FindCategory(CategoryName);
-
-	if (!Category) 
-		return {};
-
-	TiXmlAttribute* Attribute = Category->FirstAttribute();
-	while (Attribute) {
-		LoadedData.emplace_back((std::string)Attribute->Value());
-		Attribute = Attribute->Next();
-	}
-
-	return LoadedData;
-}
-
 //////////////////////////////// private
 float ScriptUtil::GetDigitData(TiXmlElement* CategoryVar, std::string DataName) {
 	const char* DataValue = CategoryVar->Attribute(DataName.c_str());

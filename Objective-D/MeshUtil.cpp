@@ -136,7 +136,7 @@ void Mesh::SetHeightCache(Mesh* terrainMesh, const XMFLOAT4X4& worldMatrix) {
 }
 
 // 현재 지점의 높이를 구한다.
-float Mesh::GetHeightAtPosition(Mesh* terrainMesh, float x, float z, const XMFLOAT4X4& worldMatrix) {
+float Mesh::GetHeightAtPosition(float x, float z) {
 	size_t size = HeightCache.size();
 
 	std::atomic<bool> found = false;
