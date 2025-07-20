@@ -60,6 +60,7 @@ void OtherPlayer::updateBound() {
 
 void OtherPlayer::Update(float Delta) {
 	updateState();
+	updateAnimation(Delta);
 	updateRenderValue(Delta);
 	updateBound();
 
@@ -84,7 +85,7 @@ void OtherPlayer::Render() {
 	BeginRender();
 	Transform::Move(TranslateMatrix, position);
 	Transform::Scale(ScaleMatrix, size);
-	Transform::Rotate(RotateMatrix, rotation);
+	Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 
 	switch (renderState) {
 	case STATE_IDLE:
