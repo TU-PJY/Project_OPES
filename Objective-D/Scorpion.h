@@ -39,9 +39,12 @@ private:
 	BoundSphere scorBound{};
 	BoundSphere attackBound{};
 
+	// 몬스터 아이디
+	unsigned int ID{};
+
 
 public:
-	Scorpion(const XMFLOAT3& createPosition, const std::string& terrainName);
+	Scorpion(const XMFLOAT3& createPosition, const std::string& terrainName, unsigned int ID);
 	~Scorpion();
 	void updateBound(float Delta);
 	void updateIndicator();

@@ -125,12 +125,15 @@ bool IOCompletionPort::StartServer() {
     monsterData.clear();
 
     monsterDataScript.Load("mapData//monster_map1.xml");
+    unsigned int monsterIdCounter = 0;
     auto LoadMonsterData = [&](CategoryPtr Category)
         {
             MonsterData loadedData{};
             loadedData.monsterType = (int)monsterDataScript.LoadDigitData(Category, "type");
             loadedData.createPointX = monsterDataScript.LoadDigitData(Category, "x");
             loadedData.createPointZ = monsterDataScript.LoadDigitData(Category, "z");
+            loadedData.hp = 100; // 기본 HP 할당
+            loadedData.id = monsterIdCounter++; // 고유 ID 부여
             monsterData.emplace_back(loadedData);
         };
     monsterDataScript.LoadAllData(LoadMonsterData);
@@ -148,6 +151,10 @@ bool IOCompletionPort::StartServer() {
 }
 void IOCompletionPort::NPCAIThread() {
     
+
+
+
+
 }
 //void IOCompletionPort::AcceptThread() {
 //    while (isRunning) {
@@ -259,13 +266,21 @@ void IOCompletionPort::NPCAIThread() {
 //    }
 //}
 void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
-    std::lock_guard<std::mutex> lock(roomMutex);
+    //std::lock_guard<std::mutex> lock(roomMutex);
 
     Room newRoom;
     nextRoomID++;
     newRoom.roomID = nextRoomID;
     newRoom.clients = members;
-
+    //for (const auto& m : monsterData) {
+    //    MonsterData copy = m;
+    //    newRoom.monsters.push_back(copy);
+    //}
+    //->이거에 대한 접근 예시
+    //auto& room = rooms[2];
+    //if (!room.monsters.empty()) {
+    //    std::cout << "HP: " << room.monsters[0].hp << std::endl;
+    //}
     for (auto* client : members) {
         client->roomID = newRoom.roomID;
         // 방 입장 메시지 전송
@@ -592,6 +607,51 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
         }
     }
 }
+void IOCompletionPort::SendData_MonsterState(stClientInfo* receiver,unsigned int monsterType, unsigned int monsterState, unsigned int id) {
+        MonsterStatePacket_StoC* pkt = new MonsterStatePacket_StoC{};
+        pkt->Ptype = PacketType::MONSTER_STATE;
+        pkt->Mtype = monsterType;
+        pkt->state = monsterState;
+        pkt->id = id;
+        
+        // 몬스터 정보 조회
+        auto it = std::find_if(monsterData.begin(), monsterData.end(), [&](const MonsterData& m) {
+            return m.id == id;
+            });
+
+        if (it != monsterData.end()) {
+            pkt->x = it->createPointX;
+            pkt->y = 0.0f;  // 고정값 또는 계산된 y좌표로 대체 가능
+            pkt->z = it->createPointZ;
+            pkt->hp = it->hp;
+        }
+        else {
+            std::cerr << "[경고] 몬스터 정보를 찾을 수 없음 (  id: " << id << ")\n";
+            pkt->x = pkt->y = pkt->z = 0.0f;
+            pkt->hp = 0;
+        }
+
+        stOverlappedEx* sendOver = new stOverlappedEx{};
+        ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+        sendOver->operation = IOOperation::SEND;
+        sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+        sendOver->wsaBuf.len = sizeof(MonsterStatePacket_StoC);
+        sendOver->cleanup = [pkt, sendOver]() {
+            delete pkt;
+            delete sendOver;
+            };
+        int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+            &sendOver->overlapped,
+            NULL);
+
+        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+            closesocket(receiver->socketClient);
+            RemoveClient(receiver);
+            delete pkt;
+            delete sendOver;
+        }
+    
+}
 
 void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
@@ -699,14 +759,7 @@ void IOCompletionPort::WorkThread() {
                 MovePacket_CtoS* movePacket = reinterpret_cast<MovePacket_CtoS*>(pOverlappedEx->buffer);
 
                 // 이동 처리
-               //switch (movePacket->direction) {
-               //case 0: client->y -= 1; break; // UP
-               //case 1: client->y += 1; break; // DOWN
-               //case 2: client->x -= 1; break; // LEFT
-               //case 3: client->x += 1; break; // RIGHT
-               //default: continue;
-               //}
-                //movePacket->id = client->id;
+               
                 client->x = movePacket->x;
                 client->y = movePacket->y;
                 client->z = movePacket->z;
@@ -763,6 +816,22 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
             }
+            else if (*packetType == PacketType::MONSTER_STATE) {
+                //if (bytesTransferred < sizeof(MovePacket)) {
+                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+                //    continue;
+                //}
+
+                MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
+                std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_MonsterState(otherClient,pkt->Mtype, pkt->state, pkt->id);
+                    }
+                }
+            }
             else if (*packetType == PacketType::PLAYER_TO_MOSTER) {
                 //if (bytesTransferred < sizeof(MovePacket)) {
                 //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
@@ -776,6 +845,7 @@ void IOCompletionPort::WorkThread() {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_Player2Monster(damagePacket->monsterId, damagePacket->damage, otherClient);
+
                     }
                 }
             }

@@ -71,6 +71,7 @@ struct stClientInfo {
 struct Room {
     int roomID;
     std::vector<stClientInfo*> clients;
+    std::vector<MonsterData> monsters;
 };
 class IOCompletionPort {
 public:
@@ -91,6 +92,7 @@ public:
     void SendData_EnterRoom(stClientInfo* recvingClient);
     void NotifyOthersAboutNewClient(stClientInfo* newClient);
     void SendExistingClientsToNewClient(stClientInfo* newClient);
+    void SendData_MonsterState(stClientInfo* recvingClient,unsigned int monsterType, unsigned int monsterState, unsigned int id);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 

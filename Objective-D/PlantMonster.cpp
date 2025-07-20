@@ -3,7 +3,7 @@
 #include "MathUtil.h"
 #include "PickingUtil.h"
 #include "PoisonBall.h"
-
+void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH)
@@ -127,7 +127,7 @@ void PlantMonster::updateAnimation(float Delta) {
 		case PLANT_LIFT:
 			plantFBX.SelectAnimation("Magic01charge"); break;
 		}
-
+		SendMonstertypePacket(1, currentState,ID);
 		prevState = currentState;
 	}
 
@@ -152,7 +152,7 @@ void PlantMonster::updateDeleteDelay(float Delta) {
 // createPosition: 처음 생성될 때 스폰되는 위치
 // terrainName: 현재 맵의 터레인 객체 이름
 // appearFromGround: 활성화 시 땅 속에서 나옴
-PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, bool appearFromGround) {
+PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, unsigned int ID, bool appearFromGround) {
 	// 원본에서 인스턴스 복사
 	plantFBX.SelectFBXMesh(MESH.plantMonster);
 
@@ -210,6 +210,8 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, const std::string& te
 
 	// 프러스텀 바운드 설정
 	frustumBound.Update(position, 10.0);
+
+	this->ID = ID;
 }
 
 PlantMonster::~PlantMonster() {
