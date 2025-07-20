@@ -248,6 +248,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ z_Deprecated ]">
       <UniqueIdentifier>{17bf0594-a0de-4161-a0d2-8fed6688a2fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ OtherPlayer ]">
+      <UniqueIdentifier>{27d2b173-c0cb-4cd9-8f28-a68e948555fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -453,6 +456,9 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ z_Deprecated ]</Filter>
+    </ClInclude>
+    <ClInclude Include="OtherPlayer.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ OtherPlayer ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -668,6 +674,9 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ z_Deprecated ]</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherPlayer.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ OtherPlayer ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

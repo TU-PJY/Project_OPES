@@ -68,9 +68,15 @@ private:
 	// 플레이어 체력 인디케이터
 	GameObject*       IndicatorPtr{};
 
+	// 서버용 변수
+	// 30프레임 간격으로 패킷을 전송한다.
+	float             currentPacketSendDelay{};
+	float             packetSendDelay{ 1.0 / 30.0 };
+
 public:
 	Player1st(const std::string& terrainName, int characterType);
 	~Player1st();
+	void sendPacket(float Delta);
 	void InputMouseMotion(MotionEvent& Event) override;
 	void InputMouse(MouseEvent& Event) override;
 	void InputKey(KeyEvent& Event) override;

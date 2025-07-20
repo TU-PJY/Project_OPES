@@ -45,6 +45,16 @@ Player1st::~Player1st() {
 		scene.DeleteObject(IndicatorPtr);
 }
 
+void Player1st::sendPacket(float Delta) {
+	currentPacketSendDelay += Delta;
+	if (currentPacketSendDelay >= packetSendDelay) {
+		currentPacketSendDelay -= packetSendDelay;
+
+		// 패킷 전송
+		
+	}
+}
+
 void Player1st::InputMouseMotion(MotionEvent& Event) {
 	if (GetCapture() == Event.CaptureState) {
 		mouse.HideCursor();
@@ -211,6 +221,7 @@ void Player1st::Update(float Delta) {
 	updateCamera(Delta);
 	updateGun();
 	updateBound();
+	sendPacket(Delta);
 }
 
 void Player1st::Render() {

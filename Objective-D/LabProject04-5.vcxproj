@@ -200,6 +200,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Player1st.h" />
     <ClInclude Include="PlayerHit.h" />
     <ClInclude Include="PlayerIndicator.h" />
+    <ClInclude Include="OtherPlayer.h" />
     <ClInclude Include="PoisonBall.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RoadBlock.h" />
@@ -263,6 +264,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="MouseUtil.cpp" />
     <ClCompile Include="MuzzleFlash.cpp" />
     <ClCompile Include="ObjectShader.cpp" />
+    <ClCompile Include="OtherPlayer.cpp" />
     <ClCompile Include="PickingUtil.cpp" />
     <ClCompile Include="GameResource.cpp" />
     <ClCompile Include="PlantMonster.cpp" />
