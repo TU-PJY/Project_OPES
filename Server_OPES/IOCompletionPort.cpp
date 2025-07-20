@@ -106,7 +106,7 @@ bool IOCompletionPort::StartServer() {
         npcs.push_back(std::move(npc)); // unique_ptr 이동
     }
 
-    //npcThread = std::thread([this]() { NPCAIThread(); });
+    npcThread = std::thread([this]() { NPCAIThread(); });
 
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
