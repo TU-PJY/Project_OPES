@@ -58,6 +58,9 @@ private:
 	// 맵이 가지는 바운드박스 데이터
 	std::vector<OOBB> mapBoundData{};
 
+	// 몬스터 아이디
+	unsigned int ID{};
+
 public:
 	void updateHitBox(float Delta);
 	void updateTargetDetect();
@@ -67,7 +70,7 @@ public:
 	void updateAnimation(float Delta);
 	void updateDeleteDelay(float Delta);
 
-	PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, bool appearFromGround=false);
+	PlantMonster(const XMFLOAT3& createPosition, const std::string& terrainName, unsigned int ID, bool appearFromGround =false);
 	~PlantMonster();
 	void Update(float Delta) override;
 	void Render()            override;

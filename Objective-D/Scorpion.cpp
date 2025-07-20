@@ -1,8 +1,9 @@
 #include "Scorpion.h"
 #include "HP_Indicator.h"
 #include "CameraUtil.h"
+void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 
-Scorpion::Scorpion(const XMFLOAT3& createPosition, const std::string& terrainName) {
+Scorpion::Scorpion(const XMFLOAT3& createPosition, const std::string& terrainName, unsigned int ID) {
 	position = createPosition;
 	currentMapName = terrainName;
 	if (auto terrain = scene.Find(terrainName); terrain) {
@@ -14,6 +15,8 @@ Scorpion::Scorpion(const XMFLOAT3& createPosition, const std::string& terrainNam
 
 	for(int i = 0; i < 3; i++)
 		hitBox[i].SetUpdateFrequency(30);
+
+	this->ID = ID;
 }
 
 Scorpion::~Scorpion() {
@@ -113,7 +116,7 @@ void Scorpion::updateState() {
 			scorpionFBX.SetSpeed(1.0);
 			break;
 		}
-
+		SendMonstertypePacket(2, currentState,ID);
 		prevState = currentState;
 	}
 }

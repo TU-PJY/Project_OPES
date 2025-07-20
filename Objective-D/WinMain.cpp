@@ -51,7 +51,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = !useServer;
+bool localServer = true; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -152,7 +152,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		}
 		//피해입은 몬스터 id,피해량 얻는 부분을 처리해야함
 	}
+	else if (*type == PacketType::MONSTER_STATE) {
+		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(recv_buffer);
 
+		std::cout << "몬스터type:" << packet->Mtype << ", state:" << packet->state << "/" << packet->x << "," << packet->z << std::endl;
+		
+	}
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
 		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
@@ -349,7 +354,34 @@ void SendAnimaionPacket(unsigned short playerState) {
 		}
 	}
 }
+void SendMonstertypePacket(unsigned int monsterType,unsigned int monsterState,unsigned int id ) {
+	if (enter_room) {
+		MonsterStatePacket_CtoS pkt = {};
+		pkt.Ptype = PacketType::MONSTER_STATE;
+		pkt.Mtype = monsterType;
+		pkt.state = monsterState;
+		pkt.id = id;
 
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(MonsterStatePacket_CtoS);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				std::cerr << "[클라이언트] 몬스터타입 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
 void SendPlayer2MonsterPacket(unsigned int monsterID,unsigned int damage) {
 	if (enter_room) {
 		Player2Monster damagePacket = {};
