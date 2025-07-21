@@ -919,20 +919,20 @@ void IOCompletionPort::WorkThread() {
                // std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
 
                 // 몬스터 상태 저장
-                for (auto& m : monsterData) {
-                    if (m.id == pkt->id) {
-                        m.state = pkt->state;
-
-                        if (pkt->state == 1 && pkt->Mtype == 2) {
-                            m.targetClientId = client->id;  // 해당 클라이언트를 추적 대상으로 설정
-                        }
-                        else {
-                            m.targetClientId = -1;  // 추적 멈춤
-                        }
-
-                        break;
-                    }
-                }
+                //for (auto& m : monsterData) {
+                //    if (m.id == pkt->id) {
+                //        m.state = pkt->state;
+                //
+                //        if (pkt->state == 1 && pkt->Mtype == 2) {
+                //            m.targetClientId = client->id;  // 해당 클라이언트를 추적 대상으로 설정
+                //        }
+                //        else {
+                //            m.targetClientId = -1;  // 추적 멈춤
+                //        }
+                //
+                //        break;
+                //    }
+                //}
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
