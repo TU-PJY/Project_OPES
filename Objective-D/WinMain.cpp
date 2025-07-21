@@ -179,44 +179,56 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::MONSTER_HP) {
 		MonsterHpPacket* packet = reinterpret_cast<MonsterHpPacket*>(recv_buffer);
+		std::cout << "[MONSTER_HP] monsterID: " << packet->monsterID << ", currentHP: " << packet->currentHP << std::endl;
 
 		//처리부분
 	}
 	else if (*type == PacketType::PLANT_ANIMATION_TIME) {
 		PlantAnimationTimePacket* packet = reinterpret_cast<PlantAnimationTimePacket*>(recv_buffer);
+		std::cout << "[PLANT_ANIMATION_TIME] time: " << packet->time << std::endl;
 
 		//처리부분
 	}
 	else if (*type == PacketType::PLAYER_HP) {
 		playerHpPacket* packet = reinterpret_cast<playerHpPacket*>(recv_buffer);
+		std::cout << "[PLAYER_HP] playerID: " << packet->platerID << ", currentHP: " << packet->currentHP << std::endl;
 
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_INSTALL) {
 		EngineerInstallPacket* packet = reinterpret_cast<EngineerInstallPacket*>(recv_buffer);
+		std::cout << "[ENGINEER_INSTALL] ID: " << packet->ID << ", type: " << packet->Etype
+			<< ", pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
+			<< "), rotY: " << packet->rotY << std::endl;
 
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_OBJECT) {
 		EngineerObjectPacket* packet = reinterpret_cast<EngineerObjectPacket*>(recv_buffer);
+		std::cout << "[ENGINEER_OBJECT] ID: " << packet->ID << ", hp: " << packet->hp << std::endl;
 
 		//처리부분
-		}
+	}
 	else if (*type == PacketType::CENTER_HP) {
 		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(recv_buffer);
+		std::cout << "[CENTER_HP] hp: " << packet->hp << std::endl;
 
 		//처리부분
 	}
 	else if (*type == PacketType::GRENADE) {
 		GrenadePacket* packet = reinterpret_cast<GrenadePacket*>(recv_buffer);
+		std::cout << "[GRENADE] pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
+			<< "), rot: (" << packet->rotX << ", " << packet->rotY << ", " << packet->rotZ << ")" << std::endl;
 
 		//처리부분
 	}
 	else if (*type == PacketType::PLAYER_ARRIVAL) {
 		PlayerArrivalPacket* packet = reinterpret_cast<PlayerArrivalPacket*>(recv_buffer);
+		std::cout << "[PLAYER_ARRIVAL] playerID: " << packet->playerID << std::endl;
 
 		//처리부분
 	}
+
 
 
 	else if (*type == PacketType::ENTER) {
