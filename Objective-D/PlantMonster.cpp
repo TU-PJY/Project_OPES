@@ -4,6 +4,7 @@
 #include "PickingUtil.h"
 #include "PoisonBall.h"
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
+void SendMonsterMovePacket(unsigned int id);
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH)
@@ -27,38 +28,51 @@ void PlantMonster::updateTargetDetect() {
 		return;
 
 	size_t layerSize = scene.LayerSize(LAYER_PLAYER);
-	for (int i = 0; i < layerSize; i++) {
-		if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
-			// 시야 범위 내에서 플레이어가 감지되는지 확인
-			if (lookRange.CheckCollision(player->GetOOBB())) {
 
-				// 플레이어가 감지되면 자신과 플레이어 사이의 광선벡터 계산
-				XMFLOAT3 playerPosition = player->GetPosition();
-				playerPosition.y += player->GetSize().y * 1.5;
-				Ray rayVector = Math::CalcRayVector(position, playerPosition);
-				bool isBlocking{};
+	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
+		for (int i = 0; i < layerSize; i++) {
+			if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
+				// 시야 범위 내에서 플레이어가 감지되는지 확인
+				if (lookRange.CheckCollision(player->GetOOBB())) {
 
-				// 광선이 맵 바운드박스에 충돌하면 IDLE 유지, 그렇지 않다면 ATTACK으로 상태 변경
-				for (auto& B : mapBoundData) {
-					if (Math::CheckRayCollision(rayVector, B)) {
-						currentState = PLANT_IDLE;
-						isBlocking = true;
-						break;
+					// 플레이어가 감지되면 자신과 플레이어 사이의 광선벡터 계산
+					XMFLOAT3 playerPosition = player->GetPosition();
+					playerPosition.y += player->GetSize().y * 1.5;
+					Ray rayVector = Math::CalcRayVector(position, playerPosition);
+					bool isBlocking{};
+
+					// 광선이 맵 바운드박스에 충돌하면 IDLE 유지, 그렇지 않다면 ATTACK으로 상태 변경
+					for (auto& B : mapBoundData) {
+						if (Math::CheckRayCollision(rayVector, B)) {
+							currentState = PLANT_IDLE;
+							isBlocking = true;
+							break;
+						}
+					}
+
+					if (!isBlocking) {
+						currentState = PLANT_ATTACK;
+						// 플레이어 방향의 각도로 목표 각도 설정
+						destRotation = Math::CalcDegree3D(position, playerPosition);
+						Math::Normalize2DAngleTo360(destRotation.y);
+						targetPosition = playerPosition;
 					}
 				}
 
-				if (!isBlocking) {
-					currentState = PLANT_ATTACK;
-					// 플레이어 방향의 각도로 목표 각도 설정
-					destRotation = Math::CalcDegree3D(position, playerPosition);
-					Math::Normalize2DAngleTo360(destRotation.y);
-					targetPosition = playerPosition;
-				}
+				// 플레이어가 시야 밖으로 나가면 다시 IDLE로 상태 변경
+				else
+					currentState = PLANT_IDLE;
 			}
+		}
+	}
 
-			// 플레이어가 시야 밖으로 나가면 다시 IDLE로 상태 변경
-			else
-				currentState = PLANT_IDLE;
+	else {
+		for (int i = 0; i < layerSize; i++) {
+			if (auto other = scene.FindMulti(std::to_string(currentTargetID), LAYER_PLAYER, i); other) {
+				XMFLOAT3 otherPosition = other->GetPosition();
+				XMFLOAT3 rotationDest = Math::CalcDegree3D(position, otherPosition);
+				break;
+			}
 		}
 	}
 }
@@ -119,11 +133,18 @@ void PlantMonster::updateAnimation(float Delta) {
 	if (currentState != prevState) {
 		switch (currentState) {
 		case PLANT_IDLE:
-			plantFBX.SelectAnimation("AttackIdle"); break;
+			plantFBX.SelectAnimation("AttackIdle"); 
+			SendMonsterMovePacket(0);
+			break;
+
 		case PLANT_ATTACK:
-			plantFBX.SelectAnimation("Attack01"); break;
+			plantFBX.SelectAnimation("Attack01"); 
+			SendMonsterMovePacket(currentTargetID);
+			break;
+
 		case PLANT_DEATH:
 			plantFBX.SelectAnimation("Death"); break;
+
 		case PLANT_LIFT:
 			plantFBX.SelectAnimation("Magic01charge"); break;
 		}
@@ -294,4 +315,11 @@ unsigned int PlantMonster::GetID() {
 
 void PlantMonster::InputState(unsigned int state) {
 	currentState = state;
+}
+
+void PlantMonster::InputTargetID(unsigned int id) {
+	if (currentTargetID == GLOBAL.myID)
+		return;
+
+	currentTargetID = id;
 }

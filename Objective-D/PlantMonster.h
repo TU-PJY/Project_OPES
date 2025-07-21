@@ -79,4 +79,5 @@ public:
 	bool CheckHit(float& distance) override;
 	unsigned int GetID() override;
 	void InputState(unsigned int state) override;
+	void InputTargetID(unsigned int id) override;
 };

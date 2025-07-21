@@ -399,10 +399,10 @@ void SendMonstertypePacket(unsigned int monsterType,unsigned int monsterState,un
 		}
 	}
 }
-void SendMonstertypePacket(unsigned int monsterid) {
+void SendMonsterMovePacket(unsigned int monsterid) {
 	if (enter_room) {
 		MonsterMovePacket_CtoS pkt = {};
-		pkt.type = PacketType::MONSTER_STATE;
+		pkt.type = PacketType::MONSTER_MOVE;
 		pkt.monserId= monsterid;
 
 		WSABUF wsaBuf;

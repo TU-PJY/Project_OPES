@@ -4,6 +4,7 @@
 #include "PickingUtil.h"
 
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
+void SendMonsterMovePacket(unsigned int id);
 
 Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
@@ -139,16 +140,19 @@ void Scorpion::updateState() {
 		case SCOR_IDLE:
 			scorpionFBX.SelectAnimation("Idle");
 			scorpionFBX.SetSpeed(1.0);
+			SendMonsterMovePacket(0);
 			break;
 
 		case SCOR_WALK:
 			scorpionFBX.SelectAnimation("Walk");
 			scorpionFBX.SetSpeed(4.0);
+			SendMonsterMovePacket(currentTargetID);
 			break;
 
 		case SCOR_ATTACK:
 			scorpionFBX.SelectAnimation("Attack 1");
 			scorpionFBX.SetSpeed(2.0);
+			SendMonsterMovePacket(currentTargetID);
 			break;
 
 		case SCOR_DEATH:
