@@ -76,9 +76,9 @@ void Scorpion::sendCurrentStateAndTargetID() {
 	if (serverState == currentState)
 		return;
 
+	serverState = currentState;
 	SendMonstertypePacket(2, currentState, ID);
 	SendMonsterMovePacket(ID, currentTargetID);
-	serverState = currentState;
 }
 
 void Scorpion::updateDetectPlayer() {

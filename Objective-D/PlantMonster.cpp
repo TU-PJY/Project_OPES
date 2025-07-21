@@ -21,9 +21,10 @@ void PlantMonster::updateHitBox(float Delta) {
 void PlantMonster::sendCurrentStateAndTargetID() {
 	if (currentState == serverState)
 		return;
+
+	serverState = currentState;
 	SendMonstertypePacket(1, currentState, ID);
 	SendMonsterMovePacket(ID, currentTargetID);
-	serverState = currentState;
 }
 
 // 공격 대상 감지 진행
