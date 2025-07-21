@@ -39,6 +39,7 @@ public:
 	void Render();
 	GameObject* AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController=false);
 	GameObject* SearchLayer(int LayerNum, std::string Tag);
+	GameObject* ReferLayer(int LayerNum, int Index);
 	void DeleteObject(GameObject* Object);
 	void DeleteObject(std::string Tag, int DeleteRangeFlag);
 	GameObject* Find(std::string Tag);

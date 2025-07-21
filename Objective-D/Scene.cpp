@@ -105,6 +105,10 @@ GameObject* Scene::SearchLayer(int LayerNum, std::string Tag) {
 	return nullptr;
 }
 
+GameObject* Scene::ReferLayer(int LayerNum, int Index) {
+	return ObjectList[LayerNum][Index];
+}
+
 // 포인터를 사용하여 객체를 삭제한다. 객체에 삭제 마크를 표시한다.
 // 이 코드가 실행되는 시점에 즉시 삭제되지 않음에 유의한다.
 // 삭제 마크가 표시된 객체는 UpdateObjectIndex()에서 최종적으로 삭제된다.
