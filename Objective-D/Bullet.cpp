@@ -34,15 +34,9 @@ void Bullet::updateCollision() {
 
 	// 그 다음 몬스터들이 광선과 충돌하면 충돌 타켓 후보에 추가한다.
 	if (GLOBAL.mapName.compare("map1") == 0) {
-		size_t size = scene.LayerSize(LAYER2);
+		size_t size = scene.LayerSize(LAYER_MONSTER);
 		for (int i = 0; i < size; i++) {
-			if (auto object = scene.FindMulti("plantMonster", LAYER2, i); object) {
-				float distance{};
-				if (object->CheckHit(distance)) 
-					rayTarget.Add(object, distance);
-			}
-
-			if (auto object = scene.FindMulti("scorpion", LAYER2, i); object) {
+			if (auto object = scene.FindMulti(std::to_string(i), LAYER_MONSTER, i); object) {
 				float distance{};
 				if (object->CheckHit(distance)) 
 					rayTarget.Add(object, distance);

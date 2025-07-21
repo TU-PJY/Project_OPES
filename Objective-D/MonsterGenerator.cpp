@@ -20,7 +20,7 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 		randomPosition.z = RandomXZ.y;
 
 		if (GLOBAL.mapName.compare("map1") == 0)
-			scene.AddObject(new PlantMonster(randomPosition, 0, true), "plantMonster", LAYER2);
+			scene.AddObject(new PlantMonster(randomPosition, 0, true), "plantMonster", LAYER_MONSTER);
 
 		currentGenerateCount++;
 

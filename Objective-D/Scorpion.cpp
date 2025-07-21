@@ -12,7 +12,7 @@ Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 		mapBounds = terrain->GetMapWallOOBB();
 	}
 
-	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER2);
+	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER3);
 
 	for(int i = 0; i < 3; i++)
 		hitBox[i].SetUpdateFrequency(30);
@@ -75,41 +75,60 @@ void Scorpion::updateDetectPlayer() {
 	if (currentState == SCOR_DEATH)
 		return;
 
+
 	size_t size = scene.LayerSize(LAYER_PLAYER);
-	for (int i = 0; i < size; i++) {
-		if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
-			auto playerOOBB = player->GetOOBB();
-			if (lookRange.CheckCollision(playerOOBB)) {
-				XMFLOAT3 playerPosition = player->GetPosition();
-				playerPosition.y += player->GetSize().y * 1.5;
-				Ray newRay = Math::CalcRayVector(position, playerPosition);
-				
-				bool isBlocked{};
-				for (auto& B : mapBounds) {
-					if (Math::CheckRayCollision(newRay, B)) {
-						currentState = SCOR_IDLE;
-						isBlocked = true;
-						break;
+
+	// 현재 아무도 추격 안 하거나 나를 추격 중이면 나를 추적하도록 한다.
+	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
+		for (int i = 0; i < size; i++) {
+			if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
+				auto playerOOBB = player->GetOOBB();
+				if (lookRange.CheckCollision(playerOOBB)) {
+					XMFLOAT3 playerPosition = player->GetPosition();
+					playerPosition.y += player->GetSize().y * 1.5;
+					Ray newRay = Math::CalcRayVector(position, playerPosition);
+
+					bool isBlocked{};
+					for (auto& B : mapBounds) {
+						if (Math::CheckRayCollision(newRay, B)) {
+							currentState = SCOR_IDLE;
+							isBlocked = true;
+							break;
+						}
+					}
+
+					if (!isBlocked) {
+						currentTargetID = GLOBAL.myID;
+						rotationDest = Math::CalcDegree3D(position, playerPosition);
+
+						// 공격 범위에 플레이어 바운드가 닿으면 공격 상태 활성화
+						if (attackBound.CheckCollision(playerOOBB))
+							currentState = SCOR_ATTACK;
+
+						// 아니라면 추격 상태로 전환
+						else {
+							Math::Normalize2DAngleTo360(rotationDest.y);
+							currentState = SCOR_WALK;
+						}
 					}
 				}
 
-				if (!isBlocked) {
-					rotationDest = Math::CalcDegree3D(position, playerPosition);
-
-					// 공격 범위에 플레이어 바운드가 닿으면 공격 상태 활성화
-					if (attackBound.CheckCollision(playerOOBB))
-						currentState = SCOR_ATTACK;
-
-					// 아니라면 추격 상태로 전환
-					else {
-						Math::Normalize2DAngleTo360(rotationDest.y);
-						currentState = SCOR_WALK;
-					}
+				else {
+					currentState = SCOR_IDLE;
+					currentTargetID = 0;
 				}
 			}
+		}
+	}
 
-			else
-				currentState = SCOR_IDLE;
+	// 아니라면 다른 플레이어 객체를 추격한다.
+	else {
+		for (int i = 0; i < size; i++) {
+			if (auto other = scene.FindMulti(std::to_string(currentTargetID), LAYER_PLAYER, i); other) {
+				XMFLOAT3 otherPosition = other->GetPosition();
+				XMFLOAT3 rotationDest = Math::CalcDegree3D(position, otherPosition);
+				break;
+			}
 		}
 	}
 }
@@ -154,8 +173,8 @@ void Scorpion::updateMove(float Delta) {
 		return;
 
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
-	if (currentState == SCOR_WALK) 
-		Math::MoveWithSlide(position, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
+	//if (currentState == SCOR_WALK) 
+		//Math::MoveWithSlide(position, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
 }
 
 void Scorpion::updateDeath() {
@@ -232,4 +251,11 @@ void Scorpion::InputState(unsigned int state) {
 void Scorpion::InputPosition(XMFLOAT3& position) {
 	inputedPosition = position;
 	positionInputedState = true;
+}
+
+void Scorpion::InputTargetID(unsigned int target) {
+	if (currentTargetID == GLOBAL.myID)
+		return;
+
+	currentTargetID = target;
 }

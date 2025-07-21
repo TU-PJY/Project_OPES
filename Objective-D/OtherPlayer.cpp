@@ -122,3 +122,7 @@ void OtherPlayer::InputState(unsigned int state) {
 
 	currentState = state;
 }
+
+XMFLOAT3 OtherPlayer::GetPosition() {
+	return position;
+}
