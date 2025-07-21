@@ -106,6 +106,10 @@ struct MonsterStatePacket_CtoS {
 struct MonsterMovePacket{
     PacketType type = PacketType::MONSTER_MOVE;
     unsigned int monsterId;
-    unsigned int playerId;
+    //unsigned int playerId;
+    float x;
+    float y;
+    float z;
+    float angle_y;
 };
 
