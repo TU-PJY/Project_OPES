@@ -35,4 +35,5 @@ public:
 	void InputPosition(XMFLOAT3& position) override;
 	void InputRotation(XMFLOAT3& rotation) override;
 	void InputState(unsigned int state) override;
+	XMFLOAT3 GetPosition() override;
 };

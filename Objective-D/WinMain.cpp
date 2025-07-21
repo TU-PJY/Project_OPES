@@ -50,8 +50,8 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = true; //!useServer;
+bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -156,9 +156,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(recv_buffer);
 
 		std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
-		if (auto monster = scene.SearchLayer(LAYER2, std::to_string(packet->id)); monster) {
-			//if (monster->GetID() == packet->id)
-				monster->InputState(packet->state);
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster) {
+			monster->InputState(packet->state);
 		}
 		
 	}
@@ -167,11 +166,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 		std::cout << "몬스터id:" << packet->id <<"  (" << packet->x << "," << packet->z << std::endl;
 		std::cout << "search string: " << std::to_string(packet->id) << std::endl;
-		if (auto monster = scene.SearchLayer(LAYER2, std::to_string(packet->id)); monster) {
-			//if (monster->GetID() == packet->id) {
-				XMFLOAT3 newPosition = XMFLOAT3(packet->x, 0.0, packet->z);
-				monster->InputPosition(newPosition);
-			//}
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster) {
+			XMFLOAT3 newPosition = XMFLOAT3(packet->x, 0.0, packet->z);
+			monster->InputPosition(newPosition);
 		}
 
 	}
@@ -180,6 +177,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
 		if (0 != EnterPacket->roomID) {
 			enter_room = true;
+
+			// 전역 변수에 내 ID 저장
+			GLOBAL.myID = EnterPacket->myID;
 		}
 		else {
 			std::cout << "대기중.." << std::endl;

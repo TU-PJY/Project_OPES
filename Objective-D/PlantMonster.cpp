@@ -197,7 +197,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 	}
 
 	// 자기 소유의 hp 표시기 객체 추가
-	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER2);
+	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER3);
 
 	for (int i = 0; i < 3; i++)
 		hitBox[i].SetUpdateFrequency(24);

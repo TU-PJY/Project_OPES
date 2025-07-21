@@ -37,6 +37,11 @@ typedef struct {
 	// 전역에서 사용되는 맵 객체 이름
 	std::string mapName;
 
+	// 서버 사용 여부
+	bool useServer;
+
+	// 현재 접속한 나의 ID
+	unsigned int myID;
 
 }GlobalValue;
 extern GlobalValue GLOBAL;

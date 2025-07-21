@@ -46,6 +46,11 @@ private:
 	// 몬스터 아이디
 	unsigned int ID{};
 
+	// 현재 추적 중인 아이디
+	// 0이면 Idle이거나 나를 추적 중
+	// 0이 아니면 다른 플레이어 추적 중
+	unsigned int currentTargetID{};
+
 
 public:
 	Scorpion(const XMFLOAT3& createPosition, unsigned int ID);
@@ -66,5 +71,6 @@ public:
 	unsigned int GetID() override;
 	void InputState(unsigned int state) override;
 	void InputPosition(XMFLOAT3& position) override;
+	void InputTargetID(unsigned int target) override;
 };
 

@@ -129,7 +129,7 @@ void Player1st::InputMouse(MouseEvent& Event) {
 	case WM_MBUTTONDOWN:
 	{
 		XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
-		scene.AddObject(new Grenade(cameraPosition, rotation), "grenade", LAYER2);
+		scene.AddObject(new Grenade(cameraPosition, rotation), "grenade", LAYER3);
 	}
 		break;
 	}
