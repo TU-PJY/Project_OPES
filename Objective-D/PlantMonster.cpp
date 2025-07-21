@@ -70,7 +70,8 @@ void PlantMonster::updateTargetDetect() {
 		for (int i = 0; i < layerSize; i++) {
 			if (auto other = scene.FindMulti(std::to_string(currentTargetID), LAYER_PLAYER, i); other) {
 				XMFLOAT3 otherPosition = other->GetPosition();
-				XMFLOAT3 rotationDest = Math::CalcDegree3D(position, otherPosition);
+				destRotation = Math::CalcDegree3D(position, otherPosition);
+				Math::Normalize2DAngleTo360(destRotation.y);
 				break;
 			}
 		}

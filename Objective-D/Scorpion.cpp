@@ -127,7 +127,8 @@ void Scorpion::updateDetectPlayer() {
 		for (int i = 0; i < size; i++) {
 			if (auto other = scene.FindMulti(std::to_string(currentTargetID), LAYER_PLAYER, i); other) {
 				XMFLOAT3 otherPosition = other->GetPosition();
-				XMFLOAT3 rotationDest = Math::CalcDegree3D(position, otherPosition);
+				rotationDest = Math::CalcDegree3D(position, otherPosition);
+				Math::Normalize2DAngleTo360(rotationDest.y);
 				break;
 			}
 		}

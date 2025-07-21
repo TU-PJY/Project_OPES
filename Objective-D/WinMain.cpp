@@ -174,11 +174,13 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
 		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
+		
+		// 전역 변수에 내 ID 저장
+		GLOBAL.myID = EnterPacket->myID;
+		std::cout << "접속 아이디: " << GLOBAL.myID << std::endl;
+
 		if (0 != EnterPacket->roomID) {
 			enter_room = true;
-
-			// 전역 변수에 내 ID 저장
-			GLOBAL.myID = EnterPacket->myID;
 		}
 		else {
 			std::cout << "대기중.." << std::endl;
