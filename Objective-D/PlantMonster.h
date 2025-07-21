@@ -69,7 +69,7 @@ private:
 
 public:
 	void updateHitBox(float Delta);
-	void sendCurrentStateAndTargetID();
+	void sendCurrentState();
 	void sendCurrentPosition();
 	void updateTargetDetect(float Delta);
 	void updateAttack(float Delta);

@@ -8,6 +8,8 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 
 Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
+	positionDest = createPosition;
+
 	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
 		currentTerrain = terrain;
 		mapBounds = terrain->GetMapWallOOBB();
@@ -130,6 +132,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							currentState = SCOR_ATTACK;
 							currentTargetID = GLOBAL.myID;
 							sendCurrentState();
+							sendCurrentPosition();
 						}
 
 						// 아니라면 추격 상태로 전환
