@@ -92,7 +92,10 @@ void Scorpion::updateDetectPlayer() {
 					bool isBlocked{};
 					for (auto& B : mapBounds) {
 						if (Math::CheckRayCollision(newRay, B)) {
+							currentTargetID = 0;
 							currentState = SCOR_IDLE;
+							SendMonstertypePacket(2, currentState, ID);
+							SendMonsterMovePacket(ID, 0);
 							isBlocked = true;
 							break;
 						}
@@ -103,21 +106,28 @@ void Scorpion::updateDetectPlayer() {
 						rotationDest = Math::CalcDegree3D(position, playerPosition);
 
 						// 공격 범위에 플레이어 바운드가 닿으면 공격 상태 활성화
-						if (attackBound.CheckCollision(playerOOBB))
+						if (attackBound.CheckCollision(playerOOBB)) {
 							currentState = SCOR_ATTACK;
+							SendMonsterMovePacket(ID, currentTargetID);
+						}
 
 						// 아니라면 추격 상태로 전환
 						else {
 							Math::Normalize2DAngleTo360(rotationDest.y);
 							currentState = SCOR_WALK;
+							SendMonsterMovePacket(ID, currentTargetID);
 						}
 					}
+
+					SendMonstertypePacket(2, currentState, ID);
 				}
 
 				else {
 					currentState = SCOR_IDLE;
 					currentTargetID = 0;
 				}
+
+				break;
 			}
 		}
 	}
@@ -141,19 +151,16 @@ void Scorpion::updateState() {
 		case SCOR_IDLE:
 			scorpionFBX.SelectAnimation("Idle");
 			scorpionFBX.SetSpeed(1.0);
-			SendMonsterMovePacket(ID, 0);
 			break;
 
 		case SCOR_WALK:
 			scorpionFBX.SelectAnimation("Walk");
 			scorpionFBX.SetSpeed(4.0);
-			SendMonsterMovePacket(ID, currentTargetID);
 			break;
 
 		case SCOR_ATTACK:
 			scorpionFBX.SelectAnimation("Attack 1");
 			scorpionFBX.SetSpeed(2.0);
-			SendMonsterMovePacket(ID, currentTargetID);
 			break;
 
 		case SCOR_DEATH:
@@ -161,7 +168,6 @@ void Scorpion::updateState() {
 			scorpionFBX.SetSpeed(1.0);
 			break;
 		}
-		SendMonstertypePacket(2, currentState,ID);
 		prevState = currentState;
 	}
 }
@@ -250,28 +256,7 @@ unsigned int Scorpion::GetID() {
 }
 
 void Scorpion::InputState(unsigned int state) {
-	switch (currentState) {
-	case SCOR_IDLE:
-		scorpionFBX.SelectAnimation("Idle");
-		scorpionFBX.SetSpeed(1.0);
-		break;
-
-	case SCOR_WALK:
-		scorpionFBX.SelectAnimation("Walk");
-		scorpionFBX.SetSpeed(4.0);
-		break;
-
-	case SCOR_ATTACK:
-		scorpionFBX.SelectAnimation("Attack 1");
-		scorpionFBX.SetSpeed(2.0);
-		break;
-
-	case SCOR_DEATH:
-		scorpionFBX.SelectAnimation("Death");
-		scorpionFBX.SetSpeed(1.0);
-		break;
-	}
-	prevState = currentState;
+	currentState = state;
 }
 
 void Scorpion::InputPosition(XMFLOAT3& position) {
