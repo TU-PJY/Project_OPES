@@ -145,7 +145,7 @@ bool IOCompletionPort::StartServer() {
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
-    npcThread = std::thread([this]() { NPCAIThread(); });
+    //npcThread = std::thread([this]() { NPCAIThread(); });
     //npcThread = std::thread([this]() {
     //    try {
     //        NPCAIThread();
@@ -236,7 +236,7 @@ void IOCompletionPort::NPCAIThread() {
                     m.createPointX = monsterPosition.x;
                     m.createPointZ = monsterPosition.z;
 
-                     std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
+                     std::cout << "[디버그] ID: "
                          << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
 
                     SendData_MonsterMoveToAllClients(m);
@@ -259,7 +259,7 @@ void IOCompletionPort::NPCAIThread() {
 
         auto frameEnd = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(frameEnd - frameStart).count();
-       // deltaTime = (float)duration;
+   //     deltaTime = (float)duration;
         if (duration < frameTimeMs)
             std::this_thread::sleep_for(std::chrono::milliseconds(frameTimeMs - duration));
     }
@@ -592,33 +592,7 @@ void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID, unsigned 
     }
 }
 
-//void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
-//    EnterRoomPacket* packet = new EnterRoomPacket{};
-//    packet->type = PacketType::ENTER;
-//    packet->roomID = receiver->roomID;
-//    packet->myID = receiver->id;
-//
-//    stOverlappedEx* sendOver = new stOverlappedEx{};
-//    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-//    sendOver->operation = IOOperation::SEND;
-//    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-//    sendOver->wsaBuf.len = sizeof(EnterRoomPacket);
-//
-//    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
-//        &sendOver->overlapped,
-//        [](DWORD, DWORD, LPWSAOVERLAPPED overlapped, DWORD) {
-//            auto* ex = reinterpret_cast<stOverlappedEx*>(overlapped);
-//            delete reinterpret_cast<EnterRoomPacket*>(ex->wsaBuf.buf);
-//            delete ex;
-//        });
-//
-//    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-//        closesocket(receiver->socketClient);
-//        RemoveClient(receiver);
-//        delete packet;
-//        delete sendOver;
-//    }
-//}
+
 
 void IOCompletionPort::SendData(stClientInfo* sender, stClientInfo* receiver, const char* message, int length) {
     ChatPacket_StoC* packet = new ChatPacket_StoC{};
@@ -741,9 +715,34 @@ void IOCompletionPort::SendData_MonsterState(stClientInfo* receiver,unsigned int
             delete pkt;
             delete sendOver;
         }
-    
 }
+void IOCompletionPort::SendData_MonsterMove(stClientInfo* receiver,unsigned int playerId, unsigned int monsterId) {
+    MonsterMovePacket_StoC* pkt = new MonsterMovePacket_StoC{};
+    pkt->type = PacketType::MONSTER_MOVE;
+    //pkt->Mtype = monsterType;
+    pkt->playerId = playerId;
+    pkt->monserId = monsterId;
 
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(MonsterMovePacket_StoC);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
 void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
@@ -914,7 +913,7 @@ void IOCompletionPort::WorkThread() {
                 //}
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
-                std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+               // std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
 
                 // 몬스터 상태 저장
                 for (auto& m : monsterData) {
@@ -936,6 +935,23 @@ void IOCompletionPort::WorkThread() {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_MonsterState(otherClient,pkt->Mtype, pkt->state, pkt->id);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::MONSTER_MOVE) {
+                //if (bytesTransferred < sizeof(MovePacket)) {
+                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+                //    continue;
+                //}
+
+                MonsterMovePacket_CtoS* pkt = reinterpret_cast<MonsterMovePacket_CtoS*>(pOverlappedEx->buffer);
+                // std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+                
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_MonsterMove(otherClient, client->id,pkt->monserId);
                     }
                 }
             }

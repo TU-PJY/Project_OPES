@@ -103,3 +103,12 @@ struct MonsterStatePacket_CtoS {
     unsigned int state;
     unsigned int id;
 };
+struct MonsterMovePacket_StoC{
+    PacketType type = PacketType::MONSTER_MOVE;
+    unsigned int monserId;
+    unsigned int playerId;
+};
+struct MonsterMovePacket_CtoS {
+    PacketType type = PacketType::MONSTER_MOVE;
+    unsigned int monserId;
+};
