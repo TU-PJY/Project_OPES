@@ -25,8 +25,8 @@ private:
 	XMFLOAT3    size{ XMFLOAT3(3.0, 3.0, 3.0) };
 
 	// 각종 상태
-	int         currentState{};
-	int         prevState{-1};
+	int         currentState{ PLANT_IDLE };
+	int         prevState{ -1 };
 	bool        detectState{};
 	bool        behaviorEnabledState{};
 	bool        shootState{};

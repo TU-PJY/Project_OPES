@@ -24,7 +24,7 @@ private:
 	bool        positionInputedState{};
 
 	int         currentState{ SCOR_IDLE };
-	int         prevState{ SCOR_IDLE };
+	int         prevState{ -1 };
 
 	int         totalHP{ 80 };
 	int         currentHP{80};
