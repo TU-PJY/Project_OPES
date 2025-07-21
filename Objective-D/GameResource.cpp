@@ -62,12 +62,12 @@ void LoadMesh(DeviceSystem& System) {
 
 		// monster - scorpion
 		LoadAnimatedFBX(MESH.scorpion, "Resources//Models//monster//scorpion.fbx",
-			"Resources//Animation Data//scorpion.pca", "Resources//Models//monster//scorpion.json", true);
+			"Resources//Animation Data//scorpion.pca", "Resources//Models//monster//scorpion.json", false);
 
 		// monster - plant monster
 		LoadAnimatedFBX(MESH.plantMonster,
 			"Resources//Models//monster//plant_monster.fbx",
-			"Resources//Animation Data///plant_monster.pca", "Resources//Models//monster//plant_monster.json", true);
+			"Resources//Animation Data///plant_monster.pca", "Resources//Models//monster//plant_monster.json", false);
 		SetAnimationOffset(MESH.plantMonster, 1.6666666269302369);
 	}
 
@@ -88,7 +88,7 @@ void LoadMesh(DeviceSystem& System) {
 		// monster - troll
 		LoadAnimatedFBX(MESH.troll,
 			"Resources//Models//monster//troll.fbx",
-			"Resources//Animation Data///troll.pca", "Resources//Models//monster//troll.json", true);
+			"Resources//Animation Data///troll.pca", "Resources//Models//monster//troll.json", false);
 		SetAnimationOffset(MESH.troll, 0.4333333373069763);
 	}
 
@@ -116,6 +116,10 @@ void LoadMesh(DeviceSystem& System) {
 	}
 
 	// 항상 필요한 리소스들은 여기에서 로드한다.
+	// explosion effect
+	LoadAnimatedFBX(MESH.explosion, "Resources//Models//effect//explosion.fbx",
+		"Resources//Animation Data//explosion.pca", "", true);
+	
 	// polygon scifi asset
 	LoadMultiStaticFBX(MESH.center_building, "Resources//Models//building//center.fbx");
 	LoadMultiStaticFBX(MESH.machine_gun, "Resources//Models//weapon//MG.fbx");
@@ -128,22 +132,24 @@ void LoadMesh(DeviceSystem& System) {
 
 	// polygon scifi player asset - heavy
 	LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", 
-		"Resources//Animation Data//heavy_idle.pca", "", true);
+		"Resources//Animation Data//heavy_idle.pca", "", false);
 
 	LoadAnimatedFBX(MESH.heavyMove, "Resources//Models//player//heavy//heavy_move.fbx", 
-		"Resources//Animation Data///heavy_move.pca", "", true);
+		"Resources//Animation Data///heavy_move.pca", "", false);
 
 	LoadAnimatedFBX(MESH.heavyShoot, "Resources//Models//player//heavy//heavy_shoot.fbx", 
-		"Resources//Animation Data///heavy_shoot.pca", "", true);
+		"Resources//Animation Data///heavy_shoot.pca", "", false);
 
 	LoadAnimatedFBX(MESH.heavyDeath, "Resources//Models//player//heavy//heavy_death.fbx", 
-		"Resources//Animation Data///heavy_death.pca", "", true);
+		"Resources//Animation Data///heavy_death.pca", "", false);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
 // 택스처를 여기서 로드한다.
 void LoadTexture(DeviceSystem& System) {
 	LoadSystem = System;
+
+	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 
 	// fontAtlas
 	int CropSize = 2048 / 16;      // 각 셀의 가로/세로 크기

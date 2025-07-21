@@ -50,8 +50,6 @@ public:
 	void UpdatePickMatrix();
 	int PickRayInter(Mesh* MeshPtr, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance);
 	void InputBoolSwitch(int SwitchFlag, KeyEvent& Event, WPARAM Key, bool& BoolValue);
-
-private:
 	void PrepareRender();
 	void SetCamera();
 	void GenPickingRay(XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, XMVECTOR& PickRayOrigin, XMVECTOR& PickRayDirection);

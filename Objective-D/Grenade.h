@@ -22,6 +22,8 @@ private:
 
 	AABB        grenadeBound{};
 
+	float       explodeTime{};
+
 public:
 	Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation);
 	XMVECTOR getNormalFromAngle(const XMFLOAT3& angleDeg);

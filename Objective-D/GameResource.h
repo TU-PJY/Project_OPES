@@ -72,6 +72,9 @@ typedef struct {
 	Mesh* Map3Stone[2];
 	Mesh* Crystal[3];
 
+	// explosion effect
+	FBXMesh explosion;
+
 	// polygon scifi asset
 	Mesh* machine_gun;
 	Mesh* dot_machine_gun;
@@ -144,7 +147,6 @@ typedef struct {
 
 	// map2 monster
 	Texture* troll;
-
 
 	// UI
 	Texture* UI_map1Enemy;

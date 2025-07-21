@@ -1,5 +1,6 @@
 ﻿#include "Grenade.h"
 #include "MathUtil.h"
+#include "Explosion.h"
 
 Grenade::Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation) {
 	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
@@ -125,6 +126,13 @@ void Grenade::Update(float Delta) {
 	updateMove(Delta);
 	updateBound();
 	updateCollision();
+
+	// 3초가 지나면 폭발한다.
+	explodeTime += Delta;
+	if (explodeTime >= 3.0) {
+		scene.AddObject(new Explosion(position), "explosion", LAYER3);
+		scene.DeleteObject(this);
+	}
 }
 
 void Grenade::Render() {
