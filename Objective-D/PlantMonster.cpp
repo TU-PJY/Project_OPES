@@ -316,6 +316,23 @@ unsigned int PlantMonster::GetID() {
 
 void PlantMonster::InputState(unsigned int state) {
 	currentState = state;
+	prevState = state;
+
+	switch (currentState) {
+	case PLANT_IDLE:
+		plantFBX.SelectAnimation("AttackIdle");
+		break;
+
+	case PLANT_ATTACK:
+		plantFBX.SelectAnimation("Attack01");
+		break;
+
+	case PLANT_DEATH:
+		plantFBX.SelectAnimation("Death"); break;
+
+	case PLANT_LIFT:
+		plantFBX.SelectAnimation("Magic01charge"); break;
+	}
 }
 
 void PlantMonster::InputTargetID(unsigned int id) {
