@@ -50,6 +50,7 @@ private:
 public:
 	Scorpion(const XMFLOAT3& createPosition, unsigned int ID);
 	~Scorpion();
+	void updateInputedPosition();
 	void updateBound(float Delta);
 	void updateIndicator();
 	void updateTerrain();

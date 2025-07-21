@@ -25,6 +25,15 @@ Scorpion::~Scorpion() {
 		scene.DeleteObject(hpIndicator);
 }
 
+// 서버로부터 위치를 입력 받으면 바로 반영하지 않고 1프레임 늦게 반영한다.
+void Scorpion::updateInputedPosition() {
+	if (!positionInputedState)
+		return;
+
+	position = inputedPosition;
+	positionInputedState = false;
+}
+
 void Scorpion::updateBound(float Delta) {
 	if (currentState == SCOR_DEATH)
 		return;
@@ -55,12 +64,6 @@ void Scorpion::updateIndicator() {
 void Scorpion::updateTerrain() {
 	if (!inFrustum)
 		return;
-
-	// 서버로부터 위치를 입력 받으면 바로 반영하지 않고 1프레임 늦게 반영한다.
-	if (positionInputedState) {
-		position = inputedPosition;
-		positionInputedState = false;
-	}
 
 	if (currentTerrain) {
 		terrainUtil.InputPosition(position);
@@ -164,6 +167,7 @@ void Scorpion::updateDeath() {
 }
 
 void Scorpion::Update(float Delta) {
+	updateInputedPosition();
 	updateBound(Delta);
 	updateTerrain();
 	updateIndicator();
