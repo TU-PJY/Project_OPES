@@ -746,6 +746,222 @@ void IOCompletionPort::SendData_MonsterMove(stClientInfo* receiver,float x, floa
         delete sendOver;
     }
 }
+void IOCompletionPort::SendData_MonsterHp(stClientInfo* receiver, int currentHP,unsigned int monsterID) {
+    MonsterHpPacket* pkt = new MonsterHpPacket{};
+    pkt->type = PacketType::MONSTER_HP;
+    pkt->currentHP = currentHP;
+    pkt->monsterID = monsterID;
+   
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(MonsterHpPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_PlantAnimationTimePacket(stClientInfo* receiver, float time) {
+    PlantAnimationTimePacket* pkt = new PlantAnimationTimePacket{};
+    pkt->type = PacketType::PLANT_ANIMATION_TIME;
+    pkt->time = time;
+ 
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(PlantAnimationTimePacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_PlayerHp(stClientInfo* receiver, int currentHP, unsigned int platerID) {
+    playerHpPacket* pkt = new playerHpPacket{};
+    pkt->type = PacketType::PLAYER_HP;
+    pkt->currentHP = currentHP;
+    pkt->platerID = platerID;
+
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(playerHpPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_EngineerInstallPacket(stClientInfo* receiver, int type,unsigned int ID,float rotY,float posX,float posY,float posZ) {
+    EngineerInstallPacket* pkt = new EngineerInstallPacket{};
+    pkt->Ptype = PacketType::ENGINEER_INSTALL;
+    pkt->Etype = type;
+    pkt->ID = ID;
+    pkt->posX = posX;
+    pkt->posY = posY;
+    pkt->posZ = posZ;
+    pkt->rotY = rotY;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(EngineerInstallPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_EngineerObjectPacket(stClientInfo* receiver, unsigned int ID,int hp) {
+    EngineerObjectPacket* pkt = new EngineerObjectPacket{};
+    pkt->type = PacketType::ENGINEER_OBJECT;
+    pkt->hp = hp;
+    pkt->ID = ID;
+    
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(EngineerObjectPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_CenterBuildingPacket(stClientInfo* receiver, int hp) {
+    CenterBuildingPacket* pkt = new CenterBuildingPacket{};
+    pkt->type = PacketType::CENTER_HP;
+    pkt->hp = hp;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(CenterBuildingPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_GrenadePacket(stClientInfo* receiver, float posX,float posY,float posZ,float rotX,float rotY,float rotZ) {
+    GrenadePacket* pkt = new GrenadePacket{};
+    pkt->type = PacketType::GRENADE;
+    pkt->posX = posX;
+    pkt->posY = posY;
+    pkt->posZ = posZ;
+    pkt->rotX = rotX;
+    pkt->rotY = rotY;
+    pkt->rotZ = rotZ;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(GrenadePacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_PlayerArrivalPacket(stClientInfo* receiver, unsigned int playerID) {
+    PlayerArrivalPacket* pkt = new PlayerArrivalPacket{};
+    pkt->type = PacketType::PLAYER_ARRIVAL;
+    pkt->playerID = playerID;
+    
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(PlayerArrivalPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+    };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
 void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
@@ -831,10 +1047,6 @@ void IOCompletionPort::WorkThread() {
         }
         // ----------------------------------------------
 
-
-
-
-       
         if (pOverlappedEx->operation == IOOperation::RECV) {
             stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
 
@@ -918,22 +1130,7 @@ void IOCompletionPort::WorkThread() {
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
                // std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
 
-                // 몬스터 상태 저장
-                //for (auto& m : monsterData) {
-                //    if (m.id == pkt->id) {
-                //        m.state = pkt->state;
-                //
-                //        if (pkt->state == 1 && pkt->Mtype == 2) {
-                //            m.targetClientId = client->id;  // 해당 클라이언트를 추적 대상으로 설정
-                //        }
-                //        else {
-                //            m.targetClientId = -1;  // 추적 멈춤
-                //        }
-                //
-                //        break;
-                //    }
-                //}
-                // 데미지 패킷을 모든 클라이언트에게 전송
+                
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
@@ -956,6 +1153,105 @@ void IOCompletionPort::WorkThread() {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_MonsterMove(otherClient, pkt->x, pkt->y, pkt->z, pkt->angle_y,pkt->monsterId, pkt->playerId);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::MONSTER_HP) {
+                //if (bytesTransferred < sizeof(MovePacket)) {
+                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+                //    continue;
+                //}
+                MonsterHpPacket* pkt = reinterpret_cast<MonsterHpPacket*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_MonsterHp(otherClient, pkt->currentHP, pkt->monsterID);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::PLANT_ANIMATION_TIME) {
+                
+                PlantAnimationTimePacket* pkt = reinterpret_cast<PlantAnimationTimePacket*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_PlantAnimationTimePacket(otherClient, pkt->time);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::PLAYER_HP) {
+
+                playerHpPacket* pkt = reinterpret_cast<playerHpPacket*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_PlayerHp(otherClient, pkt->currentHP, pkt->platerID);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::ENGINEER_INSTALL) {
+
+                EngineerInstallPacket* pkt = reinterpret_cast<EngineerInstallPacket*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_EngineerInstallPacket(otherClient, pkt->Etype, pkt->ID, pkt->rotY, pkt->posX, pkt->posY, pkt->posZ);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::ENGINEER_OBJECT) {
+
+                EngineerObjectPacket* pkt = reinterpret_cast<EngineerObjectPacket*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_EngineerObjectPacket(otherClient, pkt->ID, pkt->hp);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::CENTER_HP) {
+
+                CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_CenterBuildingPacket(otherClient, pkt->hp);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::GRENADE) {
+
+                GrenadePacket* pkt = reinterpret_cast<GrenadePacket*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_GrenadePacket(otherClient, pkt->posX, pkt->posY, pkt->posZ, pkt->rotX, pkt->rotY, pkt->rotZ);
+                    }
+                }
+            }
+            else if (*packetType == PacketType::PLANT_ANIMATION_TIME) {
+
+                PlayerArrivalPacket* pkt = reinterpret_cast<PlayerArrivalPacket*>(pOverlappedEx->buffer);
+
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                for (stClientInfo* otherClient : clients) {
+                    if (!otherClient) continue;
+                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_PlayerArrivalPacket(otherClient, pkt->playerID);
                     }
                 }
             }

@@ -97,6 +97,15 @@ public:
     void SendData_MonsterState(stClientInfo* recvingClient,unsigned int monsterType, unsigned int monsterState, unsigned int id);
     void SendData_MonsterMove(stClientInfo* receiver, float x, float y, float z, float angle, unsigned int monsterId, unsigned int playerId);
     void SendData_MonsterMoveToAllClients(const MonsterData& m);
+
+    void SendData_MonsterHp(stClientInfo* receiver, int currentHP, unsigned int monsterID);
+    void SendData_PlantAnimationTimePacket(stClientInfo* receiver, float time);
+    void SendData_PlayerHp(stClientInfo* receiver, int currentHP, unsigned int platerID);
+    void SendData_EngineerInstallPacket(stClientInfo* receiver, int type, unsigned int ID, float rotY, float posX, float posY, float posZ);
+    void SendData_EngineerObjectPacket(stClientInfo* receiver, unsigned int ID, int hp);
+    void SendData_GrenadePacket(stClientInfo* receiver, float posX, float posY, float posZ, float rotX, float rotY, float rotZ);
+    void SendData_CenterBuildingPacket(stClientInfo* receiver, int hp);
+    void SendData_PlayerArrivalPacket(stClientInfo* receiver, unsigned int playerID);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 
