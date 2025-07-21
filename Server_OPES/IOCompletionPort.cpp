@@ -230,13 +230,13 @@ void IOCompletionPort::NPCAIThread() {
                     XMFLOAT3 rotation = CalcDegree3D(monsterPosition, playerPosition);
                     Normalize2DAngleTo360(rotation.y);
 
-                    MoveForward(monsterPosition, rotation.y, 6.0 * deltaTime);
-                    MoveStrafe(monsterPosition, rotation.y, 6.0 * deltaTime);
+                    MoveForward(monsterPosition, rotation.y, 6.0);
+                    MoveStrafe(monsterPosition, rotation.y, 6.0);
 
                     m.createPointX = monsterPosition.x;
                     m.createPointZ = monsterPosition.z;
 
-                     std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
+                     std::cout << "[디버그] ID: "
                          << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
 
                     SendData_MonsterMoveToAllClients(m);
@@ -259,9 +259,9 @@ void IOCompletionPort::NPCAIThread() {
 
         auto frameEnd = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(frameEnd - frameStart).count();
-        deltaTime = (float)duration;
-        //if (duration < frameTimeMs)
-            //std::this_thread::sleep_for(std::chrono::milliseconds(frameTimeMs - duration));
+   //     deltaTime = (float)duration;
+        if (duration < frameTimeMs)
+            std::this_thread::sleep_for(std::chrono::milliseconds(frameTimeMs - duration));
     }
 }
 //void IOCompletionPort::AcceptThread() {
@@ -914,7 +914,7 @@ void IOCompletionPort::WorkThread() {
                 //}
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
-                std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+               // std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
 
                 // 몬스터 상태 저장
                 for (auto& m : monsterData) {

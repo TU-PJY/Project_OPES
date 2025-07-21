@@ -155,7 +155,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_STATE) {
 		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(recv_buffer);
 
-		std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
+		//std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
 		if (auto monster = scene.SearchLayer(LAYER2, std::to_string(packet->id)); monster) {
 			//if (monster->GetID() == packet->id)
 				monster->InputState(packet->state);
