@@ -127,7 +127,7 @@ void PlantMonster::updateAnimation(float Delta) {
 		case PLANT_LIFT:
 			plantFBX.SelectAnimation("Magic01charge"); break;
 		}
-		//SendMonstertypePacket(1, currentState,ID);
+		SendMonstertypePacket(1, currentState,ID);
 		prevState = currentState;
 	}
 

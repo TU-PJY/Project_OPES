@@ -20,7 +20,7 @@ GameObject* RayTarget::GetNearestTarget() {
 		[](const RayCastTarget& a, const RayCastTarget& b) {
 		return a.Distance < b.Distance;
 	});
-
+	
 	if (NearestDistance != TargetList.end())
 		return NearestDistance->ObjectPtr;
 
