@@ -170,7 +170,7 @@ void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
         sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
         sendOver->wsaBuf.len = sizeof(MovePacket_StoC);
         sendOver->cleanup = [packet, sendOver]() {
-            std::cout << "[디버그] cleanup called for monster move packet\n";
+           // std::cout << "[디버그] cleanup called for monster move packet\n";
             delete packet;
             delete sendOver;
          };
@@ -229,8 +229,8 @@ void IOCompletionPort::NPCAIThread() {
                         m.createPointX += dx / dist * speed;
                         m.createPointZ += dz / dist * speed;
                         SendData_MonsterMoveToAllClients(m);
-                        std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
-                            << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
+                       // std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
+                       //     << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
                  
                     }
                 }
