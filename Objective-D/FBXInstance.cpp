@@ -151,7 +151,7 @@ void FBX::UpdateAnimation(float Delta, bool Inplace, bool OnlyDeltaUpdate) {
 		if (FrameUpdateState) {
 			if (Inplace) {
 				InplaceDelta = GetRootMoveDelta(RootFrame, true);
-				std::cout << InplaceDelta.x << " " << InplaceDelta.y << " " << InplaceDelta.z << std::endl;
+				//std::cout << InplaceDelta.x << " " << InplaceDelta.y << " " << InplaceDelta.z << std::endl;
 			}
 			else
 				InplaceDelta = XMFLOAT3(0.0, 0.0, 0.0);

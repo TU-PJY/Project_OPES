@@ -56,6 +56,12 @@ void Scorpion::updateTerrain() {
 	if (!inFrustum)
 		return;
 
+	// 서버로부터 위치를 입력 받으면 바로 반영하지 않고 1프레임 늦게 반영한다.
+	if (positionInputedState) {
+		position = inputedPosition;
+		positionInputedState = false;
+	}
+
 	if (currentTerrain) {
 		terrainUtil.InputPosition(position);
 		terrainUtil.ClampToTerrain(currentTerrain->GetTerrain(), position, 0.0);
@@ -209,4 +215,17 @@ void Scorpion::GiveDamage(int damage) {
 		}
 		currentState = SCOR_DEATH;
 	}
+}
+
+unsigned int Scorpion::GetID() {
+	return ID;
+}
+
+void Scorpion::InputState(unsigned int state) {
+	currentState = state;
+}
+
+void Scorpion::InputPosition(XMFLOAT3& position) {
+	inputedPosition = position;
+	positionInputedState = true;
 }

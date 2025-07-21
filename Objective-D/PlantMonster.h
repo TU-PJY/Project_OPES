@@ -75,4 +75,6 @@ public:
 	void Render()            override;
 	void GiveDamage(int Damage) override;
 	bool CheckHit(float& distance) override;
+	unsigned int GetID() override;
+	void InputState(unsigned int state) override;
 };

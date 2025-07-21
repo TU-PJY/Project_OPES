@@ -156,12 +156,22 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(recv_buffer);
 
 		std::cout << "몬스터type:" << packet->Mtype << ", state:" << packet->state << "/" << packet->x << "," << packet->z << std::endl;
+		if (auto monster = scene.SearchLayer(LAYER2, std::to_string(packet->id)); monster) {
+			if (monster->GetID() == packet->id)
+				monster->InputState(packet->state);
+		}
 		
 	}
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MovePacket_StoC* packet = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 
 		std::cout << "몬스터id:" << packet->id <<"  (" << packet->x << "," << packet->z << std::endl;
+		if (auto monster = scene.SearchLayer(LAYER2, std::to_string(packet->id)); monster) {
+			if (monster->GetID() == packet->id) {
+				XMFLOAT3 newPosition = XMFLOAT3(packet->x, 0.0, packet->z);
+				monster->InputPosition(newPosition);
+			}
+		}
 
 	}
 	else if (*type == PacketType::ENTER) {

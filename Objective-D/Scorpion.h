@@ -18,6 +18,11 @@ private:
 	XMFLOAT3    rotationDest{};
 	XMFLOAT3    size{ 3.0, 3.0, 3.0 };
 
+	// 잔상 방지를 위해 지연 위치 입력을 실행한다.
+	XMFLOAT3    inputedPosition{};
+	// 해당 상태가 true일 때만 position이 inputedPosition을 반영한다.
+	bool        positionInputedState{};
+
 	int         currentState{ SCOR_IDLE };
 	int         prevState{ SCOR_IDLE };
 
@@ -57,5 +62,8 @@ public:
 	void Render() override;
 	bool CheckHit(float& distance) override;
 	void GiveDamage(int damage) override;
+	unsigned int GetID() override;
+	void InputState(unsigned int state) override;
+	void InputPosition(XMFLOAT3& position) override;
 };
 

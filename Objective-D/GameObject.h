@@ -104,7 +104,7 @@ public:
 	virtual bool CheckHit(XMVECTOR& start, XMVECTOR& direction, int damage) { return{}; }
 	virtual bool CheckHit(float& distance) { return {}; }
 	virtual bool ChangeHP(int hp) { return {}; }
-	virtual int GetID() { return {}; }
+	virtual unsigned int GetID() { return {}; }
 	virtual bool GetDeathState() { return {}; }
 	virtual void GiveDamage(int hp) {}
 	virtual void SetState(int State) {}

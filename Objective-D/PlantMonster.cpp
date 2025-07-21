@@ -287,3 +287,11 @@ void PlantMonster::GiveDamage(int damage) {
 		}
 	}
 }
+
+unsigned int PlantMonster::GetID() {
+	return ID;
+}
+
+void PlantMonster::InputState(unsigned int state) {
+	currentState = state;
+}
