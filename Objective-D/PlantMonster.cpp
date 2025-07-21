@@ -315,6 +315,9 @@ unsigned int PlantMonster::GetID() {
 }
 
 void PlantMonster::InputState(unsigned int state) {
+	if (currentTargetID == GLOBAL.myID)
+		return;
+
 	currentState = state;
 	prevState = state;
 
