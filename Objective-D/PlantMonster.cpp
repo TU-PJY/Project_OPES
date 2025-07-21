@@ -4,7 +4,7 @@
 #include "PickingUtil.h"
 #include "PoisonBall.h"
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
-void SendMonsterMovePacket(unsigned int id);
+void SendMonsterMovePacket(unsigned int id, unsigned int targetid);
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH)
@@ -134,12 +134,12 @@ void PlantMonster::updateAnimation(float Delta) {
 		switch (currentState) {
 		case PLANT_IDLE:
 			plantFBX.SelectAnimation("AttackIdle"); 
-			SendMonsterMovePacket(ID);
+			SendMonsterMovePacket(ID, 0);
 			break;
 
 		case PLANT_ATTACK:
 			plantFBX.SelectAnimation("Attack01"); 
-			SendMonsterMovePacket(ID);
+			SendMonsterMovePacket(ID, currentTargetID);
 			break;
 
 		case PLANT_DEATH:
