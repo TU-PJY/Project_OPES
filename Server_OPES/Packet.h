@@ -12,6 +12,14 @@ enum class PacketType {
     PLAYER_TO_MOSTER,
     MONSTER_STATE,
     MONSTER_MOVE,
+    MONSTER_HP,
+    PLANT_ANIMATION_TIME,
+    PLAYER_HP,
+    ENGINEER_INSTALL,
+    ENGINEER_OBJECT,
+    CENTER_HP,
+    GRENADE, 
+    PLAYER_ARRIVAL, 
 };
 
 constexpr int MONSTER_TYPE1 = 1;//꽃
@@ -112,4 +120,72 @@ struct MonsterMovePacket{
     float z;
     float angle_y;
 };
+//----------------------------------7/22
+ // 피격 시 전송
+struct  MonsterHpPacket {
+    PacketType type;
+    int currentHP;
+    unsigned int monsterID;
+};
 
+// plantmonster 애니메이션 재생 시간
+// currentTargetID == Other일 때만 
+struct PlantAnimationTimePacket {
+    PacketType type;
+    float time;
+};
+
+// 플레이어 피격 시 전송
+// 모든 플레이어 공통
+struct playerHpPacket {
+    PacketType type;
+    int currentHP;
+    unsigned int platerID;
+};
+
+// 엔지니어 구조물 설치 시 전송
+struct EngineerInstallPacket {
+    PacketType Ptype;
+    int Etype; // 구조물 타입
+    unsigned int ID; // 구조물 아이디
+    float rotY; // 구조물 y 회전
+    float posX; // 구조물 설치 위치
+    float posY;
+    float posZ;
+};
+
+// 엔지니어 설치 구조물 체력 
+// 대미지를 받을 때 마다 전송
+struct EngineerObjectPacket {
+    PacketType type;
+    unsigned int ID;
+    int hp;
+};
+
+// 디펜스 모드 중앙 건물 체력
+struct CenterBuildingPacket {
+    PacketType type;
+    int hp;
+};
+
+// 수류탄 던질 시 전송
+// 받은 위치 및 각도로 생성
+struct GrenadePacket {
+    PacketType type;
+    float posX; // 수류탄 생성 위치
+    float posY;
+    float posZ;
+
+    float rotX; // 수류탄 생성 각도
+    float rotY;
+    float rotZ;
+};
+
+// 플레이어 끝지점 도착 여부
+// 플레이어 도착 시 카운트가 1 증가
+// 3명 플레이어가 도착하면 카운트가 3이 되어 다음 맵으로 전환
+
+struct PlayerArrivalPacket {
+    PacketType type;
+    unsigned int playerID;
+};
