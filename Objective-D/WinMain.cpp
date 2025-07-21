@@ -177,6 +177,48 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	}
 
+	else if (*type == PacketType::MONSTER_HP) {
+		MonsterHpPacket* packet = reinterpret_cast<MonsterHpPacket*>(recv_buffer);
+
+		//처리부분
+	}
+	else if (*type == PacketType::PLANT_ANIMATION_TIME) {
+		PlantAnimationTimePacket* packet = reinterpret_cast<PlantAnimationTimePacket*>(recv_buffer);
+
+		//처리부분
+	}
+	else if (*type == PacketType::PLAYER_HP) {
+		playerHpPacket* packet = reinterpret_cast<playerHpPacket*>(recv_buffer);
+
+		//처리부분
+	}
+	else if (*type == PacketType::ENGINEER_INSTALL) {
+		EngineerInstallPacket* packet = reinterpret_cast<EngineerInstallPacket*>(recv_buffer);
+
+		//처리부분
+	}
+	else if (*type == PacketType::ENGINEER_OBJECT) {
+		EngineerObjectPacket* packet = reinterpret_cast<EngineerObjectPacket*>(recv_buffer);
+
+		//처리부분
+		}
+	else if (*type == PacketType::CENTER_HP) {
+		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(recv_buffer);
+
+		//처리부분
+	}
+	else if (*type == PacketType::GRENADE) {
+		GrenadePacket* packet = reinterpret_cast<GrenadePacket*>(recv_buffer);
+
+		//처리부분
+	}
+	else if (*type == PacketType::PLAYER_ARRIVAL) {
+		PlayerArrivalPacket* packet = reinterpret_cast<PlayerArrivalPacket*>(recv_buffer);
+
+		//처리부분
+	}
+
+
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
 		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
@@ -421,6 +463,227 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
 		wsaBuf.len = sizeof(MonsterMovePacket);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendMonsterHpPacket(int currentHP, unsigned int monsterID) {
+	if (enter_room) {
+		MonsterHpPacket pkt = {};
+		pkt.type = PacketType::MONSTER_HP;
+		pkt.currentHP = currentHP;
+		pkt.monsterID = monsterID;
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(MonsterHpPacket);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendPlantAnimationTimePacket(float time){
+	if (enter_room) {
+		PlantAnimationTimePacket pkt = {};
+		pkt.type = PacketType::PLANT_ANIMATION_TIME;
+		pkt.time = time;
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(PlantAnimationTimePacket);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendPlayerHp(int currentHP, unsigned int platerID) {
+	if (enter_room) {
+		playerHpPacket pkt = {};
+		pkt.type = PacketType::PLAYER_HP;
+		pkt.currentHP = currentHP;
+		pkt.platerID = platerID;
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(playerHpPacket);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendEngineerInstallPacket(int type, unsigned int ID, float rotY, float posX, float posY, float posZ) {
+	if (enter_room) {
+		EngineerInstallPacket pkt = {};
+		pkt.Ptype = PacketType::ENGINEER_INSTALL;
+		pkt.Etype = type;
+		pkt.ID = ID;
+		pkt.posX = posX;
+		pkt.posY = posY;
+		pkt.posZ = posZ;
+		pkt.rotY = rotY;
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(EngineerInstallPacket);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendEngineerObjectPacket( unsigned int ID, int hp) {
+	if (enter_room) {
+		EngineerObjectPacket pkt = {};
+		pkt.type = PacketType::ENGINEER_OBJECT;
+		pkt.hp = hp;
+		pkt.ID = ID;
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(EngineerObjectPacket);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendCenterBuildingPacket( int hp) {
+	if (enter_room) {
+		CenterBuildingPacket pkt = {};
+		pkt.type = PacketType::CENTER_HP;
+		pkt.hp = hp;
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(CenterBuildingPacket);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendGrenadePacket( float posX, float posY, float posZ, float rotX, float rotY, float rotZ) {
+	if (enter_room) {
+		GrenadePacket pkt = {};
+		pkt.type = PacketType::GRENADE;
+		pkt.posX = posX;
+		pkt.posY = posY;
+		pkt.posZ = posZ;
+		pkt.rotX = rotX;
+		pkt.rotY = rotY;
+		pkt.rotZ = rotZ;
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(GrenadePacket);
+
+		// WSAOVERLAPPED 구조체를 동적 할당
+		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
+		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
+
+		DWORD bytesSent = 0;
+
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
+		if (result == SOCKET_ERROR) {
+			int err = WSAGetLastError();
+			if (err != WSA_IO_PENDING) {
+				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+				delete send_over;  // 오류 발생 시 할당 해제
+			}
+		}
+	}
+}
+void SendPlayerArrivalPacket( unsigned int playerID) {
+	if (enter_room) {
+		PlayerArrivalPacket pkt = {};
+		pkt.type = PacketType::PLAYER_ARRIVAL;
+		pkt.playerID = playerID;
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
+		wsaBuf.len = sizeof(PlayerArrivalPacket);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
