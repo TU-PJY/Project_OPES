@@ -36,7 +36,7 @@ void Bullet::updateCollision() {
 	if (GLOBAL.mapName.compare("map1") == 0) {
 		size_t size = scene.LayerSize(LAYER_MONSTER);
 		for (int i = 0; i < size; i++) {
-			if (auto object = scene.FindMulti(std::to_string(i), LAYER_MONSTER, i); object) {
+			if (auto object = scene.ReferLayer(LAYER_MONSTER, i); object) {
 				float distance{};
 				if (object->CheckHit(distance)) 
 					rayTarget.Add(object, distance);

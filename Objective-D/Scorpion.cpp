@@ -202,7 +202,9 @@ void Scorpion::updateMove(float Delta) {
 	if (currentState == SCOR_WALK && currentTargetID == GLOBAL.myID)
 		Math::MoveWithSlide(positionDest, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
 		
-	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
+//	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
+	position.x = std::lerp(position.x, positionDest.x, 10.0 * Delta);
+	position.z = std::lerp(position.z, positionDest.z, 10.0 * Delta);
 }
 
 void Scorpion::updateDeath() {
@@ -216,12 +218,12 @@ void Scorpion::updateDeath() {
 void Scorpion::Update(float Delta) {
 	updateInputedPosition();
 	updateBound(Delta);
-	updateTerrain();
 	updateIndicator();
 	updateState();
 	updateAnimation(Delta);
 	updateDetectPlayer(Delta);
 	updateMove(Delta);
+	updateTerrain();
 	updateDeath();
 }
 
