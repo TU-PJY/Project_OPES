@@ -14,6 +14,7 @@ private:
 
 	FBX         scorpionFBX{ MESH.scorpion };
 	XMFLOAT3    position{};
+	XMFLOAT3    positionDest{};
 	XMFLOAT3    rotation{};
 	XMFLOAT3    rotationDest{};
 	XMFLOAT3    size{ 3.0, 3.0, 3.0 };
@@ -52,6 +53,14 @@ private:
 	// 0이 아니면 다른 플레이어 추적 중
 	unsigned int currentTargetID{};
 
+	// 서버로 전송하는 간격
+	float sendDelay{};
+
+	// 30프레인 간격으로 전송
+	float destDelay{ 1.0 / 30.0 };
+
+	// 전송 여부
+	bool sendState{};
 
 public:
 	Scorpion(const XMFLOAT3& createPosition, unsigned int ID);
@@ -61,7 +70,7 @@ public:
 	void updateIndicator();
 	void updateTerrain();
 	void sendCurrentStateAndTargetID();
-	void updateDetectPlayer();
+	void updateDetectPlayer(float Delta);
 	void updateState();
 	void updateAnimation(float Delta);
 	void updateMove(float Delta);
@@ -73,6 +82,7 @@ public:
 	unsigned int GetID() override;
 	void InputState(unsigned int state) override;
 	void InputPosition(XMFLOAT3& position) override;
+	void InputRotation(float degrees) override;
 	void InputTargetID(unsigned int target) override;
 };
 

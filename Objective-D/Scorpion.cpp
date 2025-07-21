@@ -81,10 +81,17 @@ void Scorpion::sendCurrentStateAndTargetID() {
 	SendMonsterMovePacket(ID, currentTargetID);
 }
 
-void Scorpion::updateDetectPlayer() {
+void Scorpion::updateDetectPlayer(float Delta) {
 	if (currentState == SCOR_DEATH)
 		return;
 
+	// 일정 간격마다 전송 활성화
+	sendState = false;
+	sendDelay += Delta;
+	if (sendDelay >= destDelay) {
+		sendDelay -= destDelay;
+		sendState = true;
+	}
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 
@@ -192,8 +199,12 @@ void Scorpion::updateMove(float Delta) {
 		return;
 
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
-	if (currentState == SCOR_WALK) 
-		Math::MoveWithSlide(position, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
+
+	// 나를 추격하는 상태일때만 MoveWithSlide를 실행한다.
+	if (currentState == SCOR_WALK && currentTargetID == GLOBAL.myID)
+		Math::MoveWithSlide(positionDest, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
+		
+	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
 }
 
 void Scorpion::updateDeath() {
@@ -211,7 +222,7 @@ void Scorpion::Update(float Delta) {
 	updateIndicator();
 	updateState();
 	updateAnimation(Delta);
-	updateDetectPlayer();
+	updateDetectPlayer(Delta);
 	updateMove(Delta);
 	updateDeath();
 }
@@ -271,8 +282,17 @@ void Scorpion::InputState(unsigned int state) {
 }
 
 void Scorpion::InputPosition(XMFLOAT3& position) {
-	inputedPosition = position;
-	positionInputedState = true;
+	if (currentTargetID == GLOBAL.myID)
+		return;
+
+	positionDest = position;
+}
+
+void Scorpion::InputRotation(float degrees) {
+	if (currentTargetID == GLOBAL.myID)
+		return;
+
+	rotationDest.y = degrees;
 }
 
 void Scorpion::InputTargetID(unsigned int target) {
