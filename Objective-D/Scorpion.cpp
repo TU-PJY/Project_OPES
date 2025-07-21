@@ -140,19 +140,19 @@ void Scorpion::updateState() {
 		case SCOR_IDLE:
 			scorpionFBX.SelectAnimation("Idle");
 			scorpionFBX.SetSpeed(1.0);
-			SendMonsterMovePacket(0);
+			SendMonsterMovePacket(ID);
 			break;
 
 		case SCOR_WALK:
 			scorpionFBX.SelectAnimation("Walk");
 			scorpionFBX.SetSpeed(4.0);
-			SendMonsterMovePacket(currentTargetID);
+			SendMonsterMovePacket(ID);
 			break;
 
 		case SCOR_ATTACK:
 			scorpionFBX.SelectAnimation("Attack 1");
 			scorpionFBX.SetSpeed(2.0);
-			SendMonsterMovePacket(currentTargetID);
+			SendMonsterMovePacket(ID);
 			break;
 
 		case SCOR_DEATH:
@@ -177,8 +177,8 @@ void Scorpion::updateMove(float Delta) {
 		return;
 
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
-	//if (currentState == SCOR_WALK) 
-		//Math::MoveWithSlide(position, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
+	if (currentState == SCOR_WALK) 
+		Math::MoveWithSlide(position, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
 }
 
 void Scorpion::updateDeath() {

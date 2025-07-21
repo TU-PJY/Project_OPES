@@ -134,12 +134,12 @@ void PlantMonster::updateAnimation(float Delta) {
 		switch (currentState) {
 		case PLANT_IDLE:
 			plantFBX.SelectAnimation("AttackIdle"); 
-			SendMonsterMovePacket(0);
+			SendMonsterMovePacket(ID);
 			break;
 
 		case PLANT_ATTACK:
 			plantFBX.SelectAnimation("Attack01"); 
-			SendMonsterMovePacket(currentTargetID);
+			SendMonsterMovePacket(ID);
 			break;
 
 		case PLANT_DEATH:
