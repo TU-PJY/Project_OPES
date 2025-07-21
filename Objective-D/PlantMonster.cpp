@@ -18,7 +18,7 @@ void PlantMonster::updateHitBox(float Delta) {
 		hitBox[i].UpdateDelta(Delta);
 }
 
-void PlantMonster::sendCurrentStateAndTargetID() {
+void PlantMonster::sendCurrentState() {
 	if (currentState == serverState)
 		return;
 
@@ -69,7 +69,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 						if (Math::CheckRayCollision(rayVector, B)) {
 							currentState = PLANT_IDLE;
 							currentTargetID = 0;
-							sendCurrentStateAndTargetID();
+							sendCurrentState();
 						}
 							isBlocking = true;
 							break;
@@ -78,12 +78,14 @@ void PlantMonster::updateTargetDetect(float Delta) {
 					if (!isBlocking) {
 						currentState = PLANT_ATTACK;
 						currentTargetID = GLOBAL.myID;
-						sendCurrentStateAndTargetID();
+						sendCurrentState();
 
 						// 플레이어 방향의 각도로 목표 각도 설정
 						destRotation = Math::CalcDegree3D(position, playerPosition);
 						Math::Normalize2DAngleTo360(destRotation.y);
 						targetPosition = playerPosition;
+
+						sendCurrentPosition();
 					}
 				}
 
@@ -91,7 +93,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 				else {
 					currentState = PLANT_IDLE;
 					currentTargetID = 0;
-					sendCurrentStateAndTargetID();
+					sendCurrentState();
 				}
 
 				break;
@@ -348,5 +350,8 @@ void PlantMonster::InputTargetID(unsigned int id) {
 }
 
 void PlantMonster::InputRotation(float degrees) {
+	if (currentTargetID == GLOBAL.myID)
+		return;
+
 	destRotation.y = degrees;
 }
