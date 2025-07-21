@@ -45,10 +45,14 @@ private:
 	float    forwardSpeed{};
 	float    strafeSpeed{};
 	float    maxSpeed{};
+	float    currentSpeed{};
 
 	// 체력
-	int totalHP{ 200 };
-	int currentHP{ 200 };
+	int totalHP{};
+	int currentHP{};
+
+	// 플레이어 당 2개 사용 가능
+	int currentGrenadeCount{ 2 };
 
 	// 현재 터레인 객체 이름/포인터 및 터레인 유틸
 	GameObject* currentTerrain{};
@@ -87,6 +91,8 @@ public:
 	void updateCamera(float Delta);
 	void updateGun();
 	void updateBound();
+
+	void updateIndicator();
 
 	void Update(float Delta) override;
 	void Render() override;

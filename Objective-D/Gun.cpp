@@ -3,6 +3,9 @@
 #include "Bullet.h"
 
 void Gun::enableZoom() {
+	if (reloadState)
+		return;
+
 	zoomState = true;
 }
 
@@ -38,6 +41,22 @@ int Gun::getCurrentAmmo() {
 	return currentAmmo;
 }
 
+bool Gun::getZoomState() {
+	return zoomState;
+}
+
+bool Gun::getReloadState() {
+	return reloadState;
+}
+
+void Gun::ReloadGun() {
+	if (currentAmmo == totalAmmo || reloadState)
+		return;
+
+	reloadState = true;
+	zoomState = false;
+}
+
 // 총의 위치, 회전을 업데이트 한다.
 void Gun::updateGun(float Delta) {
 	// 총 회전 업데이트
@@ -46,15 +65,22 @@ void Gun::updateGun(float Delta) {
 	rotation.z = std::lerp(rotation.z, rotationDest.z, Delta * 30.0);
 
 	// 줌에 따른 위치 오프셋 업데이트
-	if (zoomState) {
-		positionOffset.x = std::lerp(positionOffset.x, 0.0, Delta * 20.0);
-		positionOffset.y = std::lerp(positionOffset.y, -0.22, Delta * 20.0);
-		positionOffset.z = std::lerp(positionOffset.z, 0.2, Delta * 20.0);
+	if (!reloadState) {
+		if (zoomState) {
+			positionOffset.x = std::lerp(positionOffset.x, 0.0, Delta * 20.0);
+			positionOffset.y = std::lerp(positionOffset.y, -0.22, Delta * 20.0);
+			positionOffset.z = std::lerp(positionOffset.z, 0.2, Delta * 20.0);
+		}
+		else {
+			positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 20.0);
+			positionOffset.y = std::lerp(positionOffset.y, -0.3, Delta * 20.0);
+			positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 20.0);
+		}
 	}
 	else {
-		positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 20.0);
-		positionOffset.y = std::lerp(positionOffset.y, -0.3, Delta * 20.0);
-		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 20.0);
+		positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 10.0);
+		positionOffset.y = std::lerp(positionOffset.y, -0.6, Delta * 10.0);
+		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 10.0);
 	}
 
 	// 반동에 따른 위치 오프셋 업데이트
@@ -72,12 +98,13 @@ void Gun::updateFire(float Delta) {
 	else
 		fireEnableState = true;
 
-	if (fireEnableState && triggerState) {
+	if (fireEnableState && triggerState && currentAmmo > 0 && !reloadState) {
 		recoilOffset -= 0.1;
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
 		if (userPtr) userPtr->InputRecoil(recoil);
 		scene.AddObject(new Bullet(damage), "bullet", LAYER1);
+		currentAmmo--;
 		fireEnableState = false;
 	}
 }
@@ -94,8 +121,21 @@ void Gun::updateAnimation(float Delta) {
 	shakeResultY = sinf(shakeValueY) * shakeRatio;
 }
 
+void Gun::updateReload(float Delta) {
+	if (!reloadState)
+		return;
+
+	reloadDelayTime += Delta;
+	if (reloadDelayTime >= reloadTime) {
+		reloadDelayTime = 0.0;
+		currentAmmo = totalAmmo;
+		reloadState = false;
+	}
+}
+
 void Gun::Update(float Delta) {
 	updateGun(Delta);
 	updateFire(Delta);
 	updateAnimation(Delta);
+	updateReload(Delta);
 }

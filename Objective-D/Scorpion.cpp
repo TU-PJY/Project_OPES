@@ -200,7 +200,7 @@ void Scorpion::updateMove(float Delta) {
 
 	// 나를 추격하는 상태일때만 MoveWithSlide를 실행한다.
 	if (currentState == SCOR_WALK && currentTargetID == GLOBAL.myID)
-		Math::MoveWithSlide(positionDest, rotation.y, 6.0, 0.0, scorBound, mapBounds, Delta);
+		Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, scorBound, mapBounds, Delta);
 		
 //	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
 	position.x = std::lerp(position.x, positionDest.x, 10.0 * Delta);
@@ -215,6 +215,26 @@ void Scorpion::updateDeath() {
 		scene.DeleteObject(this);
 }
 
+void Scorpion::updateAttack() {
+	if (currentState != SCOR_ATTACK) {
+		attackDid = false;
+		return;
+	}
+
+	if (scorpionFBX.GetTimeSectionPassed(40.3667 - 0.7)) {
+		std::cout << scorpionFBX.GetCurrentAnimationTime() << std::endl;
+		if (!attackDid) {
+			if (currentTargetID == GLOBAL.myID) {
+				if (auto player = scene.Find("player"); player)
+					player->GiveDamage(20.0);
+			}
+			attackDid = true;
+		}
+	}
+	else 
+		attackDid = false;
+}
+
 void Scorpion::Update(float Delta) {
 	updateInputedPosition();
 	updateBound(Delta);
@@ -224,6 +244,7 @@ void Scorpion::Update(float Delta) {
 	updateDetectPlayer(Delta);
 	updateMove(Delta);
 	updateTerrain();
+	updateAttack();
 	updateDeath();
 }
 

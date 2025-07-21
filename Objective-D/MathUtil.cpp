@@ -108,14 +108,10 @@ Ray Math::CalcRayVector(const XMFLOAT3& OriginPosition, const XMFLOAT3& TargetPo
 
 // 광선 벡터가 바운드와 충돌하는지 검사한다. CalcRayVector()에서 계산된 거리까지만 검사한다.
 bool Math::CheckRayCollision(Ray& RayVector, OOBB& oobb) {
-	static int count{};
 	float Distance{};
 	if (oobb.oobb.Intersects(RayVector.Origin, RayVector.Direction, Distance)) {
-		if (Distance <= RayVector.Distance) {
-			std::cout << "collide " << count << std::endl;
-			count++;
+		if (Distance <= RayVector.Distance) 
 			return true;
-		}
 		return false;
 	}
 	return false;

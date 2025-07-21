@@ -26,8 +26,8 @@ protected:
 
 	bool     moveState{};
 	bool     zoomState{};
-	bool     triggerState{};
 	bool     reloadState{};
+	bool     triggerState{};
 	bool     fireEnableState{};
 	float    currentFireDelayTime{};
 	float    reloadDelayTime{};
@@ -53,14 +53,18 @@ public:
 	void releaseTrigger() override;
 	void InputPosition(XMFLOAT3& position) override;
 	void inputRotation(const XMFLOAT3& rotation) override;
+	void ReloadGun() override;
 
 	void inputMoveState(bool moveState) override;
 	int getTotalAmmo() override;
 	int getCurrentAmmo() override;
+	bool getZoomState() override;
+	bool getReloadState() override;
+
 
 	void updateGun(float Delta);
-	void updateRaycast();
 	void updateFire(float Delta);
 	void updateAnimation(float Delta);
+	void updateReload(float Delta);
 	void Update(float Delta) override;
 };

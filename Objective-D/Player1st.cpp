@@ -27,14 +27,19 @@ Player1st::Player1st(int characterType) {
 	switch (characterType) {
 	case CHARACTER_MG:
 		weaponPtr = scene.AddObject(new HeavyMachineGun(this), "mg", LAYER4);
-		maxSpeed = 10.0;
+		maxSpeed = 8.0;
+		totalHP = 200;
+		currentHP = 200;
 		break;
 	}
+
+	currentSpeed = maxSpeed;
 
 	// 플레이어 인디케이터에 필요한 정보들을 전달한다.
 	IndicatorPtr = scene.AddObject(new PlayerIndicator, "playerInd", LAYERUI);
 	if (IndicatorPtr) {
 		IndicatorPtr->InputHP(totalHP, currentHP);
+		IndicatorPtr->InputGrenade(currentGrenadeCount);
 		if (weaponPtr) {
 			int totalAmmo = weaponPtr->getTotalAmmo();
 			int currentAmmo = weaponPtr->getCurrentAmmo();
@@ -115,21 +120,33 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		break;
 
 	case WM_RBUTTONDOWN:
-		if (weaponPtr) weaponPtr->enableZoom();
-		zoomState = true;
-		destFOV = -20.0;
+		if (weaponPtr && !weaponPtr->getReloadState()) {
+			weaponPtr->enableZoom();
+			zoomState = true;
+			destFOV = -20.0;
+			currentSpeed = maxSpeed * 0.5;
+		}
 		break;
 
 	case WM_RBUTTONUP:
 		if (weaponPtr) weaponPtr->disableZoom();
 		zoomState = false;
 		destFOV = 0.0;
+		currentSpeed = maxSpeed;
 		break;
 
 	case WM_MBUTTONDOWN:
 	{
-		XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
-		scene.AddObject(new Grenade(cameraPosition, rotation), "grenade", LAYER3);
+		//최대 2개까지 던지기 가능하다.
+		if (currentGrenadeCount > 0) {
+			XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
+			XMFLOAT3 createPosition = cameraPosition;
+			Math::CalcForwardOffset(createPosition, currentRotation.y, 2.0, 0.0);
+			scene.AddObject(new Grenade(createPosition, rotation), "grenade", LAYER3);
+			currentGrenadeCount--;
+			if(IndicatorPtr)
+				IndicatorPtr->InputGrenade(currentGrenadeCount);
+		}
 	}
 		break;
 	}
@@ -141,6 +158,20 @@ void Player1st::InputKey(KeyEvent& Event) {
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'S', moveState[BACK]);
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'A', moveState[LEFT]);
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'D', moveState[RIGHT]);
+
+	if (Event.Type == WM_KEYDOWN) {
+		switch (Event.Key) {
+		case 'R':
+			if (weaponPtr) {
+				weaponPtr->ReloadGun();
+				if (weaponPtr->getReloadState()) {
+					zoomState = false;
+					destFOV = 0.0;
+				}
+			}
+			break;
+		}
+	}
 }
 
 // 상태를 업데이트 한다.
@@ -169,17 +200,17 @@ void Player1st::updateMove(float Delta) {
 
 	// 앞뒤 가속/감속
 	if (moveState[FRONT] && !moveState[BACK])
-		forwardSpeed = std::lerp(forwardSpeed, maxSpeed, 10.0 * Delta);
+		forwardSpeed = std::lerp(forwardSpeed, currentSpeed, 10.0 * Delta);
 	else if (!moveState[FRONT] && moveState[BACK])
-		forwardSpeed = std::lerp(forwardSpeed, -maxSpeed, 10.0 * Delta);
+		forwardSpeed = std::lerp(forwardSpeed, -currentSpeed, 10.0 * Delta);
 	else 
 		forwardSpeed = std::lerp(forwardSpeed, 0.0, 10.0 * Delta);
 
 	// 좌우 가속/감속
 	if (moveState[RIGHT] && !moveState[LEFT])
-		strafeSpeed = std::lerp(strafeSpeed, maxSpeed, 10.0 * Delta);
+		strafeSpeed = std::lerp(strafeSpeed, currentSpeed, 10.0 * Delta);
 	else if (!moveState[RIGHT] && moveState[LEFT])
-		strafeSpeed = std::lerp(strafeSpeed, -maxSpeed, 10.0 * Delta);
+		strafeSpeed = std::lerp(strafeSpeed, -currentSpeed, 10.0 * Delta);
 	else
 		strafeSpeed = std::lerp(strafeSpeed, 0.0, 10.0 * Delta);
 
@@ -238,8 +269,16 @@ void Player1st::updateBound() {
 	// 몬스터 - 플레이어 충돌 바운드
 	playerBound.Update(
 		XMFLOAT3(playerPosition.x, playerPosition.y + playerSize.y * 0.5, playerPosition.z), 
-		playerSize, currentRotation
+		XMFLOAT3(playerSize.x * 0.5, playerSize.y, playerSize.z * 0.5), currentRotation
 	);
+}
+
+void Player1st::updateIndicator() {
+	if (weaponPtr && IndicatorPtr) {
+		int currentAmmo = weaponPtr->getCurrentAmmo();
+		int totalAmmo = weaponPtr->getTotalAmmo();
+		IndicatorPtr->InputAmmo(totalAmmo, currentAmmo);
+	}
 }
 
 //////////////////////////////////////////////////////
@@ -253,6 +292,7 @@ void Player1st::Update(float Delta) {
 	updateGun();
 	updateBound();
 	sendPacket(Delta);
+	updateIndicator();
 }
 
 void Player1st::Render() {

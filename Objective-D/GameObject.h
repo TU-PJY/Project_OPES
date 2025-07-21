@@ -88,6 +88,9 @@ public:
 	virtual void inputMoveState(bool moveState) {}
 	virtual int getTotalAmmo() { return{}; }
 	virtual int getCurrentAmmo() { return{}; }
+	virtual void ReloadGun() {}
+	virtual bool getZoomState() { return{}; }
+	virtual bool getReloadState(){ return {}; }
 
 	// 크로스헤어 렌더링 활성화/비활성화
 	virtual void EnableRender() {}

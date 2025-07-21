@@ -23,7 +23,7 @@ void PlayerIndicator::Render() {
 
 	text.Render(XMFLOAT2(-1.0 * ASPECT - 0.01 + 0.08, -1.02 + 0.2), 0.1, "HP");
 
-	if (currentHP > totalHP / 2)
+	if (currentHP > totalHP / 4)
 		text.SetColor(XMFLOAT3(1.0, 0.9, 0.0));
 	else
 		text.SetColor(XMFLOAT3(1.0, 0.0, 0.0));

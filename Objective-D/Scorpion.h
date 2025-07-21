@@ -28,8 +28,10 @@ private:
 	int         prevState{ -1 };
 	int         serverState{ SCOR_IDLE };
 
-	int         totalHP{ 80 };
-	int         currentHP{80};
+	bool        attackDid{};
+
+	int         totalHP{ 300 };
+	int         currentHP{ 300 };
 	GameObject* hpIndicator{};
 
 	TerrainUtil terrainUtil{};
@@ -76,6 +78,7 @@ public:
 	void updateAnimation(float Delta);
 	void updateMove(float Delta);
 	void updateDeath();
+	void updateAttack();
 	void Update(float Delta) override;
 	void Render() override;
 	bool CheckHit(float& distance) override;
