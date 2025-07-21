@@ -51,7 +51,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = true; //!useServer;
+bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -164,7 +164,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(recv_buffer);
 
-		std::cout << "몬스터id:" << packet->monsterId <<" playerid" << packet->playerId << std::endl;
+		std::cout << "MonsterID:" << packet->monsterId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
+			<< packet->z << " angle:" << packet->angle_y << std::endl;
 
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster)
 			monster->InputTargetID(packet->playerId);
@@ -401,12 +402,15 @@ void SendMonstertypePacket(unsigned int monsterType,unsigned int monsterState,un
 		}
 	}
 }
-void SendMonsterMovePacket(unsigned int monsterid, unsigned int playerid) {
+void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId) {
 	if (enter_room) {
 		MonsterMovePacket pkt = {};
 		pkt.type = PacketType::MONSTER_MOVE;
-		pkt.monsterId= monsterid;
-		pkt.playerId= playerid;
+		pkt.x = x;
+		pkt.y = y;
+		pkt.z = z;
+		pkt.angle_y = angle;
+		pkt.monsterId = monsterId;
 
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
