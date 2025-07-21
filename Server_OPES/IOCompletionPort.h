@@ -95,6 +95,7 @@ public:
     void NotifyOthersAboutNewClient(stClientInfo* newClient);
     void SendExistingClientsToNewClient(stClientInfo* newClient);
     void SendData_MonsterState(stClientInfo* recvingClient,unsigned int monsterType, unsigned int monsterState, unsigned int id);
+    void SendData_MonsterMove(stClientInfo* receiver, unsigned int playerId, unsigned int monsterId);
     void SendData_MonsterMoveToAllClients(const MonsterData& m);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
