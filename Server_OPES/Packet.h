@@ -94,11 +94,8 @@ struct Player2Monster {
 
 struct MonsterStatePacket_StoC {
     PacketType Ptype = PacketType::MONSTER_STATE;
-    unsigned int Mtype;
     unsigned int state;
     unsigned int id;
-    float x, y, z;
-    int hp;
 };
 struct MonsterStatePacket_CtoS {
     PacketType Ptype = PacketType::MONSTER_STATE;
