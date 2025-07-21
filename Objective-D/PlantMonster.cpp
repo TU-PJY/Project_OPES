@@ -45,6 +45,9 @@ void PlantMonster::updateTargetDetect() {
 					for (auto& B : mapBoundData) {
 						if (Math::CheckRayCollision(rayVector, B)) {
 							currentState = PLANT_IDLE;
+							currentTargetID = 0;
+							SendMonsterMovePacket(ID, currentTargetID);
+							SendMonsterMovePacket(ID, 0);
 							isBlocking = true;
 							break;
 						}
@@ -56,12 +59,21 @@ void PlantMonster::updateTargetDetect() {
 						destRotation = Math::CalcDegree3D(position, playerPosition);
 						Math::Normalize2DAngleTo360(destRotation.y);
 						targetPosition = playerPosition;
+
+						currentTargetID = GLOBAL.myID;
+						SendMonsterMovePacket(ID, currentTargetID);
 					}
+
+					SendMonstertypePacket(1, currentState, ID);
 				}
 
 				// 플레이어가 시야 밖으로 나가면 다시 IDLE로 상태 변경
-				else
+				else {
 					currentState = PLANT_IDLE;
+					currentTargetID = 0;
+					SendMonsterMovePacket(ID, 0);
+					SendMonstertypePacket(1, currentState, ID);
+				}
 			}
 		}
 	}
@@ -135,12 +147,10 @@ void PlantMonster::updateAnimation(float Delta) {
 		switch (currentState) {
 		case PLANT_IDLE:
 			plantFBX.SelectAnimation("AttackIdle"); 
-			SendMonsterMovePacket(ID, 0);
 			break;
 
 		case PLANT_ATTACK:
 			plantFBX.SelectAnimation("Attack01"); 
-			SendMonsterMovePacket(ID, currentTargetID);
 			break;
 
 		case PLANT_DEATH:
@@ -149,7 +159,6 @@ void PlantMonster::updateAnimation(float Delta) {
 		case PLANT_LIFT:
 			plantFBX.SelectAnimation("Magic01charge"); break;
 		}
-		SendMonstertypePacket(1, currentState,ID);
 		prevState = currentState;
 	}
 
@@ -319,23 +328,6 @@ void PlantMonster::InputState(unsigned int state) {
 		return;
 
 	currentState = state;
-	prevState = state;
-
-	switch (currentState) {
-	case PLANT_IDLE:
-		plantFBX.SelectAnimation("AttackIdle");
-		break;
-
-	case PLANT_ATTACK:
-		plantFBX.SelectAnimation("Attack01");
-		break;
-
-	case PLANT_DEATH:
-		plantFBX.SelectAnimation("Death"); break;
-
-	case PLANT_LIFT:
-		plantFBX.SelectAnimation("Magic01charge"); break;
-	}
 }
 
 void PlantMonster::InputTargetID(unsigned int id) {

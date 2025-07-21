@@ -125,6 +125,8 @@ void Scorpion::updateDetectPlayer() {
 				else {
 					currentState = SCOR_IDLE;
 					currentTargetID = 0;
+					SendMonsterMovePacket(ID, 0);
+					SendMonstertypePacket(2, currentState, ID);
 				}
 
 				break;
@@ -256,6 +258,9 @@ unsigned int Scorpion::GetID() {
 }
 
 void Scorpion::InputState(unsigned int state) {
+	if (currentTargetID == GLOBAL.myID)
+		return;
+
 	currentState = state;
 }
 
