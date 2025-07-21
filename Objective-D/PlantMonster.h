@@ -60,6 +60,8 @@ private:
 	// 몬스터 아이디
 	unsigned int ID{};
 
+	unsigned int currentTargetID{};
+
 public:
 	void updateHitBox(float Delta);
 	void updateTargetDetect();

@@ -152,6 +152,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		}
 		//피해입은 몬스터 id,피해량 얻는 부분을 처리해야함
 	}
+
 	else if (*type == PacketType::MONSTER_STATE) {
 		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(recv_buffer);
 
@@ -159,18 +160,17 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster) 
 			monster->InputState(packet->state);
 	}
+
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MonsterMovePacket_StoC* packet = reinterpret_cast<MonsterMovePacket_StoC*>(recv_buffer);
 
 		std::cout << "몬스터id:" << packet->monserId <<" playerid" << packet->playerId << std::endl;
-		//if (auto monster = scene.SearchLayer(LAYER2, std::to_string(packet->id)); monster) {
-		//	//if (monster->GetID() == packet->id) {
-		//		XMFLOAT3 newPosition = XMFLOAT3(packet->x, 0.0, packet->z);
-		//		monster->InputPosition(newPosition);
-		//	//}
-		//}
+
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monserId)); monster)
+			monster->InputTargetID(packet->playerId);
 
 	}
+
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(recv_buffer);
 		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
