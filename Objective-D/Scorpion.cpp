@@ -4,7 +4,7 @@
 #include "PickingUtil.h"
 
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
-void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId);
+void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
 
 Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
@@ -86,7 +86,7 @@ void Scorpion::sendCurrentPosition() {
 	if (!sendState)
 		return;
 
-	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID);
+	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
 }
 
 void Scorpion::updateDetectPlayer(float Delta) {

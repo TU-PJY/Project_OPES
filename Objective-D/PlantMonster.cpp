@@ -4,7 +4,8 @@
 #include "PickingUtil.h"
 #include "PoisonBall.h"
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
-void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId);
+void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
+
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH)
@@ -30,7 +31,7 @@ void PlantMonster::sendCurrentPosition() {
 	if (!sendState)
 		return;
 
-	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID);
+	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
 }
 
 // 공격 대상 감지 진행

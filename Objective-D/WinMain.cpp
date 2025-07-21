@@ -172,6 +172,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			float recvRotation = packet->angle_y;
 			monster->InputPosition(recvPosition);
 			monster->InputRotation(recvRotation);
+			monster->InputTargetID(packet->playerId);
 		}
 
 	}
