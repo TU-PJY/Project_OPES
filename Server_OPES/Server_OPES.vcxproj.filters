@@ -22,6 +22,9 @@
     <Filter Include="[ Terrain ]">
       <UniqueIdentifier>{9c910a1a-d8e9-4a30-bd60-3665f9571ee8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ Math ]">
+      <UniqueIdentifier>{6c1a3c67-c6c6-481a-a7ba-2ce42c3f552f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="server.cpp">
@@ -48,6 +51,9 @@
     <ClCompile Include="TerrainUtil.cpp">
       <Filter>[ Terrain ]</Filter>
     </ClCompile>
+    <ClCompile Include="Math.cpp">
+      <Filter>[ Math ]</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IOCompletionPort.h">
@@ -67,6 +73,9 @@
     </ClInclude>
     <ClInclude Include="TerrainUtil.h">
       <Filter>[ Terrain ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>[ Math ]</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

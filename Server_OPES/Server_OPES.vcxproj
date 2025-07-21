@@ -129,6 +129,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="IOCompletionPort.cpp" />
+    <ClCompile Include="Math.cpp" />
     <ClCompile Include="TerrainUtil.cpp" />
     <ClCompile Include="ScriptUtil.cpp" />
     <ClCompile Include="server.cpp" />
@@ -139,6 +140,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="IOCompletionPort.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Packet.h" />
     <ClInclude Include="ScriptUtil.h" />
     <ClInclude Include="TerrainUtil.h" />

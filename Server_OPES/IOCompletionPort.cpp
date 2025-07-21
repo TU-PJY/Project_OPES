@@ -1,5 +1,6 @@
 ﻿#include "IOCompletionPort.h"
 //#include"Packet.h"
+#include "Math.h"
 #include <iostream>
 #include <mswsock.h> // AcceptEx
 #include <DirectXMath.h>
@@ -20,6 +21,9 @@ ScriptUtil monsterDataScript;
 std::vector<MonsterData> monsterData;
 
 std::thread npcThread;
+
+// NPC 스레드 프레임 시간
+float deltaTime{};
 
 
 extern LPFN_ACCEPTEX lpfnAcceptEx = nullptr; // 전역으로 AcceptEx 포인터
@@ -221,26 +225,43 @@ void IOCompletionPort::NPCAIThread() {
                 }
 
                 if (target) {
-                    float dx = target->x - m.createPointX;
-                    float dz = target->z - m.createPointZ;
-                    float dist = std::sqrt(dx * dx + dz * dz);
+                    XMFLOAT3 playerPosition = XMFLOAT3(target->x, 0.0, target->z);
+                    XMFLOAT3 monsterPosition = XMFLOAT3(m.createPointX, 0.0, m.createPointZ);
+                    XMFLOAT3 rotation = CalcDegree3D(monsterPosition, playerPosition);
+                    Normalize2DAngleTo360(rotation.y);
 
-                    if (dist > 1e-3f) {
-                        m.createPointX += dx / dist * speed;
-                        m.createPointZ += dz / dist * speed;
-                        SendData_MonsterMoveToAllClients(m);
-                       // std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
-                       //     << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
+                    MoveForward(monsterPosition, rotation.y, 6.0 * deltaTime);
+                    MoveStrafe(monsterPosition, rotation.y, 6.0 * deltaTime);
+
+                    m.createPointX = monsterPosition.x;
+                    m.createPointZ = monsterPosition.z;
+
+                     std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
+                         << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
+
+                    SendData_MonsterMoveToAllClients(m);
+
+                    //float dx = target->x - m.createPointX;
+                    //float dz = target->z - m.createPointZ;
+                    //float dist = std::sqrt(dx * dx + dz * dz);
+
+                    //if (dist > 1e-3f) {
+                    //    m.createPointX += dx / dist * speed;
+                    //    m.createPointZ += dz / dist * speed;
+                    //    
+                    //   // std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
+                    //     << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
                  
-                    }
+                    //}
                 }
             }
         }
 
         auto frameEnd = std::chrono::steady_clock::now();
         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(frameEnd - frameStart).count();
-        if (duration < frameTimeMs)
-            std::this_thread::sleep_for(std::chrono::milliseconds(frameTimeMs - duration));
+        deltaTime = (float)duration;
+        //if (duration < frameTimeMs)
+            //std::this_thread::sleep_for(std::chrono::milliseconds(frameTimeMs - duration));
     }
 }
 //void IOCompletionPort::AcceptThread() {
