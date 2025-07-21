@@ -164,7 +164,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(recv_buffer);
 
-		std::cout << "MonsterID:" << packet->monsterId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
+		std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
 			<< packet->z << " angle:" << packet->angle_y << std::endl;
 
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
@@ -406,7 +406,7 @@ void SendMonstertypePacket(unsigned int monsterType,unsigned int monsterState,un
 		}
 	}
 }
-void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId) {
+void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId,unsigned int playerId) {
 	if (enter_room) {
 		MonsterMovePacket pkt = {};
 		pkt.type = PacketType::MONSTER_MOVE;
@@ -414,6 +414,7 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 		pkt.y = y;
 		pkt.z = z;
 		pkt.angle_y = angle;
+		pkt.playerId = playerId;
 		pkt.monsterId = monsterId;
 
 		WSABUF wsaBuf;
