@@ -717,17 +717,17 @@ void IOCompletionPort::SendData_MonsterState(stClientInfo* receiver,unsigned int
         }
 }
 void IOCompletionPort::SendData_MonsterMove(stClientInfo* receiver,unsigned int playerId, unsigned int monsterId) {
-    MonsterMovePacket_StoC* pkt = new MonsterMovePacket_StoC{};
+    MonsterMovePacket* pkt = new MonsterMovePacket{};
     pkt->type = PacketType::MONSTER_MOVE;
     //pkt->Mtype = monsterType;
     pkt->playerId = playerId;
-    pkt->monserId = monsterId;
+    pkt->monsterId = monsterId;
 
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
-    sendOver->wsaBuf.len = sizeof(MonsterMovePacket_StoC);
+    sendOver->wsaBuf.len = sizeof(MonsterMovePacket);
     sendOver->cleanup = [pkt, sendOver]() {
         delete pkt;
         delete sendOver;
@@ -944,14 +944,14 @@ void IOCompletionPort::WorkThread() {
                 //    continue;
                 //}
 
-                MonsterMovePacket_CtoS* pkt = reinterpret_cast<MonsterMovePacket_CtoS*>(pOverlappedEx->buffer);
-                // std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+                MonsterMovePacket* pkt = reinterpret_cast<MonsterMovePacket*>(pOverlappedEx->buffer);
+                 std::cout <<"MonsterID:" << pkt->monsterId<<  "targetID:" << pkt->playerId << std::endl;
                 
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_MonsterMove(otherClient, client->id,pkt->monserId);
+                        SendData_MonsterMove(otherClient, pkt->playerId,pkt->monsterId);
                     }
                 }
             }

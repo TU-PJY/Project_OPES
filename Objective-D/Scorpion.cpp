@@ -140,7 +140,7 @@ void Scorpion::updateState() {
 		case SCOR_IDLE:
 			scorpionFBX.SelectAnimation("Idle");
 			scorpionFBX.SetSpeed(1.0);
-			SendMonsterMovePacket(ID);
+			//SendMonsterMovePacket(ID);
 			break;
 
 		case SCOR_WALK:

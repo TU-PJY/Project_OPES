@@ -162,11 +162,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 
 	else if (*type == PacketType::MONSTER_MOVE) {
-		MonsterMovePacket_StoC* packet = reinterpret_cast<MonsterMovePacket_StoC*>(recv_buffer);
+		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(recv_buffer);
 
-		std::cout << "몬스터id:" << packet->monserId <<" playerid" << packet->playerId << std::endl;
+		std::cout << "몬스터id:" << packet->monsterId <<" playerid" << packet->playerId << std::endl;
 
-		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monserId)); monster)
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster)
 			monster->InputTargetID(packet->playerId);
 
 	}
@@ -399,15 +399,16 @@ void SendMonstertypePacket(unsigned int monsterType,unsigned int monsterState,un
 		}
 	}
 }
-void SendMonsterMovePacket(unsigned int monsterid) {
+void SendMonsterMovePacket(unsigned int monsterid, unsigned int playerid) {
 	if (enter_room) {
-		MonsterMovePacket_CtoS pkt = {};
+		MonsterMovePacket pkt = {};
 		pkt.type = PacketType::MONSTER_MOVE;
-		pkt.monserId= monsterid;
+		pkt.monsterId= monsterid;
+		pkt.playerId= playerid;
 
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
-		wsaBuf.len = sizeof(MonsterMovePacket_CtoS);
+		wsaBuf.len = sizeof(MonsterMovePacket);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
