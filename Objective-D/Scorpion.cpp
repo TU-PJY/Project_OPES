@@ -250,7 +250,28 @@ unsigned int Scorpion::GetID() {
 }
 
 void Scorpion::InputState(unsigned int state) {
-	currentState = state;
+	switch (currentState) {
+	case SCOR_IDLE:
+		scorpionFBX.SelectAnimation("Idle");
+		scorpionFBX.SetSpeed(1.0);
+		break;
+
+	case SCOR_WALK:
+		scorpionFBX.SelectAnimation("Walk");
+		scorpionFBX.SetSpeed(4.0);
+		break;
+
+	case SCOR_ATTACK:
+		scorpionFBX.SelectAnimation("Attack 1");
+		scorpionFBX.SetSpeed(2.0);
+		break;
+
+	case SCOR_DEATH:
+		scorpionFBX.SelectAnimation("Death");
+		scorpionFBX.SetSpeed(1.0);
+		break;
+	}
+	prevState = currentState;
 }
 
 void Scorpion::InputPosition(XMFLOAT3& position) {
