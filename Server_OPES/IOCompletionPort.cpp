@@ -170,7 +170,7 @@ void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
         sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
         sendOver->wsaBuf.len = sizeof(MovePacket_StoC);
         sendOver->cleanup = [packet, sendOver]() {
-            std::cout << "[디버그] cleanup called for monster move packet\n";
+           // std::cout << "[디버그] cleanup called for monster move packet\n";
             delete packet;
             delete sendOver;
          };
@@ -202,7 +202,7 @@ void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
 
 void IOCompletionPort::NPCAIThread() {
     const float speed = 0.05f;
-    const int frameTimeMs = 1000;
+    const int frameTimeMs = 60;
     //SendData_MonsterMoveToAllClients(monsterData[0]);
     while (isRunning) {
         auto frameStart = std::chrono::steady_clock::now();
@@ -229,8 +229,8 @@ void IOCompletionPort::NPCAIThread() {
                         m.createPointX += dx / dist * speed;
                         m.createPointZ += dz / dist * speed;
                         SendData_MonsterMoveToAllClients(m);
-                        std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
-                            << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
+                       // std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
+                       //     << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
                  
                     }
                 }
@@ -697,26 +697,9 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
 void IOCompletionPort::SendData_MonsterState(stClientInfo* receiver,unsigned int monsterType, unsigned int monsterState, unsigned int id) {
         MonsterStatePacket_StoC* pkt = new MonsterStatePacket_StoC{};
         pkt->Ptype = PacketType::MONSTER_STATE;
-        pkt->Mtype = monsterType;
+        //pkt->Mtype = monsterType;
         pkt->state = monsterState;
         pkt->id = id;
-        
-        // 몬스터 정보 조회
-        auto it = std::find_if(monsterData.begin(), monsterData.end(), [&](const MonsterData& m) {
-            return m.id == id;
-            });
-
-        if (it != monsterData.end()) {
-            pkt->x = it->createPointX;
-            pkt->y = 0.0f;  // 고정값 또는 계산된 y좌표로 대체 가능
-            pkt->z = it->createPointZ;
-            pkt->hp = it->hp;
-        }
-        else {
-            std::cerr << "[경고] 몬스터 정보를 찾을 수 없음 (  id: " << id << ")\n";
-            pkt->x = pkt->y = pkt->z = 0.0f;
-            pkt->hp = 0;
-        }
 
         stOverlappedEx* sendOver = new stOverlappedEx{};
         ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
