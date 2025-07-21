@@ -25,6 +25,7 @@ private:
 
 	int         currentState{ SCOR_IDLE };
 	int         prevState{ -1 };
+	int         serverState{ SCOR_IDLE };
 
 	int         totalHP{ 80 };
 	int         currentHP{80};
@@ -59,6 +60,7 @@ public:
 	void updateBound(float Delta);
 	void updateIndicator();
 	void updateTerrain();
+	void sendCurrentStateAndTargetID();
 	void updateDetectPlayer();
 	void updateState();
 	void updateAnimation(float Delta);

@@ -72,6 +72,15 @@ void Scorpion::updateTerrain() {
 	}
 }
 
+void Scorpion::sendCurrentStateAndTargetID() {
+	if (serverState == currentState)
+		return;
+
+	SendMonstertypePacket(2, currentState, ID);
+	SendMonsterMovePacket(ID, currentTargetID);
+	serverState = currentState;
+}
+
 void Scorpion::updateDetectPlayer() {
 	if (currentState == SCOR_DEATH)
 		return;
@@ -92,41 +101,38 @@ void Scorpion::updateDetectPlayer() {
 					bool isBlocked{};
 					for (auto& B : mapBounds) {
 						if (Math::CheckRayCollision(newRay, B)) {
+							currentState = SCOR_IDLE; 
 							currentTargetID = 0;
-							currentState = SCOR_IDLE;
-							SendMonstertypePacket(2, currentState, ID);
-							SendMonsterMovePacket(ID, 0);
+							sendCurrentStateAndTargetID();
 							isBlocked = true;
 							break;
 						}
 					}
 
 					if (!isBlocked) {
-						currentTargetID = GLOBAL.myID;
 						rotationDest = Math::CalcDegree3D(position, playerPosition);
 
 						// 공격 범위에 플레이어 바운드가 닿으면 공격 상태 활성화
 						if (attackBound.CheckCollision(playerOOBB)) {
 							currentState = SCOR_ATTACK;
-							SendMonsterMovePacket(ID, currentTargetID);
+							currentTargetID = GLOBAL.myID;
+							sendCurrentStateAndTargetID();
 						}
 
 						// 아니라면 추격 상태로 전환
 						else {
 							Math::Normalize2DAngleTo360(rotationDest.y);
 							currentState = SCOR_WALK;
-							SendMonsterMovePacket(ID, currentTargetID);
+							currentTargetID = GLOBAL.myID;
+							sendCurrentStateAndTargetID();
 						}
 					}
-
-					SendMonstertypePacket(2, currentState, ID);
 				}
 
 				else {
 					currentState = SCOR_IDLE;
 					currentTargetID = 0;
-					SendMonsterMovePacket(ID, 0);
-					SendMonstertypePacket(2, currentState, ID);
+					sendCurrentStateAndTargetID();
 				}
 
 				break;

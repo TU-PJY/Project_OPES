@@ -26,6 +26,7 @@ private:
 
 	// 각종 상태
 	int         currentState{ PLANT_IDLE };
+	int         serverState{ PLANT_IDLE };
 	int         prevState{ -1 };
 	bool        detectState{};
 	bool        behaviorEnabledState{};
@@ -64,6 +65,7 @@ private:
 
 public:
 	void updateHitBox(float Delta);
+	void sendCurrentStateAndTargetID();
 	void updateTargetDetect();
 	void updateAttack(float Delta);
 	void updateIndicatorHP();

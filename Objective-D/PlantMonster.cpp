@@ -18,6 +18,14 @@ void PlantMonster::updateHitBox(float Delta) {
 		hitBox[i].UpdateDelta(Delta);
 }
 
+void PlantMonster::sendCurrentStateAndTargetID() {
+	if (currentState == serverState)
+		return;
+	SendMonstertypePacket(1, currentState, ID);
+	SendMonsterMovePacket(ID, currentTargetID);
+	serverState = currentState;
+}
+
 // 공격 대상 감지 진행
 void PlantMonster::updateTargetDetect() {
 	if (currentState == PLANT_DEATH)
@@ -46,34 +54,32 @@ void PlantMonster::updateTargetDetect() {
 						if (Math::CheckRayCollision(rayVector, B)) {
 							currentState = PLANT_IDLE;
 							currentTargetID = 0;
-							SendMonsterMovePacket(ID, currentTargetID);
-							SendMonsterMovePacket(ID, 0);
+							sendCurrentStateAndTargetID();
+						}
 							isBlocking = true;
 							break;
-						}
 					}
 
 					if (!isBlocking) {
 						currentState = PLANT_ATTACK;
+						currentTargetID = GLOBAL.myID;
+						sendCurrentStateAndTargetID();
+
 						// 플레이어 방향의 각도로 목표 각도 설정
 						destRotation = Math::CalcDegree3D(position, playerPosition);
 						Math::Normalize2DAngleTo360(destRotation.y);
 						targetPosition = playerPosition;
-
-						currentTargetID = GLOBAL.myID;
-						SendMonsterMovePacket(ID, currentTargetID);
 					}
-
-					SendMonstertypePacket(1, currentState, ID);
 				}
 
 				// 플레이어가 시야 밖으로 나가면 다시 IDLE로 상태 변경
 				else {
 					currentState = PLANT_IDLE;
 					currentTargetID = 0;
-					SendMonsterMovePacket(ID, 0);
-					SendMonstertypePacket(1, currentState, ID);
+					sendCurrentStateAndTargetID();
 				}
+
+				break;
 			}
 		}
 	}
