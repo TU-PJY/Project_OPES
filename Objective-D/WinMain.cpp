@@ -167,8 +167,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "MonsterID:" << packet->monsterId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
 			<< packet->z << " angle:" << packet->angle_y << std::endl;
 
-		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster)
-			monster->InputTargetID(packet->playerId);
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
+			XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
+			float recvRotation = packet->angle_y;
+			monster->InputPosition(recvPosition);
+			monster->InputRotation(recvRotation);
+		}
 
 	}
 

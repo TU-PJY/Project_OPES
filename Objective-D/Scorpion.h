@@ -69,7 +69,8 @@ public:
 	void updateBound(float Delta);
 	void updateIndicator();
 	void updateTerrain();
-	void sendCurrentStateAndTargetID();
+	void sendCurrentState();
+	void sendCurrentPosition();
 	void updateDetectPlayer(float Delta);
 	void updateState();
 	void updateAnimation(float Delta);

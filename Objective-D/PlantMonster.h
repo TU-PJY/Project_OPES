@@ -63,10 +63,15 @@ private:
 
 	unsigned int currentTargetID{};
 
+	float sendDelay{};
+	float destDelay{1.0 / 30.0};
+	bool sendState{};
+
 public:
 	void updateHitBox(float Delta);
 	void sendCurrentStateAndTargetID();
-	void updateTargetDetect();
+	void sendCurrentPosition();
+	void updateTargetDetect(float Delta);
 	void updateAttack(float Delta);
 	void updateIndicatorHP();
 	void updateLiftFromGround(float Delta);
@@ -82,4 +87,5 @@ public:
 	unsigned int GetID() override;
 	void InputState(unsigned int state) override;
 	void InputTargetID(unsigned int id) override;
+	void InputRotation(float degrees) override;
 };

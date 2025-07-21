@@ -4,7 +4,7 @@
 #include "PickingUtil.h"
 #include "PoisonBall.h"
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
-void SendMonsterMovePacket(unsigned int id, unsigned int targetid);
+void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId);
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH)
@@ -24,17 +24,31 @@ void PlantMonster::sendCurrentStateAndTargetID() {
 
 	serverState = currentState;
 	SendMonstertypePacket(1, currentState, ID);
-	SendMonsterMovePacket(ID, currentTargetID);
+}
+
+void PlantMonster::sendCurrentPosition() {
+	if (!sendState)
+		return;
+
+	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID);
 }
 
 // 공격 대상 감지 진행
-void PlantMonster::updateTargetDetect() {
+void PlantMonster::updateTargetDetect(float Delta) {
 	if (currentState == PLANT_DEATH)
 		return;
 
 	// 디펜스 모드 시에는 중앙 건물만을 공격하므로 플레이어 인식 안 함
 	if (defenseModeState)
 		return;
+
+	sendState = false;
+
+	sendDelay += Delta;
+	if (sendDelay >= destDelay) {
+		sendDelay -= destDelay;
+		sendState = true;
+	}
 
 	size_t layerSize = scene.LayerSize(LAYER_PLAYER);
 
@@ -80,17 +94,6 @@ void PlantMonster::updateTargetDetect() {
 					sendCurrentStateAndTargetID();
 				}
 
-				break;
-			}
-		}
-	}
-
-	else {
-		for (int i = 0; i < layerSize; i++) {
-			if (auto other = scene.FindMulti(std::to_string(currentTargetID), LAYER_PLAYER, i); other) {
-				XMFLOAT3 otherPosition = other->GetPosition();
-				destRotation = Math::CalcDegree3D(position, otherPosition);
-				Math::Normalize2DAngleTo360(destRotation.y);
 				break;
 			}
 		}
@@ -264,7 +267,7 @@ void PlantMonster::Update(float Delta) {
 	updateAnimation(Delta);
 
 	if (behaviorEnabledState) {
-		updateTargetDetect();
+		updateTargetDetect(Delta);
 		updateAttack(Delta);
 		updateDeath(Delta);
 	}
@@ -342,4 +345,8 @@ void PlantMonster::InputTargetID(unsigned int id) {
 		return;
 
 	currentTargetID = id;
+}
+
+void PlantMonster::InputRotation(float degrees) {
+	destRotation.y = degrees;
 }

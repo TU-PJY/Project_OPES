@@ -4,7 +4,7 @@
 #include "PickingUtil.h"
 
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
-void SendMonsterMovePacket(unsigned int id, unsigned int targetid);
+void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId);
 
 Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
@@ -72,13 +72,19 @@ void Scorpion::updateTerrain() {
 	}
 }
 
-void Scorpion::sendCurrentStateAndTargetID() {
+void Scorpion::sendCurrentState() {
 	if (serverState == currentState)
 		return;
 
 	serverState = currentState;
 	SendMonstertypePacket(2, currentState, ID);
-	SendMonsterMovePacket(ID, currentTargetID);
+}
+
+void Scorpion::sendCurrentPosition() {
+	if (!sendState)
+		return;
+
+	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID);
 }
 
 void Scorpion::updateDetectPlayer(float Delta) {
@@ -110,7 +116,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 						if (Math::CheckRayCollision(newRay, B)) {
 							currentState = SCOR_IDLE; 
 							currentTargetID = 0;
-							sendCurrentStateAndTargetID();
+							sendCurrentState();
 							isBlocked = true;
 							break;
 						}
@@ -123,7 +129,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 						if (attackBound.CheckCollision(playerOOBB)) {
 							currentState = SCOR_ATTACK;
 							currentTargetID = GLOBAL.myID;
-							sendCurrentStateAndTargetID();
+							sendCurrentState();
 						}
 
 						// 아니라면 추격 상태로 전환
@@ -131,7 +137,8 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							Math::Normalize2DAngleTo360(rotationDest.y);
 							currentState = SCOR_WALK;
 							currentTargetID = GLOBAL.myID;
-							sendCurrentStateAndTargetID();
+							sendCurrentState();
+							sendCurrentPosition();
 						}
 					}
 				}
@@ -139,21 +146,9 @@ void Scorpion::updateDetectPlayer(float Delta) {
 				else {
 					currentState = SCOR_IDLE;
 					currentTargetID = 0;
-					sendCurrentStateAndTargetID();
+					sendCurrentState();
 				}
 
-				break;
-			}
-		}
-	}
-
-	// 아니라면 다른 플레이어 객체를 추격한다.
-	else {
-		for (int i = 0; i < size; i++) {
-			if (auto other = scene.FindMulti(std::to_string(currentTargetID), LAYER_PLAYER, i); other) {
-				XMFLOAT3 otherPosition = other->GetPosition();
-				rotationDest = Math::CalcDegree3D(position, otherPosition);
-				Math::Normalize2DAngleTo360(rotationDest.y);
 				break;
 			}
 		}
