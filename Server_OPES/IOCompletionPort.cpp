@@ -138,7 +138,6 @@ bool IOCompletionPort::StartServer() {
             loadedData.monsterType = (int)monsterDataScript.LoadDigitData(Category, "type");
             loadedData.createPointX = monsterDataScript.LoadDigitData(Category, "x");
             loadedData.createPointZ = monsterDataScript.LoadDigitData(Category, "z");
-            loadedData.hp = 100; // 기본 HP 할당
             loadedData.id = monsterIdCounter++; // 고유 ID 부여
             monsterData.emplace_back(loadedData);
             myMonsters.emplace_back(loadedData);//임시데이터
@@ -777,32 +776,7 @@ void IOCompletionPort::SendData_MtoPDamagePacket(stClientInfo* receiver, unsigne
         delete sendOver;
     }
 }
-void IOCompletionPort::SendData_PlantAnimationTimePacket(stClientInfo* receiver, unsigned int monsterID,float time) {
-    PlantAnimationTimePacket* pkt = new PlantAnimationTimePacket{};
-    pkt->type = PacketType::PLANT_ANIMATION_TIME;
-    pkt->time = time;
-    pkt->monsterID = monsterID;
- 
-    stOverlappedEx* sendOver = new stOverlappedEx{};
-    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-    sendOver->operation = IOOperation::SEND;
-    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
-    sendOver->wsaBuf.len = sizeof(PlantAnimationTimePacket);
-    sendOver->cleanup = [pkt, sendOver]() {
-        delete pkt;
-        delete sendOver;
-        };
-    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
-        &sendOver->overlapped,
-        NULL);
 
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        closesocket(receiver->socketClient);
-        RemoveClient(receiver);
-        delete pkt;
-        delete sendOver;
-    }
-}
 void IOCompletionPort::SendData_PtoMDamagePacket(stClientInfo* receiver, unsigned int playerID,unsigned int monsterID,int attackHp) {
     PtoMDamagePacket* pkt = new PtoMDamagePacket{};
     pkt->type = PacketType::PTOM_DAMAGE;
@@ -1151,8 +1125,8 @@ void IOCompletionPort::WorkThread() {
                 //}
 
                 MonsterMovePacket* pkt = reinterpret_cast<MonsterMovePacket*>(pOverlappedEx->buffer);
-                 std::cout <<"MonsterID:" << pkt->monsterId<<"pID"<<pkt->playerId<<  "(" << pkt->x << ", " << pkt->x << ", " << pkt->y << ", "
-                     << pkt->z <<" angle:"<< pkt->angle_y<< std::endl;
+                 //std::cout <<"MonsterID:" << pkt->monsterId<<"pID"<<pkt->playerId<<  "(" << pkt->x << ", " << pkt->x << ", " << pkt->y << ", "
+                 //    << pkt->z <<" angle:"<< pkt->angle_y<< std::endl;
                 
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
@@ -1223,29 +1197,26 @@ void IOCompletionPort::WorkThread() {
             //    //}
             //}
 
-
-            else if (*packetType == PacketType::PLANT_ANIMATION_TIME) {
-                
-                PlantAnimationTimePacket* pkt = reinterpret_cast<PlantAnimationTimePacket*>(pOverlappedEx->buffer);
-
-                std::cout << "PlantAnimationTimePacket: " << pkt->monsterID << "-> " << pkt->time << std::endl;
-                // 데미지 패킷을 모든 클라이언트에게 전송
-                for (stClientInfo* otherClient : clients) {
-                    if (!otherClient) continue;
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_PlantAnimationTimePacket(otherClient, pkt->monsterID,pkt->time);
-                    }
-                }
-            }
             else if (*packetType == PacketType::MTOP_DAMAGE) {
 
                 MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(pOverlappedEx->buffer);
-
+                int sendHP;
+                for (stClientInfo* targetClient : clients) {
+                    if (!targetClient) continue;
+                    if (targetClient->id == pkt->playerID) {
+                        targetClient->hp -= pkt->attackHp;
+                        if (targetClient->hp < 0) targetClient->hp = 0;
+                        sendHP = targetClient->hp;
+                        std::cout << "[HP 반영] 플레이어 ID " << targetClient->id
+                            << " 새 HP: " << sendHP << std::endl;
+                        break;
+                    }
+                }
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, pkt->attackHp);
+                        SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, sendHP);
                     }
                 }
             }
@@ -1297,7 +1268,7 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
             }
-            else if (*packetType == PacketType::PLANT_ANIMATION_TIME) {
+            else if (*packetType == PacketType::PLAYER_ARRIVAL) {
 
                 PlayerArrivalPacket* pkt = reinterpret_cast<PlayerArrivalPacket*>(pOverlappedEx->buffer);
 

@@ -27,9 +27,9 @@ struct MonsterData {
     unsigned int id = 0;
     int targetClientId = -1;
     unsigned int state = 0;
-    int hp=100;
+    int hp=300;
     MonsterData() {
-        hp = 100;
+        hp = 300;
 
     };
 };
@@ -108,7 +108,6 @@ public:
     void SendData_MonsterMoveToAllClients(const MonsterData& m);
 
     void SendData_PtoMDamagePacket(stClientInfo* receiver, unsigned int playerID, unsigned int monsterID, int attackHp);
-    void SendData_PlantAnimationTimePacket(stClientInfo* receiver, unsigned int monsterID, float time);
     void SendData_MtoPDamagePacket(stClientInfo* receiver, unsigned int playerID, unsigned int monsterID, int attackHp);
     void SendData_EngineerInstallPacket(stClientInfo* receiver, int type, unsigned int ID, float rotY, float posX, float posY, float posZ);
     void SendData_EngineerObjectPacket(stClientInfo* receiver, unsigned int ID, int hp);

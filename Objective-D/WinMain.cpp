@@ -53,7 +53,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = false; //!useServer;
+bool localServer = true; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -171,8 +171,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(recv_buffer);
 
-		std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
-			<< packet->z << " angle:" << packet->angle_y << std::endl;
+		//std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
+		//	<< packet->z << " angle:" << packet->angle_y << std::endl;
 
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
 			XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
@@ -186,22 +186,15 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::PTOM_DAMAGE) {
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
-		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << std::endl;
+		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID<<"damage: "<< packet->attackHp << std::endl;
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
 			monster->InputHP(packet->attackHp);
 		//처리부분
 	}
-	else if (*type == PacketType::PLANT_ANIMATION_TIME) {
-		PlantAnimationTimePacket* packet = reinterpret_cast<PlantAnimationTimePacket*>(recv_buffer);
-		std::cout << "[PLANT_ANIMATION_TIME]id/ time: "<<packet->monsterID<<"/ " << packet->time << std::endl;
-
-	//	if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
-		//	monster->SetAnimationTime(packet->time);
-		//처리부분
-	}
+	
 	else if (*type == PacketType::MTOP_DAMAGE) {
 		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(recv_buffer);
-		std::cout << "[MTOP_DAMAGE] playerID: " << packet->playerID << ", monsterHP: " << packet->monsterID << std::endl;
+		std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
 		if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other)
 			other->InputHP(packet->attackHp);
 		//처리부분
@@ -532,33 +525,7 @@ void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int att
 		}
 	}
 }
-void SendPlantAnimationTimePacket(unsigned int monsterID, float time){
-	if (enter_room) {
-		PlantAnimationTimePacket pkt = {};
-		pkt.type = PacketType::PLANT_ANIMATION_TIME;
-		pkt.time = time;
-		pkt.monsterID = monsterID;
 
-		WSABUF wsaBuf;
-		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
-		wsaBuf.len = sizeof(PlantAnimationTimePacket);
-
-		// WSAOVERLAPPED 구조체를 동적 할당
-		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
-
-		DWORD bytesSent = 0;
-
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
-		if (result == SOCKET_ERROR) {
-			int err = WSAGetLastError();
-			if (err != WSA_IO_PENDING) {
-				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
-				delete send_over;  // 오류 발생 시 할당 해제
-			}
-		}
-	}
-}
 void SendMtoPDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp) {
 	if (enter_room) {
 		MtoPDamagePacket pkt = {};

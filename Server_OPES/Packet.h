@@ -129,14 +129,6 @@ struct  PtoMDamagePacket {
     int attackHp;
 };
 
-// plantmonster 애니메이션 재생 시간
-// currentTargetID == Other일 때만 
-struct PlantAnimationTimePacket {
-    PacketType type;
-    unsigned int monsterID;
-    float time;
-};
-
 // 몬스터가 플레이어 피격 시 전송
 // 모든 플레이어 공통
 struct MtoPDamagePacket {
