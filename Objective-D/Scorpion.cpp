@@ -113,8 +113,8 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							currentTargetID = 0;
 							isBlocked = true;
 
-							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-							SendMonstertypePacket(2, currentState, ID);
+							//SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+							//SendMonstertypePacket(2, currentState, ID);
 							
 							break;
 						}
@@ -130,7 +130,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 
 							if (sendState) {
 								SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-								SendMonstertypePacket(2, currentState, ID);
+								//SendMonstertypePacket(2, currentState, ID);
 							}
 						}
 
@@ -142,7 +142,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 
 							if (sendState) {
 								SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-								SendMonstertypePacket(2, currentState, ID);
+								//SendMonstertypePacket(2, currentState, ID);
 							}
 						}
 					}
