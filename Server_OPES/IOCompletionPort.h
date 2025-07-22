@@ -51,6 +51,9 @@ struct stClientInfo {
     float x, y,z;  
     float angle_x, angle_y, angle_z;
     unsigned short animationType;
+    int stageState;
+    bool modeState;
+    int hp;
     stOverlappedEx recvOverlapped;
     stOverlappedEx sendOverlapped;
     int roomID;
@@ -65,6 +68,8 @@ struct stClientInfo {
         z = -130.0;
         angle_x=0, angle_y=0, angle_z=0;
         animationType = 0;
+        stageState = 1;
+        hp = 100;
         //-130.0, 20.0, -130.0 
     }
 };
