@@ -22,8 +22,8 @@ DeviceSystem LoadSystem;
 bool DevMode = true;
 
 bool LoadMap1Resources = false;
-bool LoadMap2Resources = true;
-bool LoadMap3Resources = false;
+bool LoadMap2Resources = false;
+bool LoadMap3Resources = true;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {

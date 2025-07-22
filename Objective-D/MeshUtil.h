@@ -138,6 +138,7 @@ public:
 	BOOL RayIntersectionByTriangle(XMVECTOR& xmRayOrigin, XMVECTOR& xmRayDirection, XMVECTOR v0, XMVECTOR v1, XMVECTOR v2, float* pfNearHitDistance);
 	int CheckRayIntersection(XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayDirection, float* pfNearHitDistance);
 	void ClearHeightCache();
+	void AddHeightCache(std::vector<XMFLOAT3>& Data);
 	void SetHeightCache(Mesh* terrainMesh, const XMFLOAT4X4& worldMatrix);
 	XMFLOAT3 GetNormalAtPosition(float x, float z);
 	XMFLOAT3 GetAngleAtPosition(float x, float z);

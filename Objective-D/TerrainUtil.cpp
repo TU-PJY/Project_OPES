@@ -26,6 +26,49 @@ void TerrainUtil::InputData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat
 	TerrainMesh->SetHeightCache(TerrainMesh, TerrainMatrix);
 }
 
+void TerrainUtil::AddData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat, Mesh* MeshData) {
+	XMFLOAT4X4 Matrix{};
+	std::vector<xmfloat3> NewData{};
+
+	XMMATRIX world = XMMatrixMultiply(
+		XMMatrixMultiply(XMLoadFloat4x4(&SMat),
+			XMLoadFloat4x4(&RMat)),
+		XMLoadFloat4x4(&TMat)
+	);
+
+	XMStoreFloat4x4(&Matrix, world);
+
+	XMMATRIX gmtxWorld = XMLoadFloat4x4(&Matrix);
+
+	for (UINT i = 0; i < MeshData->Indices; ++i) {
+		XMFLOAT3 v = MeshData->Position[MeshData->PnIndices[i]];
+		XMVECTOR vWorld = XMVector3Transform(XMLoadFloat3(&v), gmtxWorld);
+		XMFLOAT3 worldVertex;
+		XMStoreFloat3(&worldVertex, vWorld);
+		NewData.push_back(worldVertex);
+	}
+
+	for (size_t i = 0; i < NewData.size(); i += 3) {
+		XMFLOAT3& v0 = NewData[i];
+		XMFLOAT3& v1 = NewData[i + 1];
+		XMFLOAT3& v2 = NewData[i + 2];
+
+		XMVECTOR a = XMLoadFloat3(&v0);
+		XMVECTOR b = XMLoadFloat3(&v1);
+		XMVECTOR c = XMLoadFloat3(&v2);
+
+		XMVECTOR ab = b - a;
+		XMVECTOR ac = c - a;
+
+		XMVECTOR normal = XMVector3Cross(ab, ac);
+		if (XMVectorGetY(normal) < 0.0f) {
+			std::swap(v1, v2); // 법선 방향 반전
+		}
+	}
+
+	TerrainMesh->HeightCache.insert(TerrainMesh->HeightCache.end(), NewData.begin(), NewData.end());
+}
+
 // 아래의 함수들은 터레인 객체에서 실행 할 필요 없다.
 
 // 현재 위치와 높이 오프셋을 입력한다

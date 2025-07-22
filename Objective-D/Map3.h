@@ -3,6 +3,7 @@
 #include "MouseUtil.h"
 #include "CameraUtil.h"
 #include "ScriptUtil.h"
+#include "TerrainUtil.h"
 
 class Map3 : public GameObject {
 private:
@@ -22,9 +23,35 @@ private:
 	ScriptUtil CrystalPositionScript{};
 	std::vector<ObjectStruct> CrystalPosition{};
 
+	TerrainUtil terrainUtil{};
+
 public:
 	Map3() {
 		Load();
+
+		Transform::Identity(TranslateMatrix);
+		Transform::Identity(RotateMatrix);
+		Transform::Identity(ScaleMatrix);
+
+		Transform::Move(TranslateMatrix, RockPosition[0].Position);
+		Transform::Scale(ScaleMatrix, RockPosition[0].Size);
+		Transform::Rotate(RotateMatrix, 0.0, RockPosition[0].Rotation, 0.0);
+
+		terrainUtil.InputData(TranslateMatrix, ScaleMatrix, RotateMatrix, MESH.FloatingRock);
+
+		size_t size = RockPosition.size();
+
+		for(int i = 1; i < size; i++) {
+			Transform::Identity(TranslateMatrix);
+			Transform::Identity(RotateMatrix);
+			Transform::Identity(ScaleMatrix);
+
+			Transform::Move(TranslateMatrix, RockPosition[i].Position);
+			Transform::Scale(ScaleMatrix, RockPosition[i].Size);
+			Transform::Rotate(RotateMatrix, 0.0, RockPosition[i].Rotation, 0.0);
+
+			terrainUtil.AddData(TranslateMatrix, ScaleMatrix, RotateMatrix, MESH.FloatingRock);
+		}
 	}
 
 	void InputKey(KeyEvent& Event) override {
@@ -223,6 +250,10 @@ public:
 			Obj.Index = CrystalPositionScript.LoadDigitData(CatName, "Index");
 
 			CrystalPosition.emplace_back(Obj);
-		} 
+		}
+	}
+
+	TerrainUtil GetTerrain() override {
+		return terrainUtil;
 	}
 };

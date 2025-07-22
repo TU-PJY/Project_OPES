@@ -2,6 +2,7 @@
 #include "ModePack.h"
 #include "Map3.h"
 #include "CameraController.h"
+#include "EditHelper.h"
 
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
@@ -13,8 +14,11 @@ void Level3::Start() {
 	GLOBAL.map3DefenseState = true;
 	GLOBAL.map3DefenseEnemyRemained = 20;
 
+	auto mapObject = scene.AddObject(new Map3, "map3", LAYER1, true);
+	GLOBAL.mapTerrain = mapObject->GetTerrain();
+
 	scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
-	scene.AddObject(new Map3, "map3", LAYER1, true);
+	scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 }
 
 void Level3::Destructor() {
