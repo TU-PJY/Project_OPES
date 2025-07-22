@@ -5,30 +5,24 @@
 #include "PickingUtil.h"
 
 Bullet::Bullet(int damage) {
-	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
-		currentTerrain = terrain;
-		mapBounds = terrain->GetMapWallOOBB();
-	}
-
 	bulletDamage = damage;
 }
 
 void Bullet::updateCollision() {
 	// 먼저 터레인과 맵 오브젝트에 광선이 충돌하는지 검사 후, 충돌하면 충돌 타겟 후보에 추가한다.
-	if (currentTerrain) {
-		float terrainDistance{};
-		XMFLOAT3 pickPosition = terrainUtil.CheckCollisionRay(currentTerrain->GetTerrain(), terrainDistance);
 
-		// 실제로 충돌 했을 때만 추가
-		if(terrainDistance > 0.0)
-			rayTarget.Add(nullptr, terrainDistance);
+	float terrainDistance{};
+	XMFLOAT3 pickPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, terrainDistance);
 
-		float mapObjectDistance{};
-		for (auto& B : mapBounds) {
-			if (PickingUtil::PickByViewportOOBB(XMFLOAT2(0.0, 0.0), mapObjectDistance, B)) {
-				rayTarget.Add(nullptr, mapObjectDistance);
-				break;
-			}
+	// 실제로 충돌 했을 때만 추가
+	if(terrainDistance > 0.0)
+		rayTarget.Add(nullptr, terrainDistance);
+
+	float mapObjectDistance{};
+	for (auto& B : GLOBAL.mapOOBBdata) {
+		if (PickingUtil::PickByViewportOOBB(XMFLOAT2(0.0, 0.0), mapObjectDistance, B)) {
+			rayTarget.Add(nullptr, mapObjectDistance);
+			break;
 		}
 	}
 

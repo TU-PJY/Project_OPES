@@ -32,8 +32,13 @@ void Level1::Start() {
 	GLOBAL.map1DefenseState = true;
 
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
-	scene.AddObject(new Map1, GLOBAL.mapName, LAYER1, true);
-	scene.AddObject(new CenterBuilding(-2.0), "center_building", LAYER1);
+	auto mapObject = scene.AddObject(new Map1, GLOBAL.mapName, LAYER1, true);
+	auto centerObject = scene.AddObject(new CenterBuilding(-2.0), "center_building", LAYER1);
+	
+	// 터레인 유틸 객체와 맵 오브젝트 바운드 데이터를 전역에 저장
+	GLOBAL.mapTerrain = mapObject->GetTerrain();
+	GLOBAL.mapOOBBdata = mapObject->GetMapWallOOBB();
+	GLOBAL.mapOOBBdata.emplace_back(centerObject->GetOOBB());
 
 	if(skipDefenseMode)
 		scene.AddObject(new MonsterSpawner(true), "monsterSpawner", LAYER1, true);

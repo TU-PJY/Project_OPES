@@ -12,24 +12,11 @@ PoisonBall::PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPos
 	XMFLOAT3 degrees = Math::CalcDegree3D(position, destPosition);
 	moveAngleX = degrees.x;
 	moveAngleY = degrees.y;
-
-	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
-		mapBoundData = terrain->GetMapWallOOBB();
-		currentTerrain = terrain;
-	}
 }
 
 void PoisonBall::updateCollision() {
 	if (disappearState)
 		return;
-
-	// 충돌시 사라지는 애니메이션과 함께 삭제된다.
-	if (auto centerBuilding = scene.Find("center_building"); centerBuilding) {
-		if (centerBuilding->GetOOBB().CheckCollision(bs)) {
-			disappearState = true;
-			return;
-		}
-	}
 
 	size_t layerSize = scene.LayerSize(LAYER_PLAYER);
 	for (int i = 0; i < layerSize; i++) {
@@ -42,15 +29,14 @@ void PoisonBall::updateCollision() {
 		}
 	}
 
-	if (currentTerrain) {
-		terrainUtil.InputPosition(position);
-		if (terrainUtil.CheckCollision(currentTerrain->GetTerrain())) {
-			disappearState = true;
-			return;
-		}
+	terrainUtil.InputPosition(position);
+	if (terrainUtil.CheckCollision(GLOBAL.mapTerrain)) {
+		disappearState = true;
+		return;
 	}
+	
 
-	for (auto& B : mapBoundData) {
+	for (auto& B : GLOBAL.mapOOBBdata) {
 		if (B.CheckCollision(bs)) {
 			disappearState = true;
 			return;

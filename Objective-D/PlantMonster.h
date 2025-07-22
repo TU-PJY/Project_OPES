@@ -55,9 +55,6 @@ private:
 	// 현재 객체가 소유하는 hp 표시기 오브젝트 포인터
 	GameObject* hpIndicator{};
 
-	// 맵이 가지는 바운드박스 데이터
-	std::vector<OOBB> mapBoundData{};
-
 	// 몬스터 아이디
 	unsigned int ID{};
 

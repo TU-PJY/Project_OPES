@@ -9,12 +9,6 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
 	positionDest = createPosition;
-
-	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
-		currentTerrain = terrain;
-		mapBounds = terrain->GetMapWallOOBB();
-	}
-
 	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER3);
 
 	for(int i = 0; i < 3; i++)
@@ -68,10 +62,8 @@ void Scorpion::updateTerrain() {
 	if (!inFrustum)
 		return;
 
-	if (currentTerrain) {
-		terrainUtil.InputPosition(position);
-		terrainUtil.ClampToTerrain(currentTerrain->GetTerrain(), position, 0.0);
-	}
+	terrainUtil.InputPosition(position);
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);
 }
 
 void Scorpion::sendCurrentState() {
@@ -114,7 +106,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 					Ray newRay = Math::CalcRayVector(position, playerPosition);
 
 					bool isBlocked{};
-					for (auto& B : mapBounds) {
+					for (auto& B : GLOBAL.mapOOBBdata) {
 						if (Math::CheckRayCollision(newRay, B)) {
 							currentState = SCOR_IDLE; 
 							currentTargetID = 0;
@@ -200,7 +192,7 @@ void Scorpion::updateMove(float Delta) {
 
 	// 나를 추격하는 상태일때만 MoveWithSlide를 실행한다.
 	if (currentState == SCOR_WALK && currentTargetID == GLOBAL.myID)
-		Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, scorBound, mapBounds, Delta);
+		Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, scorBound, GLOBAL.mapOOBBdata, Delta);
 		
 //	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
 	position.x = std::lerp(position.x, positionDest.x, 10.0 * Delta);

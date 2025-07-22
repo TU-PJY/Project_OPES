@@ -16,9 +16,7 @@ private:
 	float    gravity{ 9.8f };
 	bool     isStopped{ false };
 
-	GameObject* currentTerrain{};
 	TerrainUtil terrainUtil{};
-	std::vector<OOBB> mapBounds{};
 
 	AABB        grenadeBound{};
 

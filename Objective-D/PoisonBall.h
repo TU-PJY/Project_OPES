@@ -19,9 +19,7 @@ private:
 	XMFLOAT3    size{ 1.0, 1.0, 1.0 };
 	bool        disappearState{};
 
-	std::vector<OOBB> mapBoundData{};
 	TerrainUtil       terrainUtil;
-	GameObject*       currentTerrain{};
 
 	// 面倒贸府侩 官款靛
 	BoundSphere       poisonSphere{};
