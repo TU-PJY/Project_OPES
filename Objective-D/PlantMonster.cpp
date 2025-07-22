@@ -180,8 +180,7 @@ void PlantMonster::updateAnimation(float Delta) {
 	// 공격상태일때는 나를 공격하는 것이 아니라면 서버로부터 시간을 받아 애니메이션을 업데이트 한다.
 	if (currentState == PLANT_ATTACK) {
 		if (currentTargetID == GLOBAL.myID) {
-			if(plantFBX.GetCurrentFrame() != plantFBX.GetPrevFrame())
-				SendPlantAnimationTimePacket(ID, plantFBX.GetCurrentPlayTime());
+			SendPlantAnimationTimePacket(ID, plantFBX.GetCurrentPlayTime());
 			animationTime = 0.0;
 		}
 		else
