@@ -91,6 +91,14 @@ float FBX::GetCurrentAnimationTime() {
 	return TotalTime;
 }
 
+float FBX::GetCurrentPlayTime() {
+	return CurrentTime;
+}
+
+void FBX::SetCurrentPlayTime(float Time) {
+	CurrentTime = Time;
+}
+
 // 애니메이션 키프레임 재생 시간이 특정 시간을 지나면 true를 리턴한다.
 bool FBX::GetTimeSectionPassed(float Time) {
 	if (CurrentTime >= Time) 

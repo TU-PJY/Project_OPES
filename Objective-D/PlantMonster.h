@@ -85,4 +85,6 @@ public:
 	void InputState(unsigned int state) override;
 	void InputTargetID(unsigned int id) override;
 	void InputRotation(float degrees) override;
+	float GetAnimationTime() override;
+	void SetAnimationTime(float Time) override;
 };

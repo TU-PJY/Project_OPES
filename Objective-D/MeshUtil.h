@@ -267,6 +267,8 @@ public:
 	void SetSpeed(float Speed);
 	bool GetAnimationEndState();
 	float GetCurrentAnimationTime();
+	float GetCurrentPlayTime();
+	void SetCurrentPlayTime(float Time);
 	bool GetTimeSectionPassed(float Time);
 	void UpdateAnimation(float Delta, bool Inplace=false, bool OnlyDeltaUpdate=false);
 	XMFLOAT3 GetRootMoveDelta(std::vector<BoneFrame>& BoneFrame, bool InPlace);

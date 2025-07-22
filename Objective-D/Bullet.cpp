@@ -4,6 +4,8 @@
 #include "ClampUtil.h"
 #include "PickingUtil.h"
 
+void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
+
 Bullet::Bullet(int damage) {
 	bulletDamage = damage;
 }
@@ -40,8 +42,11 @@ void Bullet::updateCollision() {
 
 	// 가장 가까운 거리를 가지는 타겟이 지형이나 맵 오브젝트라면 nullptr을 리턴하여 어떠한 몬스터도 대미지를 입지 않게 된다.
 	auto ptr = rayTarget.GetNearestTarget();
-	if (ptr)
+	if (ptr) {
 		ptr->GiveDamage(bulletDamage);
+		unsigned int ID = ptr->GetID();
+		SendPtoMDamagePacket(GLOBAL.myID, ID, bulletDamage);
+	}
 
 	// 최종적으로 삭제
 	scene.DeleteObject(this);

@@ -74,6 +74,8 @@ public:
 	virtual BoundSphere GetBoundSphere() { return {}; }
 	virtual Vector GetVectorSet() { return {}; }
 	virtual TerrainUtil GetTerrain() { return {}; }
+	virtual float GetAnimationTime() { return {}; }
+	virtual void SetAnimationTime(float Time) {}
 
 	// 사용자 정의 리턴 함수는 아래에 정의한다.
 	// 크로스헤어 반동 부여 함수

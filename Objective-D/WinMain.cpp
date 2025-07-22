@@ -181,7 +181,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::PTOM_DAMAGE) {
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
 		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << std::endl;
-
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
+			monster->GiveDamage(packet->attackHp);
 		//처리부분
 	}
 	else if (*type == PacketType::PLANT_ANIMATION_TIME) {
@@ -717,7 +718,7 @@ void SendPlayerArrivalPacket( unsigned int playerID) {
 		}
 	}
 }
-void SendPlayer2MonsterPacket(unsigned int monsterID,unsigned int damage) {
+void SendPlayer2MonsterPacket(unsigned int monsterID, unsigned int damage) {
 	if (enter_room) {
 		Player2Monster damagePacket = {};
 		damagePacket.type = PacketType::PLAYER_TO_MOSTER;

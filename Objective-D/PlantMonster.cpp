@@ -5,6 +5,7 @@
 #include "PoisonBall.h"
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
+void SendPlantAnimationTimePacket(float time);
 
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
@@ -176,7 +177,15 @@ void PlantMonster::updateAnimation(float Delta) {
 	}
 
 	// 프러스텀 바깥일 때는 애니메이션 적용 없이 재생 시간만 계산
-	plantFBX.UpdateAnimation(Delta, false, !inFrustum);
+	// 공격상태일때는 나를 공격하는 것이 아니라면 서버로부터 시간을 받아 애니메이션을 업데이트 한다.
+	if (currentState == PLANT_ATTACK) {
+		if (currentTargetID == GLOBAL.myID) {
+			plantFBX.UpdateAnimation(Delta, false, !inFrustum);
+			SendPlantAnimationTimePacket(plantFBX.GetCurrentPlayTime());
+		}
+	}
+	else
+		plantFBX.UpdateAnimation(Delta, false, !inFrustum);
 }
 
 // 죽음 상태 업데이트 진행
@@ -349,4 +358,15 @@ void PlantMonster::InputRotation(float degrees) {
 		return;
 
 	destRotation.y = degrees;
+}
+
+float PlantMonster::GetAnimationTime() {
+	if (currentState != PLANT_ATTACK)
+		return;
+
+	return plantFBX.GetCurrentPlayTime();
+}
+
+void PlantMonster::SetAnimationTime(float Time) {
+	plantFBX.SetCurrentPlayTime(Time);
 }
