@@ -16,9 +16,6 @@ struct ObjectStruct {
 	int Index;
 };
 
-// 전역 카메라 fov 값 오프셋
-extern float globalFovOffset;
-
 extern bool player_enter;
 extern unsigned int enter_player_id;
 
@@ -35,6 +32,9 @@ typedef struct {
 
 	int map3DefenseEnemyRemained;
 	bool map3DefenseState;
+
+	// 카메라 FOV 오프셋
+	float offsetFOV;
 
 	// 전역에서 사용되는 맵 객체 이름
 	std::string mapName;

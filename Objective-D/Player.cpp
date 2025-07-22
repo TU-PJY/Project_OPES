@@ -353,7 +353,7 @@ void Player::UpdateCamera(float FrameTime) {
 	camera.Rotate(rotation.x, rotation.y, rotation.z + walkShakeResult + recoilShake);
 
 	// 정조준 시 fov 업데이트
-	globalFovOffset = std::lerp(globalFovOffset, fovDest, FrameTime * 20.0);
+	//globalFovOffset = std::lerp(globalFovOffset, fovDest, FrameTime * 20.0);
 }
 
 void Player::GiveDamage(int HP) {

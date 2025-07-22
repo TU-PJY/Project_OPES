@@ -26,7 +26,7 @@ bool skipDefenseMode = true;
 void Level1::Start() {
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
 
-	globalFovOffset = 0.0;
+	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.mapName = "map1";
 	GLOBAL.map1DefenseEnemyRemained = 20;
 	GLOBAL.map1DefenseState = true;
@@ -65,6 +65,7 @@ void Level1::Start() {
 
 }
 
+// 다른 모드로 전환 시 맵 오브젝트 바운드 데이터 삭제
 void Level1::Destructor() {
-
+	GLOBAL.mapOOBBdata.clear();
 }

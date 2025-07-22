@@ -230,7 +230,7 @@ void Player1st::updateCamera(float Delta) {
 	camera.Rotate(currentRotation.x, currentRotation.y, currentRotation.z);
 
 	// FOV 업데이트
-	globalFovOffset = std::lerp(globalFovOffset, destFOV, Delta * 20.0);
+	GLOBAL.offsetFOV = std::lerp(GLOBAL.offsetFOV, destFOV, Delta * 20.0);
 }
 
 // 자기 소유의 총 객체에 위치와 회전각도를 전달한다.
