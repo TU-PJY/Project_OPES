@@ -49,8 +49,11 @@
 #define FBXSDK_SHARED
 #include <fbxsdk.h>
 
-using DigitDataVec = std::vector<float>;
-using StringDataVec = std::vector<std::string>;
+
+// 쉬프트 누르기 귀찮아서 만든 별칭
+using xmfloat3 = XMFLOAT3;
+using xmfloat2 = XMFLOAT2;
+
 
 typedef struct{
 	XMVECTOR Origin;     // 시작 위치

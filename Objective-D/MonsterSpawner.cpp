@@ -1,6 +1,8 @@
 #include "MonsterSpawner.h"
 #include "PlantMonster.h"
 #include "Scorpion.h"
+#include "Troll.h"
+#include "Treant.h"
 
 // 현재 맵에 따라 다른 몬스터 데이터를 로드하도록 한다.
 MonsterSpawner::MonsterSpawner(bool editMode) {
@@ -17,9 +19,10 @@ void MonsterSpawner::InputKey(KeyEvent& Event) {
 		return;
 
 	if (Event.Type == WM_KEYDOWN && Event.Key == VK_F5) {
-		if (GLOBAL.mapName.compare("map1") == 0) {
-			scene.DeleteObject("plantMonster", DELETE_RANGE_ALL);
-			scene.DeleteObject("scorpion", DELETE_RANGE_ALL);
+		size_t size = scene.LayerSize(LAYER_MONSTER);
+		for (int i = 0; i < size; i++) {
+			if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster)
+				scene.DeleteObject(monster);
 		}
 
 		LoadDataAndSpawnMonster();
@@ -35,6 +38,9 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 
 	if (GLOBAL.mapName.compare("map1") == 0)
 		script.Load("Resources//Scripts//map1//map1-monster.xml");
+
+	else if(GLOBAL.mapName.compare("map2") == 0)
+		script.Load("Resources//Scripts//map2//map2-monster.xml");
 
 	auto custumLoad = [&](CategoryPtr Category)
 	{
@@ -67,6 +73,17 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 			currentID++;
 		}
 	}
+
+	else if (GLOBAL.mapName.compare("map2") == 0) {
+		for (int i = 0; i < size; i++) {
+			if (type[i] == 1)
+				scene.AddObject(new Troll(position[i], currentID), std::to_string(currentID), LAYER_MONSTER);
+			else if (type[i] == 2)
+				scene.AddObject(new Treant(position[i], currentID, false), std::to_string(currentID), LAYER_MONSTER);
+
+			currentID++;
+		}
+	}
 }
 
 // 디펜스 모드에서 모든 몬스터가 죽으면 어드벤처모드 몬스터를 스폰한 후 삭제된다.
@@ -76,6 +93,11 @@ void MonsterSpawner::Update(float Delta) {
 		return;
 	
 	if (GLOBAL.mapName.compare("map1") == 0 && GLOBAL.map1DefenseEnemyRemained == 0) {
+		LoadDataAndSpawnMonster();
+		scene.DeleteObject(this);
+	}
+
+	else if (GLOBAL.mapName.compare("map2") == 0 && GLOBAL.map2DefenseEnemyRemained == 0) {
 		LoadDataAndSpawnMonster();
 		scene.DeleteObject(this);
 	}

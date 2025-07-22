@@ -18,12 +18,12 @@ namespace Level1 {
 	std::deque<GameObject*> ControlObjectList; 
 }
 
-bool editMode = false;
-
-// 활성화 시 디펜스 모드 건너뜀
-bool skipDefenseMode = true;
-
 void Level1::Start() {
+	bool editMode = false;
+
+	// 활성화 시 디펜스 모드 건너뜀
+	bool skipDefenseMode = true;
+
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
 
 	GLOBAL.offsetFOV = 0.0;

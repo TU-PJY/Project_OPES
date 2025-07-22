@@ -194,9 +194,6 @@
     <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ 0_Mode Packs ]">
       <UniqueIdentifier>{82e1b461-5d00-4430-aea1-ac6ac2a9bd4b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Plant Monster ]">
-      <UniqueIdentifier>{2e3ed06f-a3c8-43eb-ac58-a04f9a235e9e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]">
       <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
     </Filter>
@@ -239,9 +236,6 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]">
       <UniqueIdentifier>{59746ad1-9637-47fa-ba56-66fd02e9bcaf}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]">
-      <UniqueIdentifier>{617c6944-2a09-4ee3-a4f5-a469829d0e7f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ z_Deprecated ]">
       <UniqueIdentifier>{17bf0594-a0de-4161-a0d2-8fed6688a2fe}</UniqueIdentifier>
     </Filter>
@@ -262,6 +256,24 @@
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ OtherPlayer Indicator ]">
       <UniqueIdentifier>{0e9103c7-08e8-48ed-9424-852e9006d12a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map1 monsters ]">
+      <UniqueIdentifier>{cdf2f140-2698-47a4-bea5-4c3f501fb57a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map1 monsters ]\[ Plant Monster ]">
+      <UniqueIdentifier>{2e3ed06f-a3c8-43eb-ac58-a04f9a235e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map1 monsters ]\[ Scorpion]">
+      <UniqueIdentifier>{617c6944-2a09-4ee3-a4f5-a469829d0e7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]">
+      <UniqueIdentifier>{d77616be-ae65-4840-831d-2d4443e7017f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Troll ]">
+      <UniqueIdentifier>{1b00a091-df8c-40a3-85e8-efdfc0d685a1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Treant ]">
+      <UniqueIdentifier>{65e9bcea-166b-4d01-a817-77a509ff08fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -413,7 +425,7 @@
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Random Util ]</Filter>
     </ClInclude>
     <ClInclude Include="PlantMonster.h">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Plant Monster ]</Filter>
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map1 monsters ]\[ Plant Monster ]</Filter>
     </ClInclude>
     <ClInclude Include="HP_Indicator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ HP Indicator ]</Filter>
@@ -443,7 +455,7 @@
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]</Filter>
     </ClInclude>
     <ClInclude Include="Scorpion.h">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]</Filter>
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map1 monsters ]\[ Scorpion]</Filter>
     </ClInclude>
     <ClInclude Include="PlayerHit.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]</Filter>
@@ -483,6 +495,12 @@
     </ClInclude>
     <ClInclude Include="OtherPlayerIndicator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ OtherPlayer Indicator ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Treant.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Treant ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Troll.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Troll ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -646,7 +664,7 @@
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Random Util ]</Filter>
     </ClCompile>
     <ClCompile Include="PlantMonster.cpp">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Plant Monster ]</Filter>
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map1 monsters ]\[ Plant Monster ]</Filter>
     </ClCompile>
     <ClCompile Include="HP_Indicator.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ HP Indicator ]</Filter>
@@ -676,7 +694,7 @@
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ EditHelper ]</Filter>
     </ClCompile>
     <ClCompile Include="Scorpion.cpp">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ Scorpion]</Filter>
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map1 monsters ]\[ Scorpion]</Filter>
     </ClCompile>
     <ClCompile Include="PlayerHit.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]</Filter>
@@ -713,6 +731,12 @@
     </ClCompile>
     <ClCompile Include="OtherPlayerIndicator.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ OtherPlayer Indicator ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Treant.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Treant ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Troll.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Troll ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

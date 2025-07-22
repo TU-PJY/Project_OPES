@@ -10,8 +10,7 @@ EditHelper::EditHelper() {
 void EditHelper::Update(float Delta) {
 	XMFLOAT3 pickPosition{};
 	float distance{};
-	if (auto terrain = scene.Find(GLOBAL.mapName); terrain)
-		pickPosition = terrainUtil.CheckCollisionRay(terrain->GetTerrain(), distance);
+	pickPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
 
 	XMFLOAT3 currentCamPosition = camera.GetPosition();
 	float currentCamRotation = XMConvertToDegrees(camera.GetYaw());
