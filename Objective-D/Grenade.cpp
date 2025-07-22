@@ -3,11 +3,6 @@
 #include "Explosion.h"
 
 Grenade::Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation) {
-	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
-		currentTerrain = terrain;
-		mapBounds = terrain->GetMapWallOOBB();
-	}
-
 	position = createPosition;
 	XMFLOAT3 direction = getDirectionFromRotation(rotation);
 	velocity = XMFLOAT3(
@@ -35,8 +30,8 @@ void Grenade::updateMove(float Delta) {
 	position.z += velocity.z * Delta;
 
 	// 충돌 검사
-	if (terrainUtil.CheckCollision(currentTerrain->GetTerrain())) {
-		XMFLOAT3 terrainNormal = terrainUtil.GetNormalAtPoint(currentTerrain->GetTerrain());
+	if (terrainUtil.CheckCollision(GLOBAL.mapTerrain)) {
+		XMFLOAT3 terrainNormal = terrainUtil.GetNormalAtPoint(GLOBAL.mapTerrain);
 		XMVECTOR normal = XMVector3Normalize(XMLoadFloat3(&terrainNormal));
 
 		// 보정: 법선 방향이 아래를 향하면 반전
@@ -65,11 +60,11 @@ void Grenade::updateMove(float Delta) {
 		if (bounceY < 2.0f) {
 			isStopped = true;
 			velocity = XMFLOAT3(0, 0, 0);
-			terrainUtil.ClampToTerrain(currentTerrain->GetTerrain(), position, 0.5);
+			terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.5);
 			return;
 		}
 		else
-			terrainUtil.ClampToTerrain(currentTerrain->GetTerrain(), position, 0.5);
+			terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.5);
 	}
 }
 

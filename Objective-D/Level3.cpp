@@ -6,8 +6,12 @@
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
 void Level3::Start() {
-	globalFovOffset = 0.0;
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
+
+	GLOBAL.offsetFOV = 0.0;
+	GLOBAL.mapName = "map3";
+	GLOBAL.map3DefenseState = true;
+	GLOBAL.map3DefenseEnemyRemained = 20;
 
 	scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 	scene.AddObject(new Map3, "map3", LAYER1, true);

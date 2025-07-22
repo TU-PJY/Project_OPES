@@ -5,13 +5,8 @@
 
 class Bullet : public GameObject {
 private:
-	GameObject* currentTerrain{};
 	TerrainUtil terrainUtil{};
-	
 	int         bulletDamage{};
-
-	std::vector<OOBB> mapBounds{};
-
 	RayTarget   rayTarget{};
 
 public:

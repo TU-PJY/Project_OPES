@@ -13,16 +13,6 @@ void SendViewingAnglePacket(float x, float y, float z);
 void SendAnimaionPacket(unsigned short playerState);
 
 Player1st::Player1st(int characterType) {
-	// 현재 맵에서 데이터 받아오기
-	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
-		currentTerrain = terrain;
-		mapBounds = terrain->GetMapWallOOBB();
-
-		// 중앙 건물도 충돌처리 대상에 추가
-		if (auto centerBuilding = scene.Find("center_building"); centerBuilding)
-			mapBounds.emplace_back(centerBuilding->GetOOBB());
-	}
-
 	// 현재 캐릭터 타입에 맞는 무기 객체를 추가 후 연결한다.
 	switch (characterType) {
 	case CHARACTER_MG:
@@ -215,7 +205,7 @@ void Player1st::updateMove(float Delta) {
 		strafeSpeed = std::lerp(strafeSpeed, 0.0, 10.0 * Delta);
 
 	// 맵 바운드와 충돌을 체크하면서 이동
-	Math::MoveWithSlide(playerPosition, currentRotation.y, forwardSpeed, strafeSpeed, playerSphere, mapBounds, Delta);
+	Math::MoveWithSlide(playerPosition, currentRotation.y, forwardSpeed, strafeSpeed, playerSphere, GLOBAL.mapOOBBdata, Delta);
 
 	// 카메라 위치를 플레이어 위치와 동기화 
 	cameraPosition = playerPosition;
@@ -223,14 +213,11 @@ void Player1st::updateMove(float Delta) {
 
 // 플레이어 위치 - 터레인 충돌 처리를 업데이트 한다.
 void Player1st::updateTerrainCollision() {
-	if (currentTerrain) {
-		terrainUtil.InputPosition(playerPosition);
-		auto terrainInstance = currentTerrain->GetTerrain();
-		terrainUtil.ClampToTerrain(terrainInstance, playerPosition, 0.0);
+	terrainUtil.InputPosition(playerPosition);
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, playerPosition, 0.0);
 
-		// 카메라의 경우 플레이어 모델의 실제 눈 높이에 위치하도록 한다.
-		terrainUtil.ClampToTerrain(terrainInstance, cameraPosition, playerSize.y * 1.5);
-	}
+	// 카메라의 경우 플레이어 모델의 실제 눈 높이에 위치하도록 한다.
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, cameraPosition, playerSize.y * 1.5);
 }
 
 // 카메라를 업데이트 한다.
@@ -243,7 +230,7 @@ void Player1st::updateCamera(float Delta) {
 	camera.Rotate(currentRotation.x, currentRotation.y, currentRotation.z);
 
 	// FOV 업데이트
-	globalFovOffset = std::lerp(globalFovOffset, destFOV, Delta * 20.0);
+	GLOBAL.offsetFOV = std::lerp(GLOBAL.offsetFOV, destFOV, Delta * 20.0);
 }
 
 // 자기 소유의 총 객체에 위치와 회전각도를 전달한다.

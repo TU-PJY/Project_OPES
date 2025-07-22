@@ -22,7 +22,8 @@ private:
 	AABB frustumAABB{};
 	bool inFrustum{};
 
-	bool initState{};
+	int totalHP{};
+	int currentHP{};
 
 public:
 	OtherPlayer(int characterType);
@@ -30,10 +31,12 @@ public:
 	void updateAnimation(float Delta);
 	void updateBound();
 	void updateRenderValue(float Delta);
+	void updateDeath();
 	void Update(float Delta) override;
 	void Render() override;
 	void InputPosition(XMFLOAT3& position) override;
 	void InputRotation(XMFLOAT3& rotation) override;
 	void InputState(unsigned int state) override;
 	XMFLOAT3 GetPosition() override;
+	void GiveDamage(int damage) override;
 };

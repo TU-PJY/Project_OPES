@@ -3,6 +3,7 @@
 #include "Config.h"
 #include "Objective-D.h"
 #include "Framework.h"
+#include "GameResource.h"
 
 #include "Scene.h"
 #include "CameraUtil.h"
@@ -820,6 +821,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	AccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT045));
 	std::thread netThread;
+
+	// 전역 서버 사용 여부 저장
+	GLOBAL.useServer = useServer;
+
 	if (useServer) {
 		netThread = std::thread(NetworkThread, localServer, lpCmdLine);
 	}

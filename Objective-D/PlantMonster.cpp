@@ -66,7 +66,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 					bool isBlocking{};
 
 					// 광선이 맵 바운드박스에 충돌하면 IDLE 유지, 그렇지 않다면 ATTACK으로 상태 변경
-					for (auto& B : mapBoundData) {
+					for (auto& B : GLOBAL.mapOOBBdata) {
 						if (Math::CheckRayCollision(rayVector, B)) {
 							currentState = PLANT_IDLE;
 							currentTargetID = 0;
@@ -214,22 +214,16 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 	TerrainUtil terrainUtil;
 
 	// 고정형 몬스터이므로 생성 이후로는 터레인 업데이트를 진행하지 않는다.
-	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
-		terrainUtil.InputPosition(tempPosition);
-		terrainUtil.ClampToTerrain(terrain->GetTerrain(), tempPosition, 0.0);
-		position = tempPosition;
+	terrainUtil.InputPosition(tempPosition);
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, tempPosition, 0.0);
+	position = tempPosition;
 
-		// 현재 위치에서의 터레인 높이 구하기
-		terrainHeight = tempPosition.y;
+	// 현재 위치에서의 터레인 높이 구하기
+	terrainHeight = tempPosition.y;
 
-		//  땅에서 나오는 상태일 경우 높이를 땅 속으로 옮긴다.
-		if (!behaviorEnabledState)
-			position.y -= 10.0;
-
-		mapBoundData = terrain->GetMapWallOOBB();
-	}
-	else 
-		position = tempPosition;
+	//  땅에서 나오는 상태일 경우 높이를 땅 속으로 옮긴다.
+	if (!behaviorEnabledState)
+		position.y -= 10.0;
 
 	// 디펜스 모드 일때는 중앙 건물 만을 공격하므로 생성 이후로는 회전각도 업데이트를 하지 않는다.
 	if (defenseModeState) {

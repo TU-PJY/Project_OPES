@@ -10,7 +10,7 @@ namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 void Level2::Start() {
 	scene.SetupMode("Level2", Destructor, ControlObjectList);
 
-	globalFovOffset = 0.0;
+	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.mapName = "map2";
 	GLOBAL.map2DefenseState = true;
 	GLOBAL.map2DefenseEnemyRemained = 20;
@@ -35,4 +35,5 @@ void Level2::Start() {
 }
 
 void Level2::Destructor() {
+	GLOBAL.mapOOBBdata.clear();
 }

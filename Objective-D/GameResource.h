@@ -6,6 +6,8 @@
 #include "BoundboxShader.h"
 #include "LineShader.h"
 #include "Config.h"
+#include "CollisionUtil.h"
+#include "TerrainUtil.h"
 
 struct ObjectStruct {
 	XMFLOAT3 Position;
@@ -13,9 +15,6 @@ struct ObjectStruct {
 	float Rotation;
 	int Index;
 };
-
-// 전역 카메라 fov 값 오프셋
-extern float globalFovOffset;
 
 extern bool player_enter;
 extern unsigned int enter_player_id;
@@ -34,8 +33,17 @@ typedef struct {
 	int map3DefenseEnemyRemained;
 	bool map3DefenseState;
 
+	// 카메라 FOV 오프셋
+	float offsetFOV;
+
 	// 전역에서 사용되는 맵 객체 이름
 	std::string mapName;
+
+	// 전역에서 사용하는 맵 오브젝트 OOBB 데이터
+	std::vector<OOBB> mapOOBBdata;
+
+	// 전역에서 사용하는 맵 터레인 객체
+	TerrainUtil mapTerrain;
 
 	// 서버 사용 여부
 	bool useServer;

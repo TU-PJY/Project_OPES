@@ -35,8 +35,6 @@ private:
 	GameObject* hpIndicator{};
 
 	TerrainUtil terrainUtil{};
-	GameObject* currentTerrain{};
-	std::vector<OOBB> mapBounds{};
 
 	AABB        frustumAABB{};
 	bool        inFrustum{};

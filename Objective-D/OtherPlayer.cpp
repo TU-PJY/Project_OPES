@@ -1,15 +1,35 @@
 #include "OtherPlayer.h"
 #include "CameraUtil.h"
+#include "ClampUtil.h"
 
 // 캐릭터 타입에 따라 다른 fbx를 초기화 한다.
 OtherPlayer::OtherPlayer(int characterType) {
 	this->characterType = characterType;
+	
+	switch (this->characterType) {
+	case CHARACTER_MG:
+		idleFBX.SelectFBXMesh(MESH.heavyIdle);
+		moveFBX.SelectFBXMesh(MESH.heavyMove);
+		shootFBX.SelectFBXMesh(MESH.heavyShoot);
+		deathFBX.SelectFBXMesh(MESH.heavyDeath);
+
+		totalHP = 200;
+		currentHP = 200;
+		break;
+
+	case CHARACTER_DMR:
+		totalHP = 100;
+		currentHP = 100;
+		break;
+
+	case CHARACTER_ENG:
+		totalHP = 100;
+		currentHP = 100;
+		break;
+	}
 }
 
 void OtherPlayer::updateState() {
-	if (!initState)
-		return;
-
 	if (prevState != currentState) {
 		switch (currentState) {
 		case STATE_IDLE:
@@ -27,9 +47,6 @@ void OtherPlayer::updateState() {
 }
 
 void OtherPlayer::updateAnimation(float Delta) {
-	if (!initState)
-		return;
-
 	switch (currentState) {
 	case STATE_IDLE:
 		idleFBX.UpdateAnimation(Delta, false, !inFrustum); break;
@@ -43,19 +60,22 @@ void OtherPlayer::updateAnimation(float Delta) {
 }
 
 void OtherPlayer::updateRenderValue(float Delta) {
-	if (!initState)
-		return;
-
 	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
 	Math::LerpXMFLOAT3(rotation, rotationDest, 10.0, Delta);
 }
 
 void OtherPlayer::updateBound() {
-	if (!initState)
-		return;
-
 	frustumAABB.Update(position, size);
 	inFrustum = camera.CheckFrustum(frustumAABB);
+}
+
+void OtherPlayer::updateDeath() {
+	if (currentState != STATE_DEATH)
+		return;
+
+	// 사망 시 사망 애니메이션이 끝난 후 삭제된다.
+	if (deathFBX.GetAnimationEndState())
+		scene.DeleteObject(this);
 }
 
 void OtherPlayer::Update(float Delta) {
@@ -63,23 +83,10 @@ void OtherPlayer::Update(float Delta) {
 	updateAnimation(Delta);
 	updateRenderValue(Delta);
 	updateBound();
-
-	if (!initState) {
-		switch (characterType) {
-		case CHARACTER_MG:
-			idleFBX.SelectFBXMesh(MESH.heavyIdle);
-			moveFBX.SelectFBXMesh(MESH.heavyMove);
-			shootFBX.SelectFBXMesh(MESH.heavyShoot);
-			deathFBX.SelectFBXMesh(MESH.heavyDeath);
-			break;
-		}
-
-		initState = true;
-	}
 }
 
 void OtherPlayer::Render() {
-	if (!initState || !inFrustum)
+	if (!inFrustum)
 		return;
 
 	BeginRender();
@@ -103,26 +110,28 @@ void OtherPlayer::Render() {
 }
 
 void OtherPlayer::InputPosition(XMFLOAT3& position) {
-	if (!initState)
-		return;
-
 	positionDest = position;
 }
 
 void OtherPlayer::InputRotation(XMFLOAT3& rotation) {
-	if (!initState)
-		return;
-
 	rotationDest = rotation;
 }
 
 void OtherPlayer::InputState(unsigned int state) {
-	if (!initState)
-		return;
-
 	currentState = state;
 }
 
 XMFLOAT3 OtherPlayer::GetPosition() {
 	return position;
+}
+
+void OtherPlayer::GiveDamage(int damage) {
+	if (currentState == STATE_DEATH)
+		return;
+
+	currentHP -= damage;
+	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
+	if (currentHP == 0) {
+		currentState = STATE_DEATH;
+	}
 }

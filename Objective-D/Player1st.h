@@ -54,12 +54,8 @@ private:
 	// 플레이어 당 2개 사용 가능
 	int currentGrenadeCount{ 2 };
 
-	// 현재 터레인 객체 이름/포인터 및 터레인 유틸
-	GameObject* currentTerrain{};
 	TerrainUtil terrainUtil{};
 
-	// 맵 바운드 박스 모음, 맵 바운드 충돌처리를 위한 바운드
-	std::vector<OOBB> mapBounds{};
 	BoundSphere       playerSphere{};
 
 	// 몬스터 - 플레이어 충돌처리용
