@@ -72,8 +72,8 @@ void PlantMonster::updateTargetDetect(float Delta) {
 							currentState = PLANT_IDLE;
 							currentTargetID = 0;
 
-							//SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-						//	SendMonstertypePacket(1, currentState, ID);
+							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+							SendMonstertypePacket(1, currentState, ID);
 
 							isBlocking = true;
 							break;
@@ -91,7 +91,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 
 						if (sendState) {
 							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-							//SendMonstertypePacket(1, currentState, ID);
+							SendMonstertypePacket(1, currentState, ID);
 						}
 					}
 				}
