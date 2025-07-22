@@ -13,8 +13,8 @@ OtherPlayer::OtherPlayer(int characterType) {
 		shootFBX.SelectFBXMesh(MESH.heavyShoot);
 		deathFBX.SelectFBXMesh(MESH.heavyDeath);
 
-		totalHP = 200;
-		currentHP = 200;
+		totalHP = 100;
+		currentHP = 100;
 		break;
 
 	case CHARACTER_DMR:
@@ -27,6 +27,10 @@ OtherPlayer::OtherPlayer(int characterType) {
 		currentHP = 100;
 		break;
 	}
+
+	TerrainUtil terrainUtil;
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, positionDest, 0.0);
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);
 }
 
 void OtherPlayer::updateState() {
