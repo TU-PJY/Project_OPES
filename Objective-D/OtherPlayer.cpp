@@ -71,6 +71,10 @@ void OtherPlayer::updateRenderValue(float Delta) {
 void OtherPlayer::updateBound() {
 	frustumAABB.Update(position, size);
 	inFrustum = camera.CheckFrustum(frustumAABB);
+	playerBound.Update(
+		XMFLOAT3(position.x, position.y + size.y * 0.5, position.z),
+		XMFLOAT3(size.x * 0.5, size.y, size.z * 0.5), rotation
+	);
 }
 
 void OtherPlayer::updateDeath() {
@@ -126,19 +130,8 @@ void OtherPlayer::InputState(unsigned int state) {
 }
 
 XMFLOAT3 OtherPlayer::GetPosition() {
-	XMFLOAT3 outPosition = { position.x, position.y + size.y * 1.5, position.z };
+	XMFLOAT3 outPosition = XMFLOAT3(position.x, position.y + size.y * 0.5, position.z);
 	return outPosition;
-}
-
-void OtherPlayer::GiveDamage(int damage) {
-	if (currentState == STATE_DEATH)
-		return;
-
-	currentHP -= damage;
-	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
-	if (currentHP == 0) {
-		currentState = STATE_DEATH;
-	}
 }
 
 void OtherPlayer::InputHP(int currentHP) {
@@ -150,4 +143,8 @@ void OtherPlayer::InputHP(int currentHP) {
 	if (this->currentHP == 0) {
 		currentState = STATE_DEATH;
 	}
+}
+
+OOBB OtherPlayer::GetOOBB() {
+	return playerBound;
 }

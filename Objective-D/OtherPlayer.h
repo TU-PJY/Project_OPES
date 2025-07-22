@@ -14,6 +14,8 @@ private:
 	XMFLOAT3 rotationDest{};
 	XMFLOAT3 size{ 2.0, 2.0, 2.0 };
 
+	OOBB     playerBound{};
+
 	int currentState{ STATE_IDLE };
 	int prevState{ STATE_IDLE };
 	int renderState{ STATE_IDLE };
@@ -38,6 +40,6 @@ public:
 	void InputRotation(XMFLOAT3& rotation) override;
 	void InputState(unsigned int state) override;
 	XMFLOAT3 GetPosition() override;
-	void GiveDamage(int damage) override;
 	void InputHP(int currentHP) override;
+	OOBB GetOOBB() override;
 };

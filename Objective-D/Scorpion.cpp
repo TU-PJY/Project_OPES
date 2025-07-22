@@ -219,7 +219,7 @@ void Scorpion::updateAttack() {
 		if (!attackDid) {
 			if (currentTargetID == GLOBAL.myID) {
 				if (auto player = scene.Find("player"); player)
-					player->GiveDamage(20.0);
+					player->GiveDamage(20);
 			}
 			attackDid = true;
 		}
