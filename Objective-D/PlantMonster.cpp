@@ -183,6 +183,9 @@ void PlantMonster::updateAnimation(float Delta) {
 			plantFBX.UpdateAnimation(Delta, false, !inFrustum);
 			SendPlantAnimationTimePacket(plantFBX.GetCurrentPlayTime());
 		}
+		else {
+			plantFBX.UpdateAnimation(animationTime, false, !inFrustum);
+		}
 	}
 	else
 		plantFBX.UpdateAnimation(Delta, false, !inFrustum);
@@ -368,5 +371,5 @@ float PlantMonster::GetAnimationTime() {
 }
 
 void PlantMonster::SetAnimationTime(float Time) {
-	plantFBX.SetCurrentPlayTime(Time);
+	animationTime = Time;
 }

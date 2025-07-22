@@ -32,6 +32,8 @@ private:
 	bool        behaviorEnabledState{};
 	bool        shootState{};
 
+	float       animationTime{};
+
 	// 디펜스 모드 실행 시 별도의 로직을 실행한다.
 	bool        defenseModeState{};
 
