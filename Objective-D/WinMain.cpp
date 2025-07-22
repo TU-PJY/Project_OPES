@@ -196,7 +196,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MTOP_DAMAGE) {
 		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(recv_buffer);
 		std::cout << "[MTOP_DAMAGE] playerID: " << packet->playerID << ", monsterHP: " << packet->monsterID << std::endl;
-
+		if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other)
+			other->InputHP(packet->attackHp);
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_INSTALL) {

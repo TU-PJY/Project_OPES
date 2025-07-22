@@ -11,6 +11,7 @@
 void SendMovePacket(float x, float y, float z);
 void SendViewingAnglePacket(float x, float y, float z);
 void SendAnimaionPacket(unsigned short playerState);
+void SendMtoPDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
 
 Player1st::Player1st(int characterType) {
 	// 현재 캐릭터 타입에 맞는 무기 객체를 추가 후 연결한다.
@@ -309,7 +310,7 @@ void Player1st::GiveDamage(int damage) {
 	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
 	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, currentHP);
 
-
+	SendMtoPDamagePacket(GLOBAL.myID, 0, damage);
 
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.
 	//if (currentHP == 0)
