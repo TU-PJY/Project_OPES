@@ -97,4 +97,5 @@ public:
 	XMFLOAT3 GetSize() override;
 	void InputRecoil(float Value) override;
 	void GiveDamage(int damage) override;
+	unsigned int GetID() override;
 };

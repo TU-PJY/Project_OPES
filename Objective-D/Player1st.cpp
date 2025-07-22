@@ -318,3 +318,7 @@ void Player1st::GiveDamage(int damage) {
 
 	scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
 }
+
+unsigned int Player1st::GetID() {
+	return GLOBAL.myID;
+}

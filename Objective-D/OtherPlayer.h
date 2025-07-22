@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "MeshUtil.h"
 
 class OtherPlayer : public GameObject {
 private:
@@ -27,8 +28,10 @@ private:
 	int totalHP{};
 	int currentHP{};
 
+	unsigned int ID{};
+
 public:
-	OtherPlayer(int characterType);
+	OtherPlayer(int characterType, unsigned int ID);
 	void updateState();
 	void updateAnimation(float Delta);
 	void updateBound();
@@ -43,4 +46,5 @@ public:
 	void InputHP(int currentHP) override;
 	OOBB GetOOBB() override;
 	void GiveDamage(int damage) override;
+	unsigned int GetID() override;
 };

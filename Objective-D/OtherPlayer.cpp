@@ -3,9 +3,9 @@
 #include "ClampUtil.h"
 
 // 캐릭터 타입에 따라 다른 fbx를 초기화 한다.
-OtherPlayer::OtherPlayer(int characterType) {
+OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 	this->characterType = characterType;
-	
+
 	switch (this->characterType) {
 	case CHARACTER_MG:
 		idleFBX.SelectFBXMesh(MESH.heavyIdle);
@@ -31,6 +31,8 @@ OtherPlayer::OtherPlayer(int characterType) {
 	TerrainUtil terrainUtil;
 	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, positionDest, 0.0);
 	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);
+
+	this->ID = ID;
 }
 
 void OtherPlayer::updateState() {
@@ -152,3 +154,7 @@ OOBB OtherPlayer::GetOOBB() {
 // 아무 역할 안하는 더미 함수
 void OtherPlayer::GiveDamage(int damage)
 {}
+
+unsigned int OtherPlayer::GetID() {
+	return ID;
+}
