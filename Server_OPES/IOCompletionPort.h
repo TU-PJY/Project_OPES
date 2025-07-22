@@ -27,7 +27,11 @@ struct MonsterData {
     unsigned int id = 0;
     int targetClientId = -1;
     unsigned int state = 0;
-    int hp;
+    int hp=100;
+    MonsterData() {
+        hp = 100;
+
+    };
 };
 
 enum class IOOperation {

@@ -51,8 +51,8 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = false; //!useServer;
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+bool localServer = true; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -165,8 +165,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(recv_buffer);
 
-		std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
-			<< packet->z << " angle:" << packet->angle_y << std::endl;
+		//std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
+		//	<< packet->z << " angle:" << packet->angle_y << std::endl;
 
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
 			XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
@@ -180,7 +180,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::PTOM_DAMAGE) {
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
-		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << std::endl;
+		//packet->attackHp =>이거는 반영된 hp로 옴
+		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID<<"monsterhp:"<< packet->attackHp << std::endl;
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
 			monster->GiveDamage(packet->attackHp);
 		//처리부분
