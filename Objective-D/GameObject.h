@@ -117,6 +117,7 @@ public:
 	virtual void SetRenderState(bool Flag) {}
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
 	virtual void InputHP(int fullHP, int currentHP) {}
+	virtual void InputHP(int currentHP) {}
 	virtual void InputAmmo(int fullAmmo, int currentAmmo) {}
 	virtual void InputGrenade(int value) {}
 	virtual void SetSize(float Value) {}

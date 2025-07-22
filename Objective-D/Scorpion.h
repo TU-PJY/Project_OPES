@@ -83,6 +83,7 @@ public:
 	void Render() override;
 	bool CheckHit(float& distance) override;
 	void GiveDamage(int damage) override;
+	void InputHP(int currentHP) override;
 	unsigned int GetID() override;
 	void InputState(unsigned int state) override;
 	void InputPosition(XMFLOAT3& position) override;

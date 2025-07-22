@@ -284,6 +284,21 @@ void Scorpion::GiveDamage(int damage) {
 	}
 }
 
+void Scorpion::InputHP(int currentHP) {
+	if (currentState == SCOR_DEATH)
+		return;
+
+	this->currentHP = currentHP;
+
+	if (this->currentHP == 0) {
+		if (hpIndicator) {
+			scene.DeleteObject(hpIndicator);
+			hpIndicator = nullptr;
+		}
+		currentState = SCOR_DEATH;
+	}
+}
+
 unsigned int Scorpion::GetID() {
 	return ID;
 }

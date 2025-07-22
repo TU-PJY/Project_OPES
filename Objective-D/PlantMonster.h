@@ -89,4 +89,5 @@ public:
 	void InputRotation(float degrees) override;
 	float GetAnimationTime() override;
 	void SetAnimationTime(float Time) override;
+	void InputHP(int currentHP) override;
 };

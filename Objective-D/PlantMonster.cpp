@@ -309,21 +309,7 @@ bool PlantMonster::CheckHit(float& distance) {
 }
 
 void PlantMonster::GiveDamage(int damage) {
-	currentHP -= damage;
-	if (currentHP <= 0) {
-		currentState = PLANT_DEATH;
-		if (hpIndicator) {
-			scene.DeleteObject(hpIndicator);
-			hpIndicator = nullptr;
-		}
-
-		// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
-		if (defenseModeState) {
-			GLOBAL.map1DefenseEnemyRemained--;
-			if (GLOBAL.map1DefenseEnemyRemained == 0)
-				GLOBAL.map1DefenseState = false;
-		}
-	}
+	
 }
 
 unsigned int PlantMonster::GetID() {
@@ -360,4 +346,25 @@ float PlantMonster::GetAnimationTime() {
 
 void PlantMonster::SetAnimationTime(float Time) {
 	animationTime = Time;
+}
+
+void PlantMonster::InputHP(int currentHP) {
+	if (currentState == PLANT_DEATH)
+		return;
+
+	this->currentHP = currentHP;
+	if (this->currentHP == 0) {
+		currentState = PLANT_DEATH;
+		if (hpIndicator) {
+			scene.DeleteObject(hpIndicator);
+			hpIndicator = nullptr;
+		}
+
+		// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
+		if (defenseModeState) {
+			GLOBAL.map1DefenseEnemyRemained--;
+			if (GLOBAL.map1DefenseEnemyRemained == 0)
+				GLOBAL.map1DefenseState = false;
+		}
+	}
 }
