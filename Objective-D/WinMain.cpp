@@ -187,7 +187,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 	else if (*type == PacketType::PLANT_ANIMATION_TIME) {
 		PlantAnimationTimePacket* packet = reinterpret_cast<PlantAnimationTimePacket*>(recv_buffer);
-		std::cout << "[PLANT_ANIMATION_TIME] time: " << packet->time << std::endl;
+		std::cout << "[PLANT_ANIMATION_TIME]id/ time: "<<packet->monsterID<<"/ " << packet->time << std::endl;
 
 		//처리부분
 	}
@@ -523,11 +523,12 @@ void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int att
 		}
 	}
 }
-void SendPlantAnimationTimePacket(float time){
+void SendPlantAnimationTimePacket(unsigned int monsterID,float time){
 	if (enter_room) {
 		PlantAnimationTimePacket pkt = {};
 		pkt.type = PacketType::PLANT_ANIMATION_TIME;
 		pkt.time = time;
+		pkt.monsterID = monsterID;
 
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&pkt);

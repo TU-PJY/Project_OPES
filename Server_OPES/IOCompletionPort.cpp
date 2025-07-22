@@ -774,10 +774,11 @@ void IOCompletionPort::SendData_MtoPDamagePacket(stClientInfo* receiver, unsigne
         delete sendOver;
     }
 }
-void IOCompletionPort::SendData_PlantAnimationTimePacket(stClientInfo* receiver, float time) {
+void IOCompletionPort::SendData_PlantAnimationTimePacket(stClientInfo* receiver, unsigned int monsterID,float time) {
     PlantAnimationTimePacket* pkt = new PlantAnimationTimePacket{};
     pkt->type = PacketType::PLANT_ANIMATION_TIME;
     pkt->time = time;
+    pkt->monsterID = monsterID;
  
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
@@ -1181,7 +1182,7 @@ void IOCompletionPort::WorkThread() {
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_PlantAnimationTimePacket(otherClient, pkt->time);
+                        SendData_PlantAnimationTimePacket(otherClient, pkt->monsterID,pkt->time);
                     }
                 }
             }

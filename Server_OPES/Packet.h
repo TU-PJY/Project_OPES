@@ -133,6 +133,7 @@ struct  PtoMDamagePacket {
 // currentTargetID == Other¿œ ∂ß∏∏ 
 struct PlantAnimationTimePacket {
     PacketType type;
+    unsigned int monsterID;
     float time;
 };
 
