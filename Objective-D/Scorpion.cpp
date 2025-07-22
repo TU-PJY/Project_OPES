@@ -304,29 +304,29 @@ unsigned int Scorpion::GetID() {
 }
 
 void Scorpion::InputState(unsigned int state) {
-	if (currentTargetID == GLOBAL.myID)
-		return;
+	//if (currentTargetID == GLOBAL.myID)
+		//return;
 
 	currentState = state;
 }
 
 void Scorpion::InputPosition(XMFLOAT3& position) {
-	if (currentTargetID == GLOBAL.myID)
-		return;
+	//if (currentTargetID == GLOBAL.myID)
+		//return;
 
 	positionDest = position;
 }
 
 void Scorpion::InputRotation(float degrees) {
-	if (currentTargetID == GLOBAL.myID)
-		return;
+	//if (currentTargetID == GLOBAL.myID)
+	//	return;
 
 	rotationDest.y = degrees;
 }
 
 void Scorpion::InputTargetID(unsigned int target) {
-	if (currentTargetID == GLOBAL.myID)
-		return;
+	//if (currentTargetID == GLOBAL.myID)
+		//return;
 
 	currentTargetID = target;
 }

@@ -322,22 +322,22 @@ unsigned int PlantMonster::GetID() {
 }
 
 void PlantMonster::InputState(unsigned int state) {
-	if (currentTargetID == GLOBAL.myID)
-		return;
+	//if (currentTargetID == GLOBAL.myID)
+	//	return;
 
 	currentState = state;
 }
 
 void PlantMonster::InputTargetID(unsigned int id) {
-	if (currentTargetID == GLOBAL.myID)
-		return;
+	//if (currentTargetID == GLOBAL.myID)
+		//return;
 
 	currentTargetID = id;
 }
 
 void PlantMonster::InputRotation(float degrees) {
-	if (currentTargetID == GLOBAL.myID)
-		return;
+	//if (currentTargetID == GLOBAL.myID)
+		//return;
 
 	destRotation.y = degrees;
 }
