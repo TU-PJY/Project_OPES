@@ -28,6 +28,8 @@ private:
 	int         prevState{ -1 };
 	int         serverState{ SCOR_IDLE };
 
+	float       animationTime{};
+
 	bool        attackDid{};
 
 	int         totalHP{ 300 };
@@ -86,5 +88,6 @@ public:
 	void InputPosition(XMFLOAT3& position) override;
 	void InputRotation(float degrees) override;
 	void InputTargetID(unsigned int target) override;
+	void SetAnimationTime(float Time) override;
 };
 

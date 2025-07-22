@@ -182,6 +182,7 @@ void PlantMonster::updateAnimation(float Delta) {
 		if (currentTargetID == GLOBAL.myID) {
 			plantFBX.UpdateAnimation(Delta, false, !inFrustum);
 			SendPlantAnimationTimePacket(plantFBX.GetCurrentPlayTime());
+			animationTime = 0.0;
 		}
 		else {
 			plantFBX.UpdateAnimation(animationTime, false, !inFrustum);
