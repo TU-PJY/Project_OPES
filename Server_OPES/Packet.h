@@ -12,9 +12,9 @@ enum class PacketType {
     PLAYER_TO_MOSTER,
     MONSTER_STATE,
     MONSTER_MOVE,
-    MONSTER_HP,
+    MTOP_DAMAGE,
     PLANT_ANIMATION_TIME,
-    PLAYER_HP,
+    PTOM_DAMAGE,
     ENGINEER_INSTALL,
     ENGINEER_OBJECT,
     CENTER_HP,
@@ -121,11 +121,12 @@ struct MonsterMovePacket{
     float angle_y;
 };
 //----------------------------------7/22
- // 피격 시 전송
-struct  MonsterHpPacket {
+ // 플레이어가 몬스터 피격 시 전송
+struct  PtoMDamagePacket {
     PacketType type;
-    int currentHP;
+    unsigned int playerID;
     unsigned int monsterID;
+    int attackHp;
 };
 
 // plantmonster 애니메이션 재생 시간
@@ -135,12 +136,13 @@ struct PlantAnimationTimePacket {
     float time;
 };
 
-// 플레이어 피격 시 전송
+// 몬스터가 플레이어 피격 시 전송
 // 모든 플레이어 공통
-struct playerHpPacket {
+struct MtoPDamagePacket {
     PacketType type;
-    int currentHP;
-    unsigned int platerID;
+    unsigned int playerID;
+    unsigned int monsterID;
+    int attackHp;
 };
 
 // 엔지니어 구조물 설치 시 전송
