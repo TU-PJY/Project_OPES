@@ -126,7 +126,8 @@ void OtherPlayer::InputState(unsigned int state) {
 }
 
 XMFLOAT3 OtherPlayer::GetPosition() {
-	return position;
+	XMFLOAT3 outPosition = { position.x, position.y + size.y * 1.5, position.z };
+	return outPosition;
 }
 
 void OtherPlayer::GiveDamage(int damage) {
