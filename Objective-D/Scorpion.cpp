@@ -5,7 +5,6 @@
 
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
-void SendPlantAnimationTimePacket(unsigned int monsterID, float time);
 
 Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
@@ -87,12 +86,12 @@ void Scorpion::updateDetectPlayer(float Delta) {
 		return;
 
 	// 일정 간격마다 전송 활성화
-	sendState = false;
-	sendDelay += Delta;
+	sendState = true;
+	/*sendDelay += Delta;
 	if (sendDelay >= destDelay) {
 		sendDelay -= destDelay;
 		sendState = true;
-	}
+	}*/
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 

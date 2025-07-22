@@ -44,13 +44,13 @@ void PlantMonster::updateTargetDetect(float Delta) {
 	if (defenseModeState)
 		return;
 
-	sendState = false;
+	sendState = true;
 
-	sendDelay += Delta;
+	/*sendDelay += Delta;
 	if (sendDelay >= destDelay) {
 		sendDelay -= destDelay;
 		sendState = true;
-	}
+	}*/
 
 	size_t layerSize = scene.LayerSize(LAYER_PLAYER);
 
