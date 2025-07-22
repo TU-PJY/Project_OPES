@@ -1268,7 +1268,7 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
             }
-            else if (*packetType == PacketType::PLANT_ANIMATION_TIME) {
+            else if (*packetType == PacketType::PLAYER_ARRIVAL) {
 
                 PlayerArrivalPacket* pkt = reinterpret_cast<PlayerArrivalPacket*>(pOverlappedEx->buffer);
 
