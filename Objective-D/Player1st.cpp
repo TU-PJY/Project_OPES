@@ -309,7 +309,7 @@ void Player1st::GiveDamage(int damage) {
 	currentHP -= damage;
 	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
 	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, currentHP);
-
+	std::cout << currentHP << std::endl;
 	SendMtoPDamagePacket(GLOBAL.myID, 0, currentHP);
 
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.

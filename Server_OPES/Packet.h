@@ -1,7 +1,10 @@
+#pragma once
+#pragma pack(push, 1)
+
 #define MAX_SOCKBUF 1024
 constexpr int MAX_NPC = 100;
 
-enum class PacketType {
+enum class PacketType:unsigned int {
     CHAT,
     MOVE,
     VIEW_ANGLE,
@@ -182,3 +185,4 @@ struct PlayerArrivalPacket {
     PacketType type;
     unsigned int playerID;
 };
+#pragma pack(pop)
