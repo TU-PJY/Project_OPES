@@ -53,7 +53,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = true; //!useServer;
+bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -80,8 +80,8 @@ bool IsNewPlayer(unsigned int ID) {
 		scene.AddObject(new OtherPlayer(CHARACTER_MG), std::to_string(ID), LAYER_PLAYER);
 		auto indicator = scene.Find("otherIndicator");
 		if (!indicator)
-			scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
-		indicator->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
+			GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
+		static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
 
 		return true;
 	}
@@ -195,8 +195,10 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MTOP_DAMAGE) {
 		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(recv_buffer);
 		std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
-		if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other)
+		if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other) {
 			other->InputHP(packet->attackHp);
+			static_cast<GameObject*>(GLOBAL.otherIndicator)->InputHP(packet->playerID, packet->attackHp);
+		}
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_INSTALL) {

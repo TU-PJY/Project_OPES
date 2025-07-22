@@ -45,6 +45,9 @@ typedef struct {
 	// 전역에서 사용하는 맵 터레인 객체
 	TerrainUtil mapTerrain;
 
+	// 전역 플레이어 인디케이터 객체
+	LPVOID otherIndicator;
+
 	// 서버 사용 여부
 	bool useServer;
 
