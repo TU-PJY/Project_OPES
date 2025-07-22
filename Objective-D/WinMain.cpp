@@ -149,17 +149,6 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			Found->InputState(aniPacket->animationType);
 	}
 
-	else if (*type == PacketType::PLAYER_TO_MOSTER) {
-		Player2Monster* p2m_packet = reinterpret_cast<Player2Monster*>(recv_buffer);
-
-		PacketWork work{ PACKET_MONSTER_DAMAGE, p2m_packet->monsterId, XMFLOAT3(0.0, 0.0, 0.0), p2m_packet->damage };
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			PacketProcessList.emplace(work);
-		}
-		//피해입은 몬스터 id,피해량 얻는 부분을 처리해야함
-	}
-
 	else if (*type == PacketType::MONSTER_STATE) {
 		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(recv_buffer);
 
@@ -697,32 +686,7 @@ void SendPlayerArrivalPacket( unsigned int playerID) {
 		}
 	}
 }
-void SendPlayer2MonsterPacket(unsigned int monsterID, unsigned int damage) {
-	if (enter_room) {
-		Player2Monster damagePacket = {};
-		damagePacket.type = PacketType::PLAYER_TO_MOSTER;
-		damagePacket.monsterId = monsterID;
-		damagePacket.damage = damage;
-		WSABUF wsaBuf;
-		wsaBuf.buf = reinterpret_cast<char*>(&damagePacket);
-		wsaBuf.len = sizeof(Player2Monster);
 
-		// WSAOVERLAPPED 구조체를 동적 할당
-		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
-
-		DWORD bytesSent = 0;
-
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
-		if (result == SOCKET_ERROR) {
-			int err = WSAGetLastError();
-			if (err != WSA_IO_PENDING) {
-			//	std::cerr << "[클라이언트] 이동 패킷 전송 오류: " << err << "\n";
-				delete send_over;  // 오류 발생 시 할당 해제
-			}
-		}
-	}
-}
 // 채팅 패킷 전송 함수
 void SendChatPacket(const char* message) {
 	if (enter_room) {

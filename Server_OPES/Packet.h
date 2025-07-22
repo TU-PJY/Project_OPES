@@ -9,7 +9,6 @@ enum class PacketType {
     EXISTING_CLIENTS,
     ENTER,
     ANIMATION,
-    PLAYER_TO_MOSTER,
     MONSTER_STATE,
     MONSTER_MOVE,
     MTOP_DAMAGE,
