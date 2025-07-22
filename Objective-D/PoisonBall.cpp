@@ -18,15 +18,21 @@ void PoisonBall::updateCollision() {
 	if (disappearState)
 		return;
 
+	bool returnState{};
 	size_t layerSize = scene.LayerSize(LAYER_PLAYER);
 	for (int i = 0; i < layerSize; i++) {
 		if (auto player = scene.ReferLayer(LAYER_PLAYER, i); player) {
 			if (bs.CheckCollision(player->GetOOBB())) {
 				// GiveDamage를 가진 1인칭 플레이어 객체만이 대미지를 받게 된다.
 				player->GiveDamage(5);
-				disappearState = true;
+				returnState = true;
 			}
 		}
+	}
+
+	if (returnState) {
+		disappearState = true;
+		return;
 	}
 
 	terrainUtil.InputPosition(position);

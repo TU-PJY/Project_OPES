@@ -305,16 +305,12 @@ void Player1st::InputRecoil(float Value) {
 }
 
 void Player1st::GiveDamage(int damage) {
-	static int count;
-
 	if (currentState == STATE_DEATH) return;
 	currentHP -= damage;
 	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
 	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, currentHP);
 
 	SendMtoPDamagePacket(GLOBAL.myID, 0, damage);
-
-	std::cout << "대미지 " << count << "회 받음\n";
 
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.
 	//if (currentHP == 0)

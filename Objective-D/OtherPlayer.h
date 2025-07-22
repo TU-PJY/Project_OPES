@@ -42,4 +42,5 @@ public:
 	XMFLOAT3 GetPosition() override;
 	void InputHP(int currentHP) override;
 	OOBB GetOOBB() override;
+	void GiveDamage(int damage) override;
 };

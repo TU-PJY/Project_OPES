@@ -148,3 +148,7 @@ void OtherPlayer::InputHP(int currentHP) {
 OOBB OtherPlayer::GetOOBB() {
 	return playerBound;
 }
+
+// 아무 역할 안하는 더미 함수
+void OtherPlayer::GiveDamage(int damage)
+{}
