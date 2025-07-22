@@ -176,17 +176,6 @@ void PlantMonster::updateAnimation(float Delta) {
 		prevState = currentState;
 	}
 
-	// 프러스텀 바깥일 때는 애니메이션 적용 없이 재생 시간만 계산
-	// 공격상태일때는 나를 공격하는 것이 아니라면 서버로부터 시간을 받아 애니메이션을 업데이트 한다.
-	if (currentState == PLANT_ATTACK) {
-		if (currentTargetID == GLOBAL.myID) {
-			SendPlantAnimationTimePacket(ID, plantFBX.GetCurrentPlayTime());
-			animationTime = 0.0;
-		}
-		else
-			plantFBX.SetCurrentPlayTime(animationTime);
-	}
-
 	plantFBX.UpdateAnimation(Delta, false, !inFrustum);
 }
 
