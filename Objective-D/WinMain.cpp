@@ -152,7 +152,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_STATE) {
 		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(recv_buffer);
 
-		//std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
+		std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster) 
 			monster->InputState(packet->state);
 	}
@@ -288,6 +288,8 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cerr << "[클라이언트] 데이터 전송 실패\n";
 		isRunning = false;
 	}
+	// 동적으로 할당한 오버랩드 해제
+	delete p_over;
 //	std::cout << "send\n";
 	recv_wsabuf[0].buf = recv_buffer;
 	recv_wsabuf[0].len = sizeof(recv_buffer);
