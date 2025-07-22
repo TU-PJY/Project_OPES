@@ -380,10 +380,10 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     nextRoomID++;
     newRoom.roomID = nextRoomID;
     newRoom.clients = members;
-    //for (const auto& m : monsterData) {
-    //    MonsterData copy = m;
-    //    newRoom.monsters.push_back(copy);
-    //}
+    for (const auto& m : monsterData) {
+        MonsterData copy = m;
+        newRoom.monsters.push_back(copy);
+    }
     //->이거에 대한 접근 예시
     //auto& room = rooms[2];
     //if (!room.monsters.empty()) {
