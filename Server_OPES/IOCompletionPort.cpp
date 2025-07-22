@@ -138,7 +138,6 @@ bool IOCompletionPort::StartServer() {
             loadedData.monsterType = (int)monsterDataScript.LoadDigitData(Category, "type");
             loadedData.createPointX = monsterDataScript.LoadDigitData(Category, "x");
             loadedData.createPointZ = monsterDataScript.LoadDigitData(Category, "z");
-            loadedData.hp = 100; // 기본 HP 할당
             loadedData.id = monsterIdCounter++; // 고유 ID 부여
             monsterData.emplace_back(loadedData);
             myMonsters.emplace_back(loadedData);//임시데이터
@@ -1151,8 +1150,8 @@ void IOCompletionPort::WorkThread() {
                 //}
 
                 MonsterMovePacket* pkt = reinterpret_cast<MonsterMovePacket*>(pOverlappedEx->buffer);
-                 std::cout <<"MonsterID:" << pkt->monsterId<<"pID"<<pkt->playerId<<  "(" << pkt->x << ", " << pkt->x << ", " << pkt->y << ", "
-                     << pkt->z <<" angle:"<< pkt->angle_y<< std::endl;
+                 //std::cout <<"MonsterID:" << pkt->monsterId<<"pID"<<pkt->playerId<<  "(" << pkt->x << ", " << pkt->x << ", " << pkt->y << ", "
+                 //    << pkt->z <<" angle:"<< pkt->angle_y<< std::endl;
                 
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
@@ -1240,12 +1239,23 @@ void IOCompletionPort::WorkThread() {
             else if (*packetType == PacketType::MTOP_DAMAGE) {
 
                 MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(pOverlappedEx->buffer);
-
+                int sendHP;
+                for (stClientInfo* targetClient : clients) {
+                    if (!targetClient) continue;
+                    if (targetClient->id == pkt->playerID) {
+                        targetClient->hp -= pkt->attackHp;
+                        if (targetClient->hp < 0) targetClient->hp = 0;
+                        sendHP = targetClient->hp;
+                        std::cout << "[HP 반영] 플레이어 ID " << targetClient->id
+                            << " 새 HP: " << sendHP << std::endl;
+                        break;
+                    }
+                }
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, pkt->attackHp);
+                        SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, sendHP);
                     }
                 }
             }

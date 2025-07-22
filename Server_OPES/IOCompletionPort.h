@@ -27,9 +27,9 @@ struct MonsterData {
     unsigned int id = 0;
     int targetClientId = -1;
     unsigned int state = 0;
-    int hp=100;
+    int hp=300;
     MonsterData() {
-        hp = 100;
+        hp = 300;
 
     };
 };

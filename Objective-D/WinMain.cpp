@@ -180,7 +180,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::PTOM_DAMAGE) {
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
-		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << std::endl;
+		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID<<"damage: "<< packet->attackHp << std::endl;
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
 			monster->InputHP(packet->attackHp);
 		//처리부분
