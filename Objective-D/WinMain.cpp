@@ -189,6 +189,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		PlantAnimationTimePacket* packet = reinterpret_cast<PlantAnimationTimePacket*>(recv_buffer);
 		std::cout << "[PLANT_ANIMATION_TIME]id/ time: "<<packet->monsterID<<"/ " << packet->time << std::endl;
 
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
+			monster->SetAnimationTime(packet->time);
 		//처리부분
 	}
 	else if (*type == PacketType::MTOP_DAMAGE) {
@@ -523,7 +525,7 @@ void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int att
 		}
 	}
 }
-void SendPlantAnimationTimePacket(unsigned int monsterID,float time){
+void SendPlantAnimationTimePacket(unsigned int monsterID, float time){
 	if (enter_room) {
 		PlantAnimationTimePacket pkt = {};
 		pkt.type = PacketType::PLANT_ANIMATION_TIME;

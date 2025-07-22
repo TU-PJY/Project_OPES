@@ -246,6 +246,14 @@ XMFLOAT3 FBX::GetNodeRotation(int NodeIndex) {
 
 void FBX::ApplyAnimation() {}
 
+int FBX::GetCurrentFrame() {
+	return CurrentFrame;
+}
+
+int FBX::GetPrevFrame() {
+	return PrevFrame;
+}
+
 ///////////////////////////////////////// private
 
 // 원본 FBX와 동일 사양으로 버퍼를 맞춘다.

@@ -280,6 +280,9 @@ public:
 	XMFLOAT3 GetNodeRotation(int NodeIndex);
 	void ApplyAnimation();
 
+	int GetCurrentFrame();
+	int GetPrevFrame();
+
 private:
 	void CreateBuffer(DeviceSystem& System);
 	void ReleaseBuffer();

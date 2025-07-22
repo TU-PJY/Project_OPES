@@ -5,7 +5,7 @@
 
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
-void SendPlantAnimationTimePacket(float time);
+void SendPlantAnimationTimePacket(unsigned int monsterID, float time);
 
 Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
@@ -183,16 +183,6 @@ void Scorpion::updateAnimation(float Delta) {
 		scorpionFBX.UpdateAnimation(Delta, true, !inFrustum);
 	else
 		scorpionFBX.UpdateAnimation(Delta, false, !inFrustum);
-
-	if (currentState == SCOR_ATTACK) {
-		if (currentTargetID == GLOBAL.myID) {
-			scorpionFBX.UpdateAnimation(Delta, false, !inFrustum);
-			SendPlantAnimationTimePacket(scorpionFBX.GetCurrentPlayTime());
-			animationTime = 0.0;
-		}
-		else
-			scorpionFBX.UpdateAnimation(animationTime, false, !inFrustum);
-	}
 }
 
 void Scorpion::updateMove(float Delta) {
@@ -324,8 +314,4 @@ void Scorpion::InputTargetID(unsigned int target) {
 		return;
 
 	currentTargetID = target;
-}
-
-void Scorpion::SetAnimationTime(float Time) {
-	animationTime = Time;
 }
