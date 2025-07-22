@@ -39,4 +39,5 @@ public:
 	void InputState(unsigned int state) override;
 	XMFLOAT3 GetPosition() override;
 	void GiveDamage(int damage) override;
+	void InputHP(int currentHP) override;
 };
