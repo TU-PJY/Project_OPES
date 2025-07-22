@@ -29,10 +29,11 @@ void PlantMonster::sendCurrentState() {
 }
 
 void PlantMonster::sendCurrentPosition() {
-	if (!sendState)
+	if (prevTargetID == currentTargetID)
 		return;
 
 	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+	prevTargetID = currentTargetID;
 }
 
 // 공격 대상 감지 진행
@@ -44,13 +45,12 @@ void PlantMonster::updateTargetDetect(float Delta) {
 	if (defenseModeState)
 		return;
 
-	sendState = true;
-
-	/*sendDelay += Delta;
+	sendState = false;
+	sendDelay += Delta;
 	if (sendDelay >= destDelay) {
 		sendDelay -= destDelay;
 		sendState = true;
-	}*/
+	}
 
 	size_t layerSize = scene.LayerSize(LAYER_PLAYER);
 
@@ -71,8 +71,10 @@ void PlantMonster::updateTargetDetect(float Delta) {
 						if (Math::CheckRayCollision(rayVector, B)) {
 							currentState = PLANT_IDLE;
 							currentTargetID = 0;
-							sendCurrentState();
-							sendCurrentPosition();
+
+							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+							SendMonstertypePacket(1, currentState, ID);
+
 							isBlocking = true;
 							break;
 						}
@@ -81,14 +83,16 @@ void PlantMonster::updateTargetDetect(float Delta) {
 					if (!isBlocking) {
 						currentState = PLANT_ATTACK;
 						currentTargetID = GLOBAL.myID;
-						sendCurrentState();
 
 						// 플레이어 방향의 각도로 목표 각도 설정
 						destRotation = Math::CalcDegree3D(position, playerPosition);
 						Math::Normalize2DAngleTo360(destRotation.y);
 						targetPosition = playerPosition;
 
-						sendCurrentPosition();
+						if (sendState) {
+							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+							SendMonstertypePacket(1, currentState, ID);
+						}
 					}
 				}
 
@@ -96,11 +100,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 				else {
 					currentState = PLANT_IDLE;
 					currentTargetID = 0;
-					sendCurrentState();
-					sendCurrentPosition();
 				}
-
-				break;
 			}
 		}
 	}
@@ -108,6 +108,16 @@ void PlantMonster::updateTargetDetect(float Delta) {
 	else {
 		if (auto player = scene.SearchLayer(LAYER_PLAYER, std::to_string(currentTargetID)); player)
 			targetPosition = player->GetPosition();
+	}
+
+	if (serverState != currentState) {
+		SendMonstertypePacket(1, currentState, ID);
+		serverState = currentState;
+	}
+
+	if (prevTargetID != currentTargetID) {
+		SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+		prevTargetID = currentTargetID;
 	}
 }
 

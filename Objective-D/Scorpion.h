@@ -54,6 +54,7 @@ private:
 	// 0이면 Idle이거나 나를 추적 중
 	// 0이 아니면 다른 플레이어 추적 중
 	unsigned int currentTargetID{};
+	unsigned int prevTargetID{};
 
 	// 서버로 전송하는 간격
 	float sendDelay{};

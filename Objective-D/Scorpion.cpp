@@ -75,10 +75,11 @@ void Scorpion::sendCurrentState() {
 }
 
 void Scorpion::sendCurrentPosition() {
-	if (!sendState)
+	if (prevTargetID == currentTargetID)
 		return;
 
 	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+	prevTargetID = currentTargetID;
 }
 
 void Scorpion::updateDetectPlayer(float Delta) {
@@ -86,12 +87,12 @@ void Scorpion::updateDetectPlayer(float Delta) {
 		return;
 
 	// 일정 간격마다 전송 활성화
-	sendState = true;
-	/*sendDelay += Delta;
+	sendState = false;
+	sendDelay += Delta;
 	if (sendDelay >= destDelay) {
 		sendDelay -= destDelay;
 		sendState = true;
-	}*/
+	}
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 
@@ -110,9 +111,11 @@ void Scorpion::updateDetectPlayer(float Delta) {
 						if (Math::CheckRayCollision(newRay, B)) {
 							currentState = SCOR_IDLE; 
 							currentTargetID = 0;
-							sendCurrentState();
-							sendCurrentPosition();
 							isBlocked = true;
+
+							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+							SendMonstertypePacket(2, currentState, ID);
+							
 							break;
 						}
 					}
@@ -124,8 +127,11 @@ void Scorpion::updateDetectPlayer(float Delta) {
 						if (attackBound.CheckCollision(playerOOBB)) {
 							currentState = SCOR_ATTACK;
 							currentTargetID = GLOBAL.myID;
-							sendCurrentState();
-							sendCurrentPosition();
+
+							if (sendState) {
+								SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+								SendMonstertypePacket(2, currentState, ID);
+							}
 						}
 
 						// 아니라면 추격 상태로 전환
@@ -133,8 +139,11 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							Math::Normalize2DAngleTo360(rotationDest.y);
 							currentState = SCOR_WALK;
 							currentTargetID = GLOBAL.myID;
-							sendCurrentState();
-							sendCurrentPosition();
+
+							if (sendState) {
+								SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+								SendMonstertypePacket(2, currentState, ID);
+							}
 						}
 					}
 				}
@@ -142,14 +151,21 @@ void Scorpion::updateDetectPlayer(float Delta) {
 				else {
 					currentState = SCOR_IDLE;
 					currentTargetID = 0;
-					sendCurrentState();
-					sendCurrentPosition();
 				}
-
-				break;
 			}
 		}
 	}
+
+	if (serverState != currentState) {
+		SendMonstertypePacket(2, currentState, ID);
+		serverState = currentState;
+	}
+
+	if (prevTargetID != currentTargetID) {
+		SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+		prevTargetID = currentTargetID;
+	}
+
 }
 
 void Scorpion::updateState() {

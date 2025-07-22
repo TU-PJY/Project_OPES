@@ -61,6 +61,7 @@ private:
 	unsigned int ID{};
 
 	unsigned int currentTargetID{};
+	unsigned int prevTargetID{};
 
 	float sendDelay{};
 	float destDelay{1.0 / 30.0};
