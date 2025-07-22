@@ -746,18 +746,19 @@ void IOCompletionPort::SendData_MonsterMove(stClientInfo* receiver,float x, floa
         delete sendOver;
     }
 }
-void IOCompletionPort::SendData_MonsterHp(stClientInfo* receiver, int currentHP,unsigned int monsterID) {
-    MonsterHpPacket* pkt = new MonsterHpPacket{};
-    pkt->type = PacketType::MONSTER_HP;
-    pkt->currentHP = currentHP;
+void IOCompletionPort::SendData_MtoPDamagePacket(stClientInfo* receiver, unsigned int playerID, unsigned int monsterID, int attackHp) {
+    MtoPDamagePacket* pkt = new MtoPDamagePacket{};
+    pkt->type = PacketType::MTOP_DAMAGE;
+    pkt->playerID = playerID;
     pkt->monsterID = monsterID;
+    pkt->attackHp = attackHp;
    
 
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
-    sendOver->wsaBuf.len = sizeof(MonsterHpPacket);
+    sendOver->wsaBuf.len = sizeof(MtoPDamagePacket);
     sendOver->cleanup = [pkt, sendOver]() {
         delete pkt;
         delete sendOver;
@@ -798,18 +799,19 @@ void IOCompletionPort::SendData_PlantAnimationTimePacket(stClientInfo* receiver,
         delete sendOver;
     }
 }
-void IOCompletionPort::SendData_PlayerHp(stClientInfo* receiver, int currentHP, unsigned int platerID) {
-    playerHpPacket* pkt = new playerHpPacket{};
-    pkt->type = PacketType::PLAYER_HP;
-    pkt->currentHP = currentHP;
-    pkt->platerID = platerID;
+void IOCompletionPort::SendData_PtoMDamagePacket(stClientInfo* receiver, unsigned int playerID,unsigned int monsterID,int attackHp) {
+    PtoMDamagePacket* pkt = new PtoMDamagePacket{};
+    pkt->type = PacketType::PTOM_DAMAGE;
+    pkt->playerID = playerID;
+    pkt->monsterID = monsterID;
+    pkt->attackHp = attackHp;
 
 
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
-    sendOver->wsaBuf.len = sizeof(playerHpPacket);
+    sendOver->wsaBuf.len = sizeof(PtoMDamagePacket);
     sendOver->cleanup = [pkt, sendOver]() {
         delete pkt;
         delete sendOver;
@@ -1156,18 +1158,18 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
             }
-            else if (*packetType == PacketType::MONSTER_HP) {
+            else if (*packetType == PacketType::PTOM_DAMAGE) {
                 //if (bytesTransferred < sizeof(MovePacket)) {
                 //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
                 //    continue;
                 //}
-                MonsterHpPacket* pkt = reinterpret_cast<MonsterHpPacket*>(pOverlappedEx->buffer);
+                PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(pOverlappedEx->buffer);
 
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_MonsterHp(otherClient, pkt->currentHP, pkt->monsterID);
+                        SendData_PtoMDamagePacket(otherClient, pkt->playerID, pkt->monsterID, pkt->attackHp);
                     }
                 }
             }
@@ -1183,15 +1185,15 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
             }
-            else if (*packetType == PacketType::PLAYER_HP) {
+            else if (*packetType == PacketType::MTOP_DAMAGE) {
 
-                playerHpPacket* pkt = reinterpret_cast<playerHpPacket*>(pOverlappedEx->buffer);
+                MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(pOverlappedEx->buffer);
 
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_PlayerHp(otherClient, pkt->currentHP, pkt->platerID);
+                        SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, pkt->attackHp);
                     }
                 }
             }
