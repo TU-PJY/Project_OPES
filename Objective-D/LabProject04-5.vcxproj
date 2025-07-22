@@ -52,7 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>false</EnableUnitySupport>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -196,6 +196,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="MuzzleFlash.h" />
     <ClInclude Include="Objective-D.h" />
     <ClInclude Include="MeshUtil.h" />
+    <ClInclude Include="OtherPlayerIndicator.h" />
     <ClInclude Include="PickingUtil.h" />
     <ClInclude Include="PlantMonster.h" />
     <ClInclude Include="Player.h" />
@@ -270,6 +271,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="MuzzleFlash.cpp" />
     <ClCompile Include="ObjectShader.cpp" />
     <ClCompile Include="OtherPlayer.cpp" />
+    <ClCompile Include="OtherPlayerIndicator.cpp" />
     <ClCompile Include="PickingUtil.cpp" />
     <ClCompile Include="GameResource.cpp" />
     <ClCompile Include="PlantMonster.cpp" />

@@ -10,6 +10,7 @@
 #include "ShaderUtil.h"
 #include "MouseUtil.h"
 #include "TerrainUtil.h"
+#include "OtherPlayerIndicator.h"
 
 #include <locale>
 
@@ -77,6 +78,11 @@ bool IsNewPlayer(unsigned int ID) {
 	if (!ID_List.contains(ID)) {
 		ID_List.insert(ID);
 		scene.AddObject(new OtherPlayer(CHARACTER_MG), std::to_string(ID), LAYER_PLAYER);
+		auto indicator = scene.Find("otherIndicator");
+		if (!indicator)
+			scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
+		indicator->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
+
 		return true;
 	}
 

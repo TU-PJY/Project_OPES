@@ -260,6 +260,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Particle ]\[ explosion ]">
       <UniqueIdentifier>{fcac98a8-3a94-4be0-b2d8-cf80133dbaeb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ OtherPlayer Indicator ]">
+      <UniqueIdentifier>{0e9103c7-08e8-48ed-9424-852e9006d12a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -477,6 +480,9 @@
     </ClInclude>
     <ClInclude Include="Explosion.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Particle ]\[ explosion ]</Filter>
+    </ClInclude>
+    <ClInclude Include="OtherPlayerIndicator.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ OtherPlayer Indicator ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -704,6 +710,9 @@
     </ClCompile>
     <ClCompile Include="Explosion.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Particle ]\[ explosion ]</Filter>
+    </ClCompile>
+    <ClCompile Include="OtherPlayerIndicator.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ OtherPlayer Indicator ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -76,6 +76,9 @@ public:
 	virtual TerrainUtil GetTerrain() { return {}; }
 	virtual float GetAnimationTime() { return {}; }
 	virtual void SetAnimationTime(float Time) {}
+	virtual void AddPlayer(const std::string& name) {}
+	virtual void AddPlayer(unsigned int ID, int chracterType, const std::string& name) {}
+	virtual void InputHP(unsigned int ID, int currentHP) {}
 
 	// 사용자 정의 리턴 함수는 아래에 정의한다.
 	// 크로스헤어 반동 부여 함수
