@@ -20,7 +20,8 @@ ScriptUtil monsterDataScript;
 // 현재 로드된 몬스터 생성 타입 및 위치
 std::vector<MonsterData> monsterData;
 
-std::vector<MonsterData> myMonsters;
+std::vector<MonsterData> myMonsters;//임시
+int roomHp;//임시
 
 std::thread npcThread;
 
@@ -566,34 +567,6 @@ void IOCompletionPort::SendData_Animaion(stClientInfo* sender, stClientInfo* rec
         delete sendOver;
     }
 }
-
-void IOCompletionPort::SendData_Player2Monster(unsigned int monsterID, unsigned int damage, stClientInfo* receiver) {
-    Player2Monster* packet = new Player2Monster{};
-    packet->type = PacketType::PLAYER_TO_MOSTER;
-    packet->monsterId = monsterID;
-    packet->damage = damage;
-
-    stOverlappedEx* sendOver = new stOverlappedEx{};
-    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-    sendOver->operation = IOOperation::SEND;
-    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-    sendOver->wsaBuf.len = sizeof(Player2Monster);
-    sendOver->cleanup = [packet, sendOver]() {
-        delete packet;
-        delete sendOver;
-        };
-    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
-        &sendOver->overlapped,
-        NULL);
-
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        closesocket(receiver->socketClient);
-        RemoveClient(receiver);
-        delete packet;
-        delete sendOver;
-    }
-}
-
 
 
 void IOCompletionPort::SendData(stClientInfo* sender, stClientInfo* receiver, const char* message, int length) {
@@ -1157,45 +1130,6 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
             }
-            //else if (*packetType == PacketType::PTOM_DAMAGE) {
-            //    PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(pOverlappedEx->buffer);
-            //
-            //    std::cout << "PTOM_DAMAGE Mid:" << pkt->monsterID
-            //        << ", Pid:" << pkt->playerID
-            //        << ", Attackhp:" << pkt->attackHp << std::endl;
-            //
-            //    // 해당 클라이언트의 방 정보에서 몬스터 찾기
-            //    //auto it = rooms.find(client->roomID);
-            //    //if (it != rooms.end()) {
-            //    //    Room& room = it->second;
-            //    //
-            //    //    // 몬스터 ID가 벡터 범위 내에 있는지 확인
-            //    //    if (pkt->monsterID < room.monsters.size()) {
-            //    //        MonsterData& monster = room.monsters[pkt->monsterID];
-            //    //
-            //    //        monster.hp -= pkt->attackHp;
-            //    //        if (monster.hp < 0) monster.hp = 0;
-            //    //
-            //    //        std::cout << "[HP 반영] 몬스터 ID " << monster.id
-            //    //            << " 새 HP: " << monster.hp << std::endl;
-            //    //
-            //    //        // 데미지 정보를 같은 방의 다른 클라이언트들에게 전송
-            //    //        for (stClientInfo* otherClient : clients) {
-            //    //            if (!otherClient) continue;
-            //    //            if (otherClient->roomID == client->roomID && otherClient != client) {
-            //    //                SendData_PtoMDamagePacket(otherClient,pkt->playerID,pkt->monsterID, pkt->attackHp);
-            //    //            }
-            //    //        }
-            //    //    }
-            //    //    else {
-            //    //        std::cerr << "[경고] 잘못된 monsterID: " << pkt->monsterID
-            //    //            << ", monsters.size(): " << room.monsters.size() << std::endl;
-            //    //    }
-            //    //}
-            //    //else {
-            //    //    std::cerr << "[에러] roomID " << client->roomID << "에 해당하는 방을 찾을 수 없음\n";
-            //    //}
-            //}
 
             else if (*packetType == PacketType::MTOP_DAMAGE) {
 
@@ -1248,11 +1182,12 @@ void IOCompletionPort::WorkThread() {
 
                 CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(pOverlappedEx->buffer);
 
+                roomHp -= pkt->hp;
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_CenterBuildingPacket(otherClient, pkt->hp);
+                        SendData_CenterBuildingPacket(otherClient, roomHp);
                     }
                 }
             }
@@ -1277,23 +1212,6 @@ void IOCompletionPort::WorkThread() {
                     if (!otherClient) continue;
                     if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_PlayerArrivalPacket(otherClient, pkt->playerID);
-                    }
-                }
-            }
-            else if (*packetType == PacketType::PLAYER_TO_MOSTER) {
-                //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-                //    continue;
-                //}
-
-                Player2Monster* damagePacket = reinterpret_cast<Player2Monster*>(pOverlappedEx->buffer);
-
-                // 데미지 패킷을 모든 클라이언트에게 전송
-                for (stClientInfo* otherClient : clients) {
-                    if (!otherClient) continue;
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_Player2Monster(damagePacket->monsterId, damagePacket->damage, otherClient);
-
                     }
                 }
             }
