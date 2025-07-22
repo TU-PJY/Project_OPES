@@ -12,10 +12,11 @@
 class TestObject : public GameObject {
 public:
 
-	FBX fbx{ MESH.explosion };
+	FBX fbx{ MESH.treant[2]};
+	FBX fbx2{ MESH.troll };
 
 	TestObject() {
-
+		fbx2.SelectAnimation("Attack 3");
 	}
 
 	void InputKey(KeyEvent& Event) {
@@ -27,24 +28,15 @@ public:
 
 	void Update(float Delta) {
 		fbx.UpdateAnimation(Delta);
+		fbx2.UpdateAnimation(Delta);
 	}
 
 	void Render() {
 		BeginRender();
-		SetColor(1.0, 0.8, 0.0);
-		RenderFBX(fbx, TEX.ColorTex);
+		RenderFBX(fbx, TEX.treant);
 
-		SetColor(1.0, 0.0, 0.0);
-		Transform::Rotate(RotateMatrix, 45.0, 180.0, 45.0);
-		RenderFBX(fbx, TEX.ColorTex);
-
-		SetColor(1.0, 0.5, 0.0);
-		Transform::Rotate(RotateMatrix, 180.0, 0.0, 45.0);
-		RenderFBX(fbx, TEX.ColorTex);
-
-		SetColor(1.0, 1.0, 0.0);
-		Transform::Rotate(RotateMatrix, 180.0, 180.0, 180.0);
-		RenderFBX(fbx, TEX.ColorTex);
+		Transform::Move(TranslateMatrix, 5.0, 0.0, 0.0);
+		RenderFBX(fbx2, TEX.troll);
 	}
 };
 

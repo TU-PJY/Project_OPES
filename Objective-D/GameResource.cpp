@@ -21,8 +21,8 @@ DeviceSystem LoadSystem;
 // DevMode 활성화 시에만 아래 3개의 플래그가 의미가 있음
 bool DevMode = true;
 
-bool LoadMap1Resources = true;
-bool LoadMap2Resources = false;
+bool LoadMap1Resources = false;
+bool LoadMap2Resources = true;
 bool LoadMap3Resources = false;
 
 // 매쉬를 여기서 로드한다.
@@ -90,6 +90,12 @@ void LoadMesh(DeviceSystem& System) {
 			"Resources//Models//monster//troll.fbx",
 			"Resources//Animation Data///troll.pca", "Resources//Models//monster//troll.json", false);
 		SetAnimationOffset(MESH.troll, 0.4333333373069763);
+
+		// monster - treant
+		LoadAnimatedFBX(MESH.treant[0], "Resources//Models//monster//treantIdle.fbx", "Resources//Animation Data//treantIdle.pca", "", false);
+		LoadAnimatedFBX(MESH.treant[1], "Resources//Models//monster//treantMove.fbx", "Resources//Animation Data//treantMove.pca", "", false);
+		LoadAnimatedFBX(MESH.treant[2], "Resources//Models//monster//treantAttack.fbx", "Resources//Animation Data//treantAttack.pca", "", false);
+		LoadAnimatedFBX(MESH.treant[3], "Resources//Models//monster//treantDeath.fbx", "Resources//Animation Data//treantDeath.pca", "", false);
 	}
 
 	// 맵 1, 2와 공유하므로 둘 다 로드 안할 시에만 로드 안 함
@@ -118,7 +124,7 @@ void LoadMesh(DeviceSystem& System) {
 	// 항상 필요한 리소스들은 여기에서 로드한다.
 	// explosion effect
 	LoadAnimatedFBX(MESH.explosion, "Resources//Models//effect//explosion.fbx",
-		"Resources//Animation Data//explosion.pca", "", true);
+		"Resources//Animation Data//explosion.pca", "", false);
 	
 	// polygon scifi asset
 	LoadMultiStaticFBX(MESH.center_building, "Resources//Models//building//center.fbx");
@@ -209,6 +215,7 @@ void LoadTexture(DeviceSystem& System) {
 
 	// map2 monster
 	LoadTexture(TEX.troll, L"Resources//Image//monster//troll.png");
+	LoadTexture(TEX.treant, L"Resources//Image//monster//treant.png");
 
 	// UI
 	LoadTexture(TEX.UI_map1Enemy, L"Resources//Image//ui//map1_enemy.png");
