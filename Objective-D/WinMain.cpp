@@ -177,9 +177,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	}
 
-	else if (*type == PacketType::MONSTER_HP) {
-		MonsterHpPacket* packet = reinterpret_cast<MonsterHpPacket*>(recv_buffer);
-		std::cout << "[MONSTER_HP] monsterID: " << packet->monsterID << ", currentHP: " << packet->currentHP << std::endl;
+	else if (*type == PacketType::PTOM_DAMAGE) {
+		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
+		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << std::endl;
 
 		//처리부분
 	}
@@ -189,9 +189,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 		//처리부분
 	}
-	else if (*type == PacketType::PLAYER_HP) {
-		playerHpPacket* packet = reinterpret_cast<playerHpPacket*>(recv_buffer);
-		std::cout << "[PLAYER_HP] playerID: " << packet->platerID << ", currentHP: " << packet->currentHP << std::endl;
+	else if (*type == PacketType::MTOP_DAMAGE) {
+		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(recv_buffer);
+		std::cout << "[MTOP_DAMAGE] playerID: " << packet->playerID << ", monsterHP: " << packet->monsterID << std::endl;
 
 		//처리부분
 	}
@@ -492,16 +492,18 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 		}
 	}
 }
-void SendMonsterHpPacket(int currentHP, unsigned int monsterID) {
+void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp) {
 	if (enter_room) {
-		MonsterHpPacket pkt = {};
-		pkt.type = PacketType::MONSTER_HP;
-		pkt.currentHP = currentHP;
+		PtoMDamagePacket pkt = {};
+		pkt.type = PacketType::PTOM_DAMAGE;
+		pkt.playerID = playerID;
 		pkt.monsterID = monsterID;
+		pkt.attackHp = attackHp;
+		
 
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
-		wsaBuf.len = sizeof(MonsterHpPacket);
+		wsaBuf.len = sizeof(PtoMDamagePacket);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
@@ -545,16 +547,17 @@ void SendPlantAnimationTimePacket(float time){
 		}
 	}
 }
-void SendPlayerHp(int currentHP, unsigned int platerID) {
+void SendMtoPDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp) {
 	if (enter_room) {
-		playerHpPacket pkt = {};
-		pkt.type = PacketType::PLAYER_HP;
-		pkt.currentHP = currentHP;
-		pkt.platerID = platerID;
+		MtoPDamagePacket pkt = {};
+		pkt.type = PacketType::MTOP_DAMAGE;
+		pkt.playerID = playerID;
+		pkt.monsterID = monsterID;
+		pkt.attackHp = attackHp;
 
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
-		wsaBuf.len = sizeof(playerHpPacket);
+		wsaBuf.len = sizeof(MtoPDamagePacket);
 
 		// WSAOVERLAPPED 구조체를 동적 할당
 		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
