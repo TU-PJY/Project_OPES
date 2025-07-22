@@ -13,8 +13,8 @@ OtherPlayer::OtherPlayer(int characterType) {
 		shootFBX.SelectFBXMesh(MESH.heavyShoot);
 		deathFBX.SelectFBXMesh(MESH.heavyDeath);
 
-		totalHP = 200;
-		currentHP = 200;
+		totalHP = 100;
+		currentHP = 100;
 		break;
 
 	case CHARACTER_DMR:
@@ -27,6 +27,10 @@ OtherPlayer::OtherPlayer(int characterType) {
 		currentHP = 100;
 		break;
 	}
+
+	TerrainUtil terrainUtil;
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, positionDest, 0.0);
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);
 }
 
 void OtherPlayer::updateState() {
@@ -60,8 +64,8 @@ void OtherPlayer::updateAnimation(float Delta) {
 }
 
 void OtherPlayer::updateRenderValue(float Delta) {
-	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
-	Math::LerpXMFLOAT3(rotation, rotationDest, 10.0, Delta);
+	Math::LerpXMFLOAT3(position, positionDest, 20.0, Delta);
+	Math::LerpXMFLOAT3(rotation, rotationDest, 20.0, Delta);
 }
 
 void OtherPlayer::updateBound() {
@@ -132,6 +136,17 @@ void OtherPlayer::GiveDamage(int damage) {
 	currentHP -= damage;
 	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
 	if (currentHP == 0) {
+		currentState = STATE_DEATH;
+	}
+}
+
+void OtherPlayer::InputHP(int currentHP) {
+	if (currentState == STATE_DEATH)
+		return;
+
+	this->currentHP = currentHP;
+	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
+	if (this->currentHP == 0) {
 		currentState = STATE_DEATH;
 	}
 }

@@ -13,7 +13,7 @@ void PlantMonster::updateHitBox(float Delta) {
 		return;
 
 	// 디펜스 모드일때만 실시간으로 프러스텀 바운드를 업데이트 한다.
-	if(defenseModeState)
+	if (defenseModeState)
 		frustumBound.Update(position, 10.0);
 
 	for (int i = 0; i < 3; i++)
@@ -101,6 +101,11 @@ void PlantMonster::updateTargetDetect(float Delta) {
 				break;
 			}
 		}
+	}
+
+	else {
+		if (auto player = scene.SearchLayer(LAYER_PLAYER, std::to_string(currentTargetID)); player)
+			targetPosition = player->GetPosition();
 	}
 }
 
