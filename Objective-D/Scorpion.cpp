@@ -111,6 +111,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							currentState = SCOR_IDLE; 
 							currentTargetID = 0;
 							sendCurrentState();
+							sendCurrentPosition();
 							isBlocked = true;
 							break;
 						}
@@ -142,6 +143,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 					currentState = SCOR_IDLE;
 					currentTargetID = 0;
 					sendCurrentState();
+					sendCurrentPosition();
 				}
 
 				break;

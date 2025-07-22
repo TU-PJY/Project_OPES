@@ -72,6 +72,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 							currentState = PLANT_IDLE;
 							currentTargetID = 0;
 							sendCurrentState();
+							sendCurrentPosition();
 							isBlocking = true;
 							break;
 						}
@@ -96,6 +97,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 					currentState = PLANT_IDLE;
 					currentTargetID = 0;
 					sendCurrentState();
+					sendCurrentPosition();
 				}
 
 				break;
