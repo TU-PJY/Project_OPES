@@ -25,7 +25,6 @@ void PoisonBall::updateCollision() {
 				// GiveDamage를 가진 1인칭 플레이어 객체만이 대미지를 받게 된다.
 				player->GiveDamage(5);
 				disappearState = true;
-				return;
 			}
 		}
 	}

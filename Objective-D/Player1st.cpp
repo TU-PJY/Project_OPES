@@ -47,9 +47,9 @@ Player1st::~Player1st() {
 }
 
 void Player1st::sendPacket(float Delta) {
-	//currentPacketSendDelay += Delta;
-	//if (currentPacketSendDelay >= packetSendDelay) {
-	//	currentPacketSendDelay -= packetSendDelay;
+	currentPacketSendDelay += Delta;
+	if (currentPacketSendDelay >= packetSendDelay) {
+		currentPacketSendDelay -= packetSendDelay;
 
 		switch (sendOrder) {
 		case 1:
@@ -72,7 +72,7 @@ void Player1st::sendPacket(float Delta) {
 		sendOrder += 1;
 		if (sendOrder > 3)
 			sendOrder = 1;
-	//}
+	}
 }
 
 void Player1st::InputMouseMotion(MotionEvent& Event) {

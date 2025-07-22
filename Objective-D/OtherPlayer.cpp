@@ -64,8 +64,8 @@ void OtherPlayer::updateAnimation(float Delta) {
 }
 
 void OtherPlayer::updateRenderValue(float Delta) {
-	Math::LerpXMFLOAT3(position, positionDest, 20.0, Delta);
-	Math::LerpXMFLOAT3(rotation, rotationDest, 20.0, Delta);
+	Math::LerpXMFLOAT3(position, positionDest, 15.0, Delta);
+	Math::LerpXMFLOAT3(rotation, rotationDest, 15.0, Delta);
 }
 
 void OtherPlayer::updateBound() {
