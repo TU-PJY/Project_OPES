@@ -222,7 +222,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 	else if (*type == PacketType::CENTER_HP) {
 		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(recv_buffer);
-		std::cout << "[CENTER_HP] hp: " << packet->hp << std::endl;
+		std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
 
 		//처리부분
 	}
@@ -639,7 +639,7 @@ void SendCenterBuildingPacket( int hp) {
 	if (enter_room) {
 		CenterBuildingPacket pkt = {};
 		pkt.type = PacketType::CENTER_HP;
-		pkt.hp = hp;
+		pkt.damage = hp;
 
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&pkt);

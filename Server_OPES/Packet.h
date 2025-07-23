@@ -160,10 +160,11 @@ struct EngineerObjectPacket {
 };
 
 // 디펜스 모드 중앙 건물 체력
-struct CenterBuildingPacket {
+struct CenterBuildingPacket{
     PacketType type;
-    int hp;
+    int damage;//서버->클라 = 센터체력 / 클라->서버 = 받은 데미지 보내줌
 };
+
 
 // 수류탄 던질 시 전송
 // 받은 위치 및 각도로 생성
