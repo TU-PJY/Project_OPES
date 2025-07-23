@@ -289,7 +289,23 @@ bool Scorpion::CheckHit(float& distance) {
 	return false;
 }
 
+XMFLOAT3 Scorpion::GetPosition() {
+	return position;
+}
+
+bool Scorpion::CheckHit(BoundSphere& bound) {
+	for (int i = 0; i < 3; i++) {
+		if (hitBox[i].CheckCollision(bound))
+			return true;
+	}
+
+	return false;
+}
+
 void Scorpion::GiveDamage(int damage) {
+	if (currentState == SCOR_DEATH)
+		return;
+
 	currentHP -= damage;
 
 	if (currentHP <= 0) {

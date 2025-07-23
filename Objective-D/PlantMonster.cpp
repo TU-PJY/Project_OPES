@@ -313,6 +313,19 @@ void PlantMonster::Render() {
 	//lookRange.Render();
 }
 
+XMFLOAT3 PlantMonster::GetPosition() {
+	return position;
+}
+
+bool PlantMonster::CheckHit(BoundSphere& bound) {
+	for (int i = 0; i < 3; i++) {
+		if (hitBox[i].CheckCollision(bound))
+			return true;
+	}
+
+	return false;
+}
+
 bool PlantMonster::CheckHit(float& distance) {
 	if (currentState == PLANT_DEATH)
 		return false;

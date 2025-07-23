@@ -2,7 +2,10 @@
 #include "MathUtil.h"
 #include "Explosion.h"
 
-Grenade::Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation) {
+void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
+void SendGrenadePacket(float posX, float posY, float posZ, float rotX, float rotY, float rotZ);
+
+Grenade::Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation, bool createFromServer) {
 	position = createPosition;
 	XMFLOAT3 direction = getDirectionFromRotation(rotation);
 	velocity = XMFLOAT3(
@@ -11,61 +14,154 @@ Grenade::Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation) {
 		direction.z * 30.0
 	);
 	isStopped = false;
+
+    this->createFromServer = createFromServer;
+
+    if (!createFromServer)
+        SendGrenadePacket(position.x, position.y, position.z, rotation.x, rotation.y, rotation.z);
 }
 
 void Grenade::updateBound() {
-	//grenadeBound.Update(position, 2.0);
+	grenadeBound.Update(position, 1.0);
+    hitBound.Update(position, 30.0);
 	terrainUtil.InputPosition(position, 0.49);
 }
 
+//— Closest point on an oriented box to a point —
+XMVECTOR ClosestPointOnOBB(const BoundingOrientedBox& obb, FXMVECTOR point) {
+    XMVECTOR center = XMLoadFloat3(&obb.Center);
+    XMVECTOR delta = point - center;
+    XMVECTOR orient = XMLoadFloat4(&obb.Orientation);
+
+    XMVECTOR axisX = XMVector3Rotate(XMVectorSet(1, 0, 0, 0), orient);
+    XMVECTOR axisY = XMVector3Rotate(XMVectorSet(0, 1, 0, 0), orient);
+    XMVECTOR axisZ = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), orient);
+
+    float dx = XMVectorGetX(XMVector3Dot(delta, axisX));
+    float dy = XMVectorGetX(XMVector3Dot(delta, axisY));
+    float dz = XMVectorGetX(XMVector3Dot(delta, axisZ));
+
+    float cx = std::clamp(dx, -obb.Extents.x, obb.Extents.x);
+    float cy = std::clamp(dy, -obb.Extents.y, obb.Extents.y);
+    float cz = std::clamp(dz, -obb.Extents.z, obb.Extents.z);
+
+    return center + axisX * cx + axisY * cy + axisZ * cz;
+}
+
+//— Swept‐sphere vs. OBB intersection (returns t in [0,1]) —
+bool SweptSphereOBB(const BoundingOrientedBox& box, FXMVECTOR start, FXMVECTOR end, float radius, float& tOut) {
+    // 1) Transform start/end into box’s local (AABB) space
+    XMVECTOR center = XMLoadFloat3(&box.Center);
+    XMVECTOR invOrient = XMQuaternionInverse(XMLoadFloat4(&box.Orientation));
+    XMVECTOR sLocal = XMVector3Rotate(start - center, invOrient);
+    XMVECTOR eLocal = XMVector3Rotate(end - center, invOrient);
+    XMVECTOR dir = eLocal - sLocal;
+
+    // 2) Expanded AABB bounds
+    XMFLOAT3 e = box.Extents;
+    float minX = -e.x - radius, maxX = e.x + radius;
+    float minY = -e.y - radius, maxY = e.y + radius;
+    float minZ = -e.z - radius, maxZ = e.z + radius;
+
+    // 3) Slab‐based segment‐AABB test (param t in [0,1])
+    float tMin = 0.0f, tMax = 1.0f;
+    auto slab = [&](float s, float d, float mn, float mx) {
+        if (fabsf(d) < 1e-6f) {
+            return !(s < mn || s > mx);
+        }
+        else {
+            float t1 = (mn - s) / d;
+            float t2 = (mx - s) / d;
+            float tn = std::min(t1, t2), tf = std::max(t1, t2);
+            tMin = std::max(tMin, tn);
+            tMax = std::min(tMax, tf);
+            return tMin <= tMax;
+        }
+    };
+
+    float sx = XMVectorGetX(sLocal), dx = XMVectorGetX(dir);
+    if (!slab(sx, dx, minX, maxX)) return false;
+    float sy = XMVectorGetY(sLocal), dy = XMVectorGetY(dir);
+    if (!slab(sy, dy, minY, maxY)) return false;
+    float sz = XMVectorGetZ(sLocal), dz = XMVectorGetZ(dir);
+    if (!slab(sz, dz, minZ, maxZ)) return false;
+
+    tOut = tMin;
+    return true;
+}
+
+//— Grenade::updateMove with CCD, OBB + terrain collision —
 void Grenade::updateMove(float Delta) {
-	if (isStopped) return;
+    if (isStopped) return;
 
-	// 중력 적용
-	velocity.y += -gravity * Delta * 4.0;
+    // 1) Gravity
+    velocity.y += -gravity * Delta * 4.0f;
 
-	// 위치 이동
-	position.x += velocity.x * Delta;
-	position.y += velocity.y * Delta;
-	position.z += velocity.z * Delta;
+    // 2) Compute prev & target positions
+    XMVECTOR prevPos = XMLoadFloat3(&position);
+    XMVECTOR velVec = XMLoadFloat3(&velocity);
+    XMVECTOR moveVec = velVec * Delta;
+    XMVECTOR targetPos = prevPos + moveVec;
 
-	// 충돌 검사
-	if (terrainUtil.CheckCollision(GLOBAL.mapTerrain)) {
-		XMFLOAT3 terrainNormal = terrainUtil.GetNormalAtPoint(GLOBAL.mapTerrain);
-		XMVECTOR normal = XMVector3Normalize(XMLoadFloat3(&terrainNormal));
+    // 3) Sweep against each OBB
+    for (auto& data : GLOBAL.mapOOBBdata) {
+        const auto& box = data.oobb;
+        float tHit;
+        if (SweptSphereOBB(box, prevPos, targetPos, grenadeBound.sphere.Radius, tHit)
+            && tHit <= 1.0f)
+        {
+            // — Move up to collision time —
+            float hitTime = tHit * Delta;
+            XMVECTOR hitPos = prevPos + velVec * hitTime;
 
-		// 보정: 법선 방향이 아래를 향하면 반전
-		if (XMVectorGetY(normal) < 0.0f)
-			normal = -normal;
+            // — Compute contact normal —
+            XMVECTOR closestPt = ClosestPointOnOBB(box, hitPos);
+            XMVECTOR normal = XMVector3Normalize(hitPos - closestPt);
 
-		// 수류탄 속도 벡터
-		XMVECTOR xmVelocity = XMLoadFloat3(&velocity);
+            // — Reflect velocity —
+            float speed = XMVectorGetX(XMVector3Length(velVec));
+            XMVECTOR reflDir = XMVector3Reflect(XMVector3Normalize(velVec), normal);
+            XMVECTOR newVel = reflDir * speed;
+            XMStoreFloat3(&velocity, newVel);
 
-		// 반사 처리
-		XMVECTOR reflected = XMVector3Reflect(xmVelocity, normal);
+            // — Move remainder of frame —
+            float remain = Delta - hitTime;
+            XMVECTOR finalPos = hitPos + newVel * remain;
+            XMStoreFloat3(&position, finalPos);
+            XMStoreFloat3(&grenadeBound.sphere.Center, finalPos);
 
-		// 튕김 계수 적용 (y 방향만 반사)
-		XMVECTOR normalComponent = XMVector3Dot(xmVelocity, normal) * normal;
-		XMVECTOR tangentialComponent = xmVelocity - normalComponent;
+            goto DO_TERRAIN;
+        }
+    }
 
-		XMVECTOR bounce = -normalComponent * restitution;     // 튕김
-		XMVECTOR slide = tangentialComponent * friction;     // 슬라이딩
+    // 4) No OBB hit → full move
+    XMStoreFloat3(&position, targetPos);
+    XMStoreFloat3(&grenadeBound.sphere.Center, targetPos);
 
-		XMVECTOR newVelocity = slide + bounce;
+DO_TERRAIN:
+    // 5) Terrain collision (unchanged)
+    if (terrainUtil.CheckCollision(GLOBAL.mapTerrain)) {
+        XMFLOAT3 n3 = terrainUtil.GetNormalAtPoint(GLOBAL.mapTerrain);
+        XMVECTOR normal = XMVector3Normalize(XMLoadFloat3(&n3));
+        if (XMVectorGetY(normal) < 0) normal = -normal;
 
-		// 결과 저장
-		XMStoreFloat3(&velocity, newVelocity);
+        XMVECTOR v = XMLoadFloat3(&velocity);
+        XMVECTOR nComp = XMVector3Dot(v, normal) * normal;
+        XMVECTOR tComp = v - nComp;
 
-		float bounceY = fabsf(XMVectorGetY(bounce));
-		if (bounceY < 2.0f) {
-			isStopped = true;
-			velocity = XMFLOAT3(0, 0, 0);
-			terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.5);
-			return;
-		}
-		else
-			terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.5);
-	}
+        XMVECTOR bounce = -nComp * restitution;
+        XMVECTOR slide = tComp * friction;
+        XMVECTOR result = slide + bounce;
+        XMStoreFloat3(&velocity, result);
+
+        float by = fabsf(XMVectorGetY(bounce));
+        if (by < 2.0f) {
+            isStopped = true;
+            velocity = { 0,0,0 };
+        }
+
+        terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.5f);
+    }
 }
 
 XMVECTOR Grenade::getNormalFromAngle(const XMFLOAT3& angleDeg) {
@@ -118,13 +214,31 @@ void Grenade::updateCollision() {
 }
 
 void Grenade::Update(float Delta) {
-	updateMove(Delta);
 	updateBound();
+	updateMove(Delta);
 	updateCollision();
 
 	// 3초가 지나면 폭발한다.
+    // 가까울수록 강한 대미지를 가한다.
+    // 타 클라이언트 유저가 던진 수류탄은 대미지를 주지 않는다.
 	explodeTime += Delta;
 	if (explodeTime >= 3.0) {
+        if (!createFromServer) {
+            size_t size = scene.LayerSize(LAYER_MONSTER);
+            for (int i = 0; i < size; i++) {
+                if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
+                    if(monster->CheckHit(hitBound)) {
+                        float distance = Math::CalcDistance3D(position, monster->GetPosition());
+                        float t = (15.0 - distance) / 15.0;
+                        t = std::clamp(t, 0.0f, 1.0f);
+                        int damage = (int)(300.0 * t);
+                        monster->GiveDamage(damage);
+                        SendPtoMDamagePacket(GLOBAL.myID, monster->GetID(), damage);
+                    }
+                }
+            }
+        }
+
 		scene.AddObject(new Explosion(position), "explosion", LAYER3);
 		scene.DeleteObject(this);
 	}

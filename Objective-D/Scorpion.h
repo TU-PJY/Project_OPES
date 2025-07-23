@@ -82,7 +82,9 @@ public:
 	void updateAttack();
 	void Update(float Delta) override;
 	void Render() override;
+	XMFLOAT3 GetPosition() override;
 	bool CheckHit(float& distance) override;
+	bool CheckHit(BoundSphere& bound) override;
 	void GiveDamage(int damage) override;
 	void InputHP(int currentHP) override;
 	unsigned int GetID() override;

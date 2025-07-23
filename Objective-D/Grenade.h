@@ -18,12 +18,15 @@ private:
 
 	TerrainUtil terrainUtil{};
 
-	AABB        grenadeBound{};
+	BoundSphere grenadeBound{};
+	BoundSphere hitBound{};
 
 	float       explodeTime{};
 
+	bool       createFromServer{};
+
 public:
-	Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation);
+	Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation, bool createFromServer=false);
 	XMVECTOR getNormalFromAngle(const XMFLOAT3& angleDeg);
 	XMFLOAT3 getDirectionFromRotation(const XMFLOAT3& angleDeg);
 	XMFLOAT3 getEulerFromVelocity(const XMFLOAT3& velocity);

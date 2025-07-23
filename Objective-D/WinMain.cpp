@@ -11,6 +11,7 @@
 #include "MouseUtil.h"
 #include "TerrainUtil.h"
 #include "OtherPlayerIndicator.h"
+#include "Grenade.h"
 
 #include <locale>
 
@@ -51,7 +52,7 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
@@ -225,6 +226,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		GrenadePacket* packet = reinterpret_cast<GrenadePacket*>(recv_buffer);
 		std::cout << "[GRENADE] pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
 			<< "), rot: (" << packet->rotX << ", " << packet->rotY << ", " << packet->rotZ << ")" << std::endl;
+
+		xmfloat3 createPosition = xmfloat3(packet->posX, packet->posY, packet->posZ);
+		xmfloat3 rotation = xmfloat3(packet->rotX, packet->rotY, packet->rotZ);
+
+		scene.AddObject(new Grenade(createPosition, rotation, true), "grenade", LAYER3);
 
 		//처리부분
 	}
@@ -502,12 +508,14 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 }
 void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp) {
 	if (enter_room) {
+		//static int errCount;
+		//static int sendCount;
+
 		PtoMDamagePacket pkt = {};
 		pkt.type = PacketType::PTOM_DAMAGE;
 		pkt.playerID = playerID;
 		pkt.monsterID = monsterID;
 		pkt.attackHp = attackHp;
-		
 
 		WSABUF wsaBuf;
 		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
@@ -526,7 +534,14 @@ void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int att
 				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
 				delete send_over;  // 오류 발생 시 할당 해제
 			}
+			//errCount++;
 		}
+
+		//else {
+		//	std::cout << "send: " << sendCount << "times | player ID: " << playerID << " monsterID: " << monsterID << " damage: " << attackHp << std::endl;
+			//std::cout << "error: " << errCount << " times";
+			//sendCount++;
+		//}
 	}
 }
 

@@ -83,7 +83,9 @@ public:
 	void Update(float Delta) override;
 	void Render()            override;
 	void GiveDamage(int Damage) override;
+	XMFLOAT3 GetPosition() override;
 	bool CheckHit(float& distance) override;
+	bool CheckHit(BoundSphere& bound) override;
 	unsigned int GetID() override;
 	void InputState(unsigned int state) override;
 	void InputTargetID(unsigned int id) override;
