@@ -52,7 +52,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = true; //!useServer;
+bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -780,11 +780,13 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	std::thread netThread;
 
 	// 전역 서버 사용 여부 저장
-	GLOBAL.useServer = useServer;
 
 	if (useServer) {
 		netThread = std::thread(NetworkThread, localServer, lpCmdLine);
+		GLOBAL.useServer = true;
 	}
+	else
+		GLOBAL.useServer = true;
 //	if (useServer) {
 //
 //		//if (lpCmdLine == NULL || _tcslen(lpCmdLine) == 0) {

@@ -13,7 +13,7 @@ void DefenseModeMonsterGenerator::InputCreatePositionAndID(float x, float z, uns
 		return;
 
 	xmfloat3 createPosition = xmfloat3(x, 0.0, z);
-	scene.AddObject(new PlantMonster(createPosition, 0, true), std::to_string(ID), LAYER_MONSTER);
+	scene.AddObject(new PlantMonster(createPosition, ID, true), std::to_string(ID), LAYER_MONSTER);
 }
 
 // GLOBAL,useServer가 true일 경우 아래 함수는 동작하지 않는다.
