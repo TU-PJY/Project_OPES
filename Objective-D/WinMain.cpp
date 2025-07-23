@@ -52,7 +52,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = false; //!useServer;
+bool localServer = true; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -518,12 +518,12 @@ void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int att
 		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
-
+		std::cout << "쏜애" << playerID << " 몬스터:" << monsterID << " -> " << attackHp << std::endl;
 		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
 			if (err != WSA_IO_PENDING) {
-				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
+					std::cerr << "[클라이언트] PTOM_DAMAGE 패킷 전송 오류: " << err << "\n";
 				delete send_over;  // 오류 발생 시 할당 해제
 			}
 		}
