@@ -210,7 +210,7 @@ void IOCompletionPort::RandomPositionThread() {
             }
         }
         monsterIdCount++;
-        if (monsterIdCount == 20) {
+        if (monsterIdCount ==7) {
             std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
             break;
         }
@@ -999,7 +999,7 @@ void IOCompletionPort::WorkThread() {
             // 기존 처리 함수 호출
             
             std::cout << "입장:" << idCount << std::endl;
-            if (randomTreadFlag) {
+            if (randomTreadFlag&&clientCount>=2) {
                 randomPositionThread = std::thread([this]() { RandomPositionThread(); });
                 randomTreadFlag = false;
             }
