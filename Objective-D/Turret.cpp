@@ -18,12 +18,34 @@ void Turret::updateBound() {
 
 void Turret::Update(float Delta) {
 	updateBound();
-	//size_t size = scene.LayerSize(LAYER_MONSTER);
-	//for (int i = 0; i < size; i++) {
-	//	if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
 
-	//	}
-	//}
+	targeted = false;
+
+	size_t size = scene.LayerSize(LAYER_MONSTER);
+	for (int i = 0; i < size; i++) {
+		if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
+			if (monster->CheckHit(lookRange)) {
+				xmfloat3 lookPosition = monster->GetPosition();
+				targeted = true;
+				headRotationDest = Math::CalcDegree3D(position, lookPosition);
+				headRotationDest.y -= rotation.y;
+				Math::Normalize2DAngleTo360(headRotationDest.x);
+				Math::Normalize2DAngleTo360(headRotationDest.y);
+				break;
+			}
+		}
+	}
+
+	if (!targeted) {
+		headRotationDest.y += 90.0 * Delta;
+		//Math::Normalize2DAngleTo360(headRotationDest.y);
+		headRotationDest.x = 0.0;
+
+		std::cout << headRotationDest.y << std::endl;
+	}
+	
+	headRotation.x = Math::LerpDegrees(headRotation.x, headRotationDest.x, 15.0 * Delta);
+	headRotation.y = Math::LerpDegrees(headRotation.y, headRotationDest.y, 15.0 * Delta);
 }
 
 void Turret::Render() {

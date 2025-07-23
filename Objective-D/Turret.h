@@ -6,6 +6,7 @@ private:
 	xmfloat3 position{};
 	xmfloat3 rotation{};
 	xmfloat3 headRotation{};
+	xmfloat3 headRotationDest{};
 	bool     createdByServer{};
 
 	AABB     frustumBound{};
@@ -13,6 +14,10 @@ private:
 	OOBB     hitBox{};
 
 	bool    inFrustum{};
+
+	bool    targeted{};
+
+	GameObject* target{};
 
 public:
 	Turret(const xmfloat3& createPosition, float createRotation, bool createFromServer);
