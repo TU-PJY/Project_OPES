@@ -213,7 +213,10 @@ void IOCompletionPort::RandomPositionThread() {
                 RemoveClient(client);
             }
         }
-        if (monsterIdCount == 19)break;
+        if (monsterIdCount == 19) {
+            std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
+            break
+        };
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 }
@@ -1312,6 +1315,7 @@ void IOCompletionPort::DestroyThread() {
 
     if (accepterThread.joinable()) accepterThread.join();
    // if (npcThread.joinable()) npcThread.join();
+    if (randomPositionThread.joinable()) randomPositionThread.join();
 
     std::cout << "서버 종료 완료.\n";
 }
