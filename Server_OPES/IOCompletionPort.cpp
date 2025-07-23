@@ -150,7 +150,7 @@ bool IOCompletionPort::StartServer() {
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
-    randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+   
     //npcThread = std::thread([this]() { NPCAIThread(); });
     //npcThread = std::thread([this]() {
     //    try {
@@ -213,11 +213,11 @@ void IOCompletionPort::RandomPositionThread() {
                 RemoveClient(client);
             }
         }
-        if (monsterIdCount == 19) {
+        if (monsterIdCount == 20) {
             std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
-            break
-        };
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(5));
     }
 }
 void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
@@ -1002,6 +1002,7 @@ void IOCompletionPort::WorkThread() {
             // 기존 처리 함수 호출
             
             std::cout << "입장:" << idCount << std::endl;
+            randomPositionThread = std::thread([this]() { RandomPositionThread(); });
             {
                 std::lock_guard<std::mutex> lock(waitMutex);
                 waitingClients.push_back(newClient);

@@ -52,7 +52,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = false; //!useServer;
+bool localServer = true; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -189,6 +189,13 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			static_cast<GameObject*>(GLOBAL.otherIndicator)->InputHP(packet->playerID, packet->attackHp);
 		}
 		
+		//처리부분
+	}
+	else if (*type == PacketType::RANDOM_POSITION) {
+		DefenseRandomPacket* packet = reinterpret_cast<DefenseRandomPacket*>(recv_buffer);
+		std::cout << "[RANDOM_POSITION] ID: " << packet->monsterID << ", pos: (" << packet->x << ", " << packet->z
+			<< "), rotY: " << std::endl;
+
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_INSTALL) {
