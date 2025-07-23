@@ -1263,6 +1263,7 @@ void IOCompletionPort::WorkThread() {
                 CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(pOverlappedEx->buffer);
 
                 roomHp -= pkt->damage;
+                std::cout << "room_hp:" << roomHp << std::endl;
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
