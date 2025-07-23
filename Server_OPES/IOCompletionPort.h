@@ -133,6 +133,7 @@ private:
     //std::vector<std::thread> workerThreads;
     std::thread accepterThread;
     std::thread workerThread;
+    std::thread randomPositionThread;
     bool isRunning = true;
     std::mutex clientMutex;
     //
@@ -144,7 +145,7 @@ private:
 
     void WorkThread();
     void PostAccept();
-    
+    void RandomPositionThread();
     //void AcceptThread();
 
 };

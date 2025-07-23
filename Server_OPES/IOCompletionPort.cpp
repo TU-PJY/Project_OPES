@@ -4,6 +4,8 @@
 #include <iostream>
 #include <mswsock.h> // AcceptEx
 #include <DirectXMath.h>
+#include<random>
+#include<cmath>
 #pragma comment(lib, "Mswsock.lib")
 
 using namespace DirectX;
@@ -148,6 +150,7 @@ bool IOCompletionPort::StartServer() {
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
+   
     //npcThread = std::thread([this]() { NPCAIThread(); });
     //npcThread = std::thread([this]() {
     //    try {
@@ -159,6 +162,63 @@ bool IOCompletionPort::StartServer() {
     //    });
     std::cout << "서버가 시작되었습니다.\n";
     return true;
+}
+std::random_device RD;
+XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& Center) {
+    static std::default_random_engine dre(RD());
+    static std::uniform_real_distribution<float> DistAngle(0.0f, 2.0f * XM_PI);
+    static std::uniform_real_distribution<float> DistRadius(0.0f, 1.0f);
+
+    float Angle = DistAngle(dre);
+    float RadiusMin = DiameterMin * 0.5;
+    float RadiusMax = DiameterMax * 0.5;
+    float R = std::sqrt((RadiusMax * RadiusMax - RadiusMin * RadiusMin) * DistRadius(dre) + RadiusMin * RadiusMin);
+
+    float X = R * std::cosf(Angle) + Center.x;
+    float Y = R * std::sinf(Angle) + Center.y;
+    return XMFLOAT2(X, Y);
+    //GenPointInDonut(30.0,60.0,XMFLOAT2(-120.0,-120.0));
+}
+void IOCompletionPort::RandomPositionThread() {
+    using namespace std::chrono;
+    int monsterIdCount = 0;
+    while (isRunning) {
+        float randX = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0)).x;
+        float randZ = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0)).y;
+
+        DefenseRandomPacket* packet = new DefenseRandomPacket{};
+        packet->type = PacketType::RANDOM_POSITION;
+        packet->monsterID = monsterIdCount; // 특별한 ID (클라이언트 위치 아님을 나타내기 위해)
+        monsterIdCount++;
+        packet->x = randX;
+        packet->z = randZ;
+
+        for (auto* client : clients) {
+            if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
+                continue;
+
+            stOverlappedEx* sendOver = new stOverlappedEx{};
+            ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+            sendOver->operation = IOOperation::SEND;
+            sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+            sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+            sendOver->cleanup = [packet, sendOver]() {
+                delete packet;
+                delete sendOver;
+                };
+
+            int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
+            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+                std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
+                RemoveClient(client);
+            }
+        }
+        if (monsterIdCount == 20) {
+            std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
+            break;
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(5));
+    }
 }
 void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
     
@@ -942,6 +1002,7 @@ void IOCompletionPort::WorkThread() {
             // 기존 처리 함수 호출
             
             std::cout << "입장:" << idCount << std::endl;
+            randomPositionThread = std::thread([this]() { RandomPositionThread(); });
             {
                 std::lock_guard<std::mutex> lock(waitMutex);
                 waitingClients.push_back(newClient);
@@ -1255,6 +1316,7 @@ void IOCompletionPort::DestroyThread() {
 
     if (accepterThread.joinable()) accepterThread.join();
    // if (npcThread.joinable()) npcThread.join();
+    if (randomPositionThread.joinable()) randomPositionThread.join();
 
     std::cout << "서버 종료 완료.\n";
 }
