@@ -18,7 +18,7 @@ Player1st::Player1st(int characterType) {
 	switch (characterType) {
 	case CHARACTER_MG:
 		weaponPtr = scene.AddObject(new HeavyMachineGun(this), "mg", LAYER4);
-		maxSpeed = 8.0;
+		maxSpeed = 32.0;
 		totalHP = 100;
 		currentHP = 100;
 		break;

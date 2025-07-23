@@ -28,6 +28,8 @@ std::vector<MonsterData> defenseMonsters(20);//임시
 
 bool defenseState = true;//임시
 
+int clearCount = 0;//임시
+
 
 int roomHp=500;//임시
 
@@ -951,11 +953,11 @@ void IOCompletionPort::SendData_GrenadePacket(stClientInfo* receiver, float posX
         delete sendOver;
     }
 }
-void IOCompletionPort::SendData_PlayerArrivalPacket(stClientInfo* receiver, unsigned int playerID) {
+void IOCompletionPort::SendData_PlayerArrivalPacket(stClientInfo* receiver, unsigned int playerID, bool arrive) {
     PlayerArrivalPacket* pkt = new PlayerArrivalPacket{};
     pkt->type = PacketType::PLAYER_ARRIVAL;
     pkt->playerID = playerID;
-    
+    pkt->arrive = arrive;
 
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
@@ -976,6 +978,38 @@ void IOCompletionPort::SendData_PlayerArrivalPacket(stClientInfo* receiver, unsi
         delete pkt;
         delete sendOver;
     }
+}
+void IOCompletionPort::SendData_ClearCountPacket(stClientInfo* receiver, int PlayerCount) {
+    ClearCountPacket* pkt = new ClearCountPacket{};
+    pkt->type = PacketType::CLEAR_COUNT;
+    pkt->PlayerCount = PlayerCount;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(ClearCountPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
+    XMVECTOR VecA = XMLoadFloat3(&A);
+    XMVECTOR VecB = XMLoadFloat3(&B);
+    XMVECTOR Diff = XMVectorSubtract(VecA, VecB);
+    XMVECTOR Length = XMVector3Length(Diff);
+    return XMVectorGetX(Length);
 }
 void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
@@ -1089,6 +1123,52 @@ void IOCompletionPort::WorkThread() {
                 client->z = movePacket->z;
                // std::cout << "[이동] 클라이언트 " << client->id
                 //    << " 위치: (" << client->x << ", " << client->y << ", " << client->z<<")\n";
+
+                for (auto const& c : clients) {
+                    if (!c)break;
+                    XMFLOAT3 playerPosition;
+                    playerPosition.x = c->x;
+                    playerPosition.y = c->y;
+                    playerPosition.z = c->z;
+                    XMFLOAT3 arrivePosition;
+                    arrivePosition.x = 120.0;
+                    arrivePosition.y = 0.0;
+                    arrivePosition.z = 94.0;
+
+                    float distance = CalcDistance3D(playerPosition, arrivePosition);
+
+                    if (distance <= 40.0) {
+                         c->curr = true;
+                         clearCount++;
+                         if (clearCount > clientCount) {
+                             clearCount = clientCount;
+                         }
+                         int count = 0;
+                         for (stClientInfo* otherClient : clients) {
+                             if (otherClient) {
+                                 SendData_ClearCountPacket(otherClient, clearCount);
+                                 count++;
+                             }
+                             if (count == clientCount)break;
+                         }
+                    }
+                    else {
+                        c->curr = false;
+                        clearCount--;
+                        if (clearCount < 0) {
+                            clearCount = 0;
+                        }
+                    }
+
+                    if (c->prev != c->curr) {
+                        if(c->curr)
+                            SendData_PlayerArrivalPacket(c, c->id, true);
+                        else
+                            SendData_PlayerArrivalPacket(c, c->id, false);
+                        c->prev = c->curr;
+                    }
+                }
+                
 
                 // 이동 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
@@ -1284,18 +1364,7 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
             }
-            else if (*packetType == PacketType::PLAYER_ARRIVAL) {
-
-                PlayerArrivalPacket* pkt = reinterpret_cast<PlayerArrivalPacket*>(pOverlappedEx->buffer);
-
-                // 데미지 패킷을 모든 클라이언트에게 전송
-                for (stClientInfo* otherClient : clients) {
-                    if (!otherClient) continue;
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_PlayerArrivalPacket(otherClient, pkt->playerID);
-                    }
-                }
-            }
+            
             else if (*packetType == PacketType::CHAT) {
                 //if (bytesTransferred < sizeof(ChatPacket)) {
                 //    std::cerr << "[에러] CHAT 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
