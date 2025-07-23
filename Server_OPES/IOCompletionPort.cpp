@@ -183,20 +183,16 @@ void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
     int monsterIdCount = 0;
     while (isRunning) {
-        float randX = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0)).x;
-        float randZ = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0)).y;
-
-        DefenseRandomPacket* packet = new DefenseRandomPacket{};
-        packet->type = PacketType::RANDOM_POSITION;
-        packet->monsterID = monsterIdCount; // 특별한 ID (클라이언트 위치 아님을 나타내기 위해)
-        monsterIdCount++;
-        packet->x = randX;
-        packet->z = randZ;
+        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
 
         for (auto* client : clients) {
             if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
                 continue;
-
+            DefenseRandomPacket* packet = new DefenseRandomPacket{};
+            packet->type = PacketType::RANDOM_POSITION;
+            packet->monsterID = monsterIdCount; // 특별한 ID 
+            packet->x = rendomPosition.x;
+            packet->z = rendomPosition.y;
             stOverlappedEx* sendOver = new stOverlappedEx{};
             ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
             sendOver->operation = IOOperation::SEND;
@@ -205,7 +201,7 @@ void IOCompletionPort::RandomPositionThread() {
             sendOver->cleanup = [packet, sendOver]() {
                 delete packet;
                 delete sendOver;
-                };
+            };
 
             int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
             if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
@@ -213,6 +209,7 @@ void IOCompletionPort::RandomPositionThread() {
                 RemoveClient(client);
             }
         }
+        monsterIdCount++;
         if (monsterIdCount == 20) {
             std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
             break;
@@ -980,7 +977,7 @@ void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
     OVERLAPPED* overlapped;
-
+    bool randomTreadFlag = true;
     while (isRunning) {
         BOOL result = GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, &completionKey, &overlapped, INFINITE);
         stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
@@ -1002,7 +999,10 @@ void IOCompletionPort::WorkThread() {
             // 기존 처리 함수 호출
             
             std::cout << "입장:" << idCount << std::endl;
-            randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+            if (randomTreadFlag) {
+                randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+                randomTreadFlag = false;
+            }
             {
                 std::lock_guard<std::mutex> lock(waitMutex);
                 waitingClients.push_back(newClient);
