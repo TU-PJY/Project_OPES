@@ -1,4 +1,4 @@
-﻿#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+﻿//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #define MAX_LOADSTRING 100
 #include "Config.h"
 #include "Objective-D.h"
@@ -32,7 +32,6 @@
 
 //#include <iostream>
 //#include <conio.h>
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 #include"../Server_OPES/Packet.h"
 #include "OtherPlayer.h"
 
