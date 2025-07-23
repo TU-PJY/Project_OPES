@@ -11,12 +11,11 @@
 
 class TestObject : public GameObject {
 public:
+	FBX fbx{ MESH.heavyIdle };
 
-	FBX fbx{ MESH.treant[2]};
-	FBX fbx2{ MESH.troll };
+	float rotation{};
 
 	TestObject() {
-		fbx2.SelectAnimation("Attack 3");
 	}
 
 	void InputKey(KeyEvent& Event) {
@@ -27,16 +26,27 @@ public:
 	}
 
 	void Update(float Delta) {
-		fbx.UpdateAnimation(Delta);
-		fbx2.UpdateAnimation(Delta);
+		rotation += Delta * 120.0;
 	}
 
 	void Render() {
 		BeginRender();
-		RenderFBX(fbx, TEX.treant);
+		Transform::Scale(ScaleMatrix, 0.3, 0.3, 0.3);
+		Render3D(MESH.turretTorso, TEX.turret);
+		Render3D(MESH.turretBottom, TEX.turret);
 
-		Transform::Move(TranslateMatrix, 5.0, 0.0, 0.0);
-		RenderFBX(fbx2, TEX.troll);
+		Transform::Rotate(TranslateMatrix, 0.0, 0.0, 0.0);
+		Render3D(MESH.turretHead, TEX.turret);
+
+		BeginRender();
+		SetLightUse(DISABLE_LIGHT);
+		Transform::Rotate(TranslateMatrix, 0.0, 0.0, 0.0);
+		Transform::Move(TranslateMatrix, 0.0, 0.23, -0.4);
+		Render3D(MESH.gun_flame, TEX.gun_flame);
+		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
+
+		//BeginRender();
+		//RenderFBX(fbx, TEX.scifi);
 	}
 };
 

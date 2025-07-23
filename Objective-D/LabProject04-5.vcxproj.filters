@@ -284,6 +284,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ DMR ]">
       <UniqueIdentifier>{0f79d6dd-5875-4de2-bd73-3b46a7c04952}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Turret ]">
+      <UniqueIdentifier>{5f96a1cf-5efe-4677-8ede-cb9fa9713e60}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -516,6 +519,9 @@
     </ClInclude>
     <ClInclude Include="Shotgun.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Shotgun ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Turret.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Turret ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -755,6 +761,9 @@
     </ClCompile>
     <ClCompile Include="Shotgun.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Shotgun ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Turret.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Turret ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

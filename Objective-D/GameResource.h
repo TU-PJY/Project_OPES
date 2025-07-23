@@ -101,9 +101,17 @@ typedef struct {
 
 	Mesh* center_building;
 
+	// turret asset
+	Mesh* turretBottom;
+	Mesh* turretTorso;
+	Mesh* turretHead;
+
 	// gun flame
 	Mesh* gun_flame;
 	Mesh* gun_flame_back;
+
+	Mesh* turretFlame;
+	Mesh* turretFlameBack;
 
 	// monster
 	FBXMesh plantMonster;
@@ -146,6 +154,9 @@ typedef struct {
 
 	// polyson scifi asset
 	Texture* scifi;
+
+	// turret Assst
+	Texture* turret;
 
 	// gun flame texture
 	Texture* gun_flame;

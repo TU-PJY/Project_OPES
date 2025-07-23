@@ -136,9 +136,17 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.shotgun, "Resources//Models//weapon//shotgun.fbx");
 	LoadMultiStaticFBX(MESH.dot_shotgun, "Resources//Models//weapon//dot-shotgun.fbx");
 
+	// turret asset
+	LoadMultiStaticFBX(MESH.turretHead, "Resources//Models//weapon//turretHead.fbx");
+	LoadMultiStaticFBX(MESH.turretTorso, "Resources//Models//weapon//turretTorso.fbx");
+	LoadMultiStaticFBX(MESH.turretBottom, "Resources//Models//weapon//turretBottom.fbx");
+
 	// gun flame
 	LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
 	LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
+
+	/*LoadMultiStaticFBX(MESH.turretFlame, "Resources//Models//weapon//flame-turret.fbx");
+	LoadMultiStaticFBX(MESH.turretFlameBack, "Resources//Models//weapon//flame-turret-back.fbx");*/
 
 	// polygon scifi player asset - heavy
 	LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", 
@@ -211,6 +219,9 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.gun_flame, L"Resources//Image//weapon//flame.png", TEXTURE_TYPE_WIC);
 	LoadTexture(TEX.gun_flame_back, L"Resources//Image//weapon//flame-back.png", TEXTURE_TYPE_WIC);
 	LoadTexture(TEX.muzzle_particle, L"Resources//Image//weapon//muzzle_particle.png", TEXTURE_TYPE_WIC);
+
+	// turret
+	LoadTexture(TEX.turret, L"Resources//Image//turret.png");
 
 	// map1 monster
 	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");

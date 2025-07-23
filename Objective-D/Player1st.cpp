@@ -6,6 +6,7 @@
 #include "HeavyMachineGun.h"
 #include "Shotgun.h"
 #include "PlayerIndicator.h"
+#include "Turret.h"
 
 #include "Grenade.h"
 
@@ -133,6 +134,14 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		destFOV = 0.0;
 		currentSpeed = maxSpeed;
 		break;
+
+	case WM_MBUTTONDOWN:
+	{
+		float distance;
+		xmfloat3 createPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
+		scene.AddObject(new Turret(createPosition, currentRotation.y, false), "turret", LAYER3);
+	}
+	break;
 	}
 }
 

@@ -52,7 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>false</EnableUnitySupport>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -234,6 +234,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="TransformUtil.h" />
     <ClInclude Include="Treant.h" />
     <ClInclude Include="Troll.h" />
+    <ClInclude Include="Turret.h" />
     <ClInclude Include="WICTextureLoader12.h" />
     <ClInclude Include="RandomUtil.h" />
   </ItemGroup>
@@ -312,6 +313,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="TransformUtil.cpp" />
     <ClCompile Include="Treant.cpp" />
     <ClCompile Include="Troll.cpp" />
+    <ClCompile Include="Turret.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
     <ClCompile Include="WinMain.cpp" />
     <ClCompile Include="Scene.cpp" />
