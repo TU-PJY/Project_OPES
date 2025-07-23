@@ -56,7 +56,9 @@ struct stClientInfo {
     float angle_x, angle_y, angle_z;
     unsigned short animationType;
     int stageState;
-    bool modeState;
+    //bool modeState;
+    bool prev;
+    bool curr;
     int hp;
     stOverlappedEx recvOverlapped;
     stOverlappedEx sendOverlapped;
@@ -112,7 +114,8 @@ public:
     void SendData_EngineerObjectPacket(stClientInfo* receiver, unsigned int ID, int hp);
     void SendData_GrenadePacket(stClientInfo* receiver, float posX, float posY, float posZ, float rotX, float rotY, float rotZ);
     void SendData_CenterBuildingPacket(stClientInfo* receiver, int hp);
-    void SendData_PlayerArrivalPacket(stClientInfo* receiver, unsigned int playerID);
+    void SendData_PlayerArrivalPacket(stClientInfo* receiver, unsigned int playerID, bool arrive);
+    void SendData_ClearCountPacket(stClientInfo* receiver, int PlayerCount);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 

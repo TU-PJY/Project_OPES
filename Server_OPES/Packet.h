@@ -22,6 +22,7 @@ enum class PacketType:unsigned int {
     GRENADE, 
     PLAYER_ARRIVAL, 
     RANDOM_POSITION,
+    CLEAR_COUNT,
 };
 
 constexpr int MONSTER_TYPE1 = 1;//²É
@@ -186,6 +187,7 @@ struct GrenadePacket {
 struct PlayerArrivalPacket {
     PacketType type;
     unsigned int playerID;
+    bool arrive;
 };
 //µðÆÒ½º ¸ðµå ÇÃ·»Æ® ÆÐÅ¶
 struct DefenseRandomPacket {
@@ -195,4 +197,8 @@ struct DefenseRandomPacket {
     float z;
 };
 
+struct ClearCountPacket {
+    PacketType type;
+    int PlayerCount;
+};
 #pragma pack(pop)

@@ -57,7 +57,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = false; //!useServer;
+bool localServer = true; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -124,7 +124,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 	}
+	else if (*type == PacketType::CLEAR_COUNT) {
+		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(recv_buffer);
+		std::cout << "[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
 
+		
+	}
 	else if (*type == PacketType::VIEW_ANGLE) {
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
@@ -694,32 +699,7 @@ void SendGrenadePacket( float posX, float posY, float posZ, float rotX, float ro
 		}
 	}
 }
-void SendPlayerArrivalPacket( unsigned int playerID) {
-	if (enter_room) {
-		PlayerArrivalPacket pkt = {};
-		pkt.type = PacketType::PLAYER_ARRIVAL;
-		pkt.playerID = playerID;
 
-		WSABUF wsaBuf;
-		wsaBuf.buf = reinterpret_cast<char*>(&pkt);
-		wsaBuf.len = sizeof(PlayerArrivalPacket);
-
-		// WSAOVERLAPPED 구조체를 동적 할당
-		WSAOVERLAPPED* send_over = new WSAOVERLAPPED;
-		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
-
-		DWORD bytesSent = 0;
-
-		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
-		if (result == SOCKET_ERROR) {
-			int err = WSAGetLastError();
-			if (err != WSA_IO_PENDING) {
-				//	std::cerr << "[클라이언트] 몬스터무브 패킷 전송 오류: " << err << "\n";
-				delete send_over;  // 오류 발생 시 할당 해제
-			}
-		}
-	}
-}
 
 // 채팅 패킷 전송 함수
 void SendChatPacket(const char* message) {
