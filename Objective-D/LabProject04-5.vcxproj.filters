@@ -275,6 +275,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Treant ]">
       <UniqueIdentifier>{65e9bcea-166b-4d01-a817-77a509ff08fd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ Protocol ]">
+      <UniqueIdentifier>{7adabdbc-c3c1-43fe-ab8d-60fcc95486a3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -501,6 +504,9 @@
     </ClInclude>
     <ClInclude Include="Troll.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Troll ]</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Server_OPES\protocol.h">
+      <Filter>[ Protocol ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
