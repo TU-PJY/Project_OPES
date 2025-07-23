@@ -142,6 +142,7 @@
     <ClInclude Include="IOCompletionPort.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Packet.h" />
+    <ClInclude Include="protocol.h" />
     <ClInclude Include="ScriptUtil.h" />
     <ClInclude Include="TerrainUtil.h" />
     <ClInclude Include="tinyxml\tinystr.h" />
