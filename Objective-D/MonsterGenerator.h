@@ -10,5 +10,6 @@ private:
 
 public:
 	DefenseModeMonsterGenerator();
+	void InputCreatePositionAndID(float x, float y, unsigned int ID);
 	void Update(float Delta) override;
 };

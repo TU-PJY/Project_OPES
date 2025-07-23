@@ -79,6 +79,7 @@ public:
 	virtual void AddPlayer(const std::string& name) {}
 	virtual void AddPlayer(unsigned int ID, int chracterType, const std::string& name) {}
 	virtual void InputHP(unsigned int ID, int currentHP) {}
+	virtual void InputCreatePositionAndID(float x, float z, unsigned int ID) {}
 
 	// 사용자 정의 리턴 함수는 아래에 정의한다.
 	// 크로스헤어 반동 부여 함수
