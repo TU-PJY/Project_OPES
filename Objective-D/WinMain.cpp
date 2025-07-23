@@ -786,7 +786,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		GLOBAL.useServer = true;
 	}
 	else
-		GLOBAL.useServer = true;
+		GLOBAL.useServer = false;
 //	if (useServer) {
 //
 //		//if (lpCmdLine == NULL || _tcslen(lpCmdLine) == 0) {
