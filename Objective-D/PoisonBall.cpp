@@ -1,6 +1,8 @@
 #include "PoisonBall.h"
 #include "CameraUtil.h"
 
+void SendCenterBuildingPacket(int hp);
+
 // 생성 시 날아갈 대상과의 각도를 계산한다.
 PoisonBall::PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, bool defenseMode) {
 	position = createPosition;
@@ -51,8 +53,10 @@ void PoisonBall::updateCollision() {
 	// 디펜스 모드에서는 센터 건물에 대미지 가함
 	if (GLOBAL.map1DefenseState) {
 		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
-			if (bs.CheckCollision(centerBuilding->GetOOBB()))
+			if (bs.CheckCollision(centerBuilding->GetOOBB())) {
 				centerBuilding->GiveDamage(5);
+				SendCenterBuildingPacket(5);
+			}
 	}
 }
 

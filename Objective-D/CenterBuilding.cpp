@@ -45,10 +45,19 @@ XMFLOAT3 CenterBuilding::GetPosition() {
 }
 
 void CenterBuilding::GiveDamage(int Damage) {
-	if (currentHP == 0)
+	if (currentHP <= 0)
 		return;
 
 	currentHP -= Damage;
+	if (currentHP <= 0)
+		currentHP = 0;
+}
+
+void CenterBuilding::InputHP(int hp) {
+	if (currentHP <= 0)
+		return;
+
+	currentHP = hp;
 	if (currentHP <= 0)
 		currentHP = 0;
 }
