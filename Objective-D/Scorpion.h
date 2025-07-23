@@ -32,8 +32,8 @@ private:
 
 	bool        attackDid{};
 
-	int         totalHP{ 300 };
-	int         currentHP{ 300 };
+	int         totalHP{ 100 };
+	int         currentHP{ 100 };
 	GameObject* hpIndicator{};
 
 	TerrainUtil terrainUtil{};
