@@ -219,6 +219,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="ScriptUtil.h" />
     <ClInclude Include="SettingRootSignature.h" />
     <ClInclude Include="ShaderUtil.h" />
+    <ClInclude Include="Shotgun.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Scorpion.h" />
     <ClInclude Include="StartMode.h" />
@@ -294,6 +295,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="ScriptUtil.cpp" />
     <ClCompile Include="ServerExample.cpp" />
     <ClCompile Include="SettingRootSignature.cpp" />
+    <ClCompile Include="Shotgun.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Scorpion.cpp" />
     <ClCompile Include="StartMode.cpp" />

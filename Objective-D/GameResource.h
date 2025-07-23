@@ -89,6 +89,8 @@ typedef struct {
 	// polygon scifi asset
 	Mesh* machine_gun;
 	Mesh* dot_machine_gun;
+	Mesh* shotgun;
+	Mesh* dot_shotgun;
 	Mesh* grenade;
 
 	// polygon scifi asset - heavy

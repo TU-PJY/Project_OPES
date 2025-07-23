@@ -99,7 +99,7 @@ void Gun::updateFire(float Delta) {
 		fireEnableState = true;
 
 	if (fireEnableState && triggerState && currentAmmo > 0 && !reloadState) {
-		recoilOffset -= 0.1;
+		recoilOffset -= recoilBack;
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
 		if (userPtr) userPtr->InputRecoil(recoil);

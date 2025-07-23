@@ -14,6 +14,7 @@ protected:
 	float   flameRenderTime{};
 	float   fireDelayTime  {};
 	float   reloadTime     {};
+	float   recoilBack     {};
 	//
 	
 	// state

@@ -4,6 +4,7 @@
 #include "CameraUtil.h"
 #include "ClampUtil.h"
 #include "HeavyMachineGun.h"
+#include "Shotgun.h"
 #include "PlayerIndicator.h"
 
 #include "Grenade.h"
@@ -18,6 +19,13 @@ Player1st::Player1st(int characterType) {
 	switch (characterType) {
 	case CHARACTER_MG:
 		weaponPtr = scene.AddObject(new HeavyMachineGun(this), "mg", LAYER4);
+		maxSpeed = 32.0;
+		totalHP = 100;
+		currentHP = 100;
+		break;
+
+	case CHARACTER_ENG:
+		weaponPtr = scene.AddObject(new Shotgun(this), "shotgun", LAYER4);
 		maxSpeed = 32.0;
 		totalHP = 100;
 		currentHP = 100;
@@ -125,21 +133,6 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		destFOV = 0.0;
 		currentSpeed = maxSpeed;
 		break;
-
-	case WM_MBUTTONDOWN:
-	{
-		//최대 2개까지 던지기 가능하다.
-		if (currentGrenadeCount > 0) {
-			XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
-			XMFLOAT3 createPosition = cameraPosition;
-			Math::CalcForwardOffset(createPosition, currentRotation.y, 2.0, 0.0);
-			scene.AddObject(new Grenade(createPosition, rotation), "grenade", LAYER3);
-			currentGrenadeCount--;
-			if(IndicatorPtr)
-				IndicatorPtr->InputGrenade(currentGrenadeCount);
-		}
-	}
-		break;
 	}
 }
 
@@ -161,6 +154,21 @@ void Player1st::InputKey(KeyEvent& Event) {
 				}
 			}
 			break;
+
+		case 'G':
+		{
+			//최대 2개까지 던지기 가능하다.
+			if (currentGrenadeCount > 0) {
+				XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
+				XMFLOAT3 createPosition = cameraPosition;
+				Math::CalcForwardOffset(createPosition, currentRotation.y, 2.0, 0.0);
+				scene.AddObject(new Grenade(createPosition, rotation), "grenade", LAYER3);
+				currentGrenadeCount--;
+				if (IndicatorPtr)
+					IndicatorPtr->InputGrenade(currentGrenadeCount);
+			}
+		}
+		break;
 		}
 	}
 }

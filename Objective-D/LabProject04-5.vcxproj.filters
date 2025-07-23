@@ -221,18 +221,6 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ PlayerHit ]">
       <UniqueIdentifier>{d1ac7033-8372-4a00-9dac-79a0096f0060}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Player 1st ]">
-      <UniqueIdentifier>{3fbd529c-6ae9-4db3-a31f-33c154875a38}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]">
-      <UniqueIdentifier>{20878855-40b9-49d9-919f-ce369466c09f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ HeavyMachineGun ]">
-      <UniqueIdentifier>{030ac226-ca5c-4120-b4ba-daf4b44b5744}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ 0_Super ]">
-      <UniqueIdentifier>{55ebca3c-9928-48db-a1a8-be1fae4be4c9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]">
       <UniqueIdentifier>{59746ad1-9637-47fa-ba56-66fd02e9bcaf}</UniqueIdentifier>
     </Filter>
@@ -241,9 +229,6 @@
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ OtherPlayer ]">
       <UniqueIdentifier>{27d2b173-c0cb-4cd9-8f28-a68e948555fd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Grenade ]">
-      <UniqueIdentifier>{d198f370-5c86-43b0-8be7-f4d8b296b260}</UniqueIdentifier>
     </Filter>
     <Filter Include="[ D3D12 ]\[6] - [ Util ]\[ RayTarget ]">
       <UniqueIdentifier>{c14ed16d-13ab-4bd5-976a-19aafbaa3392}</UniqueIdentifier>
@@ -277,6 +262,27 @@
     </Filter>
     <Filter Include="[ Protocol ]">
       <UniqueIdentifier>{7adabdbc-c3c1-43fe-ab8d-60fcc95486a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Player 1st ]">
+      <UniqueIdentifier>{3fbd529c-6ae9-4db3-a31f-33c154875a38}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]">
+      <UniqueIdentifier>{20878855-40b9-49d9-919f-ce369466c09f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ HeavyMachineGun ]">
+      <UniqueIdentifier>{030ac226-ca5c-4120-b4ba-daf4b44b5744}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ 0_Super ]">
+      <UniqueIdentifier>{55ebca3c-9928-48db-a1a8-be1fae4be4c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Grenade ]">
+      <UniqueIdentifier>{d198f370-5c86-43b0-8be7-f4d8b296b260}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Shotgun ]">
+      <UniqueIdentifier>{f779cc49-a9b7-44da-98aa-5178d92009a2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ DMR ]">
+      <UniqueIdentifier>{0f79d6dd-5875-4de2-bd73-3b46a7c04952}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -507,6 +513,9 @@
     </ClInclude>
     <ClInclude Include="..\Server_OPES\protocol.h">
       <Filter>[ Protocol ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Shotgun.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Shotgun ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -743,6 +752,9 @@
     </ClCompile>
     <ClCompile Include="Troll.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map2 monsters ]\[ Troll ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Shotgun.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ Shotgun ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
