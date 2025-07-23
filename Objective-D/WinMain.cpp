@@ -196,6 +196,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "[RANDOM_POSITION] ID: " << packet->monsterID << ", pos: (" << packet->x << ", " << packet->z
 			<< "), rotY: " << std::endl;
 
+		if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
+			defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);
+
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_INSTALL) {

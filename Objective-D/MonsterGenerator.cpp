@@ -7,7 +7,20 @@ DefenseModeMonsterGenerator::DefenseModeMonsterGenerator() {
 
 }
 
+// GLOBAL.useServer가 true일 경우 서버로부터 패킷을 받아 그 자리에 생성한다.
+void DefenseModeMonsterGenerator::InputCreatePositionAndID(float x, float z, unsigned int ID) {
+	if (!GLOBAL.useServer)
+		return;
+
+	xmfloat3 createPosition = xmfloat3(x, 0.0, z);
+	scene.AddObject(new PlantMonster(createPosition, 0, true), std::to_string(ID), LAYER_MONSTER);
+}
+
+// GLOBAL,useServer가 true일 경우 아래 함수는 동작하지 않는다.
 void DefenseModeMonsterGenerator::Update(float Delta) {
+	if (GLOBAL.useServer)
+		return;
+
 	currentTime += Delta;
 
 	if (currentTime >= destGenerateTime) {
