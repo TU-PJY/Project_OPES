@@ -337,6 +337,10 @@ void PlantMonster::GiveDamage(int damage) {
 			hpIndicator = nullptr;
 		}
 		currentState = PLANT_DEATH;
+
+		GLOBAL.map1DefenseEnemyRemained--;
+		if (GLOBAL.map1DefenseEnemyRemained == 0)
+			GLOBAL.map1DefenseState = false;
 	}
 }
 
