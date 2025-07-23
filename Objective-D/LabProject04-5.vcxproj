@@ -146,12 +146,13 @@
       <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libfbxsdk.lib;libxml2.lib;
 zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>libfbxsdk.lib %(AdditionalOptions)</AdditionalOptions>
+      <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>

@@ -5,7 +5,7 @@
 #include "PoisonBall.h"
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
-void SendPlantAnimationTimePacket(unsigned int monsterID, float time);
+//void SendPlantAnimationTimePacket(unsigned int monsterID, float time);
 
 // 히트박스 업데이트
 void PlantMonster::updateHitBox(float Delta) {
@@ -225,7 +225,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 	// 땅에서 나오는 상태일 경우 별도의 상태를 지정한다.
 	if (behaviorEnabledState)
 		currentState = PLANT_IDLE;
-	else
+	else 
 		currentState = PLANT_LIFT;
 
 	TerrainUtil terrainUtil;

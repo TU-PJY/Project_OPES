@@ -6,7 +6,7 @@ Map1DefenseIndicator::Map1DefenseIndicator() {
 	text.SetShadow(XMFLOAT2(0.01, -0.01), 0.5);
 	totalRemain = GLOBAL.map1DefenseEnemyRemained;
 	currentRemain = GLOBAL.map1DefenseEnemyRemained;
-	prevRemain = GLOBAL.map1DefenseEnemyRemained;;
+	prevRemain = GLOBAL.map1DefenseEnemyRemained;
 }
 
 void Map1DefenseIndicator::Update(float Delta) {

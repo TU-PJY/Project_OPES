@@ -4,7 +4,7 @@
 
 
 DefenseModeMonsterGenerator::DefenseModeMonsterGenerator() {
-	maxGenerateCount = GLOBAL.map1DefenseEnemyRemained;
+
 }
 
 void DefenseModeMonsterGenerator::Update(float Delta) {
@@ -25,7 +25,7 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 		currentGenerateCount++;
 
 		// 최대 스폰 횟수에 도달하면 스스로 삭제하여 몬스터 스폰을 중단한다.
-		if (currentGenerateCount == maxGenerateCount)
+		if (currentGenerateCount == GLOBAL.map1DefenseEnemyRemained)
 			scene.DeleteObject(this);
 	}
 }
