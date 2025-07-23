@@ -326,7 +326,18 @@ bool PlantMonster::CheckHit(float& distance) {
 }
 
 void PlantMonster::GiveDamage(int damage) {
-	
+	if (currentState == PLANT_DEATH)
+		return;
+
+	currentHP -= damage;
+
+	if (currentHP <= 0) {
+		if (hpIndicator) {
+			scene.DeleteObject(hpIndicator);
+			hpIndicator = nullptr;
+		}
+		currentState = PLANT_DEATH;
+	}
 }
 
 unsigned int PlantMonster::GetID() {
