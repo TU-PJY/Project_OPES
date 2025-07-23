@@ -23,6 +23,12 @@ ScriptUtil monsterDataScript;
 std::vector<MonsterData> monsterData;
 
 std::vector<MonsterData> myMonsters;//임시
+
+std::vector<MonsterData> defenseMonsters(20);//임시
+
+bool defenseState = true;//임시
+
+
 int roomHp;//임시
 
 std::thread npcThread;
@@ -182,7 +188,7 @@ XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& C
 void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
     int monsterIdCount = 0;
-    while (isRunning) {
+    while (defenseState) {
         XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
 
         for (auto* client : clients) {
@@ -193,6 +199,9 @@ void IOCompletionPort::RandomPositionThread() {
             packet->monsterID = monsterIdCount; // 특별한 ID 
             packet->x = rendomPosition.x;
             packet->z = rendomPosition.y;
+            defenseMonsters[monsterIdCount].createPointX = rendomPosition.x;
+            defenseMonsters[monsterIdCount].createPointZ = rendomPosition.y;
+            defenseMonsters[monsterIdCount].id = monsterIdCount;
             stOverlappedEx* sendOver = new stOverlappedEx{};
             ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
             sendOver->operation = IOOperation::SEND;
@@ -210,11 +219,11 @@ void IOCompletionPort::RandomPositionThread() {
             }
         }
         monsterIdCount++;
-        if (monsterIdCount ==7) {
+        if (monsterIdCount ==20) {
             std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
             break;
         }
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 }
 void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
@@ -533,10 +542,6 @@ void IOCompletionPort::RemoveClient(stClientInfo* c)
 }
 
 
-
-
-
-
 void IOCompletionPort::SendData_Move(stClientInfo* sender, stClientInfo* receiver) {
     MovePacket_StoC* packet = new MovePacket_StoC{};
     packet->type = PacketType::MOVE;
@@ -828,7 +833,6 @@ void IOCompletionPort::SendData_PtoMDamagePacket(stClientInfo* receiver, unsigne
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,
         NULL);
-
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
         RemoveClient(receiver);
@@ -1178,17 +1182,40 @@ void IOCompletionPort::WorkThread() {
                 //}
                 PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(pOverlappedEx->buffer);
                 std::cout <<"PTOM_DAMAGE Mid:" << pkt->monsterID<<", Pid:" << pkt->playerID <<", Attackhp:" << pkt->attackHp << std::endl;
-                
-                myMonsters[pkt->monsterID].hp -= pkt->attackHp; 
-                std::cout << "damageHP:" << myMonsters[pkt->monsterID].hp << std::endl;
-                if (myMonsters[pkt->monsterID].hp < 0)
-                    myMonsters[pkt->monsterID].hp = 0;
-            
+                int sendHP;
+                if (defenseState) {
+                    defenseMonsters[pkt->monsterID].hp -= pkt->attackHp;
+                    std::cout << "MonstersHP:" << defenseMonsters[pkt->monsterID].hp << std::endl;
+                    if (defenseMonsters[pkt->monsterID].hp < 0)
+                        defenseMonsters[pkt->monsterID].hp = 0;
+
+                    bool allDead = true;
+                    for (const MonsterData& m : defenseMonsters) {
+                        if (m.hp > 0) { // 하나라도 살아있으면 allDead를 false로
+                            allDead = false;
+                            break;
+                        }
+                    }
+
+                    if (allDead) {
+                        defenseState = false;
+                        std::cout << "[알림] 모든 방어 몬스터가 사망하여 defenseState가 false로 전환되었습니다." << std::endl;
+                    }
+                    sendHP = defenseMonsters[pkt->monsterID].hp;
+                }
+                else {
+                    myMonsters[pkt->monsterID].hp -= pkt->attackHp;
+                    std::cout << "MonstersHP:" << myMonsters[pkt->monsterID].hp << std::endl;
+                    if (myMonsters[pkt->monsterID].hp < 0)
+                        myMonsters[pkt->monsterID].hp = 0;
+
+                    sendHP = myMonsters[pkt->monsterID].hp;
+                }
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_PtoMDamagePacket(otherClient, pkt->playerID, pkt->monsterID, myMonsters[pkt->monsterID].hp);
+                    if (true  /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_PtoMDamagePacket(otherClient, pkt->playerID, pkt->monsterID, sendHP);
                     }
                 }
             }
