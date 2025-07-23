@@ -314,6 +314,7 @@ void Scorpion::GiveDamage(int damage) {
 			hpIndicator = nullptr;
 		}
 		currentState = SCOR_DEATH;
+		SendMonstertypePacket(2, currentState, ID);
 	}
 }
 
@@ -329,6 +330,7 @@ void Scorpion::InputHP(int currentHP) {
 			hpIndicator = nullptr;
 		}
 		currentState = SCOR_DEATH;
+		SendMonstertypePacket(2, currentState, ID);
 	}
 }
 
@@ -339,8 +341,18 @@ unsigned int Scorpion::GetID() {
 void Scorpion::InputState(unsigned int state) {
 	//if (currentTargetID == GLOBAL.myID)
 		//return;
+	if (currentState == SCOR_DEATH)
+		return;
 
 	currentState = state;
+	if (currentState = SCOR_DEATH) {
+		currentHP = 0;
+		if (hpIndicator) {
+			scene.DeleteObject(hpIndicator);
+			hpIndicator = nullptr;
+		}
+		SendMonstertypePacket(2, currentState, ID);
+	}
 }
 
 void Scorpion::InputPosition(XMFLOAT3& position) {

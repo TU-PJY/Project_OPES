@@ -1,5 +1,9 @@
 ﻿//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #define MAX_LOADSTRING 100
+
+#pragma warning(push)
+#pragma warning(disable: 4305)
+
 #include "Config.h"
 #include "Objective-D.h"
 #include "Framework.h"
@@ -52,7 +56,7 @@ bool enter_room = true;//false;
 WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;

@@ -364,8 +364,18 @@ unsigned int PlantMonster::GetID() {
 void PlantMonster::InputState(unsigned int state) {
 	//if (currentTargetID == GLOBAL.myID)
 	//	return;
+	if (currentState == PLANT_DEATH)
+		return;
 
 	currentState = state;
+	if (currentState == PLANT_DEATH) {
+		if (hpIndicator) {
+			scene.DeleteObject(hpIndicator);
+			hpIndicator = nullptr;
+		}
+		currentHP = 0;
+		SendMonstertypePacket(1, currentState, ID);
+	}
 }
 
 void PlantMonster::InputTargetID(unsigned int id) {
@@ -404,6 +414,8 @@ void PlantMonster::InputHP(int currentHP) {
 			scene.DeleteObject(hpIndicator);
 			hpIndicator = nullptr;
 		}
+
+		SendMonstertypePacket(1, currentState, ID);
 
 		// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
 		if (defenseModeState) {
