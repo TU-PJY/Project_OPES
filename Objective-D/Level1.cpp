@@ -19,7 +19,7 @@ namespace Level1 {
 }
 
 void Level1::Start() {
-	bool editMode = false;
+	bool editMode = true;
 
 	// 활성화 시 디펜스 모드 건너뜀
 	bool skipDefenseMode = false;

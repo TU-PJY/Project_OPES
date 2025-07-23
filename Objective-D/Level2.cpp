@@ -12,7 +12,7 @@ namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
 
 void Level2::Start() {
-	bool editMode = true;
+	bool editMode = false;
 
 	scene.SetupMode("Level2", Destructor, ControlObjectList);
 
@@ -36,7 +36,7 @@ void Level2::Start() {
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 
-	scene.AddObject(new MonsterSpawner(editMode), "monsterSpwaner", LAYER1, true);
+	//scene.AddObject(new MonsterSpawner(editMode), "monsterSpwaner", LAYER1, true);
 
 	SetBackgroundColorRGB(135, 206, 235);
 }
