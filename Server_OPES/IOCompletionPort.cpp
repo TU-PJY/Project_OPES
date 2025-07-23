@@ -29,7 +29,7 @@ std::vector<MonsterData> defenseMonsters(20);//임시
 bool defenseState = true;//임시
 
 
-int roomHp;//임시
+int roomHp=500;//임시
 
 std::thread npcThread;
 
@@ -899,7 +899,7 @@ void IOCompletionPort::SendData_EngineerObjectPacket(stClientInfo* receiver, uns
 void IOCompletionPort::SendData_CenterBuildingPacket(stClientInfo* receiver, int hp) {
     CenterBuildingPacket* pkt = new CenterBuildingPacket{};
     pkt->type = PacketType::CENTER_HP;
-    pkt->hp = hp;
+    pkt->damage = hp;
 
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
@@ -1262,7 +1262,7 @@ void IOCompletionPort::WorkThread() {
 
                 CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(pOverlappedEx->buffer);
 
-                roomHp -= pkt->hp;
+                roomHp -= pkt->damage;
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
