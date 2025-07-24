@@ -63,22 +63,7 @@ bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
-enum PacketProcessEnum {
-	PACKET_MOVE,
-	PACKET_ROTATE,
-	PACKET_ANIMATION,
-	PACKET_MONSTER_SPAWN,
-	PACKET_MONSTER_DAMAGE,
-};
 
-typedef struct {
-	int PacketType;
-	unsigned int ID;
-	XMFLOAT3 Value;
-	int IntValue;
-} PacketWork;
-
-std::queue<PacketWork> PacketProcessList;
 
 bool IsNewPlayer(unsigned int ID) {
 	if (!ID_List.contains(ID)) {
@@ -118,11 +103,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
-		PacketWork work{ PACKET_MOVE, movePacket->id, XMFLOAT3(movePacket->x, movePacket->y, movePacket->z), 0};
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			PacketProcessList.emplace(work);
-		}
+		
 			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 	}
@@ -136,11 +117,6 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
-		PacketWork work{ PACKET_ROTATE, viewAnglePacket->id, XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z), 0 };
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			PacketProcessList.emplace(work);
-		}
 			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
 				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
 		
@@ -150,12 +126,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
-		PacketWork work{ PACKET_ANIMATION, aniPacket->id, XMFLOAT3(0.0, 0.0, 0.0), aniPacket->animationType };
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			PacketProcessList.emplace(work);
-		}
-
+		
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
 			Found->InputState(aniPacket->animationType);
 	}
@@ -866,47 +837,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				::DispatchMessage(&Messege);
 			}
 		}
-
 		else {
-			while (!PacketProcessList.empty()) {
-				PacketWork work = PacketProcessList.front();
-
-				switch (work.PacketType) {
-				case PACKET_MOVE:
-					IsNewPlayer(work.ID);
-					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
-						Object->InputPosition(work.Value);
-					break;
-
-				case PACKET_ROTATE:
-					IsNewPlayer(work.ID);
-					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
-						Object->InputRotation(work.Value);
-					break;
-
-				case PACKET_ANIMATION:
-					IsNewPlayer(work.ID);
-					if (auto Object = scene.SearchLayer(LAYER_PLAYER, std::to_string(work.ID)); Object)
-						Object->InputState(work.IntValue);
-					break;
-
-				case PACKET_MONSTER_DAMAGE:
-				{
-					/*size_t Size = scene.LayerSize(LAYER1);
-					for (int i = 0; i < Size; i++) {
-						if (auto Object = scene.FindMulti("scorpion", LAYER1, i); Object) {
-							if (Object->GetID() == work.ID)
-								Object->ChangeHP(work.IntValue);
-						}
-					}*/
-				}
-					break;
-
-				}
-
-				PacketProcessList.pop();
-			}
-
 			framework.Update();
 			//SleepEx(0, TRUE);
 			//Sleep(0);
