@@ -1319,7 +1319,7 @@ void IOCompletionPort::WorkThread() {
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
-                    if (otherClient != client  /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_PtoMDamagePacket(otherClient, pkt->playerID, pkt->monsterID, sendHP);
                     }
                 }
