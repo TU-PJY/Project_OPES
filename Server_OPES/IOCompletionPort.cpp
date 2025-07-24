@@ -191,6 +191,7 @@ void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
     int monsterIdCount = 0;
     while (defenseState) {
+        std::this_thread::sleep_for(std::chrono::seconds(2));
         XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
 
         for (auto* client : clients) {
@@ -225,7 +226,7 @@ void IOCompletionPort::RandomPositionThread() {
             std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
             break;
         }
-        std::this_thread::sleep_for(std::chrono::seconds(2));
+       // std::this_thread::sleep_for(std::chrono::seconds(2));
     }
 }
 void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
@@ -1016,6 +1017,7 @@ void IOCompletionPort::WorkThread() {
     ULONG_PTR completionKey;
     OVERLAPPED* overlapped;
     bool randomTreadFlag = true;
+    int p = 0;
     while (isRunning) {
         BOOL result = GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, &completionKey, &overlapped, INFINITE);
         stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
@@ -1037,6 +1039,7 @@ void IOCompletionPort::WorkThread() {
             // 기존 처리 함수 호출
             
             std::cout << "입장:" << idCount << std::endl;
+
             if (randomTreadFlag&&clientCount>=2) {
                 randomPositionThread = std::thread([this]() { RandomPositionThread(); });
                 randomTreadFlag = false;
@@ -1227,7 +1230,7 @@ void IOCompletionPort::WorkThread() {
                 //}
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
-                std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+                std::cout << pkt->id<<" --  Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
 
                 
                 for (stClientInfo* otherClient : clients) {
@@ -1264,6 +1267,10 @@ void IOCompletionPort::WorkThread() {
                 std::cout <<"PTOM_DAMAGE Mid:" << pkt->monsterID<<", Pid:" << pkt->playerID <<", Attackhp:" << pkt->attackHp << std::endl;
                 int sendHP;
                 if (defenseState) {
+                    if (pkt->playerID == 0) {
+                        p++;
+                        std::cout << p << "회 받음" << std::endl;
+                    }
                     defenseMonsters[pkt->monsterID].hp -= pkt->attackHp;
                     std::cout << "MonstersHP:" << defenseMonsters[pkt->monsterID].hp << std::endl;
                     if (defenseMonsters[pkt->monsterID].hp < 0)
@@ -1313,6 +1320,7 @@ void IOCompletionPort::WorkThread() {
                         SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, pkt->attackHp);
                     }
                 }
+               
             }
             else if (*packetType == PacketType::ENGINEER_INSTALL) {
 
@@ -1343,7 +1351,7 @@ void IOCompletionPort::WorkThread() {
                 CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(pOverlappedEx->buffer);
 
                 roomHp -= pkt->damage;
-                std::cout << "room_hp:" << roomHp << std::endl;
+                //std::cout << "room_hp:" << roomHp << std::endl;
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
