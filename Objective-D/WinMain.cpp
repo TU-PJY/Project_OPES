@@ -491,7 +491,7 @@ void SendMonstertypePacket(unsigned int monsterType,unsigned int monsterState,un
 			}
 		}
 
-		std::cout << "SEND" << std::endl;
+		//std::cout << "SEND" << std::endl;
 	}
 }
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId,unsigned int playerId) {

@@ -118,6 +118,7 @@ public:
 	virtual void SetState(int State) {}
 	virtual void InputTargetID(unsigned int target) {  }
 	virtual bool GetBehaviorState() { return true; }
+	virtual int GetHP() { return {}; }
 
 	// 인디케이터 함수
 	virtual void SetRenderState(bool Flag) {}

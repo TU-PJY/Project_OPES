@@ -23,6 +23,7 @@ private:
 
 	bool    inFrustum{};
 	bool    targeted{};
+	bool    prevTargeted{};
 
 	unsigned int currentTargetID{};
 

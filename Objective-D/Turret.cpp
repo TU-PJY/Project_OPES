@@ -50,72 +50,57 @@ void Turret::Update(float Delta) {
 
 	updateBound();
 
-	size_t size = scene.LayerSize(LAYER_MONSTER);
-
-	if (!targeted) {
-		bool isLook = true;
-		for (int i = 0; i < size; i++) {
-			if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
-				if (!monster->GetDeathState() && monster->CheckHit(lookRange) && monster->GetBehaviorState()) {
-					xmfloat3 lookPosition = monster->GetPosition();
-					Ray newRay = Math::CalcRayVector(position, lookPosition);
-
-					for (auto& O : GLOBAL.mapOOBBdata) {
-						if (Math::CheckRayCollision(newRay, O)) {
-							isLook = false;
-							break;
-						}
-					}
-
-					if (isLook) {
-						currentTargetID = monster->GetID();
-						std::cout << currentTargetID << std::endl;
-						target = monster;
-						targeted = true;
-					}
-				}
-			}
-		}
-	}
 
 	currentShootDelay -= Delta;
 	Clamp::LimitValue(currentShootDelay, 0.0, CLAMP_DIR_LESS);
-
 	flameRenderTime -= Delta;
 	Clamp::LimitValue(flameRenderTime, 0.0, CLAMP_DIR_LESS);
 
-	if (targeted) {
-		if (target) {
-			xmfloat3 lookPosition = target->GetPosition();
-			Ray newRay = Math::CalcRayVector(position, lookPosition);
+	size_t size = scene.LayerSize(LAYER_MONSTER);
 
-			headRotationDest = Math::CalcDegree3D(position, lookPosition);
-			headRotationDest.y -= rotation.y;
-			headRotationDest.x *= -1;
-			Math::Normalize2DAngleTo360(headRotationDest.x);
-			Math::Normalize2DAngleTo360(headRotationDest.y);
+	bool isLook = true;
+	for (int i = 0; i < size; i++) {
+		if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
+			if (!monster->GetDeathState() && monster->CheckHit(lookRange) && monster->GetBehaviorState()) {
+				Ray newRay = Math::CalcRayVector(position, monster->GetPosition());
 
-			for (auto& O : GLOBAL.mapOOBBdata) {
-				if (Math::CheckRayCollision(newRay, O)) {
-					targeted = false;
+				for (auto& O : GLOBAL.mapOOBBdata) {
+					if (Math::CheckRayCollision(newRay, lookRange)) {
+						isLook = false;
+						break;
+					}
+				}
+
+				if (isLook) {
+					targeted = true;
+					target = monster;
 					break;
 				}
-			}
 
-			if (target->GetDeathState())
-				targeted = false;
-
-			if (currentShootDelay <= 0.0) {
-				if (!createdByServer) {
-					target->GiveDamage(10);
-					SendPtoMDamagePacket(0, currentTargetID, 10);
+				else {
+					targeted = false;
 				}
-				currentShootDelay += 0.2;
-				flameRenderTime += 0.05;
 			}
-		}
-		else
+
 			targeted = false;
+		}
+	}
+
+	if (currentShootDelay <= 0.0 && targeted) {
+		if (!createdByServer) {
+			target->GiveDamage(5);
+			SendPtoMDamagePacket(0, target->GetID(), 5);
+			//std::cout << "ID: " << target->GetID() << std::endl;
+		}
+
+		currentShootDelay = 0.2;
+		flameRenderTime = 0.05;
+	}
+	
+	if (targeted) {
+		headRotationDest = Math::CalcDegree3D(position, target->GetPosition());
+		Math::Normalize2DAngleTo360(headRotationDest.y);
+		headRotationDest.y -= rotation.y;
 	}
 
 	else {
@@ -123,7 +108,7 @@ void Turret::Update(float Delta) {
 		headRotationDest.x = 0.0;
 	}
 	
-	headRotation.x = Math::LerpDegrees(headRotation.x, headRotationDest.x, 15.0 * Delta);
+	headRotation.x = Math::LerpDegrees(headRotation.x, -headRotationDest.x, 15.0 * Delta);
 	headRotation.y = Math::LerpDegrees(headRotation.y, headRotationDest.y, 15.0 * Delta);
 }
 

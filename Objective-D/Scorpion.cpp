@@ -383,3 +383,8 @@ bool Scorpion::GetDeathState() {
 		return true;
 	return false;
 }
+
+int Scorpion::GetHP()
+{
+	return currentHP;
+}

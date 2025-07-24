@@ -93,5 +93,6 @@ public:
 	void InputRotation(float degrees) override;
 	void InputTargetID(unsigned int target) override;
 	bool GetDeathState() override;
+	int GetHP() override;
 };
 
