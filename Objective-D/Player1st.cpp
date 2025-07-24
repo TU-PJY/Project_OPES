@@ -323,16 +323,19 @@ void Player1st::InputRecoil(float Value) {
 
 void Player1st::GiveDamage(int damage) {
 	if (currentState == STATE_DEATH) return;
-	currentHP -= damage;
-	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
-	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, currentHP);
-	std::cout << currentHP << std::endl;
-	SendMtoPDamagePacket(GLOBAL.myID, 0, currentHP);
+	SendMtoPDamagePacket(GLOBAL.myID, 0, damage);
 
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.
 	//if (currentHP == 0)
 	//	currentState = STATE_DEATH;
+}
 
+void Player1st::InputHP(int currentHP) {
+	if (currentState == STATE_DEATH) return;
+
+	this->currentHP = currentHP;
+	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
+	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, currentHP);
 	scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
 }
 

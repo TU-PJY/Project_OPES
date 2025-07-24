@@ -185,7 +185,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		/*if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
 			defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);*/
 		{
-
+			std::lock_guard<std::mutex> lock(PacketMutex);
 			xmfloat3 createPosition = xmfloat3(packet->x, 0.0, packet->z);
 			scene.AddObject(new PlantMonster(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
 		}
