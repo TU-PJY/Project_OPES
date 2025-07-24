@@ -21,9 +21,9 @@ DeviceSystem LoadSystem;
 // DevMode 활성화 시에만 아래 3개의 플래그가 의미가 있음
 bool DevMode = true;
 
-bool LoadMap1Resources = true;
-bool LoadMap2Resources = true;
-bool LoadMap3Resources = false;
+bool LoadMap1Resources = false;
+bool LoadMap2Resources = false;
+bool LoadMap3Resources = true;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {

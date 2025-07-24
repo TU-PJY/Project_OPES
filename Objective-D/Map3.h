@@ -37,7 +37,7 @@ public:
 		Transform::Scale(ScaleMatrix, RockPosition[0].Size);
 		Transform::Rotate(RotateMatrix, 0.0, RockPosition[0].Rotation, 0.0);
 
-		terrainUtil.InputData(TranslateMatrix, ScaleMatrix, RotateMatrix, MESH.FloatingRock);
+		terrainUtil.InputData(TranslateMatrix, RotateMatrix, ScaleMatrix, MESH.FloatingRock);
 
 		size_t size = RockPosition.size();
 
@@ -50,7 +50,7 @@ public:
 			Transform::Scale(ScaleMatrix, RockPosition[i].Size);
 			Transform::Rotate(RotateMatrix, 0.0, RockPosition[i].Rotation, 0.0);
 
-			terrainUtil.AddData(TranslateMatrix, ScaleMatrix, RotateMatrix, MESH.FloatingRock);
+			terrainUtil.AddData(TranslateMatrix, RotateMatrix, ScaleMatrix, MESH.FloatingRock);
 		}
 	}
 

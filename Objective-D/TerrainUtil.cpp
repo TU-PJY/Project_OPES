@@ -48,6 +48,8 @@ void TerrainUtil::AddData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat, 
 		NewData.push_back(worldVertex);
 	}
 
+	std::cout << MeshData->Indices << " " << NewData.size() << std::endl;
+
 	for (size_t i = 0; i < NewData.size(); i += 3) {
 		XMFLOAT3& v0 = NewData[i];
 		XMFLOAT3& v1 = NewData[i + 1];
