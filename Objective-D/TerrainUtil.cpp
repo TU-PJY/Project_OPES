@@ -120,6 +120,12 @@ XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other, float& Distanc
 	return ReturnValue;
 }
 
+XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other, XMVECTOR& Origin, XMVECTOR& Direction, float& Distance) {
+	XMFLOAT3 ReturnValue{};
+	Other.TerrainMesh->PickTerrainFromRay(Origin, Direction, ReturnValue, Distance);
+	return ReturnValue;
+}
+
 void TerrainUtil::ExportTerrainData(const std::string& OutFileName) {
 	std::ofstream Out{ OutFileName };
 	if (!Out.is_open())

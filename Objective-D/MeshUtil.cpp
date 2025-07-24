@@ -292,6 +292,36 @@ float Mesh::ComputeHeightOnTriangle(XMFLOAT3& pt, XMFLOAT3& v0, XMFLOAT3& v1, XM
 	return height;
 }
 
+bool Mesh::PickTerrainFromRay(
+	XMVECTOR orig,
+	XMVECTOR dir,
+	XMFLOAT3& outHit,
+	float& Distance)
+{
+	float bestT = FLT_MAX;
+	XMVECTOR bestPoint = XMVectorZero();
+
+	size_t triCount = HeightCache.size() / 3;
+	for (size_t i = 0; i < triCount; ++i) {
+		XMVECTOR v0 = XMLoadFloat3(&HeightCache[i * 3 + 0]);
+		XMVECTOR v1 = XMLoadFloat3(&HeightCache[i * 3 + 1]);
+		XMVECTOR v2 = XMLoadFloat3(&HeightCache[i * 3 + 2]);
+
+		float t;
+		if (RayIntersectsTriangle(orig, dir, v0, v1, v2, t) && t < bestT) {
+			bestT = t;
+			bestPoint = orig + dir * t;
+		}
+	}
+
+	if (bestT < FLT_MAX) {
+		XMStoreFloat3(&outHit, bestPoint);
+		Distance = bestT;
+		return true;
+	}
+	return false;
+}
+
 bool Mesh::PickTerrainFromCamera(const XMFLOAT4X4& cameraViewMatrix, XMFLOAT3& outHit, float& Distance) {
 	// 1) Ray 원점/방향 계산
 	XMMATRIX view = XMLoadFloat4x4(&cameraViewMatrix);

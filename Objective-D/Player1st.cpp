@@ -225,6 +225,12 @@ void Player1st::updateMove(float Delta) {
 	// 맵 바운드와 충돌을 체크하면서 이동
 	Math::MoveWithSlide(playerPosition, currentRotation.y, forwardSpeed, strafeSpeed, playerSphere, GLOBAL.mapOOBBdata, Delta);
 
+	// 맵 3한정으로 땅 바깥으로 나가면 떨어진다.
+	if (fallDown) {
+		fallAcc += Delta * 0.5;
+		playerPosition.y -= fallAcc;
+	}
+
 	// 카메라 위치를 플레이어 위치와 동기화 
 	cameraPosition = playerPosition;
 }
@@ -232,10 +238,31 @@ void Player1st::updateMove(float Delta) {
 // 플레이어 위치 - 터레인 충돌 처리를 업데이트 한다.
 void Player1st::updateTerrainCollision() {
 	terrainUtil.InputPosition(playerPosition);
-	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, playerPosition, 0.0);
 
-	// 카메라의 경우 플레이어 모델의 실제 눈 높이에 위치하도록 한다.
-	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, cameraPosition, playerSize.y * 1.5);
+	if (GLOBAL.mapName.compare("map3") != 0) {
+		terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, playerPosition, 0.0);
+
+		// 카메라의 경우 플레이어 모델의 실제 눈 높이에 위치하도록 한다.
+		terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, cameraPosition, playerSize.y * 1.5);
+	}
+
+	// 맵3의 경우 다른 방식으로 터레인을 검사해야 한다.
+	else {
+		if (!fallDown) {
+			Ray playerRay = Math::CalcRayVector(xmfloat3(playerPosition.x, playerPosition.y + 40.0, playerPosition.z), xmfloat3(playerPosition.x, playerPosition.y - 40.0, playerPosition.z));
+			float Distance;
+			xmfloat3 newPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, playerRay.Origin, playerRay.Direction, Distance);
+			
+			// 땅을 벗어나면 떨어진다
+			if ((newPosition.x == 0.0 && newPosition.y == 0.0 && newPosition.z == 0.0) || newPosition.y <= -5.0) {
+				cameraPosition.y = playerPosition.y + playerSize.y * 1.5;
+				fallDown = true;
+				return;
+			}
+			playerPosition.y = newPosition.y;
+			cameraPosition.y = playerPosition.y + playerSize.y * 1.5;
+		}
+	}
 }
 
 // 카메라를 업데이트 한다.

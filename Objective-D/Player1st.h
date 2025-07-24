@@ -51,6 +51,10 @@ private:
 	int totalHP{};
 	int currentHP{};
 
+	// 맵3용 변수
+	bool fallDown{};
+	float fallAcc{};
+
 	// 플레이어 당 2개 사용 가능
 	int currentGrenadeCount{ 2 };
 
