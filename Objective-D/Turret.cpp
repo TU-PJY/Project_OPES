@@ -32,6 +32,8 @@ void Turret::updateBound() {
 }
 
 void Turret::Update(float Delta) {
+	static int count;
+
 	currentHP -= Delta;
 
 	if (hpInd) {
@@ -89,7 +91,9 @@ void Turret::Update(float Delta) {
 				else {
 					if (!createdByServer) {
 						target->GiveDamage(10);
-						SendPtoMDamagePacket(0, target->GetID(), 10);
+						SendPtoMDamagePacket(0, currentTargetID, 10);
+						std::cout << count << "회 패킷 전송" << std::endl;
+						count++;
 					}
 				}
 			}

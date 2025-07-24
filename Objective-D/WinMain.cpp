@@ -490,6 +490,8 @@ void SendMonstertypePacket(unsigned int monsterType,unsigned int monsterState,un
 				delete send_over;  // 오류 발생 시 할당 해제
 			}
 		}
+
+		std::cout << "SEND" << std::endl;
 	}
 }
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId,unsigned int playerId) {
