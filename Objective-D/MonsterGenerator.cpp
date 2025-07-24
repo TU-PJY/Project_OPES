@@ -4,7 +4,7 @@
 
 
 DefenseModeMonsterGenerator::DefenseModeMonsterGenerator() {
-
+	
 }
 
 // GLOBAL.useServer가 true일 경우 서버로부터 패킷을 받아 그 자리에 생성한다.
@@ -33,9 +33,10 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 		randomPosition.z = RandomXZ.y;
 
 		if (GLOBAL.mapName.compare("map1") == 0)
-			scene.AddObject(new PlantMonster(randomPosition, 0, true), "plantMonster", LAYER_MONSTER);
+			scene.AddObject(new PlantMonster(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
 
 		currentGenerateCount++;
+		currentID++;
 
 		// 최대 스폰 횟수에 도달하면 스스로 삭제하여 몬스터 스폰을 중단한다.
 		if (currentGenerateCount == GLOBAL.map1DefenseEnemyRemained)

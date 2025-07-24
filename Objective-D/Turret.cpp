@@ -51,27 +51,27 @@ void Turret::Update(float Delta) {
 	updateBound();
 
 	size_t size = scene.LayerSize(LAYER_MONSTER);
-	for (int i = 0; i < size; i++) {
-		if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
-			if (!monster->GetDeathState() && monster->CheckHit(lookRange) && monster->GetBehaviorState()) {
-				xmfloat3 lookPosition = monster->GetPosition();
-				Ray newRay = Math::CalcRayVector(position, lookPosition);
 
-				targeted = true;
-				for (auto& O : GLOBAL.mapOOBBdata) {
-					if (Math::CheckRayCollision(newRay, O)) {
-						targeted = false;
-						break;
+	if (!targeted) {
+		bool isLook = true;
+		for (int i = 0; i < size; i++) {
+			if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
+				if (!monster->GetDeathState() && monster->CheckHit(lookRange) && monster->GetBehaviorState()) {
+					xmfloat3 lookPosition = monster->GetPosition();
+					Ray newRay = Math::CalcRayVector(position, lookPosition);
+
+					for (auto& O : GLOBAL.mapOOBBdata) {
+						if (Math::CheckRayCollision(newRay, O)) {
+							isLook = false;
+							break;
+						}
 					}
-				}
 
-				if (targeted) {
-					headRotationDest = Math::CalcDegree3D(position, lookPosition);
-					headRotationDest.y -= rotation.y;
-					headRotationDest.x *= -1;
-					Math::Normalize2DAngleTo360(headRotationDest.x);
-					Math::Normalize2DAngleTo360(headRotationDest.y);
-					currentTargetID = monster->GetID();
+					if (isLook) {
+						currentTargetID = monster->GetID();
+						target = monster;
+						targeted = true;
+					}
 				}
 			}
 		}
@@ -84,22 +84,36 @@ void Turret::Update(float Delta) {
 	Clamp::LimitValue(flameRenderTime, 0.0, CLAMP_DIR_LESS);
 
 	if (targeted) {
-		if (currentShootDelay<= 0.0) {
-			if (auto target = scene.SearchLayer(LAYER_MONSTER, std::to_string(currentTargetID)); target) {
-				if (target->GetDeathState())
+		std::cout << currentTargetID << std::endl;
+
+		if (target) {
+			xmfloat3 lookPosition = target->GetPosition();
+			Ray newRay = Math::CalcRayVector(position, lookPosition);
+
+			headRotationDest = Math::CalcDegree3D(position, lookPosition);
+			headRotationDest.y -= rotation.y;
+			headRotationDest.x *= -1;
+			Math::Normalize2DAngleTo360(headRotationDest.x);
+			Math::Normalize2DAngleTo360(headRotationDest.y);
+
+			for (auto& O : GLOBAL.mapOOBBdata) {
+				if (Math::CheckRayCollision(newRay, O)) {
 					targeted = false;
-				else {
-					if (!createdByServer) {
-						target->GiveDamage(10);
-						SendPtoMDamagePacket(0, currentTargetID, 10);
-						std::cout << count << "회 패킷 전송" << std::endl;
-						count++;
-					}
+					break;
 				}
 			}
-			else
+
+			if (target->GetDeathState())
 				targeted = false;
-			
+		}
+		else
+			targeted = false;
+
+		if (currentShootDelay <= 0.0) {
+			if (!createdByServer) {
+				target->GiveDamage(10);
+				SendPtoMDamagePacket(0, currentTargetID, 10);
+			}
 			currentShootDelay += 0.2;
 			flameRenderTime += 0.05;
 		}
@@ -108,8 +122,6 @@ void Turret::Update(float Delta) {
 	else {
 		headRotationDest.y += 90.0 * Delta;
 		headRotationDest.x = 0.0;
-
-		//std::cout << headRotationDest.y << std::endl;
 	}
 	
 	headRotation.x = Math::LerpDegrees(headRotation.x, headRotationDest.x, 15.0 * Delta);

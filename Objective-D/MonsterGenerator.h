@@ -7,6 +7,7 @@ private:
 	float       destGenerateTime{ 2.0 };
 	int         currentGenerateCount{};
 	int         maxGenerateCount{20};
+	unsigned int currentID{};
 
 public:
 	DefenseModeMonsterGenerator();

@@ -545,7 +545,7 @@ void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int att
 		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
-		std::cout << "쏜애" << playerID << " 몬스터:" << monsterID << " -> " << attackHp << std::endl;
+		std::cout << "쏜애 " << playerID << " 몬스터:" << monsterID << " -> " << attackHp << std::endl;
 		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();
