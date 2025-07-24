@@ -26,6 +26,8 @@ std::vector<MonsterData> myMonsters;//임시
 
 std::vector<MonsterData> defenseMonsters(20);//임시
 
+std::mutex defenseMonsterMutex;//임시
+
 bool defenseState = true;//임시
 
 int clearCount = 0;//임시
@@ -201,10 +203,13 @@ void IOCompletionPort::RandomPositionThread() {
             packet->type = PacketType::RANDOM_POSITION;
             packet->monsterID = monsterIdCount; // 특별한 ID 
             packet->x = rendomPosition.x;
-            packet->z = rendomPosition.y;
-            defenseMonsters[monsterIdCount].createPointX = rendomPosition.x;
-            defenseMonsters[monsterIdCount].createPointZ = rendomPosition.y;
-            defenseMonsters[monsterIdCount].id = monsterIdCount;
+            packet->z = rendomPosition.y; 
+            {
+                std::lock_guard<std::mutex> lock(defenseMonsterMutex);
+                defenseMonsters[monsterIdCount].createPointX = rendomPosition.x;
+                defenseMonsters[monsterIdCount].createPointZ = rendomPosition.y;
+                defenseMonsters[monsterIdCount].id = monsterIdCount;
+            }
             stOverlappedEx* sendOver = new stOverlappedEx{};
             ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
             sendOver->operation = IOOperation::SEND;
@@ -1232,7 +1237,11 @@ void IOCompletionPort::WorkThread() {
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
                 std::cout << pkt->id<<" --  Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
                 if (defenseState) {
-                    defenseMonsters[pkt->id].state = pkt->state;
+
+                    {
+                        std::lock_guard<std::mutex> lock(defenseMonsterMutex);
+                        defenseMonsters[pkt->id].state = pkt->state;
+                    }
                    //bool allDead = true;
                    //for (const MonsterData& m : defenseMonsters) {
                    //    if (m.state!=3&&m.hp>0) { // 하나라도 살아있으면 allDead를 false로
@@ -1284,9 +1293,12 @@ void IOCompletionPort::WorkThread() {
                 std::cout <<"PTOM_DAMAGE Mid:" << pkt->monsterID<<", Pid:" << pkt->playerID <<", Attackhp:" << pkt->attackHp << std::endl;
                 int sendHP;
                 if (defenseState) {
-                    defenseMonsters[pkt->monsterID].hp -= pkt->attackHp;
-                    if (defenseMonsters[pkt->monsterID].hp < 0)
-                        defenseMonsters[pkt->monsterID].hp = 0;
+                    {
+                        std::lock_guard<std::mutex> lock(defenseMonsterMutex);
+                        defenseMonsters[pkt->monsterID].hp -= pkt->attackHp;
+                        if (defenseMonsters[pkt->monsterID].hp < 0)
+                            defenseMonsters[pkt->monsterID].hp = 0;
+                    }
                     std::cout << "MonstersHP:" << defenseMonsters[pkt->monsterID].hp << std::endl;
 
                     bool allDead = true;
@@ -1335,11 +1347,12 @@ void IOCompletionPort::WorkThread() {
                         if (targetClient->hp < 0)
                             targetClient->hp = 0;
                         myHP = targetClient->hp;
+
                         break;
                     }
                 }
 
-                std::cout << "실제체력:" << pkt->attackHp << std::endl;
+                std::cout << pkt->playerID <<"---실제체력:" << myHP << std::endl;
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (true /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
