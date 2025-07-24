@@ -202,8 +202,15 @@ void PlantMonster::updateDeath(float Delta) {
 		return;
 
 	// 죽는 애니메이션 재생이 끝나면 스스로 삭제한다.
-	if (plantFBX.GetAnimationEndState()) 
+	if (plantFBX.GetAnimationEndState()) {
 		scene.DeleteObject(this);
+
+		if (defenseModeState) {
+			GLOBAL.map1DefenseEnemyRemained--;
+			if (GLOBAL.map1DefenseEnemyRemained == 0)
+				GLOBAL.map1DefenseState = false;
+		}
+	}
 }
 
 
@@ -354,12 +361,6 @@ void PlantMonster::GiveDamage(int damage) {
 		currentHP = 0;
 		currentState = PLANT_DEATH;
 		SendMonstertypePacket(1, currentState, ID);
-
-		if (defenseModeState) {
-			GLOBAL.map1DefenseEnemyRemained--;
-			if (GLOBAL.map1DefenseEnemyRemained == 0)
-				GLOBAL.map1DefenseState = false;
-		}
 	}
 }
 
@@ -381,12 +382,6 @@ void PlantMonster::InputState(unsigned int state) {
 		}
 		currentHP = 0;
 		SendMonstertypePacket(1, currentState, ID);
-
-		if (defenseModeState) {
-			GLOBAL.map1DefenseEnemyRemained--;
-			if (GLOBAL.map1DefenseEnemyRemained == 0)
-				GLOBAL.map1DefenseState = false;
-		}
 	}
 }
 
@@ -426,15 +421,7 @@ void PlantMonster::InputHP(int currentHP) {
 			scene.DeleteObject(hpIndicator);
 			hpIndicator = nullptr;
 		}
-
 		SendMonstertypePacket(1, currentState, ID);
-
-		// 디펜스 모드일 경우 남은 적 카운트를 감소시킨다.
-		if (defenseModeState) {
-			GLOBAL.map1DefenseEnemyRemained--;
-			if (GLOBAL.map1DefenseEnemyRemained == 0)
-				GLOBAL.map1DefenseState = false;
-		}
 	}
 }
 
