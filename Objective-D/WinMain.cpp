@@ -17,6 +17,7 @@
 #include "OtherPlayerIndicator.h"
 #include "Grenade.h"
 #include "Turret.h"
+#include "PlantMonster.h"
 
 #include <locale>
 
@@ -181,8 +182,13 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "[RANDOM_POSITION] ID: " << packet->monsterID << ", pos: (" << packet->x << ", " << packet->z
 			<< "), rotY: " << std::endl;
 
-		if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
-			defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);
+		/*if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
+			defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);*/
+		{
+
+			xmfloat3 createPosition = xmfloat3(packet->x, 0.0, packet->z);
+			scene.AddObject(new PlantMonster(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
+		}
 		
 		//처리부분
 	}
@@ -212,8 +218,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(recv_buffer);
 		std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
 
-		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
-			centerBuilding->InputHP(packet->damage);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
+				centerBuilding->InputHP(packet->damage);
+		}
 		//처리부분
 	}
 	else if (*type == PacketType::GRENADE) {
