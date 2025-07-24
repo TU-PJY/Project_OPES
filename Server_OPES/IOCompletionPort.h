@@ -76,6 +76,8 @@ struct stClientInfo {
         animationType = 0;
         stageState = 1;
         hp = 100;
+        prev=false;
+        curr=false;
         //-130.0, 20.0, -130.0 
     }
 };
