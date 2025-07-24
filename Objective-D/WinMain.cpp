@@ -68,10 +68,10 @@ std::unordered_set<unsigned int> ID_List;
 bool IsNewPlayer(unsigned int ID) {
 	if (!ID_List.contains(ID)) {
 		ID_List.insert(ID);
-		scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
 
 		{
 			std::lock_guard<std::mutex> lock (PacketMutex);
+			scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
 			auto indicator = scene.Find("otherIndicator");
 			if (!indicator)
 				GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
