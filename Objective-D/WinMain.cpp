@@ -16,6 +16,7 @@
 #include "TerrainUtil.h"
 #include "OtherPlayerIndicator.h"
 #include "Grenade.h"
+#include "Turret.h"
 
 #include <locale>
 
@@ -216,6 +217,10 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "[ENGINEER_INSTALL] ID: " << packet->ID << ", type: " << packet->Etype
 			<< ", pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
 			<< "), rotY: " << packet->rotY << std::endl;
+
+		xmfloat3 installPosition = xmfloat3(packet->posX, packet->posY, packet->posZ);
+		float installRotation = packet->rotY;
+		scene.AddObject(new Turret(installPosition, installRotation, true), "turret", LAYER3);
 
 		//처리부분
 	}

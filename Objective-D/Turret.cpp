@@ -2,11 +2,24 @@
 #include "CameraUtil.h"
 #include "ClampUtil.h"
 #include "Bullet.h"
+#include "HP_Indicator.h"
+
+void SendEngineerInstallPacket(int type, unsigned int ID, float rotY, float posX, float posY, float posZ);
+void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
 
 Turret::Turret(const xmfloat3& createPosition, float createRotation, bool createFromServer) {
 	position = createPosition;
 	rotation.y = createRotation;
 	createdByServer = createFromServer;
+	hpInd = scene.AddObject(new HP_Indicator, "indicator", LAYER3);
+
+	if (!createFromServer)
+		SendEngineerInstallPacket(CONSTRUCT_TURRET, 0, rotation.y, position.x, position.y, position.z);
+}
+
+Turret::~Turret() {
+	if (hpInd)
+		scene.DeleteObject(hpInd);
 }
 
 void Turret::updateBound() {
@@ -19,6 +32,20 @@ void Turret::updateBound() {
 }
 
 void Turret::Update(float Delta) {
+	currentHP -= Delta;
+
+	if (hpInd) {
+		hpInd->InputPosition(position, 2.0);
+		hpInd->InputHP(20, (int)currentHP);
+	}
+
+	if (currentHP <= 0.0) {
+		scene.DeleteObject(hpInd);
+		hpInd = nullptr;
+		scene.DeleteObject(this);
+		return;
+	}
+
 	updateBound();
 
 	size_t size = scene.LayerSize(LAYER_MONSTER);
@@ -56,16 +83,19 @@ void Turret::Update(float Delta) {
 
 	if (targeted) {
 		if (currentShootDelay<= 0.0) {
-			if (!createdByServer) {
-				if (auto target = scene.SearchLayer(LAYER_MONSTER, std::to_string(currentTargetID)); target) {
-					if (target->GetDeathState())
-						targeted = false;
-					else
-						target->GiveDamage(10);
-				}
-				else
+			if (auto target = scene.SearchLayer(LAYER_MONSTER, std::to_string(currentTargetID)); target) {
+				if (target->GetDeathState())
 					targeted = false;
+				else {
+					if (!createdByServer) {
+						target->GiveDamage(10);
+						SendPtoMDamagePacket(0, target->GetID(), 10);
+					}
+				}
 			}
+			else
+				targeted = false;
+			
 			currentShootDelay += 0.2;
 			flameRenderTime += 0.05;
 		}

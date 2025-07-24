@@ -21,6 +21,13 @@ extern unsigned int enter_player_id;
 
 extern DeviceSystem LoadSystem;
 
+enum GlobalEnum : unsigned int {
+	// 엔지니어 설치물 타입
+	CONSTRUCT_TURRET,
+	CONSTRUCT_WALL,
+	CONSTRUCT_HEAL
+};
+
 // 프로젝트 전역에서 사용하는 변수들
 typedef struct {
 	// 디펜스 모드에서 사용할 남은 적 수  및 디펜스 모드 상태 여부

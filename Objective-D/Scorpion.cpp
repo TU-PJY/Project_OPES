@@ -232,7 +232,6 @@ void Scorpion::updateAttack() {
 	}
 
 	if (scorpionFBX.GetTimeSectionPassed(40.3667 - 0.7)) {
-		std::cout << scorpionFBX.GetCurrentAnimationTime() << std::endl;
 		if (!attackDid) {
 			if (currentTargetID == GLOBAL.myID) {
 				if (auto player = scene.Find("player"); player)
@@ -259,6 +258,9 @@ void Scorpion::Update(float Delta) {
 }
 
 void Scorpion::Render() {
+	if (!inFrustum)
+		return;
+
 	BeginRender();
 	Transform::Move(TranslateMatrix, position);
 	Transform::Rotate(RotateMatrix, rotation);
