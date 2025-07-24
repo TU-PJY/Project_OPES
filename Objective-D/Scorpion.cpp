@@ -332,7 +332,7 @@ void Scorpion::InputHP(int currentHP) {
 			hpIndicator = nullptr;
 		}
 		currentState = SCOR_DEATH;
-		SendMonstertypePacket(2, currentState, ID);
+		//SendMonstertypePacket(2, currentState, ID);
 	}
 }
 
@@ -353,7 +353,7 @@ void Scorpion::InputState(unsigned int state) {
 			scene.DeleteObject(hpIndicator);
 			hpIndicator = nullptr;
 		}
-		SendMonstertypePacket(2, currentState, ID);
+		//SendMonstertypePacket(2, currentState, ID);
 	}
 }
 

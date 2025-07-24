@@ -57,7 +57,7 @@ void Level1::Start() {
 			scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 		}
 
-		scene.AddObject(new Player1st(CHARACTER_ENG), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
 
 		if(!skipDefenseMode)
 			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);
