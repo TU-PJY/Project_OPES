@@ -1227,7 +1227,7 @@ void IOCompletionPort::WorkThread() {
                 //}
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
-               // std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+                std::cout <<"Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
 
                 
                 for (stClientInfo* otherClient : clients) {
