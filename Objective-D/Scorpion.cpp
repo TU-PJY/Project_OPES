@@ -375,3 +375,9 @@ void Scorpion::InputTargetID(unsigned int target) {
 
 	currentTargetID = target;
 }
+
+bool Scorpion::GetDeathState() {
+	if (currentState == SCOR_DEATH)
+		return true;
+	return false;
+}

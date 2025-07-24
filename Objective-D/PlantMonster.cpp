@@ -425,3 +425,9 @@ void PlantMonster::InputHP(int currentHP) {
 		}
 	}
 }
+
+bool PlantMonster::GetDeathState() {
+	if (currentState == PLANT_DEATH)
+		return true;
+	return false;
+}

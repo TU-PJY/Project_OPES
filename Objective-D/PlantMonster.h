@@ -93,4 +93,5 @@ public:
 	float GetAnimationTime() override;
 	void SetAnimationTime(float Time) override;
 	void InputHP(int currentHP) override;
+	bool GetDeathState() override;
 };

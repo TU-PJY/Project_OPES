@@ -9,13 +9,20 @@ private:
 	xmfloat3 headRotationDest{};
 	bool     createdByServer{};
 
+	float flameSize{1.0};
+
 	AABB     frustumBound{};
 	BoundSphere lookRange{};
 	OOBB     hitBox{};
 
+	float    currentShootDelay{};
+	float    flameRenderTime{};
+
 	bool    inFrustum{};
 
 	bool    targeted{};
+
+	unsigned int currentTargetID{};
 
 	GameObject* target{};
 

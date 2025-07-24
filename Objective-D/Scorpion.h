@@ -92,5 +92,6 @@ public:
 	void InputPosition(XMFLOAT3& position) override;
 	void InputRotation(float degrees) override;
 	void InputTargetID(unsigned int target) override;
+	bool GetDeathState() override;
 };
 

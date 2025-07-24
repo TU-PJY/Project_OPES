@@ -1,5 +1,7 @@
 #include "Turret.h"
 #include "CameraUtil.h"
+#include "ClampUtil.h"
+#include "Bullet.h"
 
 Turret::Turret(const xmfloat3& createPosition, float createRotation, bool createFromServer) {
 	position = createPosition;
@@ -19,26 +21,58 @@ void Turret::updateBound() {
 void Turret::Update(float Delta) {
 	updateBound();
 
-	targeted = false;
-
 	size_t size = scene.LayerSize(LAYER_MONSTER);
 	for (int i = 0; i < size; i++) {
 		if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
-			if (monster->CheckHit(lookRange)) {
+			if (!monster->GetDeathState() && monster->CheckHit(lookRange)) {
 				xmfloat3 lookPosition = monster->GetPosition();
+				Ray newRay = Math::CalcRayVector(position, lookPosition);
+
 				targeted = true;
-				headRotationDest = Math::CalcDegree3D(position, lookPosition);
-				headRotationDest.y -= rotation.y;
-				Math::Normalize2DAngleTo360(headRotationDest.x);
-				Math::Normalize2DAngleTo360(headRotationDest.y);
-				break;
+				for (auto& O : GLOBAL.mapOOBBdata) {
+					if (Math::CheckRayCollision(newRay, O)) {
+						targeted = false;
+						break;
+					}
+				}
+
+				if (targeted) {
+					headRotationDest = Math::CalcDegree3D(position, lookPosition);
+					headRotationDest.y -= rotation.y;
+					headRotationDest.x *= -1;
+					Math::Normalize2DAngleTo360(headRotationDest.x);
+					Math::Normalize2DAngleTo360(headRotationDest.y);
+					currentTargetID = monster->GetID();
+				}
 			}
 		}
 	}
 
-	if (!targeted) {
+	currentShootDelay -= Delta;
+	Clamp::LimitValue(currentShootDelay, 0.0, CLAMP_DIR_LESS);
+
+	flameRenderTime -= Delta;
+	Clamp::LimitValue(flameRenderTime, 0.0, CLAMP_DIR_LESS);
+
+	if (targeted) {
+		if (currentShootDelay<= 0.0) {
+			if (!createdByServer) {
+				if (auto target = scene.SearchLayer(LAYER_MONSTER, std::to_string(currentTargetID)); target) {
+					if (target->GetDeathState())
+						targeted = false;
+					else
+						target->GiveDamage(10);
+				}
+				else
+					targeted = false;
+			}
+			currentShootDelay += 0.2;
+			flameRenderTime += 0.05;
+		}
+	}
+
+	else {
 		headRotationDest.y += 90.0 * Delta;
-		//Math::Normalize2DAngleTo360(headRotationDest.y);
 		headRotationDest.x = 0.0;
 
 		std::cout << headRotationDest.y << std::endl;
@@ -61,13 +95,15 @@ void Turret::Render() {
 	Transform::Rotate(TranslateMatrix, headRotation);
 	Render3D(MESH.turretHead, TEX.turret);
 
-	BeginRender();
-	SetLightUse(DISABLE_LIGHT);
-	Transform::Move(TranslateMatrix, position);
-	Transform::Rotate(TranslateMatrix, rotation);
-	Transform::Rotate(TranslateMatrix, headRotation);
-	Transform::Scale(TranslateMatrix, 3.0, 3.0, 3.0);
-	Transform::Move(TranslateMatrix, 0.0, 0.3, -0.3);
-	Render3D(MESH.gun_flame, TEX.gun_flame);
-	Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
+	if (flameRenderTime > 0.0) {
+		BeginRender();
+		SetLightUse(DISABLE_LIGHT);
+		Transform::Move(TranslateMatrix, position);
+		Transform::Rotate(TranslateMatrix, rotation);
+		Transform::Rotate(TranslateMatrix, headRotation);
+		Transform::Scale(TranslateMatrix, 4.0, 4.0, 4.0);
+		Transform::Move(TranslateMatrix, 0.0, 0.18, -0.4);
+		Render3D(MESH.gun_flame, TEX.gun_flame);
+		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
+	}
 }
