@@ -20,6 +20,7 @@ void PlantMonster::updateHitBox(float Delta) {
 		hitBox[i].UpdateDelta(Delta);
 }
 
+
 void PlantMonster::sendCurrentState() {
 	if (currentState == serverState)
 		return;
@@ -204,12 +205,6 @@ void PlantMonster::updateDeath(float Delta) {
 	// 죽는 애니메이션 재생이 끝나면 스스로 삭제한다.
 	if (plantFBX.GetAnimationEndState()) {
 		scene.DeleteObject(this);
-
-		if (defenseModeState) {
-			GLOBAL.map1DefenseEnemyRemained--;
-			if (GLOBAL.map1DefenseEnemyRemained == 0)
-				GLOBAL.map1DefenseState = false;
-		}
 	}
 }
 
@@ -277,6 +272,12 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 PlantMonster::~PlantMonster() {
 	if (hpIndicator) 
 		scene.DeleteObject(hpIndicator);
+
+	if (defenseModeState) {
+		GLOBAL.map1DefenseEnemyRemained--;
+		if (GLOBAL.map1DefenseEnemyRemained == 0)
+			GLOBAL.map1DefenseState = false;
+	}
 }
 
 // 모든 업데이트
