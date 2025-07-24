@@ -44,14 +44,17 @@ void CreateConstantBufferResource(ID3D12Device* Device) {
 		CBVUtil::Create(Device, &UseFogData[i], sizeof(USE_FOG_DATA), BoolFogCBV, i);
 
 	// fog data
+
+	// map3
+	// 0.68, 0.28, 0.1
 	FOG_DATA FogData{
-		{0.5, 0.5, 0.5}, // Fog Color
+		{0.68, 0.28, 0.1}, // Fog Color
 		0.0,   //   padding1
 
-		10.0, // Fog Start
+		500.0, // Fog Start
 		{0.0, 0.0, 0.0}, // padding2
 
-		20.0, // FogEnd
+		900.0, // FogEnd
 		{0.0, 0.0, 0.0} // padding3
 	};
 	ReserveConstantBuffer(FogCBV, 1);

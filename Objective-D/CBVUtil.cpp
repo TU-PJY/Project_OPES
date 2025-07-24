@@ -60,3 +60,18 @@ void CBVUtil::Input(ID3D12GraphicsCommandList* CmdList, CBV& CBV_Struct, int CBV
 	CmdList->SetDescriptorHeaps(_countof(heaps), heaps);
 	CmdList->SetGraphicsRootDescriptorTable(CBV_Struct.SignatureIndex, CBV_Struct.Heap[CBV_Index]->GetGPUDescriptorHandleForHeapStart());
 }
+
+void CBVUtil::Reset(ID3D12GraphicsCommandList* CmdList, CBV& CBV_Struct) {
+	size_t bufferSize = CBV_Struct.Buffer.size();
+	size_t heapSize = CBV_Struct.Heap.size();
+
+	for (int i = 0; i < bufferSize; i++) {
+		CBV_Struct.Buffer[i]->Release();
+		CBV_Struct.Buffer[i] = nullptr;
+	}
+
+	for (int i = 0; i < heapSize; i++) {
+		CBV_Struct.Heap[i]->Release();
+		CBV_Struct.Heap[i] = nullptr;
+	}
+}

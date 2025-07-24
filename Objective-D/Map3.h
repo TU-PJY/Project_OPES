@@ -297,4 +297,8 @@ public:
 	TerrainUtil GetTerrain() override {
 		return terrainUtil;
 	}
+
+	std::vector<OOBB> GetMapWallOOBB() override {
+		return mapOOBBdata;
+	}
 };

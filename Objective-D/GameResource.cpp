@@ -181,6 +181,8 @@ void LoadTexture(DeviceSystem& System) {
 	}
 
 	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.skyBox, L"Resources//Image//sky.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.skyBox2, L"Resources//Image//sky-2.png", TEXTURE_TYPE_WIC);
 
 	// map1
 	if (LoadMap1Resources) {
@@ -198,7 +200,6 @@ void LoadTexture(DeviceSystem& System) {
 	if (LoadMap2Resources || LoadMap1Resources) {
 		LoadTexture(TEX.Palette3, L"Resources//Image//palette-3.png", TEXTURE_TYPE_WIC);
 		// sky box
-		LoadTexture(TEX.skyBox, L"Resources//Image//sky.png", TEXTURE_TYPE_WIC);
 	}
 
 	// map3
@@ -207,7 +208,6 @@ void LoadTexture(DeviceSystem& System) {
 		LoadTexture(TEX.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
 		LoadTexture(TEX.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
 		LoadTexture(TEX.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
-		LoadTexture(TEX.skyBox2, L"Resources//Image//sky-2.png", TEXTURE_TYPE_WIC);
 	}
 
 	// roadblock

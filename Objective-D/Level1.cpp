@@ -31,6 +31,19 @@ void Level1::Start() {
 	GLOBAL.map1DefenseEnemyRemained = 20;
 	GLOBAL.map1DefenseState = true;
 
+	FOG_DATA FogData{
+		{0.63, 0.77, 0.98}, // Fog Color
+		0.0,   //   padding1
+
+		300.0, // Fog Start
+		{0.0, 0.0, 0.0}, // padding2
+
+		500.0, // FogEnd
+		{0.0, 0.0, 0.0} // padding3
+	};
+	CBVUtil::Reset(GlobalSystem.CmdList, FogCBV);
+	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
+
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
 	auto mapObject = scene.AddObject(new Map1, GLOBAL.mapName, LAYER1, true);
 	auto centerObject = scene.AddObject(new CenterBuilding(-2.0), "center_building", LAYER1);

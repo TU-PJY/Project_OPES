@@ -44,7 +44,7 @@ constexpr int DELETE_LOCATION_BUFFER_SIZE = 200;
 
 // 활성화 시 렌더 상태 설정 시 안개 사용이 활성화 된다.
 // 비활성화 시 렌더 상태 설정 시 안개 사용이 비활성화 된다.
-constexpr bool ENABLE_FOG_AFTER_BEGIN_RENDER = false;
+constexpr bool ENABLE_FOG_AFTER_BEGIN_RENDER = true;
 
 // 활성화 시 3D 렌더링 상태로 설정 시 텍스처 수직 반전을 자동으로 적용한다.
 // 비활성화 시 적용하지 않는다.

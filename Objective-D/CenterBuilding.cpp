@@ -8,7 +8,7 @@ CenterBuilding::CenterBuilding(float height_offset) {
 		terrainUtil.InputPosition(position, height_offset);
 		terrainUtil.ClampToTerrain(terrain->GetTerrain(), position, height_offset);
 
-		oobb.Update(XMFLOAT3(position.x, position.y + height_offset, position.z - 1.0), XMFLOAT3(7.0, 10.0, 8.0), XMFLOAT3(0.0, 0.0, 0.0));
+		oobb.Update(XMFLOAT3(position.x, position.y, position.z - 1.0), XMFLOAT3(7.0, 10.0, 8.0), XMFLOAT3(0.0, 0.0, 0.0));
 	}
 
 	hpIndicator = scene.AddObject(new HP_Indicator(), "indicatorHP", LAYER1);

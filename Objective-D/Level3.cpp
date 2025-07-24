@@ -5,6 +5,8 @@
 #include "EditHelper.h"
 #include "Player1st.h"
 #include "SkyBox.h"
+#include "CBVUtil.h"
+#include "CenterBuilding.h"
 
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
@@ -13,14 +15,30 @@ void Level3::Start() {
 
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
 
-	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.mapName = "map3";
+	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.map3DefenseState = true;
 	GLOBAL.map3DefenseEnemyRemained = 20;
 
+	FOG_DATA FogData{
+		{0.68, 0.28, 0.1}, // Fog Color
+		0.0,   //   padding1
+
+		500.0, // Fog Start
+		{0.0, 0.0, 0.0}, // padding2
+
+		900.0, // FogEnd
+		{0.0, 0.0, 0.0} // padding3
+	};
+	CBVUtil::Reset(GlobalSystem.CmdList, FogCBV);
+	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
+
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
-	auto mapObject = scene.AddObject(new Map3, "map3", LAYER1, editMode);
+	auto mapObject = scene.AddObject(new Map3, GLOBAL.mapName, LAYER1, editMode);
+	auto centerObject = scene.AddObject(new CenterBuilding(7.0), "center_building", LAYER1);
 	GLOBAL.mapTerrain = mapObject->GetTerrain();
+	GLOBAL.mapOOBBdata = mapObject->GetMapWallOOBB();
+	GLOBAL.mapOOBBdata.emplace_back(centerObject->GetOOBB());
 
 	if (editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);

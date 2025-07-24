@@ -13,7 +13,7 @@ namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
 
 void Level2::Start() {
-	bool editMode = false;
+	bool editMode = true;
 
 	scene.SetupMode("Level2", Destructor, ControlObjectList);
 
@@ -21,6 +21,19 @@ void Level2::Start() {
 	GLOBAL.mapName = "map2";
 	GLOBAL.map2DefenseState = true;
 	GLOBAL.map2DefenseEnemyRemained = 20;
+
+	FOG_DATA FogData{
+		{0.63, 0.77, 0.98}, // Fog Color
+		0.0,   //   padding1
+
+		300.0, // Fog Start
+		{0.0, 0.0, 0.0}, // padding2
+
+		500.0, // FogEnd
+		{0.0, 0.0, 0.0} // padding3
+	};
+	CBVUtil::Reset(GlobalSystem.CmdList, FogCBV);
+	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
 
 	// 맵이 반드시 Player보다 먼저 추가되어야 한다
 	// 플레이어 객체 생성자에서 맵 데이터를 받아야 하기 때문
