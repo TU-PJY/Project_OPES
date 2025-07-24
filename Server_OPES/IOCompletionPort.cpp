@@ -1270,7 +1270,7 @@ void IOCompletionPort::WorkThread() {
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    if (true /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_MonsterMove(otherClient, pkt->x, pkt->y, pkt->z, pkt->angle_y,pkt->monsterId, pkt->playerId);
                     }
                 }
@@ -1330,12 +1330,25 @@ void IOCompletionPort::WorkThread() {
                 MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(pOverlappedEx->buffer);
                 
                 // 데미지 패킷을 모든 클라이언트에게 전송
-                client->hp = pkt->attackHp;
+                int myHP;
+                for (stClientInfo* targetClient : clients) {
+                    if (!targetClient) continue;
+                    if (targetClient->id == pkt->playerID /* && targetClient->roomID == client->roomID */) {
+
+                        // 서버에서 체력 계산
+                        targetClient->hp -= pkt->attackHp;
+                        if (targetClient->hp < 0)
+                            targetClient->hp = 0;
+                        myHP = targetClient->hp;
+                        break;
+                    }
+                }
+
                 std::cout << "실제체력:" << pkt->attackHp << std::endl;
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
-                    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, pkt->attackHp);
+                    if (true /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                        SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, myHP);
                     }
                 }
                
