@@ -1231,7 +1231,24 @@ void IOCompletionPort::WorkThread() {
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
                 std::cout << pkt->id<<" --  Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+                if (defenseState) {
+                    defenseMonsters[pkt->id].state = pkt->state;
+                    bool allDead = true;
+                    for (const MonsterData& m : defenseMonsters) {
+                        if (m.state!=3) { // 하나라도 살아있으면 allDead를 false로
+                            allDead = false;
+                            break;
+                        }
+                    }
 
+                    if (allDead) {
+                        defenseState = false;
+                        std::cout << "[알림] 모든 방어 몬스터가 사망하여 defenseState가 false로 전환되었습니다." << std::endl;
+                    }
+                }
+                else {
+                    myMonsters[pkt->id].state = pkt->state;
+                }
                 
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
@@ -1301,7 +1318,7 @@ void IOCompletionPort::WorkThread() {
                 // 데미지 패킷을 모든 클라이언트에게 전송
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
-                    if (true  /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                    if (otherClient != client  /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
                         SendData_PtoMDamagePacket(otherClient, pkt->playerID, pkt->monsterID, sendHP);
                     }
                 }
@@ -1373,26 +1390,26 @@ void IOCompletionPort::WorkThread() {
                 }
             }
             
-            else if (*packetType == PacketType::CHAT) {
-                //if (bytesTransferred < sizeof(ChatPacket)) {
-                //    std::cerr << "[에러] CHAT 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-                //    continue;
-                //}
-
-                ChatPacket_CtoS* chatPacket = reinterpret_cast<ChatPacket_CtoS*>(pOverlappedEx->buffer);
-                std::string msg{ chatPacket->message,bytesTransferred - sizeof(PacketType) };
-
-                std::cout << "[채팅] 클라이언트 " << client->id << ": " << msg << std::endl;
-
-                //채팅 패킷을 모든 클라이언트에게 전송
-                for (stClientInfo* otherClient : clients) {
-                    if (!otherClient) continue;
-                    if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData(client, otherClient, msg.c_str(), bytesTransferred);
-                        std::cout << "send\n";
-                    }
-                }
-            }
+           //else if (*packetType == PacketType::CHAT) {
+           //    //if (bytesTransferred < sizeof(ChatPacket)) {
+           //    //    std::cerr << "[에러] CHAT 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+           //    //    continue;
+           //    //}
+           //
+           //    ChatPacket_CtoS* chatPacket = reinterpret_cast<ChatPacket_CtoS*>(pOverlappedEx->buffer);
+           //    std::string msg{ chatPacket->message,bytesTransferred - sizeof(PacketType) };
+           //
+           //    std::cout << "[채팅] 클라이언트 " << client->id << ": " << msg << std::endl;
+           //
+           //    //채팅 패킷을 모든 클라이언트에게 전송
+           //    for (stClientInfo* otherClient : clients) {
+           //        if (!otherClient) continue;
+           //        if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+           //            SendData(client, otherClient, msg.c_str(), bytesTransferred);
+           //            std::cout << "send\n";
+           //        }
+           //    }
+           //}
 
             RegisterRecv(client);  // 다시 수신 대기
         }
