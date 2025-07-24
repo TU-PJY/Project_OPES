@@ -94,3 +94,41 @@ constexpr unsigned int         DEVIL_HP			= 1000;
 constexpr float                DEVIL_SPEED		= 7.0f;
 constexpr unsigned int         DEVIL_DAMAGE		= 50;
 constexpr float                DEVIL_ATTACK		= 2.0f;
+
+// 보너스 & 페널티
+// 공통 보너스
+constexpr float BONUS_RPM = 1.2f;				// 무기 과열 제거 (Weapon Cooling), 무기 연사속도 +20%
+constexpr float BONUS_RELOAD = 0.7f;			// 빠른 장전 훈련 (Quick Reload Training), 장전 속도 30% 감소
+constexpr float BONUS_MOVE_SPEED = 1.15f;		// 아드레날린 러시 (Adrenaline Rush), 이동속도 +15%
+constexpr int   BONUS_GRENADE = 2;				// 전술 확장 벨트 (Tactical Extended Pocket), 수류탄 +2
+
+// 기관총병 보너스
+constexpr float BONUS_RECOIL_LMG = 0.5f;		// 반동 제어 숙련 (Recoil Mastery), 반동 -50%
+constexpr float BONUS_HP_LMG = 1.33f;			// 굳은 의지 (Strong Will), 체력 +33%
+
+// 저격병 보너스
+constexpr float BONUS_ADS_DAMAGE_DMR = 1.2f;    // 정조준 조준경 (ADS Scope Enhancement), 정조준 데미지 +20%
+constexpr float BONUS_ADS_SPEED_DMR = 1.5f;		// 민첩한 조작 (Agile Handling), 정조준 전환 속도 +50%
+
+// 엔지니어 보너스
+constexpr float BONUS_STRUCTURE_HP_ENG = 1.5f;  // 적응형 구조 (Adaption Structure), 설치 구조물 체력 +50%
+constexpr int   BONUS_PELLET_SG = 3;			// 집탄 모듈 확장 (Expanded Pellet Module), 산탄 수 +3
+
+
+// 공통 페널티
+constexpr float PENALTY_RPM = 0.85f;			// 무기 과열 (Weapon Overheating), 무기 연사속도 -15%
+constexpr float PENALTY_RELOAD = 1.3f;			// 급한 장전 (Interrupted Reload), 장전 속도 +30%
+constexpr float PENALTY_MOVE_SPEED = 0.85f;		// 피로 누적 (Fatigue Accumulation), 이동속도 -15%
+constexpr int   PENALTY_GRENADE = -2;			// 탄띠 손상 (Damaged Utility Belt), 수류탄 -2
+
+// 기관총병 페널티
+constexpr float PENALTY_RECOIL_LMG = 1.25f;		// 연사 불안정 (Spray Instability), 반동 +25%
+
+// 저격병 페널티
+constexpr float PENALTY_RECOIL_DMR = 1.2f;		// 정조준 불안정 (ADS Instability), 반동 +20%
+constexpr float PENALTY_ADS_RPM_DMR = 0.9f;		// 정조준 불안정 (ADS Instability), 정조준 연사속도 -10%
+constexpr float PENALTY_HIP_RPM_DMR = 0.75f;	// 빠른 지향의 대가 (Hipfire Penalty), 지향사격 연사속도 -25%
+
+// 엔지니어 페널티
+constexpr float PENALTY_STRUCTURE_HP_ENG = 0.7f;// 불안정한 설계 (Flawed Structure), 설치 구조물 체력 -30%
+constexpr float PENALTY_PELLET_DAMAGE_SG = 0.8f;// 불량 탄약 (Faulty Ammo), 샷건 펠릿당 데미지 -20%
