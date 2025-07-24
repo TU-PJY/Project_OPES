@@ -105,7 +105,7 @@ void Turret::Update(float Delta) {
 		headRotationDest.y += 90.0 * Delta;
 		headRotationDest.x = 0.0;
 
-		std::cout << headRotationDest.y << std::endl;
+		//std::cout << headRotationDest.y << std::endl;
 	}
 	
 	headRotation.x = Math::LerpDegrees(headRotation.x, headRotationDest.x, 15.0 * Delta);
