@@ -107,11 +107,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
-				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
-		}
+		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
+			Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 	}
 	else if (*type == PacketType::CLEAR_COUNT) {
 		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(recv_buffer);
@@ -123,23 +120,15 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
-				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
-		}
-		
+		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
+			Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
 	}
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
-
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
-				Found->InputState(aniPacket->animationType);
-		}
+		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
+			Found->InputState(aniPacket->animationType);
 	}
 
 	else if (*type == PacketType::MONSTER_STATE) {
@@ -147,11 +136,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 		std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
 
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster)
-				monster->InputState(packet->state);
-		}
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster)
+			monster->InputState(packet->state);
 	}
 
 	else if (*type == PacketType::MONSTER_MOVE) {
@@ -177,11 +163,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
 		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID<<"damage: "<< packet->attackHp << std::endl;
 		
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
-				monster->InputHP(packet->attackHp);
-		}
+		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
+			monster->InputHP(packet->attackHp);
+		
 		//처리부분
 	}
 	
@@ -189,12 +173,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(recv_buffer);
 		std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
 		
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other) {
-				other->InputHP(packet->attackHp);
-				static_cast<GameObject*>(GLOBAL.otherIndicator)->InputHP(packet->playerID, packet->attackHp);
-			}
+		if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other) {
+			other->InputHP(packet->attackHp);
+			static_cast<GameObject*>(GLOBAL.otherIndicator)->InputHP(packet->playerID, packet->attackHp);
 		}
 		
 		//처리부분
@@ -204,12 +185,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "[RANDOM_POSITION] ID: " << packet->monsterID << ", pos: (" << packet->x << ", " << packet->z
 			<< "), rotY: " << std::endl;
 
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
-				defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);
-		}
-
+		if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
+			defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);
+		
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_INSTALL) {
@@ -238,11 +216,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(recv_buffer);
 		std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
 
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
-				centerBuilding->InputHP(packet->damage);
-		}
+		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
+			centerBuilding->InputHP(packet->damage);
 		//처리부분
 	}
 	else if (*type == PacketType::GRENADE) {
@@ -288,7 +263,6 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::NEW_CLIENT) {
 		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(recv_buffer);
 		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
-
 		IsNewPlayer(newClientPacket->id);
 
 	//	std::cout << "ID: " << newClientPacket->id << std::endl;
@@ -305,6 +279,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 				<< " 위치: " << info.x << "," << info.y << "," << info.z
 				<< " 시선: " << info.angle_x << "," << info.angle_y << "," << info.angle_z
 				<< std::endl;
+			IsNewPlayer(info.id);
 
 			// TODO: ID에 해당하는 게임 객체 생성 또는 초기화
 		}
