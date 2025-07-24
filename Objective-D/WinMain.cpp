@@ -69,10 +69,14 @@ bool IsNewPlayer(unsigned int ID) {
 	if (!ID_List.contains(ID)) {
 		ID_List.insert(ID);
 		scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
-		auto indicator = scene.Find("otherIndicator");
-		if (!indicator)
-			GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
-		static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
+
+		{
+			std::lock_guard<std::mutex> lock (PacketMutex);
+			auto indicator = scene.Find("otherIndicator");
+			if (!indicator)
+				GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
+			static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
+		}
 
 		return true;
 	}
@@ -103,9 +107,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
-		
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
 			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 				Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
+		}
 	}
 	else if (*type == PacketType::CLEAR_COUNT) {
 		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(recv_buffer);
@@ -117,8 +123,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
 			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
 				Found->InputRotation(XMFLOAT3(viewAnglePacket->x, viewAnglePacket->y, viewAnglePacket->z));
+		}
 		
 	}
 
@@ -126,17 +135,23 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
-		
-		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
-			Found->InputState(aniPacket->animationType);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
+				Found->InputState(aniPacket->animationType);
+		}
 	}
 
 	else if (*type == PacketType::MONSTER_STATE) {
 		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(recv_buffer);
 
 		std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
-		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster) 
-			monster->InputState(packet->state);
+
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster)
+				monster->InputState(packet->state);
+		}
 	}
 
 	else if (*type == PacketType::MONSTER_MOVE) {
@@ -145,12 +160,15 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
 		//	<< packet->z << " angle:" << packet->angle_y << std::endl;
 
-		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
-			XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
-			float recvRotation = packet->angle_y;
-			monster->InputPosition(recvPosition);
-			monster->InputRotation(recvRotation);
-			monster->InputTargetID(packet->playerId);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
+				XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
+				float recvRotation = packet->angle_y;
+				monster->InputPosition(recvPosition);
+				monster->InputRotation(recvRotation);
+				monster->InputTargetID(packet->playerId);
+			}
 		}
 
 	}
@@ -158,18 +176,25 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::PTOM_DAMAGE) {
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
 		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID<<"damage: "<< packet->attackHp << std::endl;
-		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
-			monster->InputHP(packet->attackHp);
+		
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
+				monster->InputHP(packet->attackHp);
+		}
 		//처리부분
 	}
 	
 	else if (*type == PacketType::MTOP_DAMAGE) {
 		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(recv_buffer);
 		std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
-	
-		if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other) {
-			other->InputHP(packet->attackHp);
-			static_cast<GameObject*>(GLOBAL.otherIndicator)->InputHP(packet->playerID, packet->attackHp);
+		
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other) {
+				other->InputHP(packet->attackHp);
+				static_cast<GameObject*>(GLOBAL.otherIndicator)->InputHP(packet->playerID, packet->attackHp);
+			}
 		}
 		
 		//처리부분
@@ -179,8 +204,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "[RANDOM_POSITION] ID: " << packet->monsterID << ", pos: (" << packet->x << ", " << packet->z
 			<< "), rotY: " << std::endl;
 
-		if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
-			defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
+				defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);
+		}
 
 		//처리부분
 	}
@@ -192,7 +220,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 		xmfloat3 installPosition = xmfloat3(packet->posX, packet->posY, packet->posZ);
 		float installRotation = packet->rotY;
-		scene.AddObject(new Turret(installPosition, installRotation, true), "turret", LAYER3);
+
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			scene.AddObject(new Turret(installPosition, installRotation, true), "turret", LAYER3);
+		}
 
 		//처리부분
 	}
@@ -206,8 +238,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(recv_buffer);
 		std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
 
-		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
-			centerBuilding->InputHP(packet->damage);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
+				centerBuilding->InputHP(packet->damage);
+		}
 		//처리부분
 	}
 	else if (*type == PacketType::GRENADE) {
@@ -218,7 +253,10 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		xmfloat3 createPosition = xmfloat3(packet->posX, packet->posY, packet->posZ);
 		xmfloat3 rotation = xmfloat3(packet->rotX, packet->rotY, packet->rotZ);
 
-		scene.AddObject(new Grenade(createPosition, rotation, true), "grenade", LAYER3);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			scene.AddObject(new Grenade(createPosition, rotation, true), "grenade", LAYER3);
+		}
 
 		//처리부분
 	}
