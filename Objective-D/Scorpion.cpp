@@ -332,7 +332,7 @@ void Scorpion::InputHP(int currentHP) {
 			hpIndicator = nullptr;
 		}
 		currentState = SCOR_DEATH;
-		SendMonstertypePacket(2, currentState, ID);
+		//SendMonstertypePacket(2, currentState, ID);
 	}
 }
 

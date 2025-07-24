@@ -227,7 +227,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 	// 땅에서 나오는 상태일 경우 별도의 상태를 지정한다.
 	if (behaviorEnabledState)
 		currentState = PLANT_IDLE;
-	else 
+	else
 		currentState = PLANT_LIFT;
 
 	TerrainUtil terrainUtil;
@@ -267,6 +267,10 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 	frustumBound.Update(position, 10.0);
 
 	this->ID = ID;
+
+
+
+	std::cout << "==============================PLANT MONSTER " << ID << " ADDED ==========================================" << std::endl;
 }
 
 PlantMonster::~PlantMonster() {
@@ -428,7 +432,7 @@ void PlantMonster::InputHP(int currentHP) {
 			scene.DeleteObject(hpIndicator);
 			hpIndicator = nullptr;
 		}
-		SendMonstertypePacket(1, currentState, ID);
+		//SendMonstertypePacket(1, currentState, ID);
 	}
 }
 
