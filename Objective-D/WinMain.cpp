@@ -171,7 +171,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
 
 		if (packet->playerID == GLOBAL.myID)
-			if (auto me = scene.SearchLayer(LAYER_PLAYER, "player"); me);
+			if (auto me = scene.SearchLayer(LAYER_PLAYER, "player"); me)
+				me->InputHP(packet->attackHp);
 
 		else {
 			if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other) {
