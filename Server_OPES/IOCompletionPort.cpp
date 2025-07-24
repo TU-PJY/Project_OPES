@@ -1233,18 +1233,18 @@ void IOCompletionPort::WorkThread() {
                 std::cout << pkt->id<<" --  Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
                 if (defenseState) {
                     defenseMonsters[pkt->id].state = pkt->state;
-                    bool allDead = true;
-                    for (const MonsterData& m : defenseMonsters) {
-                        if (m.state!=3&&m.hp>0) { // 하나라도 살아있으면 allDead를 false로
-                            allDead = false;
-                            break;
-                        }
-                    }
-
-                    if (allDead) {
-                        defenseState = false;
-                        std::cout << "[알림] 모든 방어 몬스터가 사망하여 defenseState가 false로 전환되었습니다." << std::endl;
-                    }
+                   //bool allDead = true;
+                   //for (const MonsterData& m : defenseMonsters) {
+                   //    if (m.state!=3&&m.hp>0) { // 하나라도 살아있으면 allDead를 false로
+                   //        allDead = false;
+                   //        break;
+                   //    }
+                   //}
+                   //
+                   //if (allDead) {
+                   //    defenseState = false;
+                   //    std::cout << "[알림] 모든 방어 몬스터가 사망하여 defenseState가 false로 전환되었습니다." << std::endl;
+                   //}
                 }
                 else {
                     myMonsters[pkt->id].state = pkt->state;
@@ -1284,19 +1284,14 @@ void IOCompletionPort::WorkThread() {
                 std::cout <<"PTOM_DAMAGE Mid:" << pkt->monsterID<<", Pid:" << pkt->playerID <<", Attackhp:" << pkt->attackHp << std::endl;
                 int sendHP;
                 if (defenseState) {
-                    if (pkt->playerID == 0) {
-                        p++;
-                        std::cout << p << "회 받음" << std::endl;
-                    }
                     defenseMonsters[pkt->monsterID].hp -= pkt->attackHp;
-                    std::cout << "MonstersHP:" << defenseMonsters[pkt->monsterID].hp << std::endl;
                     if (defenseMonsters[pkt->monsterID].hp < 0)
                         defenseMonsters[pkt->monsterID].hp = 0;
-
+                    std::cout << "MonstersHP:" << defenseMonsters[pkt->monsterID].hp << std::endl;
 
                     bool allDead = true;
                     for (const MonsterData& m : defenseMonsters) {
-                        if (m.state != 3 && m.hp > 0) { // 하나라도 살아있으면 allDead를 false로
+                        if (m.hp > 0) { // 하나라도 살아있으면 allDead를 false로
                             allDead = false;
                             break;
                         }
