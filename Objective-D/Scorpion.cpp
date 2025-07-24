@@ -347,7 +347,7 @@ void Scorpion::InputState(unsigned int state) {
 		return;
 
 	currentState = state;
-	if (currentState = SCOR_DEATH) {
+	if (currentState == SCOR_DEATH) {
 		currentHP = 0;
 		if (hpIndicator) {
 			scene.DeleteObject(hpIndicator);
