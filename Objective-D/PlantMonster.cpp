@@ -350,11 +350,13 @@ void PlantMonster::GiveDamage(int damage) {
 			scene.DeleteObject(hpIndicator);
 			hpIndicator = nullptr;
 		}
+
+		currentHP = 0;
 		currentState = PLANT_DEATH;
 		SendMonstertypePacket(1, currentState, ID);
 
 		GLOBAL.map1DefenseEnemyRemained--;
-		if (GLOBAL.map1DefenseEnemyRemained == 0)
+		if (GLOBAL.map1DefenseEnemyRemained <= 0)
 			GLOBAL.map1DefenseState = false;
 	}
 }
@@ -377,6 +379,10 @@ void PlantMonster::InputState(unsigned int state) {
 		}
 		currentHP = 0;
 		SendMonstertypePacket(1, currentState, ID);
+
+		GLOBAL.map1DefenseEnemyRemained--;
+		if (GLOBAL.map1DefenseEnemyRemained <= 0)
+			GLOBAL.map1DefenseState = false;
 	}
 }
 
