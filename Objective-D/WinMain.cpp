@@ -107,10 +107,10 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	PacketType* type = reinterpret_cast<PacketType*>(recv_buffer);
 //	std::cout << typeid(type).name() << std::endl;
 
-	if (*type == PacketType::CHAT) {
+	if (false /**type == PacketType::CHAT*/) {
 		//ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(recv_buffer);
-		ChatPacket_StoC* chatPacket = reinterpret_cast<ChatPacket_StoC*>(recv_buffer);
-		std::string msg{ chatPacket->message,num_bytes - sizeof(PacketType) - sizeof(unsigned int) };
+		//ChatPacket_StoC* chatPacket = reinterpret_cast<ChatPacket_StoC*>(recv_buffer);
+		//std::string msg{ chatPacket->message,num_bytes - sizeof(PacketType) - sizeof(unsigned int) };
 		//std::cout << "[서버]채팅: " << chatPacket->id << ":" << msg << std::endl;
 	}
 
@@ -710,25 +710,25 @@ void SendGrenadePacket( float posX, float posY, float posZ, float rotX, float ro
 
 
 // 채팅 패킷 전송 함수
-void SendChatPacket(const char* message) {
-	if (enter_room) {
-		ChatPacket_CtoS chatPacket = {};
-		chatPacket.type = PacketType::CHAT;
-		int msg_size = strlen(message);
-		memcpy(chatPacket.message, message, msg_size);
-
-		WSABUF wsaBuf[1];
-		wsaBuf[0].buf = reinterpret_cast<char*>(&chatPacket);
-		wsaBuf[0].len = sizeof(PacketType) + msg_size;
-
-		WSAOVERLAPPED send_over = { 0 };
-
-		int result = WSASend(clientSocket, wsaBuf, 1, NULL, 0, &send_over, SendCallback);//동기 io
-		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-			std::cerr << "[클라이언트] 채팅 패킷 전송 오류\n";
-		}
-	}
-}
+//void SendChatPacket(const char* message) {
+//	if (enter_room) {
+//		ChatPacket_CtoS chatPacket = {};
+//		chatPacket.type = PacketType::CHAT;
+//		int msg_size = strlen(message);
+//		memcpy(chatPacket.message, message, msg_size);
+//
+//		WSABUF wsaBuf[1];
+//		wsaBuf[0].buf = reinterpret_cast<char*>(&chatPacket);
+//		wsaBuf[0].len = sizeof(PacketType) + msg_size;
+//
+//		WSAOVERLAPPED send_over = { 0 };
+//
+//		int result = WSASend(clientSocket, wsaBuf, 1, NULL, 0, &send_over, SendCallback);//동기 io
+//		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//			std::cerr << "[클라이언트] 채팅 패킷 전송 오류\n";
+//		}
+//	}
+//}
 
 
 int SCREEN_WIDTH = GetSystemMetrics(SM_CXSCREEN);
