@@ -1095,7 +1095,7 @@ void IOCompletionPort::WorkThread() {
             }
 
             std::cerr << "[연결 종료] 클라이언트 ID "
-                << client->id << " 접속 해제\n";
+                << client->id << " 접속 해제!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
 
             RemoveClient(client);              // client와 함께 overlapped 메모리도 해제됨
             // !! 여기서 pOverlappedEx 는 client 내부 메모리 → 더 이상 delete 금지 !!
