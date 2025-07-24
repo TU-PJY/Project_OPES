@@ -88,7 +88,7 @@ void Turret::Update(float Delta) {
 
 	if (currentShootDelay <= 0.0 && targeted) {
 		if (!createdByServer) {
-			target->GiveDamage(5);
+			//target->GiveDamage(5);
 			SendPtoMDamagePacket(GLOBAL.myID, target->GetID(), 5);
 			std::cout << "ID: " << target->GetID() << std::endl;
 			std::cout << "HP: " << target->GetHP() << std::endl;

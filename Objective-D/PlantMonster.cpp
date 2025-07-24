@@ -428,7 +428,7 @@ void PlantMonster::InputHP(int currentHP) {
 			scene.DeleteObject(hpIndicator);
 			hpIndicator = nullptr;
 		}
-		//SendMonstertypePacket(1, currentState, ID);
+		SendMonstertypePacket(1, currentState, ID);
 	}
 }
 

@@ -232,7 +232,7 @@ void Grenade::Update(float Delta) {
                         float t = (15.0 - distance) / 15.0;
                         t = std::clamp(t, 0.0f, 1.0f);
                         int damage = (int)(300.0 * t);
-                        monster->GiveDamage(damage);
+                        //monster->GiveDamage(damage);
                         SendPtoMDamagePacket(GLOBAL.myID, monster->GetID(), damage);
                     }
                 }

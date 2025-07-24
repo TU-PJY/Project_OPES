@@ -153,7 +153,6 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			monster->InputRotation(recvRotation);
 			monster->InputTargetID(packet->playerId);
 		}
-
 	}
 
 	else if (*type == PacketType::PTOM_DAMAGE) {
