@@ -105,18 +105,18 @@ void Turret::Update(float Delta) {
 
 			if (target->GetDeathState())
 				targeted = false;
+
+			if (currentShootDelay <= 0.0) {
+				if (!createdByServer) {
+					target->GiveDamage(10);
+					SendPtoMDamagePacket(0, currentTargetID, 10);
+				}
+				currentShootDelay += 0.2;
+				flameRenderTime += 0.05;
+			}
 		}
 		else
 			targeted = false;
-
-		if (currentShootDelay <= 0.0) {
-			if (!createdByServer) {
-				target->GiveDamage(10);
-				SendPtoMDamagePacket(0, currentTargetID, 10);
-			}
-			currentShootDelay += 0.2;
-			flameRenderTime += 0.05;
-		}
 	}
 
 	else {
