@@ -36,6 +36,8 @@
 #include <atomic>
 #include <condition_variable>
 
+#include "ModePack.h"
+
 
 //#include <iostream>
 //#include <conio.h>
@@ -109,10 +111,19 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 			Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 	}
+
 	else if (*type == PacketType::CLEAR_COUNT) {
 		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(recv_buffer);
 		std::cout << "[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
 
+		// 현재 접속한 사람이 모두 도착 지점에 들어가면 다음 스테이지로 넘어간다.
+		// 자신의 아이디는 ID_List에 없기 때문에 1을 더한 값으로 비교한다.
+		if (Packet->PlayerCount >= ID_List.size() + 1) {
+			{
+				std::lock_guard<std::mutex> lock(PacketMutex);
+				scene.SwitchMode(Level2::Start);
+			}
+		}
 		
 	}
 	else if (*type == PacketType::VIEW_ANGLE) {

@@ -22,7 +22,7 @@ DeviceSystem LoadSystem;
 bool DevMode = true;
 
 bool LoadMap1Resources = true;
-bool LoadMap2Resources = false;
+bool LoadMap2Resources = true;
 bool LoadMap3Resources = false;
 
 // 매쉬를 여기서 로드한다.

@@ -7,6 +7,7 @@
 #include "CenterBuilding.h"
 #include "MonsterSpawner.h"
 #include "EditHelper.h"
+#include "Player1st.h"
 
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
@@ -35,6 +36,9 @@ void Level2::Start() {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
+	else
+		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
+
 
 	//scene.AddObject(new MonsterSpawner(editMode), "monsterSpwaner", LAYER1, true);
 
