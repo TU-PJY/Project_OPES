@@ -138,6 +138,7 @@ typedef struct {
 
 	// skybox
 	Texture* skyBox;
+	Texture* skyBox2;
 
 	// map1
 	Texture* Palette1;

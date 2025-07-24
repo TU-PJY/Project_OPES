@@ -207,6 +207,7 @@ void LoadTexture(DeviceSystem& System) {
 		LoadTexture(TEX.Map3Palette, L"Resources//Image//Gradients_09.png", TEXTURE_TYPE_WIC);
 		LoadTexture(TEX.Map3RockColor, L"Resources//Image//map3-rock.png", TEXTURE_TYPE_WIC);
 		LoadTexture(TEX.Volcano, L"Resources//Image//volcano.png", TEXTURE_TYPE_WIC);
+		LoadTexture(TEX.skyBox2, L"Resources//Image//sky-2.png", TEXTURE_TYPE_WIC);
 	}
 
 	// roadblock

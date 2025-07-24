@@ -4,6 +4,7 @@
 #include "CameraController.h"
 #include "EditHelper.h"
 #include "Player1st.h"
+#include "SkyBox.h"
 
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
@@ -17,6 +18,7 @@ void Level3::Start() {
 	GLOBAL.map3DefenseState = true;
 	GLOBAL.map3DefenseEnemyRemained = 20;
 
+	scene.AddObject(new SkyBox, "skybox", LAYER1);
 	auto mapObject = scene.AddObject(new Map3, "map3", LAYER1, editMode);
 	GLOBAL.mapTerrain = mapObject->GetTerrain();
 
