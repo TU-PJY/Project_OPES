@@ -1235,7 +1235,7 @@ void IOCompletionPort::WorkThread() {
                     defenseMonsters[pkt->id].state = pkt->state;
                     bool allDead = true;
                     for (const MonsterData& m : defenseMonsters) {
-                        if (m.state!=3||m.hp>0) { // 하나라도 살아있으면 allDead를 false로
+                        if (m.state!=3&&m.hp>0) { // 하나라도 살아있으면 allDead를 false로
                             allDead = false;
                             break;
                         }
@@ -1296,7 +1296,7 @@ void IOCompletionPort::WorkThread() {
 
                     bool allDead = true;
                     for (const MonsterData& m : defenseMonsters) {
-                        if (m.state != 3 || m.hp > 0) { // 하나라도 살아있으면 allDead를 false로
+                        if (m.state != 3 && m.hp > 0) { // 하나라도 살아있으면 allDead를 false로
                             allDead = false;
                             break;
                         }
