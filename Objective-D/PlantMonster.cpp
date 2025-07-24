@@ -351,6 +351,7 @@ void PlantMonster::GiveDamage(int damage) {
 			hpIndicator = nullptr;
 		}
 		currentState = PLANT_DEATH;
+		SendMonstertypePacket(1, currentState, ID);
 
 		GLOBAL.map1DefenseEnemyRemained--;
 		if (GLOBAL.map1DefenseEnemyRemained == 0)
