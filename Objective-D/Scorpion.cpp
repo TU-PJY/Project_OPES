@@ -234,8 +234,10 @@ void Scorpion::updateAttack() {
 	if (scorpionFBX.GetTimeSectionPassed(40.3667 - 0.7)) {
 		if (!attackDid) {
 			if (currentTargetID == GLOBAL.myID) {
-				if (auto player = scene.Find("player"); player)
+				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
 					player->GiveDamage(20);
+					std::cout << "scorpion attack" << std::endl;
+				}
 			}
 			attackDid = true;
 		}

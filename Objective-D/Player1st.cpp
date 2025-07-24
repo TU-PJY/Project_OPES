@@ -337,6 +337,7 @@ void Player1st::InputHP(int currentHP) {
 	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
 	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
 	scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
+	std::cout << "PLAYER HP: " << this->currentHP << std::endl;
 }
 
 unsigned int Player1st::GetID() {
