@@ -51,7 +51,7 @@ void Turret::Update(float Delta) {
 	size_t size = scene.LayerSize(LAYER_MONSTER);
 	for (int i = 0; i < size; i++) {
 		if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
-			if (!monster->GetDeathState() && monster->CheckHit(lookRange)) {
+			if (!monster->GetDeathState() && monster->CheckHit(lookRange) && monster->GetBehaviorState()) {
 				xmfloat3 lookPosition = monster->GetPosition();
 				Ray newRay = Math::CalcRayVector(position, lookPosition);
 
