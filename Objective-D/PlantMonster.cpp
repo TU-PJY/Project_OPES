@@ -270,14 +270,20 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 }
 
 PlantMonster::~PlantMonster() {
+	static int count;
+
 	if (hpIndicator) 
 		scene.DeleteObject(hpIndicator);
 
 	if (defenseModeState) {
 		GLOBAL.map1DefenseEnemyRemained--;
-		if (GLOBAL.map1DefenseEnemyRemained == 0)
+		if (GLOBAL.map1DefenseEnemyRemained <= 0)
 			GLOBAL.map1DefenseState = false;
 	}
+
+	count++;
+
+	std::cout <<"삭제 횟수: " << count << std::endl;
 }
 
 // 모든 업데이트

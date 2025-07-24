@@ -69,6 +69,7 @@ void Turret::Update(float Delta) {
 
 					if (isLook) {
 						currentTargetID = monster->GetID();
+						std::cout << currentTargetID << std::endl;
 						target = monster;
 						targeted = true;
 					}
@@ -84,8 +85,6 @@ void Turret::Update(float Delta) {
 	Clamp::LimitValue(flameRenderTime, 0.0, CLAMP_DIR_LESS);
 
 	if (targeted) {
-		std::cout << currentTargetID << std::endl;
-
 		if (target) {
 			xmfloat3 lookPosition = target->GetPosition();
 			Ray newRay = Math::CalcRayVector(position, lookPosition);

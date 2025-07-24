@@ -237,7 +237,7 @@ void Scene::ProcessObjectCommand() {
 			delete *Object;
 			*Object = nullptr;
 			Object = ObjectList[L].erase(Object);
-			++SceneCommandCount;
+		//	++SceneCommandCount;
 			++Offset;
 		}
 
