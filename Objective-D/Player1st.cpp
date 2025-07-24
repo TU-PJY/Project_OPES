@@ -334,8 +334,8 @@ void Player1st::InputHP(int currentHP) {
 	if (currentState == STATE_DEATH) return;
 
 	this->currentHP = currentHP;
-	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
-	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, currentHP);
+	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
+	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
 	scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
 }
 
