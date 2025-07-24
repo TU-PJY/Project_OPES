@@ -70,27 +70,27 @@ constexpr unsigned int         SCORPION_DAMAGE	= 20;
 constexpr float                SCORPION_ATTACK	= 1.0f;
 
 // 스테이지 2
-// 몬스터1
+// Troll
 constexpr unsigned int         TROLL_HP			= 250;
 constexpr float                TROLL_SPEED		= 10.0f;
 constexpr unsigned int         TROLL_DAMAGE		= 25;
 constexpr float                TROLL_ATTACK		= 1.0f;
 
-// 몬스터2
+// Treant
 constexpr unsigned int         TREANT_HP		= 600;
 constexpr float                TREANT_SPEED		= 6.0f;
 constexpr unsigned int         TREANT_DAMAGE	= 75;
 constexpr float                TREANT_ATTACK	= 2.0f;
 
 // 스테이지 3
-// 몬스터1
+// Imp
 constexpr unsigned int         IMP_HP			= 300;
 constexpr float                IMP_SPEED		= 10.0f;
 constexpr unsigned int         IMP_DAMAGE		= 15;
 constexpr float                IMP_ATTACK		= 0.5f;
 
-// 몬스터2
-constexpr unsigned int         GAZER_HP			= 1000;
-constexpr float                GAZER_SPEED		= 7.0f;
-constexpr unsigned int         GAZER_DAMAGE		= 50;
-constexpr float                GAZER_ATTACK		= 2.0f;
+// Devil
+constexpr unsigned int         DEVIL_HP			= 1000;
+constexpr float                DEVIL_SPEED		= 7.0f;
+constexpr unsigned int         DEVIL_DAMAGE		= 50;
+constexpr float                DEVIL_ATTACK		= 2.0f;
