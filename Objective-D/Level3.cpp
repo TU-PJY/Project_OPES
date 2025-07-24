@@ -8,7 +8,7 @@
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
 void Level3::Start() {
-	bool editMode = false;
+	bool editMode = true;
 
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
 
@@ -17,7 +17,7 @@ void Level3::Start() {
 	GLOBAL.map3DefenseState = true;
 	GLOBAL.map3DefenseEnemyRemained = 20;
 
-	auto mapObject = scene.AddObject(new Map3, "map3", LAYER1, true);
+	auto mapObject = scene.AddObject(new Map3, "map3", LAYER1, editMode);
 	GLOBAL.mapTerrain = mapObject->GetTerrain();
 
 	if (editMode) {

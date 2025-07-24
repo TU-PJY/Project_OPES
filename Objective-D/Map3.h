@@ -23,11 +23,16 @@ private:
 	ScriptUtil CrystalPositionScript{};
 	std::vector<ObjectStruct> CrystalPosition{};
 
+	ScriptUtil mapBoundScript{};
+
 	TerrainUtil terrainUtil{};
+
+	std::vector<OOBB> mapOOBBdata{};
 
 public:
 	Map3() {
 		Load();
+		LoadOOBBdata();
 
 		Transform::Identity(TranslateMatrix);
 		Transform::Identity(RotateMatrix);
@@ -59,6 +64,10 @@ public:
 			switch (Event.Key) {
 			case 'R':
 				Load();
+				break;
+
+			case VK_F5:
+				LoadOOBBdata();
 				break;
 
 			//	// 시연용 임시 조작키
@@ -139,12 +148,44 @@ public:
 			Render3D(MESH.Crystal[Crystal.Index], TEX.Map3Palette);
 		}
 
+		for (auto& o : mapOOBBdata)
+			o.Render();
+
 		//// 테스트용 플레이어 모델
 		//BeginRender();
 		//Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
 		//Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);
 		//Transform::Rotate(RotateMatrix, -90.0, 0.0, 0.0);
 		//RenderFBX(MESH.TestMesh, TEX.TestTex);
+	}
+
+	void LoadOOBBdata() {
+		mapBoundScript.Release();
+		mapOOBBdata.clear();
+		mapBoundScript.Load("Resources//Scripts//map3//map3-oobb.xml");
+
+		auto loadOOBB = [&](CategoryPtr cat) {
+			xmfloat3 position;
+			xmfloat3 size;
+			float rotation;
+
+			position.x = mapBoundScript.LoadDigitData(cat, "x");
+			position.y = mapBoundScript.LoadDigitData(cat, "y");
+			position.z = mapBoundScript.LoadDigitData(cat, "z");
+
+			size.x = mapBoundScript.LoadDigitData(cat, "sx");
+			size.y = mapBoundScript.LoadDigitData(cat, "sy");
+			size.z = mapBoundScript.LoadDigitData(cat, "sz");
+
+			rotation = mapBoundScript.LoadDigitData(cat, "r");
+
+			OOBB oobb;
+			oobb.Update(position, size, xmfloat3(0.0, rotation, 0.0));
+
+			mapOOBBdata.emplace_back(oobb);
+		};
+
+		mapBoundScript.LoadAllData(loadOOBB);
 	}
 
 	void Load() {
