@@ -283,8 +283,9 @@ void PlantMonster::Update(float Delta) {
 	if (behaviorEnabledState) {
 		updateTargetDetect(Delta);
 		updateAttack(Delta);
-		updateDeath(Delta);
 	}
+
+	updateDeath(Delta);
 
 	updateIndicatorHP();
 	updateLiftFromGround(Delta);
@@ -430,4 +431,8 @@ bool PlantMonster::GetDeathState() {
 	if (currentState == PLANT_DEATH)
 		return true;
 	return false;
+}
+
+bool PlantMonster::GetBehaviorState() {
+	return behaviorEnabledState;
 }
