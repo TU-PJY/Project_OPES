@@ -424,9 +424,6 @@ void SendChooseJobPacket(unsigned int playerID,int job) {
 			std::cerr << "[클라이언트] 전송 실패\n";
 			context->cleanup(); // 실패 시 즉시 해제
 		}
-
-		//else
-			//std::cout << "전송: " << x << " " << y << " " << z << std::endl;
 	}
 }
 // 이동 패킷 전송 함수

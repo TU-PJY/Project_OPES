@@ -88,10 +88,17 @@ struct Room {
     std::vector<MonsterData> myMonsters;
     std::vector<MonsterData> defenseMonsters{ DEFENSE_MONSTER };
 
+    std::vector<MonsterData> myMonsters2;
+    std::vector<MonsterData> defenseMonsters2{ DEFENSE_MONSTER };
+
+    std::vector<MonsterData> myMonsters3;
+    std::vector<MonsterData> defenseMonsters3{ DEFENSE_MONSTER };
+
     int centerHp = CENTER_HP;
     int clearCount = 0;
     bool defenseState = true;
     bool isCreat = true;
+    int stageState = 1;
     std::shared_ptr<std::mutex> roomMutex = std::make_shared<std::mutex>();
 };
 

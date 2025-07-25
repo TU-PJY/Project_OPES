@@ -1100,6 +1100,7 @@ void IOCompletionPort::WorkThread() {
 
                     // clearCount 갱신
                     room.clearCount = arrivedCount;
+                    //여기 room.clearCount가 3이면 다음 스테이지?
 
                     // 모든 room 클라이언트에게 clearCount 전송
                     for (auto* c : room.clients) {
@@ -1446,6 +1447,9 @@ void IOCompletionPort::WorkThread() {
             else if (*packetType == PacketType::CHOOSE_JOB) {
 
                 ChooseJobPacket* pkt = reinterpret_cast<ChooseJobPacket*>(pOverlappedEx->buffer);
+
+                client->job = pkt->job;
+                
                 for (auto* otherClient : room.clients) {
                     if (!otherClient || otherClient == client) continue;
                     SendData_ChooseJobPacket(otherClient, pkt->playerID, pkt->job);
