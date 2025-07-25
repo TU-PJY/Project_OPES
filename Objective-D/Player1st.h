@@ -75,10 +75,12 @@ private:
 	OOBB              playerBound{};
 
 	// 현재 가지는 총기 객체 포인터
-	GameObject*       weaponPtr{};
+	GameObject* weaponPtr{};
 
 	// 플레이어 체력 인디케이터
-	GameObject*       IndicatorPtr{};
+	GameObject* IndicatorPtr{};
+
+	GameObject* installPtr{};
 
 	// 서버용 변수
 	// 30프레임 간격으로 패킷을 전송한다.

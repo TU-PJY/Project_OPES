@@ -136,6 +136,7 @@ public:
 	virtual int GetCurrentIndex() { return{}; }
 	virtual void ScrollRight() {}
 	virtual void ScrollLeft() {}
+	virtual void SetItem(int num) {}
 
 	// 서버 테스트
 	virtual void InputPosition(XMFLOAT3& value) {}

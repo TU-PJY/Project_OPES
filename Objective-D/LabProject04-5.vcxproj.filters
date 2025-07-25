@@ -302,6 +302,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Engineer Indicator ]">
       <UniqueIdentifier>{106e74f6-5db4-45cd-8f9a-f51e5e4f41f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]">
+      <UniqueIdentifier>{55787037-7ac5-49a4-ae5f-ea0018ca5dc8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -546,6 +549,9 @@
     </ClInclude>
     <ClInclude Include="Beacon.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]</Filter>
+    </ClInclude>
+    <ClInclude Include="InstallIndicator.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -797,6 +803,9 @@
     </ClCompile>
     <ClCompile Include="Beacon.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]</Filter>
+    </ClCompile>
+    <ClCompile Include="InstallIndicator.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

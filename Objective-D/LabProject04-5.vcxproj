@@ -187,6 +187,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="HP_Indicator.h" />
     <ClInclude Include="ImageShader.h" />
     <ClInclude Include="Imp.h" />
+    <ClInclude Include="InstallIndicator.h" />
     <ClInclude Include="LineBrush.h" />
     <ClInclude Include="LineShader.h" />
     <ClInclude Include="Map1DefenseIndicator.h" />
@@ -267,6 +268,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="HP_Indicator.cpp" />
     <ClCompile Include="ImageShader.cpp" />
     <ClCompile Include="Imp.cpp" />
+    <ClCompile Include="InstallIndicator.cpp" />
     <ClCompile Include="Level2.cpp" />
     <ClCompile Include="Level3.cpp" />
     <ClCompile Include="LineBrush.cpp" />

@@ -8,6 +8,7 @@
 #include "PlayerIndicator.h"
 #include "Turret.h"
 #include "Beacon.h"
+#include "InstallIndicator.h"
 
 #include "Grenade.h"
 
@@ -27,10 +28,16 @@ Player1st::Player1st(int characterType) {
 		break;
 
 	case CHARACTER_ENG:
+	{
 		weaponPtr = scene.AddObject(new Shotgun(this), "shotgun", LAYER4);
 		maxSpeed = CHARACTER_ENG_SPEED;
 		totalHP = CHARACTER_ENG_HP;
 		currentHP = CHARACTER_ENG_HP;
+
+		installPtr = scene.AddObject(new InstallIndicator, "inst", LAYER5);
+		if (installPtr)
+			installPtr->SetRenderState(false);
+	}
 		break;
 	}
 	this->characterType = characterType;
@@ -117,10 +124,39 @@ void Player1st::InputMouse(MouseEvent& Event) {
 	{
 		int delta = GET_WHEEL_DELTA_WPARAM(Event.wParam); // 휠 스크롤량 (+120, -120 등)
 
-		if (delta > 0) 
+		if (delta > 0) {
 			IndicatorPtr->ScrollRight();
-		else 
+
+			if (characterType == CHARACTER_ENG) {
+				if (IndicatorPtr->GetCurrentIndex() < 3) {
+					if ((IndicatorPtr->GetCurrentIndex() == 0 && turretCoolTime <= 0.0))
+						installPtr->SetRenderState(true);
+					else if ((IndicatorPtr->GetCurrentIndex() == 1 && beaconCoolTime <= 0.0))
+						installPtr->SetRenderState(true);
+					else
+						installPtr->SetRenderState(false);
+					installPtr->SetItem(IndicatorPtr->GetCurrentIndex());
+				}
+				else
+					installPtr->SetRenderState(false);
+			}
+		}
+		else {
 			IndicatorPtr->ScrollLeft();
+			if (characterType == CHARACTER_ENG) {
+				if (IndicatorPtr->GetCurrentIndex() < 3) {
+					if ((IndicatorPtr->GetCurrentIndex() == 0 && turretCoolTime <= 0.0))
+						installPtr->SetRenderState(true);
+					else if (IndicatorPtr->GetCurrentIndex() == 1 && beaconCoolTime <= 0.0)
+						installPtr->SetRenderState(true);
+					else
+						installPtr->SetRenderState(false);
+					installPtr->SetItem(IndicatorPtr->GetCurrentIndex());
+				}
+				else
+					installPtr->SetRenderState(false);
+			}
+		}
 
 		if (weaponPtr) weaponPtr->releaseTrigger();
 		triggerState = false;
@@ -162,8 +198,11 @@ void Player1st::InputMouse(MouseEvent& Event) {
 				if (turretCoolTime <= 0.0) {
 					float distance;
 					xmfloat3 createPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
+					if (distance > 8.0)
+						break;
 					scene.AddObject(new Turret(createPosition, currentRotation.y, false), "turret", LAYER3);
 					turretCoolTime = TURRET_INSTALL_COOLTIME;
+					installPtr->SetRenderState(false);
 				}
 				break;
 
@@ -171,8 +210,11 @@ void Player1st::InputMouse(MouseEvent& Event) {
 				if (beaconCoolTime <= 0.0) {
 					float distance;
 					xmfloat3 createPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
+					if (distance > 8.0)
+						break;
 					scene.AddObject(new Beacon(createPosition, currentRotation.y), "beacon", LAYER3);
 					beaconCoolTime = BEACON_INSTALL_COOLTIME;
+					installPtr->SetRenderState(false);
 				}
 			
 			break;
