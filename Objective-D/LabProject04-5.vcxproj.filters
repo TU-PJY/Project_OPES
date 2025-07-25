@@ -296,6 +296,12 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]">
       <UniqueIdentifier>{754a1ae3-725d-490b-85c3-6a3a3d3262d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]">
+      <UniqueIdentifier>{efcd859c-55d9-4aec-b5ca-bab372b5c0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Engineer Indicator ]">
+      <UniqueIdentifier>{106e74f6-5db4-45cd-8f9a-f51e5e4f41f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -537,6 +543,9 @@
     </ClInclude>
     <ClInclude Include="Imp.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Beacon.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -785,6 +794,9 @@
     </ClCompile>
     <ClCompile Include="Imp.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Beacon.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

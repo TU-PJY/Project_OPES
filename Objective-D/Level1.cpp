@@ -28,8 +28,8 @@ void Level1::Start() {
 
 	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.mapName = "map1";
-	GLOBAL.map1DefenseEnemyRemained = 20;
-	GLOBAL.map1DefenseState = true;
+	GLOBAL.DefenseEnemyRemained = 20;
+	GLOBAL.DefenseState = true;
 
 	FOG_DATA FogData{
 		{0.63, 0.77, 0.98}, // Fog Color
@@ -70,7 +70,7 @@ void Level1::Start() {
 			scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 		}
 
-		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(CHARACTER_ENG), "player", LAYER_PLAYER, true);
 
 		if(!skipDefenseMode)
 			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);

@@ -38,10 +38,14 @@ void HP_Indicator::Render() {
 	Math::BillboardLookAt(RotateMatrix, vec, position, camera.GetPosition());
 	Transform::Move(RotateMatrix, 0.0, 0.0, -0.01);
 	Transform::Scale(ScaleMatrix, length * renderSize, 0.15 * renderSize, 1.0);
-	SetColor(1.0, 0.0, 0.0);
+	SetColor(color);
 	Render3D(SYSRES.BillboardMesh, TEX.ColorTex);
 }
 
 void HP_Indicator::SetRenderState(bool Flag) {
 	renderState = Flag;
+}
+
+void HP_Indicator::SetIndColor(const xmfloat3& color) {
+	this->color = color;
 }

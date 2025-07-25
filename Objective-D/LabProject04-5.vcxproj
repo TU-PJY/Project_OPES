@@ -161,6 +161,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
   <ItemGroup>
     <ClInclude Include="..\Server_OPES\Packet.h" />
     <ClInclude Include="..\Server_OPES\protocol.h" />
+    <ClInclude Include="Beacon.h" />
     <ClInclude Include="BoundboxShader.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CameraController.h" />
@@ -241,6 +242,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="RandomUtil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Beacon.cpp" />
     <ClCompile Include="Blends.cpp" />
     <ClCompile Include="BoundboxShader.cpp" />
     <ClCompile Include="Bullet.cpp" />
