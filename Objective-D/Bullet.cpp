@@ -4,7 +4,7 @@
 #include "ClampUtil.h"
 #include "PickingUtil.h"
 
-void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
+void SendPtoMDamagePacket( unsigned int monsterID, int attackHp);
 
 Bullet::Bullet(int damage) {
 	bulletDamage = damage;
@@ -46,7 +46,7 @@ void Bullet::updateCollision() {
 		if(!GLOBAL.useServer)
 			ptr->GiveDamage(bulletDamage);
 		unsigned int ID = ptr->GetID();
-		SendPtoMDamagePacket(GLOBAL.myID, ID, bulletDamage);
+		SendPtoMDamagePacket( ID, bulletDamage);
 	}
 
 	// 최종적으로 삭제

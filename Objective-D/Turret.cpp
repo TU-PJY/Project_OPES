@@ -5,7 +5,7 @@
 #include "HP_Indicator.h"
 
 void SendEngineerInstallPacket(int type, unsigned int ID, float rotY, float posX, float posY, float posZ);
-void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
+void SendPtoMDamagePacket( unsigned int monsterID, int attackHp);
 
 class Smoke : public GameObject {
 public:
@@ -140,7 +140,7 @@ void Turret::Update(float Delta) {
 		if (!createdByServer) {
 			if(!GLOBAL.useServer)
 				target->GiveDamage(5);
-			SendPtoMDamagePacket(GLOBAL.myID, target->GetID(), 5);
+			SendPtoMDamagePacket( target->GetID(), 5);
 			std::cout << "ID: " << target->GetID() << std::endl;
 			std::cout << "HP: " << target->GetHP() << std::endl;
 		}

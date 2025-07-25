@@ -159,7 +159,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::PTOM_DAMAGE) {
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
-		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID<<"damage: "<< packet->attackHp << std::endl;
+		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID <<"damage: "<< packet->attackHp << std::endl;
 		
 		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
 			monster->InputHP(packet->attackHp);
@@ -224,7 +224,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 	else if (*type == PacketType::CENTER_HP) {
 		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(recv_buffer);
-		std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
+		//std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
 
 		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
 			centerBuilding->InputHP(packet->damage);
@@ -517,14 +517,13 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 		}
 	}
 }
-void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp) {
+void SendPtoMDamagePacket(unsigned int monsterID, int attackHp) {
 	if (enter_room) {
 		//static int errCount;
 		//static int sendCount;
 
 		PtoMDamagePacket pkt = {};
 		pkt.type = PacketType::PTOM_DAMAGE;
-		pkt.playerID = playerID;
 		pkt.monsterID = monsterID;
 		pkt.attackHp = attackHp;
 
@@ -537,7 +536,7 @@ void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int att
 		ZeroMemory(send_over, sizeof(WSAOVERLAPPED));
 
 		DWORD bytesSent = 0;
-		std::cout << "쏜애 " << playerID << " 몬스터:" << monsterID << " -> " << attackHp << std::endl;
+		std::cout << " 몬스터:" << monsterID << " -> " << attackHp << std::endl;
 		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, send_over, SendCallback);//비동기io
 		if (result == SOCKET_ERROR) {
 			int err = WSAGetLastError();

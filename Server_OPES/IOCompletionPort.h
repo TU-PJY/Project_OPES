@@ -111,7 +111,7 @@ public:
     void SendData_MonsterMove(stClientInfo* receiver, float x, float y, float z, float angle, unsigned int monsterId, unsigned int playerId);
     void SendData_MonsterMoveToAllClients(const MonsterData& m);
 
-    void SendData_PtoMDamagePacket(stClientInfo* receiver, unsigned int playerID, unsigned int monsterID, int attackHp);
+    void SendData_PtoMDamagePacket(stClientInfo* receiver, unsigned int monsterID, int attackHp);
     void SendData_MtoPDamagePacket(stClientInfo* receiver, unsigned int playerID, unsigned int monsterID, int attackHp);
     void SendData_EngineerInstallPacket(stClientInfo* receiver, int type, unsigned int ID, float rotY, float posX, float posY, float posZ);
     void SendData_EngineerObjectPacket(stClientInfo* receiver, unsigned int ID, int hp);
@@ -126,7 +126,6 @@ public:
     bool AddClient(stClientInfo* c); 
     void RemoveClient(stClientInfo* c);
 
-    void NPCAIThread();
 private:
     
     
