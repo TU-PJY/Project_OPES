@@ -10,6 +10,7 @@
 #include<algorithm>
 #include <chrono>
 #include<functional>
+#include <memory>
 #include "TerrainUtil.h"
 #include "ScriptUtil.h"
 #include"protocol.h"
@@ -58,16 +59,13 @@ struct stClientInfo {
     unsigned short animationType;
     int stageState;
     //bool modeState;
+    int job;
     bool prev;
     bool curr;
     int hp;
-    stOverlappedEx recvOverlapped;
-    stOverlappedEx sendOverlapped;
     int roomID;
     std::atomic<bool> alreadyRemoved{ false };
     stClientInfo() {
-        ZeroMemory(&recvOverlapped, sizeof(stOverlappedEx));
-        ZeroMemory(&sendOverlapped, sizeof(stOverlappedEx));
         socketClient = INVALID_SOCKET;
         roomID = 0;
         x = -130.0;
@@ -87,8 +85,16 @@ struct stClientInfo {
 struct Room {
     int roomID;
     std::vector<stClientInfo*> clients;
-    std::vector<MonsterData> monsters;
+    std::vector<MonsterData> myMonsters;
+    std::vector<MonsterData> defenseMonsters{ DEFENSE_MONSTER };
+
+    int centerHp = CENTER_HP;
+    int clearCount = 0;
+    bool defenseState = true;
+    bool isCreat = true;
+    std::shared_ptr<std::mutex> roomMutex = std::make_shared<std::mutex>();
 };
+
 class IOCompletionPort {
 public:
     IOCompletionPort();

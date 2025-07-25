@@ -57,6 +57,13 @@ constexpr float                BEACON_INSTALL_COOLTIME = 50.0f;
 
 // 캐릭터 LMG 기관총 사수 / DMR 지정사수 / ENG 엔지니어
 // HP 체력, SPEED 이동속도(km/h)
+
+//각캐릭터 정보
+constexpr int                  CHARACTER_MG = 0;
+constexpr int                  CHARACTER_DMR = 1;
+constexpr int                  CHARACTER_ENG = 2;
+
+
 constexpr unsigned int         CHARACTER_MG_HP = 100; //300; //  임시로 100으로 변경
 constexpr float                CHARACTER_MG_SPEED   = 8.0f;
 
@@ -73,7 +80,7 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 constexpr int                  DEFENSE_MONSTER = 20;
 
 //start 인원수 
-constexpr int				  MIN_PLAYER_COUNT = 3;
+constexpr int				  MIN_PLAYER_COUNT = 3;          
 
 // 스테이지 1
 // Plant Monster
