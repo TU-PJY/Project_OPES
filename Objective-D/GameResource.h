@@ -92,6 +92,7 @@ typedef struct {
 	Mesh* dot_machine_gun;
 	Mesh* shotgun;
 	Mesh* dot_shotgun;
+	Mesh* dmr;
 	Mesh* grenade;
 
 	Mesh* beacon;
@@ -165,6 +166,8 @@ typedef struct {
 
 	// turret Assst
 	Texture* turret;
+
+	Texture* scope;
 
 	// gun flame texture
 	Texture* gun_flame;

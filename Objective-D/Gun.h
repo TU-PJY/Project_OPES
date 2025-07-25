@@ -63,8 +63,8 @@ public:
 	bool getReloadState() override;
 
 
-	void updateGun(float Delta);
-	void updateFire(float Delta);
+	virtual void updateGun(float Delta);
+	virtual void updateFire(float Delta);
 	void updateAnimation(float Delta);
 	void updateReload(float Delta);
 	void Update(float Delta) override;

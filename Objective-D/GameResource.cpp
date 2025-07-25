@@ -149,6 +149,8 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.shotgun, "Resources//Models//weapon//shotgun.fbx");
 	LoadMultiStaticFBX(MESH.dot_shotgun, "Resources//Models//weapon//dot-shotgun.fbx");
 
+	LoadMultiStaticFBX(MESH.dmr, "Resources//Models//weapon//dmr.fbx");
+
 	LoadMultiStaticFBX(MESH.barrier, "Resources//Models//prop//barrier.fbx");
 	LoadMultiStaticFBX(MESH.beacon, "Resources//Models//prop//beacon.fbx");
 
@@ -251,6 +253,8 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.turret, L"Resources//Image//turret.png");
 
 	LoadTexture(TEX.poisonBall, L"Resources//Image//plant_monster_bullet.png");
+
+	LoadTexture(TEX.scope, L"Resources//Image//scope.png");
 
 	// map1 monster
 	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");

@@ -4,11 +4,13 @@
 #include "CameraUtil.h"
 #include "ClampUtil.h"
 #include "HeavyMachineGun.h"
+#include "DMR.h"
 #include "Shotgun.h"
 #include "PlayerIndicator.h"
 #include "Turret.h"
 #include "Beacon.h"
 #include "InstallIndicator.h"
+#include "Scope.h"
 
 #include "Grenade.h"
 
@@ -22,6 +24,14 @@ Player1st::Player1st(int characterType) {
 	switch (characterType) {
 	case CHARACTER_MG:
 		weaponPtr = scene.AddObject(new HeavyMachineGun(this), "mg", LAYER4);
+		maxSpeed = CHARACTER_MG_SPEED;
+		totalHP = CHARACTER_MG_HP;
+		currentHP = CHARACTER_MG_HP;
+		break;
+
+	case CHARACTER_DMR:
+		weaponPtr = scene.AddObject(new DMR(this), "dmr", LAYER4);
+		scopePtr = scene.AddObject(new Scope, "scope", LAYERUI);
 		maxSpeed = CHARACTER_MG_SPEED;
 		totalHP = CHARACTER_MG_HP;
 		currentHP = CHARACTER_MG_HP;
@@ -104,9 +114,14 @@ void Player1st::InputMouseMotion(MotionEvent& Event) {
 		GetCapture();
 
 		// 정조준 시 감도를 절반으로 낮춘다
+		// 지정사수의 경우 감도를 더 낮춘다
 		float sensivity = 0.08;
-		if (zoomState)  
-			sensivity = 0.04;
+		if (zoomState) {
+			if(characterType == CHARACTER_DMR)
+				sensivity = 0.02;
+			else
+				sensivity = 0.04;
+		}
 		XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, sensivity);
 		UpdateMotionRotation(currentRotation, Delta.x, Delta.y);
 
@@ -140,7 +155,11 @@ void Player1st::InputMouse(MouseEvent& Event) {
 				else
 					installPtr->SetRenderState(false);
 			}
+
+			else if (characterType == CHARACTER_DMR)
+				scopePtr->SetRenderState(false);
 		}
+
 		else {
 			IndicatorPtr->ScrollLeft();
 			if (characterType == CHARACTER_ENG) {
@@ -156,6 +175,9 @@ void Player1st::InputMouse(MouseEvent& Event) {
 				else
 					installPtr->SetRenderState(false);
 			}
+
+			else if (characterType == CHARACTER_DMR)
+				scopePtr->SetRenderState(false);
 		}
 
 		if (weaponPtr) weaponPtr->releaseTrigger();
@@ -244,9 +266,13 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		if (weaponPtr && !weaponPtr->getReloadState()) {
 			weaponPtr->enableZoom();
 			zoomState = true;
-			destFOV = -20.0;
+			destFOV = -45.0;
 			currentSpeed = maxSpeed * 0.5;
+
+			if (characterType == CHARACTER_DMR)
+				scopePtr->SetRenderState(true);
 		}
+		
 		break;
 
 	case WM_RBUTTONUP:
@@ -254,6 +280,8 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		zoomState = false;
 		destFOV = 0.0;
 		currentSpeed = maxSpeed;
+		if (characterType == CHARACTER_DMR)
+			scopePtr->SetRenderState(false);
 		break;
 	break;
 	}
@@ -274,6 +302,9 @@ void Player1st::InputKey(KeyEvent& Event) {
 				if (weaponPtr->getReloadState()) {
 					zoomState = false;
 					destFOV = 0.0;
+
+					if (characterType == CHARACTER_DMR)
+						scopePtr->SetRenderState(false);
 				}
 			}
 			break;

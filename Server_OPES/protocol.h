@@ -15,11 +15,12 @@ constexpr float                MG_RELOAD_TIME  = 3.0f;
 constexpr unsigned int         MG_MAGAZINE	   = 100;
 
 // ÁöÁ¤ »ç¼ö ¼ÒÃÑ
-constexpr unsigned int         DMR_DAMAGE_HIP	= 40;
-constexpr float                DMR_RPM_HIP		= 120.0f;
-constexpr unsigned int         DMR_DAMAGE_ADS	= 300;
+constexpr float                DMR_RECOIL       = 13.0;
+constexpr float                DMR_RECOIL_BACK   = 0.2f;
+constexpr float                DMR_SHOOT_DELAY   = 0.7f;
+constexpr unsigned int         DMR_DAMAGE	    = 70;
 constexpr float                DMR_RPM_ADS		= 24.0f;
-constexpr float                DMR_RELOAD		= 2.0f;
+constexpr float                DMR_RELOAD_TIME  = 2.0f;
 constexpr unsigned int         DMR_MAGAZINE		= 10;
 
 // ¼¦°Ç

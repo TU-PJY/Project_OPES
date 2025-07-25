@@ -305,6 +305,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]">
       <UniqueIdentifier>{55787037-7ac5-49a4-ae5f-ea0018ca5dc8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Scope ]">
+      <UniqueIdentifier>{233eea8c-2cbe-46fd-9867-2c750228bd80}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -552,6 +555,12 @@
     </ClInclude>
     <ClInclude Include="InstallIndicator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Scope.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Scope ]</Filter>
+    </ClInclude>
+    <ClInclude Include="DMR.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ DMR ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -806,6 +815,12 @@
     </ClCompile>
     <ClCompile Include="InstallIndicator.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Scope.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Scope ]</Filter>
+    </ClCompile>
+    <ClCompile Include="DMR.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ DMR ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
