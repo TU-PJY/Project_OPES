@@ -59,6 +59,7 @@ struct stClientInfo {
     unsigned short animationType;
     int stageState;
     //bool modeState;
+    int job;
     bool prev;
     bool curr;
     int hp;
@@ -90,6 +91,7 @@ struct Room {
     int centerHp = CENTER_HP;
     int clearCount = 0;
     bool defenseState = true;
+    bool isCreat = true;
     std::shared_ptr<std::mutex> roomMutex = std::make_shared<std::mutex>();
 };
 

@@ -232,7 +232,7 @@ void IOCompletionPort::RandomPositionThread() {
         
 
         for (auto& [roomID, room] : rooms) {
-            if (!room.defenseState)
+            if (!room.isCreat)
                 continue;
 
             for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
@@ -268,7 +268,7 @@ void IOCompletionPort::RandomPositionThread() {
 
             }
 
-            //room.defenseState = false;
+            room.isCreat = false;
             std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
         }
     }
@@ -361,6 +361,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     newRoom.defenseState = true;
     rooms[newRoom.roomID] = std::move(newRoom);
     std::cout << "create room!: " << newRoom.roomID << std::endl;
+
     if (randomTreadFlag ) {
         randomPositionThread = std::thread([this]() { RandomPositionThread(); });
         randomTreadFlag = false;
