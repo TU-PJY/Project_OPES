@@ -493,6 +493,7 @@ void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
         &sendOver->overlapped,NULL);
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        std::cout << "ERROR-SendData_EnterRoom to ID: " << receiver->id << " / room: " << receiver->roomID << std::endl;
         closesocket(receiver->socketClient);
         RemoveClient(receiver);
         delete packet;
