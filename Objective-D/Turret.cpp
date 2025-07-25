@@ -7,6 +7,35 @@
 void SendEngineerInstallPacket(int type, unsigned int ID, float rotY, float posX, float posY, float posZ);
 void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
 
+class Smoke : public GameObject {
+public:
+	xmfloat3 position{};
+	float currentTime{};
+	int currentFrame{};
+	float opacity{ 1.0 };
+
+	Smoke(const xmfloat3& createPosition) {
+		position = createPosition;
+	}
+
+	void Update(float Delta) {
+		currentTime += Delta * 20.0;
+		currentFrame = (int)currentTime;
+		opacity -= Delta;
+		if (currentFrame > 24)
+			scene.DeleteObject(this);
+	}
+
+	void Render() {
+		Vector vec{};
+		BeginRender();
+		Transform::Move(TranslateMatrix, position);
+		Math::BillboardLookAt(RotateMatrix, vec, position, camera.GetPosition());
+		Transform::Scale(ScaleMatrix, 8.0, 8.0, 8.0);
+		Render3D(SYSRES.BillboardMesh, TEX.smoke[currentFrame], opacity);
+	}
+};
+
 Turret::Turret(const xmfloat3& createPosition, float createRotation, bool createFromServer) {
 	position = createPosition;
 	rotation.y = createRotation;
@@ -32,7 +61,27 @@ void Turret::updateBound() {
 }
 
 void Turret::Update(float Delta) {
-	static int count;
+	updateBound();
+
+	if (destroyState) {
+		flyAcc -= Delta * 0.4;
+		heightOffset -= flyAcc;
+		destroyTime += Delta;
+		if (destroyTime >= 1.0)
+			scene.DeleteObject(this);
+		return;
+	}
+
+	if (!operationStart) {
+		heightOffset -= Delta * 0.5;
+		if (heightOffset <= 0.0) {
+			heightOffset = 0.0;
+			operationStart = true;
+		}
+	}
+
+	if(!operationStart)
+		return;
 
 	currentHP -= Delta;
 
@@ -44,12 +93,13 @@ void Turret::Update(float Delta) {
 	if (currentHP <= 0.0) {
 		scene.DeleteObject(hpInd);
 		hpInd = nullptr;
-		scene.DeleteObject(this);
+		destroyState = true;
+		flyAcc = 0.2;
+		xmfloat3 createPosition = xmfloat3(position.x, position.y + 1.0, position.z);
+		scene.AddObject(new Smoke(createPosition), "smoke", LAYER4);
+		//scene.DeleteObject(this);
 		return;
 	}
-
-	updateBound();
-
 
 	currentShootDelay -= Delta;
 	Clamp::LimitValue(currentShootDelay, 0.0, CLAMP_DIR_LESS);
@@ -88,7 +138,8 @@ void Turret::Update(float Delta) {
 
 	if (currentShootDelay <= 0.0 && targeted) {
 		if (!createdByServer) {
-			//target->GiveDamage(5);
+			if(!GLOBAL.useServer)
+				target->GiveDamage(5);
 			SendPtoMDamagePacket(GLOBAL.myID, target->GetID(), 5);
 			std::cout << "ID: " << target->GetID() << std::endl;
 			std::cout << "HP: " << target->GetHP() << std::endl;
@@ -124,6 +175,7 @@ void Turret::Render() {
 	Render3D(MESH.turretBottom, TEX.turret);
 
 	Transform::Rotate(TranslateMatrix, headRotation);
+	Transform::Move(TranslateMatrix, 0.0, -heightOffset, 0.0);
 	Render3D(MESH.turretHead, TEX.turret);
 
 	if (flameRenderTime > 0.0) {

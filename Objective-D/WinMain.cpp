@@ -61,7 +61,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 
-bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
@@ -96,14 +96,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	PacketType* type = reinterpret_cast<PacketType*>(recv_buffer);
 //	std::cout << typeid(type).name() << std::endl;
 
-	if (false /**type == PacketType::CHAT*/) {
-		//ChatPacket* chatPacket = reinterpret_cast<ChatPacket*>(recv_buffer);
-		//ChatPacket_StoC* chatPacket = reinterpret_cast<ChatPacket_StoC*>(recv_buffer);
-		//std::string msg{ chatPacket->message,num_bytes - sizeof(PacketType) - sizeof(unsigned int) };
-		//std::cout << "[서버]채팅: " << chatPacket->id << ":" << msg << std::endl;
-	}
-
-	else if (*type == PacketType::MOVE) {
+	if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
@@ -280,7 +273,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::NEW_CLIENT) {
 		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(recv_buffer);
-		std::cout << "새로운 클라들어옴!:" << newClientPacket->id <<std::endl;
+		std::cout << "[접속] 새로운 클라들어옴! ID: " << newClientPacket->id <<std::endl;
 		IsNewPlayer(newClientPacket->id);
 
 	//	std::cout << "ID: " << newClientPacket->id << std::endl;
@@ -293,7 +286,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(recv_buffer);
 		for (unsigned int i = 0; i < pkt->count; ++i) {
 			auto& info = pkt->clients[i];
-			std::cout << "[초기화] 클라이언트 ID" << info.id << std::endl;
+			std::cout << "[초기화] 현재 접속한 클라이언트 ID: " << info.id << std::endl;
 			IsNewPlayer(info.id);
 
 			// TODO: ID에 해당하는 게임 객체 생성 또는 초기화

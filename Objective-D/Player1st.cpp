@@ -362,6 +362,8 @@ void Player1st::GiveDamage(int damage) {
 		currentHP -= damage;
 		if (currentHP < 0)
 			currentHP = 0;
+
+		if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
 	}
 
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.
