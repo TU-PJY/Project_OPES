@@ -275,6 +275,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//처리부분
 	}
 
+	else if (*type == PacketType::CHOOSE_JOB) {
+		ChooseJobPacket* packet = reinterpret_cast<ChooseJobPacket*>(recv_buffer);
+		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << std::endl;
+
+		//처리부분
+	}
 
 
 	else if (*type == PacketType::ENTER) {
@@ -394,6 +400,33 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 	// 콜백 실행 루프
 	while (NetRunning.load()) {
 		SleepEx(INFINITE, TRUE); // RecvCallback, SendCallback 실행됨
+	}
+}
+void SendChooseJobPacket(unsigned int playerID,int job) {
+	if (enter_room) {
+		auto* pkt = new ChooseJobPacket{ PacketType::CHOOSE_JOB, playerID, job};
+
+		auto* context = new SendContext{};
+		ZeroMemory(context, sizeof(SendContext));
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+		wsaBuf.len = sizeof(ChooseJobPacket);
+
+		context->cleanup = [pkt, context]() {
+			delete pkt;
+			delete context;
+			};
+
+		DWORD bytesSent = 0;
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+			std::cerr << "[클라이언트] 전송 실패\n";
+			context->cleanup(); // 실패 시 즉시 해제
+		}
+
+		//else
+			//std::cout << "전송: " << x << " " << y << " " << z << std::endl;
 	}
 }
 // 이동 패킷 전송 함수
