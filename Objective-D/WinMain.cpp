@@ -62,7 +62,7 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
@@ -149,6 +149,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster)
 				monster->InputState(packet->state);
+
 		}
 	}
 
