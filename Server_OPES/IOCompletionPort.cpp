@@ -22,6 +22,7 @@ ScriptUtil monsterDataScript;
 // 현재 로드된 몬스터 생성 타입 및 위치
 std::vector<MonsterData> monsterData;
 
+std::mutex roomMapMutex;
 //std::vector<MonsterData> myMonsters;//임시
 
 //std::vector<MonsterData> defenseMonsters(DEFENSE_MONSTER);//임시
@@ -230,46 +231,48 @@ void IOCompletionPort::RandomPositionThread() {
 
     while (isRunning) {
         
+        {
+            std::lock_guard<std::mutex> lock(roomMapMutex);
+            for (auto& [roomID, room] : rooms) {
+                if (!room.isCreat)
+                    continue;
 
-        for (auto& [roomID, room] : rooms) {
-            if (!room.isCreat)
-                continue;
+                for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
 
-            for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
-                
-                std::this_thread::sleep_for(std::chrono::seconds(2));
+                    std::this_thread::sleep_for(std::chrono::seconds(2));
 
-                for (auto* client : room.clients) {
-                    if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-                        continue;
+                    for (auto* client : room.clients) {
+                        if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
+                            continue;
 
-                    DefenseRandomPacket* packet = new DefenseRandomPacket{};
-                    packet->type = PacketType::RANDOM_POSITION;
-                    packet->monsterID = monsterId;
-                    packet->x = room.defenseMonsters[monsterId].createPointX;
-                    packet->z = room.defenseMonsters[monsterId].createPointZ;
+                        DefenseRandomPacket* packet = new DefenseRandomPacket{};
+                        packet->type = PacketType::RANDOM_POSITION;
+                        packet->monsterID = monsterId;
+                        packet->x = room.defenseMonsters[monsterId].createPointX;
+                        packet->z = room.defenseMonsters[monsterId].createPointZ;
 
-                    stOverlappedEx* sendOver = new stOverlappedEx{};
-                    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-                    sendOver->operation = IOOperation::SEND;
-                    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-                    sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-                    sendOver->cleanup = [packet, sendOver]() {
-                        delete packet;
-                        delete sendOver;
-                        };
+                        stOverlappedEx* sendOver = new stOverlappedEx{};
+                        ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+                        sendOver->operation = IOOperation::SEND;
+                        sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+                        sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+                        sendOver->cleanup = [packet, sendOver]() {
+                            delete packet;
+                            delete sendOver;
+                            };
 
-                    int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
-                    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-                        std::cerr << "[에러] 랜덤 위치 전송 실패 (room " << roomID << "): " << WSAGetLastError() << std::endl;
-                        RemoveClient(client);
+                        int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
+                        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+                            std::cerr << "[에러] 랜덤 위치 전송 실패 (room " << roomID << "): " << WSAGetLastError() << std::endl;
+                            RemoveClient(client);
+                        }
                     }
+
                 }
 
+                room.isCreat = false;
+                std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
             }
-
-            room.isCreat = false;
-            std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
         }
     }
 }
@@ -359,7 +362,11 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     newRoom.centerHp = CENTER_HP;
     newRoom.clearCount = 0;
     newRoom.defenseState = true;
-    rooms[newRoom.roomID] = std::move(newRoom);
+    //rooms[newRoom.roomID] = std::move(newRoom);
+    {
+        std::lock_guard<std::mutex> lock(roomMapMutex);
+        rooms[newRoom.roomID] = std::move(newRoom);
+    }
     std::cout << "create room!: " << newRoom.roomID << std::endl;
 
     if (randomTreadFlag ) {
