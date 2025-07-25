@@ -224,7 +224,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 	else if (*type == PacketType::CENTER_HP) {
 		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(recv_buffer);
-		std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
+		//std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
 
 		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
 			centerBuilding->InputHP(packet->damage);
@@ -336,7 +336,7 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 
 	clientSocket = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP, 0, 0, WSA_FLAG_OVERLAPPED);
 
-	BOOL bNoDelay = FALSE;
+	BOOL bNoDelay = TRUE;
 	setsockopt(clientSocket, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
 
 	SOCKADDR_IN serverAddr;

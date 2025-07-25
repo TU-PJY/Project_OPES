@@ -1033,7 +1033,7 @@ void IOCompletionPort::WorkThread() {
             setsockopt(newClient->socketClient, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT,
                 (char*)&listenSocket, sizeof(listenSocket));
             // 소켓 옵션 설정
-            BOOL bNoDelay = FALSE;
+            BOOL bNoDelay = TRUE;
             setsockopt(newClient->socketClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
 
             CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
@@ -1287,10 +1287,11 @@ void IOCompletionPort::WorkThread() {
                 }
             }
             else if (*packetType == PacketType::PTOM_DAMAGE) {
-                //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-                //    continue;
-                //}
+                if (bytesTransferred != sizeof(PtoMDamagePacket)) {
+                    std::cerr << "[에러] PTOM_DAMAGE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+                    continue;
+                }
+                std::cout << "[DEBUG] 받은 바이트 수: " << bytesTransferred << std::endl;
                 PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(pOverlappedEx->buffer);
                 std::cout <<"PTOM_DAMAGE Mid:" << pkt->monsterID <<", Attackhp:" << pkt->attackHp << std::endl;
                 int sendHP;
@@ -1317,6 +1318,12 @@ void IOCompletionPort::WorkThread() {
                             std::cout << "[알림] 모든 방어 몬스터가 사망하여 defenseState가 false로 전환되었습니다." << std::endl;
                         }
                         sendHP = defenseMonsters[pkt->monsterID].hp;
+                        for (stClientInfo* otherClient : clients) {
+                            if (!otherClient) continue;
+                            if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                                SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                            }
+                        }
                     }
                 }
                 else {
@@ -1326,15 +1333,16 @@ void IOCompletionPort::WorkThread() {
                         myMonsters[pkt->monsterID].hp = 0;
 
                     sendHP = myMonsters[pkt->monsterID].hp;
-                }
-                // 데미지 패킷을 모든 클라이언트에게 전송
-                //if (0 <= pkt->monsterID && pkt->monsterID <= 19) 
-                for (stClientInfo* otherClient : clients) {
-                    if (!otherClient) continue;
-                    if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                    for (stClientInfo* otherClient : clients) {
+                        if (!otherClient) continue;
+                        if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        }
                     }
                 }
+                // 데미지 패킷을 모든 클라이언트에게 전송
+                
+               
             }
 
             else if (*packetType == PacketType::MTOP_DAMAGE) {
