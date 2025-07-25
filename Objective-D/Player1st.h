@@ -47,6 +47,9 @@ private:
 	float    maxSpeed{};
 	float    currentSpeed{};
 
+	// 플레이어 이동 속도 가감속 속도
+	float    speedAcc{};
+
 	// 체력
 	int totalHP{};
 	int currentHP{};

@@ -13,7 +13,7 @@ namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
 
 void Level2::Start() {
-	bool editMode = true;
+	bool editMode = false;
 
 	scene.SetupMode("Level2", Destructor, ControlObjectList);
 

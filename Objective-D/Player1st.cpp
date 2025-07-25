@@ -20,14 +20,14 @@ Player1st::Player1st(int characterType) {
 	switch (characterType) {
 	case CHARACTER_MG:
 		weaponPtr = scene.AddObject(new HeavyMachineGun(this), "mg", LAYER4);
-		maxSpeed = 32.0;
+		maxSpeed = 8.0;
 		totalHP = 100;
 		currentHP = 100;
 		break;
 
 	case CHARACTER_ENG:
 		weaponPtr = scene.AddObject(new Shotgun(this), "shotgun", LAYER4);
-		maxSpeed = 32.0;
+		maxSpeed = 10.0;
 		totalHP = 100;
 		currentHP = 100;
 		break;
@@ -46,6 +46,12 @@ Player1st::Player1st(int characterType) {
 			IndicatorPtr->InputAmmo(totalAmmo, currentAmmo);
 		}
 	}
+
+	// 2번 맵은 미끄러워서 가감속이 느려짐
+	if (GLOBAL.mapName.compare("map2") == 0)
+		speedAcc = 1.0;
+	else
+		speedAcc = 10.0;
 }
 
 Player1st::~Player1st() {
@@ -208,19 +214,19 @@ void Player1st::updateMove(float Delta) {
 
 	// 앞뒤 가속/감속
 	if (moveState[FRONT] && !moveState[BACK])
-		forwardSpeed = std::lerp(forwardSpeed, currentSpeed, 10.0 * Delta);
+		forwardSpeed = std::lerp(forwardSpeed, currentSpeed, speedAcc * Delta);
 	else if (!moveState[FRONT] && moveState[BACK])
-		forwardSpeed = std::lerp(forwardSpeed, -currentSpeed, 10.0 * Delta);
+		forwardSpeed = std::lerp(forwardSpeed, -currentSpeed, speedAcc * Delta);
 	else 
-		forwardSpeed = std::lerp(forwardSpeed, 0.0, 10.0 * Delta);
+		forwardSpeed = std::lerp(forwardSpeed, 0.0, speedAcc * Delta);
 
 	// 좌우 가속/감속
 	if (moveState[RIGHT] && !moveState[LEFT])
-		strafeSpeed = std::lerp(strafeSpeed, currentSpeed, 10.0 * Delta);
+		strafeSpeed = std::lerp(strafeSpeed, currentSpeed, speedAcc * Delta);
 	else if (!moveState[RIGHT] && moveState[LEFT])
-		strafeSpeed = std::lerp(strafeSpeed, -currentSpeed, 10.0 * Delta);
+		strafeSpeed = std::lerp(strafeSpeed, -currentSpeed, speedAcc * Delta);
 	else
-		strafeSpeed = std::lerp(strafeSpeed, 0.0, 10.0 * Delta);
+		strafeSpeed = std::lerp(strafeSpeed, 0.0, speedAcc * Delta);
 
 	// 맵 바운드와 충돌을 체크하면서 이동
 	Math::MoveWithSlide(playerPosition, currentRotation.y, forwardSpeed, strafeSpeed, playerSphere, GLOBAL.mapOOBBdata, Delta);
