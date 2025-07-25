@@ -270,12 +270,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		GLOBAL.myID = EnterPacket->myID;
 		std::cout << "접속 아이디: " << GLOBAL.myID << std::endl;
 
-		if (0 != EnterPacket->roomID) {
-			enter_room = true;
-		}
-		else {
-			std::cout << "대기중.." << std::endl;
-		}
+		//if (0 != EnterPacket->roomID) {
+		//	enter_room = true;
+		//}
+		//else {
+		//	std::cout << "대기중.." << std::endl;
+		//}
 	}
 
 	else if (*type == PacketType::NEW_CLIENT) {
