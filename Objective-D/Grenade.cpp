@@ -234,7 +234,7 @@ void Grenade::Update(float Delta) {
                         int damage = (int)(300.0 * t);
                         if(!GLOBAL.useServer)
                             monster->GiveDamage(damage);
-                        SendPtoMDamagePacket( monster->GetID(), damage);
+                        SendPtoMDamagePacket(monster->GetID(), damage);
                     }
                 }
             }
