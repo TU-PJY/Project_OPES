@@ -62,11 +62,11 @@ public:
 	void InputKey(KeyEvent& Event) override {
 		if (Event.Type == WM_KEYDOWN) {
 			switch (Event.Key) {
-			case 'R':
-				Load();
-				break;
+			//case 'R':
+			//	Load();
+			//	break;
 
-			case VK_F5:
+			case 'R':
 				LoadOOBBdata();
 				break;
 
