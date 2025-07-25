@@ -287,6 +287,15 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Turret ]">
       <UniqueIdentifier>{5f96a1cf-5efe-4677-8ede-cb9fa9713e60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]">
+      <UniqueIdentifier>{1044add2-7108-4d2c-b6d5-575cfcc08290}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Gazer ]">
+      <UniqueIdentifier>{ecc4ba81-d597-4ad8-8fea-6ee0e88372d4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]">
+      <UniqueIdentifier>{754a1ae3-725d-490b-85c3-6a3a3d3262d8}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -522,6 +531,12 @@
     </ClInclude>
     <ClInclude Include="Turret.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Turret ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Gazer.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Gazer ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Imp.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -764,6 +779,12 @@
     </ClCompile>
     <ClCompile Include="Turret.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Turret ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Gazer.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Gazer ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Imp.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

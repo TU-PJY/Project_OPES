@@ -72,39 +72,33 @@ constexpr int				  MIN_PLAYER_COUNT = 3;
 constexpr unsigned int         PLANT_HP			= 100;
 constexpr float                PLANT_SPEED		= 0.0f;     // 이동하지 않음
 constexpr unsigned int         PLANT_DAMAGE		= 5;
-//constexpr float                PLANT_ATTACK		= 2.0f;     // 2초당 1회 공격
 
 // Scorpion
 constexpr unsigned int         SCORPION_HP		= 300;
 constexpr float                SCORPION_SPEED	= 6.0f;
 constexpr unsigned int         SCORPION_DAMAGE	= 20;
-//constexpr float                SCORPION_ATTACK	= 1.0f;
 
 // 스테이지 2
 // Troll
-constexpr unsigned int         TROLL_HP			= 250;
-constexpr float                TROLL_SPEED		= 10.0f;
-constexpr unsigned int         TROLL_DAMAGE		= 25;
-//constexpr float                TROLL_ATTACK		= 1.0f;
+constexpr unsigned int         TROLL_HP = 250;
+constexpr float                TROLL_SPEED = 10.0f;
+constexpr unsigned int         TROLL_DAMAGE = 25;
 
 // Treant
-constexpr unsigned int         TREANT_HP		= 600;
-constexpr float                TREANT_SPEED		= 6.0f;
-constexpr unsigned int         TREANT_DAMAGE	= 75;
-//constexpr float                TREANT_ATTACK	= 2.0f;
+constexpr unsigned int         TREANT_HP = 600;
+constexpr float                TREANT_SPEED = 6.0f;
+constexpr unsigned int         TREANT_DAMAGE = 50;
 
 // 스테이지 3
-// Imp
-constexpr unsigned int         IMP_HP			= 300;
-constexpr float                IMP_SPEED		= 10.0f;
-constexpr unsigned int         IMP_DAMAGE		= 15;
-constexpr float                IMP_ATTACK		= 0.5f;
-
 // gazer
-constexpr unsigned int         DEVIL_HP			= 200;
-constexpr float                DEVIL_SPEED		= 7.0f;
-constexpr unsigned int         DEVIL_DAMAGE		= 50;
-constexpr float                DEVIL_ATTACK		= 2.0f;
+constexpr unsigned int         GAZER_HP         = 200;
+constexpr float                GAZER_SPEED      = 7.0f;
+constexpr unsigned int         GAZER_DAMAGE     = 30;
+
+constexpr unsigned int         IMP_HP           = 150;
+constexpr float                IMP_SPEED        = 10.0f;
+constexpr unsigned int         IMP_DAMAGE       = 15;
+
 
 // 보너스 & 페널티
 // 공통 보너스

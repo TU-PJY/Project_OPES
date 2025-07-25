@@ -179,11 +179,13 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Gazer.h" />
     <ClInclude Include="Grenade.h" />
     <ClInclude Include="Gun.h" />
     <ClInclude Include="HeavyMachineGun.h" />
     <ClInclude Include="HP_Indicator.h" />
     <ClInclude Include="ImageShader.h" />
+    <ClInclude Include="Imp.h" />
     <ClInclude Include="LineBrush.h" />
     <ClInclude Include="LineShader.h" />
     <ClInclude Include="Map1DefenseIndicator.h" />
@@ -256,11 +258,13 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="FBXUtil.cpp" />
     <ClCompile Include="Framework.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Gazer.cpp" />
     <ClCompile Include="Grenade.cpp" />
     <ClCompile Include="Gun.cpp" />
     <ClCompile Include="HeavyMachineGun.cpp" />
     <ClCompile Include="HP_Indicator.cpp" />
     <ClCompile Include="ImageShader.cpp" />
+    <ClCompile Include="Imp.cpp" />
     <ClCompile Include="Level2.cpp" />
     <ClCompile Include="Level3.cpp" />
     <ClCompile Include="LineBrush.cpp" />
@@ -339,12 +343,15 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
   <ItemGroup>
     <FxCompile Include="Resources\SystemResources\Shader\BoundboxShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\SystemResources\Shader\ImageShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\SystemResources\Shader\LineShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
     </FxCompile>
     <FxCompile Include="Resources\SystemResources\Shader\ObjectShader.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

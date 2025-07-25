@@ -21,9 +21,9 @@ DeviceSystem LoadSystem;
 // DevMode 활성화 시에만 아래 3개의 플래그가 의미가 있음
 bool DevMode = true;
 
-bool LoadMap1Resources = true;
+bool LoadMap1Resources = false;
 bool LoadMap2Resources = false;
-bool LoadMap3Resources = false;
+bool LoadMap3Resources = true;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
@@ -119,6 +119,14 @@ void LoadMesh(DeviceSystem& System) {
 		}
 
 		LoadSingleStaticFBX(MESH.DeadTree, "Resources//Models//map3//map3-tree.fbx");
+
+		// monster - gazer
+		LoadAnimatedFBX(MESH.gazer, "Resources//Models//monster//gazer.fbx", "Resources//Animation Data//gazer.pca",
+			"Resources//Models//monster//gazer.json", true);
+
+		// monster - imp
+		LoadAnimatedFBX(MESH.imp, "Resources//Models//monster//imp.fbx", "Resources//Animation Data//imp.pca",
+			"Resources//Models//monster//imp.json", true);
 	}
 
 	// 항상 필요한 리소스들은 여기에서 로드한다.
@@ -234,14 +242,19 @@ void LoadTexture(DeviceSystem& System) {
 	// turret
 	LoadTexture(TEX.turret, L"Resources//Image//turret.png");
 
+	LoadTexture(TEX.poisonBall, L"Resources//Image//plant_monster_bullet.png");
+
 	// map1 monster
 	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");
-	LoadTexture(TEX.poisonBall, L"Resources//Image//plant_monster_bullet.png");
 	LoadTexture(TEX.scorpion, L"Resources//Image//monster//scorpion.png");
 
 	// map2 monster
 	LoadTexture(TEX.troll, L"Resources//Image//monster//troll.png");
 	LoadTexture(TEX.treant, L"Resources//Image//monster//treant.png");
+
+	// map3 monster
+	LoadTexture(TEX.gazer, L"Resources//Image//monster//gazer.png");
+	LoadTexture(TEX.imp, L"Resources//Image//monster//imp.png");
 
 	// UI
 	LoadTexture(TEX.UI_map1Enemy, L"Resources//Image//ui//map1_enemy.png");

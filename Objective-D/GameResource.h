@@ -127,6 +127,9 @@ typedef struct {
 	FBXMesh treant[4];
 	FBXMesh troll;
 
+	FBXMesh gazer;
+	FBXMesh imp;
+
 }MeshResource;
 extern MeshResource MESH;
 
@@ -173,14 +176,19 @@ typedef struct {
 
 	Texture* smoke[25];
 
+	Texture* poisonBall;
+
 	// map1 monster
 	Texture* plantMonster;
-	Texture* poisonBall;
 	Texture* scorpion;
-	Texture* treant;
 
 	// map2 monster
+	Texture* treant;
 	Texture* troll;
+
+	// map3 monster
+	Texture* gazer;
+	Texture* imp;
 
 	// UI
 	Texture* UI_map1Enemy;

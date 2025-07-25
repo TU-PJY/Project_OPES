@@ -7,11 +7,13 @@
 #include "SkyBox.h"
 #include "CBVUtil.h"
 #include "CenterBuilding.h"
+#include "MonsterSpawner.h"
 
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
 void Level3::Start() {
 	bool editMode = true;
+	bool skipDefenseMode = true;
 
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
 
@@ -34,7 +36,7 @@ void Level3::Start() {
 	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
 
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
-	auto mapObject = scene.AddObject(new Map3, GLOBAL.mapName, LAYER1, editMode);
+	auto mapObject = scene.AddObject(new Map3, GLOBAL.mapName, LAYER1);
 	auto centerObject = scene.AddObject(new CenterBuilding(7.0), "center_building", LAYER1);
 	GLOBAL.mapTerrain = mapObject->GetTerrain();
 	GLOBAL.mapOOBBdata = mapObject->GetMapWallOOBB();
@@ -46,6 +48,11 @@ void Level3::Start() {
 	}
 	else
 		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
+
+	if (skipDefenseMode)
+		scene.AddObject(new MonsterSpawner(true), "monsterSpawner", LAYER1, true);
+	else
+		scene.AddObject(new MonsterSpawner(editMode), "monsterSpawner", LAYER1, editMode);
 
 }
 

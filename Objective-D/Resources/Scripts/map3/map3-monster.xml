@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- type1: imp, type2: gazer -->
+
+<tagName>
+    <monster type="1" x="-194.0" z="29.0"/>
+    <monster type="1" x="-187.0" z="40.0"/>
+    <monster type="2" x="-153.0" z="7.0"/>
+    <monster type="2" x="-183.0" z="80.0"/>
+    <monster type="2" x="-137.0" z="202.0"/>
+    <monster type="2" x="-100.0" z="194.0"/>
+    <monster type="1" x="-97.0" z="221.0"/>
+    <monster type="1" x="-88.0" z="218.0"/>
+    <monster type="2" x="130.0" z="192.0"/>
+    <monster type="2" x="142.0" z="189.0"/>
+    <monster type="2" x="144.0" z="159.0"/>
+    <monster type="2" x="152.0" z="160.0"/>
+    <monster type="1" x="106.0" z="147.0"/>
+</tagName>

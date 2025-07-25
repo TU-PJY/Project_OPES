@@ -1,0 +1,102 @@
+{
+    "clips": [
+        {
+            "name": "TPose",
+            "startTime": 0.0,
+            "endTime": 0.6666666865348816,
+            "frameRate": 30.0,
+            "length": 0.6666666865348816
+        },
+        {
+            "name": "Idle",
+            "startTime": 1.6666666269302369,
+            "endTime": 4.0,
+            "frameRate": 30.0,
+            "length": 2.3333334922790529
+        },
+        {
+            "name": "IdleBreak",
+            "startTime": 5.833333492279053,
+            "endTime": 9.5,
+            "frameRate": 30.0,
+            "length": 3.6666665077209474
+        },
+        {
+            "name": "Walk",
+            "startTime": 11.5,
+            "endTime": 12.633333206176758,
+            "frameRate": 30.0,
+            "length": 1.1333332061767579
+        },
+        {
+            "name": "WalkBack",
+            "startTime": 15.0,
+            "endTime": 16.33333396911621,
+            "frameRate": 30.0,
+            "length": 1.333333969116211
+        },
+        {
+            "name": "TurnLeft",
+            "startTime": 18.33333396911621,
+            "endTime": 19.0,
+            "frameRate": 30.0,
+            "length": 0.6666660308837891
+        },
+        {
+            "name": "TurnRight",
+            "startTime": 19.83333396911621,
+            "endTime": 20.5,
+            "frameRate": 30.0,
+            "length": 0.6666660308837891
+        },
+        {
+            "name": "GotHit",
+            "startTime": 21.66666603088379,
+            "endTime": 23.33333396911621,
+            "frameRate": 30.0,
+            "length": 1.6666679382324219
+        },
+        {
+            "name": "Taunt",
+            "startTime": 25.0,
+            "endTime": 28.16666603088379,
+            "frameRate": 30.0,
+            "length": 3.166666030883789
+        },
+        {
+            "name": "Dodge",
+            "startTime": 29.83333396911621,
+            "endTime": 31.83333396911621,
+            "frameRate": 30.0,
+            "length": 2.0
+        },
+        {
+            "name": "Death",
+            "startTime": 33.33333206176758,
+            "endTime": 35.0,
+            "frameRate": 30.0,
+            "length": 1.6666679382324219
+        },
+        {
+            "name": "Attack01",
+            "startTime": 36.66666793823242,
+            "endTime": 38.5,
+            "frameRate": 30.0,
+            "length": 1.8333320617675782
+        },
+        {
+            "name": "Attack02",
+            "startTime": 39.33333206176758,
+            "endTime": 41.0,
+            "frameRate": 30.0,
+            "length": 1.6666679382324219
+        },
+        {
+            "name": "Attack03",
+            "startTime": 41.66666793823242,
+            "endTime": 43.66666793823242,
+            "frameRate": 30.0,
+            "length": 2.0
+        }
+    ]
+}

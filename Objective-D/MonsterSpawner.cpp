@@ -3,6 +3,8 @@
 #include "Scorpion.h"
 #include "Troll.h"
 #include "Treant.h"
+#include "Imp.h"
+#include "Gazer.h"
 
 // 현재 맵에 따라 다른 몬스터 데이터를 로드하도록 한다.
 MonsterSpawner::MonsterSpawner(bool editMode) {
@@ -42,6 +44,9 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 	else if(GLOBAL.mapName.compare("map2") == 0)
 		script.Load("Resources//Scripts//map2//map2-monster.xml");
 
+	else if (GLOBAL.mapName.compare("map3") == 0)
+		script.Load("Resources//Scripts//map3//map3-monster.xml");
+
 	auto custumLoad = [&](CategoryPtr Category)
 	{
 		int loadedType;
@@ -80,6 +85,17 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 				scene.AddObject(new Troll(position[i], currentID), std::to_string(currentID), LAYER_MONSTER);
 			else if (type[i] == 2)
 				scene.AddObject(new Treant(position[i], currentID, false), std::to_string(currentID), LAYER_MONSTER);
+
+			currentID++;
+		}
+	}
+
+	else if (GLOBAL.mapName.compare("map3") == 0) {
+		for (int i = 0; i < size; i++) {
+			if (type[i] == 1)
+				scene.AddObject(new Imp(position[i], currentID), std::to_string(currentID), LAYER_MONSTER);
+			else if (type[i] == 2)
+				scene.AddObject(new Gazer(position[i], currentID), std::to_string(currentID), LAYER_MONSTER);
 
 			currentID++;
 		}
