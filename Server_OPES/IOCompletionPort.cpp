@@ -932,6 +932,32 @@ void IOCompletionPort::SendData_ClearCountPacket(stClientInfo* receiver, int Pla
         delete sendOver;
     }
 }
+void IOCompletionPort::SendData_ChooseJobPacket(stClientInfo* receiver, unsigned int playerID,int job) {
+    ChooseJobPacket* pkt = new ChooseJobPacket{};
+    pkt->type = PacketType::CHOOSE_JOB;
+    pkt->playerID = playerID;
+    pkt->job = job;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(ClearCountPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
 float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
     XMVECTOR VecA = XMLoadFloat3(&A);
     XMVECTOR VecB = XMLoadFloat3(&B);
@@ -1417,27 +1443,15 @@ void IOCompletionPort::WorkThread() {
                    SendData_GrenadePacket(otherClient, pkt->posX, pkt->posY, pkt->posZ, pkt->rotX, pkt->rotY, pkt->rotZ);
                }
             }
-            
-           //else if (*packetType == PacketType::CHAT) {
-           //    //if (bytesTransferred < sizeof(ChatPacket)) {
-           //    //    std::cerr << "[에러] CHAT 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-           //    //    continue;
-           //    //}
-           //
-           //    ChatPacket_CtoS* chatPacket = reinterpret_cast<ChatPacket_CtoS*>(pOverlappedEx->buffer);
-           //    std::string msg{ chatPacket->message,bytesTransferred - sizeof(PacketType) };
-           //
-           //    std::cout << "[채팅] 클라이언트 " << client->id << ": " << msg << std::endl;
-           //
-           //    //채팅 패킷을 모든 클라이언트에게 전송
-           //    for (stClientInfo* otherClient : clients) {
-           //        if (!otherClient) continue;
-           //        if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-           //            SendData(client, otherClient, msg.c_str(), bytesTransferred);
-           //            std::cout << "send\n";
-           //        }
-           //    }
-           //}
+            else if (*packetType == PacketType::CHOOSE_JOB) {
+
+                ChooseJobPacket* pkt = reinterpret_cast<ChooseJobPacket*>(pOverlappedEx->buffer);
+                for (auto* otherClient : room.clients) {
+                    if (!otherClient || otherClient == client) continue;
+                    SendData_ChooseJobPacket(otherClient, pkt->playerID, pkt->job);
+                }
+            }
+           
 
             RegisterRecv(client);  // 다시 수신 대기
             if (pOverlappedEx->cleanup) {

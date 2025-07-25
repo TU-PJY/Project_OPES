@@ -125,6 +125,7 @@ public:
     void SendData_CenterBuildingPacket(stClientInfo* receiver, int hp);
     void SendData_PlayerArrivalPacket(stClientInfo* receiver, unsigned int playerID, bool arrive);
     void SendData_ClearCountPacket(stClientInfo* receiver, int PlayerCount);
+    void SendData_ChooseJobPacket(stClientInfo* receiver, unsigned int playerID, int job);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 
