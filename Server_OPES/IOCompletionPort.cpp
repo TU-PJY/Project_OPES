@@ -35,7 +35,6 @@ int clearCount = 0;//임시
 
 int roomHp= CENTER_HP;//임시
 
-std::thread npcThread;
 
 // NPC 스레드 프레임 시간
 float deltaTime{};
@@ -161,15 +160,7 @@ bool IOCompletionPort::StartServer() {
     PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
    
-    //npcThread = std::thread([this]() { NPCAIThread(); });
-    //npcThread = std::thread([this]() {
-    //    try {
-    //        NPCAIThread();
-    //    }
-    //    catch (const std::exception& e) {
-    //        std::cerr << "[NPCThread 예외] " << e.what() << "\n";
-    //    }
-    //    });
+    
     std::cout << "서버가 시작되었습니다.\n";
     return true;
 }
@@ -281,66 +272,7 @@ void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
     }
 }
 
-void IOCompletionPort::NPCAIThread() {
-    const float speed = 0.05f;
-    const int frameTimeMs = 60;
-    //SendData_MonsterMoveToAllClients(monsterData[0]);
-    while (isRunning) {
-        auto frameStart = std::chrono::steady_clock::now();
 
-        for (auto& m : monsterData) {
-            // 조건: 스콜피온이면서 추적 상태
-            if (m.monsterType == 2 && m.state == 1) {
-                stClientInfo* target = nullptr;
-
-                for (auto* c : clients) {
-                    if (!c) continue;
-                    if (c->id == m.targetClientId) {
-                        target = c;
-                        break;
-                    }
-                }
-
-                if (target) {
-                    XMFLOAT3 playerPosition = XMFLOAT3(target->x, 0.0, target->z);
-                    XMFLOAT3 monsterPosition = XMFLOAT3(m.createPointX, 0.0, m.createPointZ);
-                    XMFLOAT3 rotation = CalcDegree3D(monsterPosition, playerPosition);
-                    Normalize2DAngleTo360(rotation.y);
-
-                    MoveForward(monsterPosition, rotation.y, 6.0);
-                    MoveStrafe(monsterPosition, rotation.y, 6.0);
-
-                    m.createPointX = monsterPosition.x;
-                    m.createPointZ = monsterPosition.z;
-
-                     std::cout << "[디버그] ID: "
-                         << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
-
-                    SendData_MonsterMoveToAllClients(m);
-
-                    //float dx = target->x - m.createPointX;
-                    //float dz = target->z - m.createPointZ;
-                    //float dist = std::sqrt(dx * dx + dz * dz);
-
-                    //if (dist > 1e-3f) {
-                    //    m.createPointX += dx / dist * speed;
-                    //    m.createPointZ += dz / dist * speed;
-                    //    
-                    //   // std::cout << "[디버그] SendData_MonsterMoveToAllClients called for monsterID: "
-                    //     << m.id << " at (" << m.createPointX << "," << m.createPointZ << ")\n";
-                 
-                    //}
-                }
-            }
-        }
-
-        auto frameEnd = std::chrono::steady_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(frameEnd - frameStart).count();
-   //     deltaTime = (float)duration;
-        if (duration < frameTimeMs)
-            std::this_thread::sleep_for(std::chrono::milliseconds(frameTimeMs - duration));
-    }
-}
 //void IOCompletionPort::AcceptThread() {
 //    while (isRunning) {
 //        SOCKADDR_IN clientAddr;
@@ -1327,16 +1259,18 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
                 else {
-                    myMonsters[pkt->monsterID].hp -= pkt->attackHp;
-                    std::cout << "MonstersHP:" << myMonsters[pkt->monsterID].hp << std::endl;
-                    if (myMonsters[pkt->monsterID].hp < 0)
-                        myMonsters[pkt->monsterID].hp = 0;
+                    if (pkt->monsterID<=1000) {
+                        myMonsters[pkt->monsterID].hp -= pkt->attackHp;
+                        std::cout << "MonstersHP:" << myMonsters[pkt->monsterID].hp << std::endl;
+                        if (myMonsters[pkt->monsterID].hp < 0)
+                            myMonsters[pkt->monsterID].hp = 0;
 
-                    sendHP = myMonsters[pkt->monsterID].hp;
-                    for (stClientInfo* otherClient : clients) {
-                        if (!otherClient) continue;
-                        if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        sendHP = myMonsters[pkt->monsterID].hp;
+                        for (stClientInfo* otherClient : clients) {
+                            if (!otherClient) continue;
+                            if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+                                SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                            }
                         }
                     }
                 }

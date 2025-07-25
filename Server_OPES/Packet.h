@@ -2,7 +2,6 @@
 #pragma pack(push, 1)
 
 #define MAX_SOCKBUF 1024
-constexpr int MAX_NPC = 100;
 
 enum class PacketType:unsigned int {
     CHAT,

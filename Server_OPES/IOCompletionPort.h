@@ -126,7 +126,6 @@ public:
     bool AddClient(stClientInfo* c); 
     void RemoveClient(stClientInfo* c);
 
-    void NPCAIThread();
 private:
     
     
