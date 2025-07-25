@@ -11,6 +11,8 @@ private:
 	Vector vec{};
 	float length{};
 
+	xmfloat3 color{1.0f, 0.0f, 0.0f};
+
 	bool  renderState{ true };
 
 public:
@@ -20,4 +22,5 @@ public:
 	void InputHP(int fullHP, int currentHP);
 	void Render();
 	void SetRenderState(bool Flag)override;
+	void SetIndColor(const xmfloat3& color) override;
 };

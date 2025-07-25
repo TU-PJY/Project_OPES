@@ -15,11 +15,12 @@ constexpr float                MG_RELOAD_TIME  = 3.0f;
 constexpr unsigned int         MG_MAGAZINE	   = 100;
 
 // 지정 사수 소총
-constexpr unsigned int         DMR_DAMAGE_HIP	= 40;
-constexpr float                DMR_RPM_HIP		= 120.0f;
-constexpr unsigned int         DMR_DAMAGE_ADS	= 300;
+constexpr float                DMR_RECOIL       = 13.0;
+constexpr float                DMR_RECOIL_BACK   = 0.2f;
+constexpr float                DMR_SHOOT_DELAY   = 0.7f;
+constexpr unsigned int         DMR_DAMAGE	    = 70;
 constexpr float                DMR_RPM_ADS		= 24.0f;
-constexpr float                DMR_RELOAD		= 2.0f;
+constexpr float                DMR_RELOAD_TIME  = 2.0f;
 constexpr unsigned int         DMR_MAGAZINE		= 10;
 
 // 샷건
@@ -35,10 +36,18 @@ constexpr unsigned int         SG_MAGAZINE		= 6;
 // DAMAGE 데미지, DURABILITY 내구도, INSTALL 설치 시간, RPM 연사속도, COOLDOWN 파괴된 후 쿨타임
 
 // 포탑(TURRET)
+constexpr unsigned int         TURRET_ID            = 1;
 constexpr unsigned int         TURRET_DAMAGE	    = 10;
 constexpr float                TURRET_DURABILITY    = 20.0f;
 constexpr float                TURRET_INSTALL_SPEED	= 0.5f;
 constexpr float                TURRET_SHOOT_DELAY   = 0.2f;
+constexpr float                TURRET_INSTALL_COOLTIME = 40.0f;
+
+constexpr unsigned int         BEACON_ID = 2;
+constexpr unsigned int         BEACON_HEAL = 5;
+constexpr float                BEACON_DURABILITY = 30.0f;
+constexpr float                BEACON_HEAL_DELAY = 0.5f;
+constexpr float                BEACON_INSTALL_COOLTIME = 50.0f;
 
 // 스파이크(SPIKE)
 //constexpr unsigned int         SPIKE_DAMAGE		= 0;
@@ -49,6 +58,13 @@ constexpr float                TURRET_SHOOT_DELAY   = 0.2f;
 
 // 캐릭터 LMG 기관총 사수 / DMR 지정사수 / ENG 엔지니어
 // HP 체력, SPEED 이동속도(km/h)
+
+//각캐릭터 정보
+constexpr int                  CHARACTER_MG = 0;
+constexpr int                  CHARACTER_DMR = 1;
+constexpr int                  CHARACTER_ENG = 2;
+
+
 constexpr unsigned int         CHARACTER_MG_HP = 100; //300; //  임시로 100으로 변경
 constexpr float                CHARACTER_MG_SPEED   = 8.0f;
 
@@ -65,7 +81,7 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 constexpr int                  DEFENSE_MONSTER = 20;
 
 //start 인원수 
-constexpr int				  MIN_PLAYER_COUNT = 3;
+constexpr int				  MIN_PLAYER_COUNT = 3;          
 
 // 스테이지 1
 // Plant Monster

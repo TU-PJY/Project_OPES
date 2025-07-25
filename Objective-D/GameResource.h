@@ -31,14 +31,8 @@ enum GlobalEnum : unsigned int {
 // 프로젝트 전역에서 사용하는 변수들
 typedef struct {
 	// 디펜스 모드에서 사용할 남은 적 수  및 디펜스 모드 상태 여부
-	int map1DefenseEnemyRemained;
-	bool map1DefenseState;
-
-	int map2DefenseEnemyRemained;
-	bool map2DefenseState;
-
-	int map3DefenseEnemyRemained;
-	bool map3DefenseState;
+	int DefenseEnemyRemained;
+	bool DefenseState;
 
 	// 카메라 FOV 오프셋
 	float offsetFOV;
@@ -98,7 +92,11 @@ typedef struct {
 	Mesh* dot_machine_gun;
 	Mesh* shotgun;
 	Mesh* dot_shotgun;
+	Mesh* dmr;
 	Mesh* grenade;
+
+	Mesh* beacon;
+	Mesh* barrier;
 
 	// polygon scifi asset - heavy
 	FBXMesh heavyIdle;
@@ -169,6 +167,8 @@ typedef struct {
 	// turret Assst
 	Texture* turret;
 
+	Texture* scope;
+
 	// gun flame texture
 	Texture* gun_flame;
 	Texture* gun_flame_back;
@@ -193,6 +193,13 @@ typedef struct {
 	// UI
 	Texture* UI_map1Enemy;
 	Texture* UI_playerHit;
+	Texture* UI_turretIcon;
+	Texture* UI_beaconIcon;
+	Texture* UI_barrierIcon;
+	Texture* UI_shotgunIcon;
+	Texture* UI_mgIcon;
+	Texture* UI_dmrIcon;
+	Texture* UI_grenadeIcon;
 }TextureResource;
 extern TextureResource TEX;
 

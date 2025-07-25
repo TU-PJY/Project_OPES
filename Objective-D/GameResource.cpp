@@ -24,6 +24,7 @@ bool DevMode = true;
 bool LoadMap1Resources = true;
 bool LoadMap2Resources = false;
 bool LoadMap3Resources = false;
+bool UIcreateMode = false;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
@@ -35,6 +36,10 @@ void LoadMesh(DeviceSystem& System) {
 		LoadMap2Resources = true;
 		LoadMap3Resources = true;
 	}
+
+	// UI 제작모드의 경우 모두 비활성화 된다.
+	if (UIcreateMode && DevMode)
+		return;
 
 	// map1
 	if (LoadMap1Resources) {
@@ -144,6 +149,11 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.shotgun, "Resources//Models//weapon//shotgun.fbx");
 	LoadMultiStaticFBX(MESH.dot_shotgun, "Resources//Models//weapon//dot-shotgun.fbx");
 
+	LoadMultiStaticFBX(MESH.dmr, "Resources//Models//weapon//dmr.fbx");
+
+	LoadMultiStaticFBX(MESH.barrier, "Resources//Models//prop//barrier.fbx");
+	LoadMultiStaticFBX(MESH.beacon, "Resources//Models//prop//beacon.fbx");
+
 	// turret asset
 	LoadMultiStaticFBX(MESH.turretHead, "Resources//Models//weapon//turretHead.fbx");
 	LoadMultiStaticFBX(MESH.turretTorso, "Resources//Models//weapon//turretTorso.fbx");
@@ -244,6 +254,8 @@ void LoadTexture(DeviceSystem& System) {
 
 	LoadTexture(TEX.poisonBall, L"Resources//Image//plant_monster_bullet.png");
 
+	LoadTexture(TEX.scope, L"Resources//Image//scope.png");
+
 	// map1 monster
 	LoadTexture(TEX.plantMonster, L"Resources//Image//monster//plant_monster.png");
 	LoadTexture(TEX.scorpion, L"Resources//Image//monster//scorpion.png");
@@ -259,6 +271,14 @@ void LoadTexture(DeviceSystem& System) {
 	// UI
 	LoadTexture(TEX.UI_map1Enemy, L"Resources//Image//ui//map1_enemy.png");
 	LoadTexture(TEX.UI_playerHit, L"Resources//Image//ui//playerHit.png");
+
+	LoadTexture(TEX.UI_turretIcon, L"Resources//Image//ui//icon-turret.png");
+	LoadTexture(TEX.UI_beaconIcon, L"Resources//Image//ui//icon-beacon.png");
+	LoadTexture(TEX.UI_barrierIcon, L"Resources//Image//ui//icon-barrier.png");
+	LoadTexture(TEX.UI_shotgunIcon, L"Resources//Image//ui//icon-shotgun.png");
+	LoadTexture(TEX.UI_mgIcon, L"Resources//Image//ui//icon-mg.png");
+	LoadTexture(TEX.UI_dmrIcon, L"Resources//Image//ui//icon-dmr.png");
+	LoadTexture(TEX.UI_grenadeIcon, L"Resources//Image//ui//icon-grenade.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

@@ -296,6 +296,18 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]">
       <UniqueIdentifier>{754a1ae3-725d-490b-85c3-6a3a3d3262d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]">
+      <UniqueIdentifier>{efcd859c-55d9-4aec-b5ca-bab372b5c0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Engineer Indicator ]">
+      <UniqueIdentifier>{106e74f6-5db4-45cd-8f9a-f51e5e4f41f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]">
+      <UniqueIdentifier>{55787037-7ac5-49a4-ae5f-ea0018ca5dc8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Scope ]">
+      <UniqueIdentifier>{233eea8c-2cbe-46fd-9867-2c750228bd80}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -537,6 +549,18 @@
     </ClInclude>
     <ClInclude Include="Imp.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Beacon.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]</Filter>
+    </ClInclude>
+    <ClInclude Include="InstallIndicator.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Scope.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Scope ]</Filter>
+    </ClInclude>
+    <ClInclude Include="DMR.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ DMR ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -785,6 +809,18 @@
     </ClCompile>
     <ClCompile Include="Imp.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Mob ]\[ map3 monstes ]\[ Imp ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Beacon.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]</Filter>
+    </ClCompile>
+    <ClCompile Include="InstallIndicator.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Scope.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Scope ]</Filter>
+    </ClCompile>
+    <ClCompile Include="DMR.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ DMR ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

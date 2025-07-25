@@ -4,7 +4,7 @@
 
 
 DefenseModeMonsterGenerator::DefenseModeMonsterGenerator() {
-	maxGenerateCount = GLOBAL.map1DefenseEnemyRemained;
+	maxGenerateCount = GLOBAL.DefenseEnemyRemained;
 }
 
 // GLOBAL.useServer가 true일 경우 서버로부터 패킷을 받아 그 자리에 생성한다.

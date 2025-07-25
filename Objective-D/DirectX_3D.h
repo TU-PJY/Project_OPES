@@ -9,6 +9,7 @@
 #define NOMINMAX
 
 #include <windows.h>
+#include <windowsx.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <malloc.h>
@@ -77,9 +78,9 @@ enum PlayerState {
 
 // 플레이어 캐릭터 타입 열거형
 enum PlayerCharacterType {
-	CHARACTER_MG,  // 기관총 사수
-	CHARACTER_DMR, // 지정 사수
-	CHARACTER_ENG  // 엔지니어   
+	CHARACTER_TYPE_MG,  // 기관총 사수
+	CHARACTER_TYPE_DMR, // 지정 사수
+	CHARACTER_TYPE_ENG  // 엔지니어   
 };
 
 // 렌더링 타입 열거형

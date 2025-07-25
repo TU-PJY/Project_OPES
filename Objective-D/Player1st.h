@@ -12,6 +12,8 @@ private:
 		BACK
 	};
 
+	int characterType{};
+
 	// 4 방향 이동 상태
 	bool     moveState[4]{};
 
@@ -58,6 +60,10 @@ private:
 	bool fallDown{};
 	float fallAcc{};
 
+	// 엔지니어 전용 변수
+	float turretCoolTime{};
+	float beaconCoolTime{};
+
 	// 플레이어 당 2개 사용 가능
 	int currentGrenadeCount{ 2 };
 
@@ -69,10 +75,14 @@ private:
 	OOBB              playerBound{};
 
 	// 현재 가지는 총기 객체 포인터
-	GameObject*       weaponPtr{};
+	GameObject* weaponPtr{};
 
 	// 플레이어 체력 인디케이터
-	GameObject*       IndicatorPtr{};
+	GameObject* IndicatorPtr{};
+
+	GameObject* installPtr{};
+
+	GameObject* scopePtr{};
 
 	// 서버용 변수
 	// 30프레임 간격으로 패킷을 전송한다.
@@ -103,6 +113,7 @@ public:
 	OOBB GetOOBB() override;
 	XMFLOAT3 GetSize() override;
 	void InputRecoil(float Value) override;
+	void GiveHeal(int healHP);
 	void GiveDamage(int damage) override;
 	void InputHP(int currentHP) override;
 	unsigned int GetID() override;
