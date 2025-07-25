@@ -125,7 +125,6 @@ struct MonsterMovePacket{
  // 플레이어가 몬스터 피격 시 전송
 struct  PtoMDamagePacket {
     PacketType type;
-    unsigned int playerID;
     unsigned int monsterID;
     int attackHp;
 };

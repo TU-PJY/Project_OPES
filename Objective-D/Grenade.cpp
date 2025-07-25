@@ -2,7 +2,7 @@
 #include "MathUtil.h"
 #include "Explosion.h"
 
-void SendPtoMDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
+void SendPtoMDamagePacket( unsigned int monsterID, int attackHp);
 void SendGrenadePacket(float posX, float posY, float posZ, float rotX, float rotY, float rotZ);
 
 Grenade::Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation, bool createFromServer) {
@@ -234,7 +234,7 @@ void Grenade::Update(float Delta) {
                         int damage = (int)(300.0 * t);
                         if(!GLOBAL.useServer)
                             monster->GiveDamage(damage);
-                        SendPtoMDamagePacket(GLOBAL.myID, monster->GetID(), damage);
+                        SendPtoMDamagePacket( monster->GetID(), damage);
                     }
                 }
             }

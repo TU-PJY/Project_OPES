@@ -822,10 +822,9 @@ void IOCompletionPort::SendData_MtoPDamagePacket(stClientInfo* receiver, unsigne
     }
 }
 
-void IOCompletionPort::SendData_PtoMDamagePacket(stClientInfo* receiver, unsigned int playerID,unsigned int monsterID,int attackHp) {
+void IOCompletionPort::SendData_PtoMDamagePacket(stClientInfo* receiver,unsigned int monsterID,int attackHp) {
     PtoMDamagePacket* pkt = new PtoMDamagePacket{};
     pkt->type = PacketType::PTOM_DAMAGE;
-    pkt->playerID = playerID;
     pkt->monsterID = monsterID;
     pkt->attackHp = attackHp;
 
@@ -1034,7 +1033,7 @@ void IOCompletionPort::WorkThread() {
             setsockopt(newClient->socketClient, SOL_SOCKET, SO_UPDATE_ACCEPT_CONTEXT,
                 (char*)&listenSocket, sizeof(listenSocket));
             // 소켓 옵션 설정
-            BOOL bNoDelay = TRUE;
+            BOOL bNoDelay = FALSE;
             setsockopt(newClient->socketClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
 
             CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
@@ -1293,30 +1292,32 @@ void IOCompletionPort::WorkThread() {
                 //    continue;
                 //}
                 PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(pOverlappedEx->buffer);
-                std::cout <<"PTOM_DAMAGE Mid:" << pkt->monsterID<<", Pid:" << pkt->playerID <<", Attackhp:" << pkt->attackHp << std::endl;
+                std::cout <<"PTOM_DAMAGE Mid:" << pkt->monsterID <<", Attackhp:" << pkt->attackHp << std::endl;
                 int sendHP;
                 if (defenseState) {
-                    {
-                        std::lock_guard<std::mutex> lock(defenseMonsterMutex);
-                        defenseMonsters[pkt->monsterID].hp -= pkt->attackHp;
-                        if (defenseMonsters[pkt->monsterID].hp < 0)
-                            defenseMonsters[pkt->monsterID].hp = 0;
-                    }
-                    std::cout << "MonstersHP:" << defenseMonsters[pkt->monsterID].hp << std::endl;
-
-                    bool allDead = true;
-                    for (const MonsterData& m : defenseMonsters) {
-                        if (m.hp > 0) { // 하나라도 살아있으면 allDead를 false로
-                            allDead = false;
-                            break;
+                    if (0 <= pkt->monsterID && pkt->monsterID <= 19) {
+                        {
+                            std::lock_guard<std::mutex> lock(defenseMonsterMutex);
+                            defenseMonsters[pkt->monsterID].hp -= pkt->attackHp;
+                            if (defenseMonsters[pkt->monsterID].hp < 0)
+                                defenseMonsters[pkt->monsterID].hp = 0;
                         }
-                    }
+                        std::cout << "MonstersHP:" << defenseMonsters[pkt->monsterID].hp << std::endl;
 
-                    if (allDead) {
-                        defenseState = false;
-                        std::cout << "[알림] 모든 방어 몬스터가 사망하여 defenseState가 false로 전환되었습니다." << std::endl;
+                        bool allDead = true;
+                        for (const MonsterData& m : defenseMonsters) {
+                            if (m.hp > 0) { // 하나라도 살아있으면 allDead를 false로
+                                allDead = false;
+                                break;
+                            }
+                        }
+
+                        if (allDead) {
+                            defenseState = false;
+                            std::cout << "[알림] 모든 방어 몬스터가 사망하여 defenseState가 false로 전환되었습니다." << std::endl;
+                        }
+                        sendHP = defenseMonsters[pkt->monsterID].hp;
                     }
-                    sendHP = defenseMonsters[pkt->monsterID].hp;
                 }
                 else {
                     myMonsters[pkt->monsterID].hp -= pkt->attackHp;
@@ -1327,10 +1328,11 @@ void IOCompletionPort::WorkThread() {
                     sendHP = myMonsters[pkt->monsterID].hp;
                 }
                 // 데미지 패킷을 모든 클라이언트에게 전송
+                //if (0 <= pkt->monsterID && pkt->monsterID <= 19) 
                 for (stClientInfo* otherClient : clients) {
                     if (!otherClient) continue;
                     if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                        SendData_PtoMDamagePacket(otherClient, pkt->playerID, pkt->monsterID, sendHP);
+                        SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
                     }
                 }
             }
