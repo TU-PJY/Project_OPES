@@ -1046,6 +1046,8 @@ void IOCompletionPort::WorkThread() {
             
             std::cout << "입장idcount:" << idCount << std::endl;
             std::cout << "clientCount:" << clientCount << std::endl;
+            NotifyOthersAboutNewClient(newClient);
+            SendExistingClientsToNewClient(newClient);
             if (randomTreadFlag&&clientCount>= MIN_PLAYER_COUNT) {
                 randomPositionThread = std::thread([this]() { RandomPositionThread(); });
                 randomTreadFlag = false;
@@ -1059,15 +1061,15 @@ void IOCompletionPort::WorkThread() {
                     CreateRoom(roomMembers);
                     for (auto& client : roomMembers) {
                         SendData_EnterRoom(client);  // 여기서 먼저 룸 ID를 클라이언트에 전송
-                        NotifyOthersAboutNewClient(client);
-                        SendExistingClientsToNewClient(client);
+                        //NotifyOthersAboutNewClient(client);
+                        //SendExistingClientsToNewClient(client);
                         RegisterRecv(client);
                     }
                 }
                 else {
                     SendData_EnterRoom(newClient);  // 대기 중인 상태 전송 (roomID == 0)
-                    NotifyOthersAboutNewClient(newClient);
-                    SendExistingClientsToNewClient(newClient);
+                    //NotifyOthersAboutNewClient(newClient );
+                    //SendExistingClientsToNewClient(newClient);
                     RegisterRecv(newClient);
                 }
             }

@@ -171,6 +171,8 @@ typedef struct {
 	Texture* gun_flame_back;
 	Texture* muzzle_particle;
 
+	Texture* smoke[25];
+
 	// map1 monster
 	Texture* plantMonster;
 	Texture* poisonBall;

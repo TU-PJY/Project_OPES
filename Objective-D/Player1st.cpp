@@ -210,7 +210,7 @@ void Player1st::updateState() {
 
 // 플레이어 이동 속도를 업데이트한다.
 void Player1st::updateMove(float Delta) {
-	if (currentState == STATE_DEATH) return;
+//	if (currentState == STATE_DEATH) return;
 
 	// 앞뒤 가속/감속
 	if (moveState[FRONT] && !moveState[BACK])
@@ -362,6 +362,8 @@ void Player1st::GiveDamage(int damage) {
 		currentHP -= damage;
 		if (currentHP < 0)
 			currentHP = 0;
+
+		if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
 	}
 
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.

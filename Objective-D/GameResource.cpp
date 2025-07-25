@@ -180,6 +180,16 @@ void LoadTexture(DeviceSystem& System) {
 		LoadCropTexture(TEX.fontAtlas[i], L"Resources//Image//ui//font_atlas.png", x, y, CropSize, CropSize);
 	}
 
+	int smokeCropSize = 960 / 5;
+	int smokeColums = 5;
+	int smokeOffset = 0;
+
+	for (int i = 0; i < 25; ++i) {
+		int x = (i % smokeColums) * smokeCropSize;
+		int y = smokeOffset + (i / smokeColums) * smokeCropSize;
+		LoadCropTexture(TEX.smoke[i], L"Resources//Image//smoke.png", x, y, smokeCropSize, smokeCropSize);
+	}
+
 	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 	LoadTexture(TEX.skyBox, L"Resources//Image//sky.png", TEXTURE_TYPE_WIC);
 	LoadTexture(TEX.skyBox2, L"Resources//Image//sky-2.png", TEXTURE_TYPE_WIC);
