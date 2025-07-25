@@ -49,6 +49,8 @@
 #define FBXSDK_SHARED
 #include <fbxsdk.h>
 
+#include "../Server_OPES/Protocol.h"
+
 
 // 쉬프트 누르기 귀찮아서 만든 별칭
 using xmfloat3 = XMFLOAT3;

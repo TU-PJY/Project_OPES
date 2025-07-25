@@ -34,7 +34,7 @@ Player1st::Player1st(int characterType) {
 	}
 
 	currentSpeed = maxSpeed;
-
+	
 	// 플레이어 인디케이터에 필요한 정보들을 전달한다.
 	IndicatorPtr = scene.AddObject(new PlayerIndicator, "playerInd", LAYERUI);
 	if (IndicatorPtr) {

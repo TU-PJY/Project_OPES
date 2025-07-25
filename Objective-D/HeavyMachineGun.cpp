@@ -1,14 +1,15 @@
 #include "HeavyMachineGun.h"
 
+
 HeavyMachineGun::HeavyMachineGun(GameObject* Ptr) {
-	damage = 10;
-	recoil = 2.5;
-	recoilBack = 0.1;
-	totalAmmo = 80;
+	damage = MG_DAMAGE;
+	recoil = MG_RECOIL;
+	recoilBack = MG_RECOIL_BACK;
+	totalAmmo = MG_MAGAZINE;
 	currentAmmo = totalAmmo;
-	flameRenderTime = 0.03;
-	fireDelayTime = 0.1;
-	reloadTime = 3.0;
+	flameRenderTime = FLAME_RENDER_TIME;
+	fireDelayTime = MG_SHOOT_DELAY;
+	reloadTime = MG_RELOAD_TIME;
 
 	userPtr = Ptr;
 }

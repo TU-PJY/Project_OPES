@@ -1,16 +1,17 @@
 #include "Shotgun.h"
 #include "Bullet.h"
 
+
 Shotgun::Shotgun(GameObject* Ptr) {
 	// 탄환 하나 당 대미지 (12개)
-	damage = 10;
-	recoil = 12.0;
-	recoilBack = 0.2;
-	totalAmmo = 6;
+	damage = SG_DAMAGE;
+	recoil = SG_RECOIL;
+	recoilBack = SG_RECOIL_BACK;
+	totalAmmo = SG_MAGAZINE;
 	currentAmmo = totalAmmo;
-	flameRenderTime = 0.05;
-	fireDelayTime = 1.0;
-	reloadTime = 2.0;
+	flameRenderTime = FLAME_RENDER_TIME;
+	fireDelayTime = SG_SHOOT_DELAY;
+	reloadTime = SG_RELOAD_TIME;
 
 	userPtr = Ptr;
 }
