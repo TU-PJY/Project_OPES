@@ -481,6 +481,7 @@ void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
     packet->type = PacketType::ENTER;
     packet->roomID = receiver->roomID;
     packet->myID = receiver->id;
+    std::cout << "SendData_EnterRoom ID:" << receiver->id << std::endl;
 
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
@@ -710,6 +711,8 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
         NewClientPacket* pkt = new NewClientPacket{};
         pkt->type = PacketType::NEW_CLIENT;
         pkt->id = newClient->id;
+        std::cout << "NotifyOthersAboutNewClient-id:" << pkt->id << std::endl;
+
 
         stOverlappedEx* sendOver = new stOverlappedEx{};
         ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
@@ -719,7 +722,7 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
         sendOver->cleanup = [pkt, sendOver]() {
             delete pkt;
             delete sendOver;
-            };
+        };
         int ret = WSASend(clients[i]->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
             &sendOver->overlapped,
             NULL);
@@ -1040,8 +1043,8 @@ void IOCompletionPort::WorkThread() {
             AddClient(newClient);
             // 기존 처리 함수 호출
             
-            std::cout << "입장:" << idCount << std::endl;
-
+            std::cout << "입장idcount:" << idCount << std::endl;
+            std::cout << "clientCount:" << clientCount << std::endl;
             if (randomTreadFlag&&clientCount>= MIN_PLAYER_COUNT) {
                 randomPositionThread = std::thread([this]() { RandomPositionThread(); });
                 randomTreadFlag = false;
