@@ -16,7 +16,7 @@ private:
 	OOBB     hitBox{};
 
 	// 20초후 스스로 파괴된다.
-	float    currentHP{0};
+	float    currentHP{TURRET_DURABILITY};
 
 	float    currentShootDelay{};
 	float    flameRenderTime{};

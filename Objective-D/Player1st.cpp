@@ -210,7 +210,7 @@ void Player1st::updateState() {
 
 // 플레이어 이동 속도를 업데이트한다.
 void Player1st::updateMove(float Delta) {
-	if (currentState == STATE_DEATH) return;
+//	if (currentState == STATE_DEATH) return;
 
 	// 앞뒤 가속/감속
 	if (moveState[FRONT] && !moveState[BACK])

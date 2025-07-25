@@ -95,6 +95,7 @@ void Turret::Update(float Delta) {
 		hpInd = nullptr;
 		destroyState = true;
 		flyAcc = 0.2;
+		flameRenderTime = 0.0;
 		xmfloat3 createPosition = xmfloat3(position.x, position.y + 1.0, position.z);
 		scene.AddObject(new Smoke(createPosition), "smoke", LAYER4);
 		//scene.DeleteObject(this);
@@ -108,8 +109,8 @@ void Turret::Update(float Delta) {
 
 	size_t size = scene.LayerSize(LAYER_MONSTER);
 
-	bool isLook = true;
 	for (int i = 0; i < size; i++) {
+		bool isLook = true;
 		if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
 			if (!monster->GetDeathState() && monster->CheckHit(lookRange) && monster->GetBehaviorState()) {
 				Ray newRay = Math::CalcRayVector(position, monster->GetPosition());
@@ -117,7 +118,6 @@ void Turret::Update(float Delta) {
 				for (auto& O : GLOBAL.mapOOBBdata) {
 					if (Math::CheckRayCollision(newRay, lookRange)) {
 						isLook = false;
-						break;
 					}
 				}
 
