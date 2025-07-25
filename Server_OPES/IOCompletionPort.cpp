@@ -22,18 +22,18 @@ ScriptUtil monsterDataScript;
 // 현재 로드된 몬스터 생성 타입 및 위치
 std::vector<MonsterData> monsterData;
 
-std::vector<MonsterData> myMonsters;//임시
+//std::vector<MonsterData> myMonsters;//임시
 
-std::vector<MonsterData> defenseMonsters(DEFENSE_MONSTER);//임시
+//std::vector<MonsterData> defenseMonsters(DEFENSE_MONSTER);//임시
 
-std::mutex defenseMonsterMutex;//임시
+//std::mutex defenseMonsterMutex;//임시
 
-bool defenseState = true;//임시
+//bool defenseState = true;//임시
 
-int clearCount = 0;//임시
+//int clearCount = 0;//임시
 
 
-int roomHp= CENTER_HP;//임시
+//int roomHp= CENTER_HP;//임시
 
 
 // NPC 스레드 프레임 시간
@@ -268,7 +268,7 @@ void IOCompletionPort::RandomPositionThread() {
 
             }
 
-            room.defenseState = false;
+            //room.defenseState = false;
             std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
         }
     }
@@ -1203,18 +1203,22 @@ void IOCompletionPort::WorkThread() {
                 {
                     std::lock_guard<std::mutex> lock(*room.roomMutex);
                     if (room.defenseState) {
+                        //if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER) {
                         auto& m = room.defenseMonsters[pkt->monsterID];
                         m.hp -= pkt->attackHp;
                         if (m.hp < 0) m.hp = 0;
                         sendHP = m.hp;
                         if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; }))
                             room.defenseState = false;
+                        // }
                     }
                     else {
+                        //if (pkt->monsterID<=1000) {
                         auto& m = room.myMonsters[pkt->monsterID];
                         m.hp -= pkt->attackHp;
                         if (m.hp < 0) m.hp = 0;
                         sendHP = m.hp;
+                        //}
                     }
                 }
                 for (auto* otherClient : room.clients) {
