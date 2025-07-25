@@ -104,7 +104,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(recv_buffer);
-		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
+		std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 			Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
@@ -398,7 +398,7 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 }
 // 이동 패킷 전송 함수
 void SendMovePacket(float x, float y, float z) {
-	if (!enter_room) {
+	if (enter_room) {
 		auto* pkt = new MovePacket_CtoS{ PacketType::MOVE, x, y, z };
 
 		auto* context = new SendContext{};
@@ -419,6 +419,9 @@ void SendMovePacket(float x, float y, float z) {
 			std::cerr << "[클라이언트] 전송 실패\n";
 			context->cleanup(); // 실패 시 즉시 해제
 		}
+
+		//else
+			//std::cout << "전송: " << x << " " << y << " " << z << std::endl;
 	}
 }
 void SendViewingAnglePacket(float x, float y, float z) {

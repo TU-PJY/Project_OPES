@@ -47,15 +47,15 @@ void Bullet::updateCollision() {
 	// 가장 가까운 거리를 가지는 타겟이 지형이나 맵 오브젝트라면 nullptr을 리턴하여 어떠한 몬스터도 대미지를 입지 않게 된다.
 	auto ptr = rayTarget.GetNearestTarget();
 	if (ptr) {
-		std::cout << "NOT NULLPTR" << std::endl;
+		//std::cout << "=========== NOT NULLPTR ==============" << std::endl;
 		if(!GLOBAL.useServer)
 			ptr->GiveDamage(bulletDamage);
 		unsigned int ID = ptr->GetID();
 		SendPtoMDamagePacket(ID, bulletDamage);
-		std::cout << "SEND ID: "  << ID << std::endl;
+		//std::cout << "SEND ID: "  << ID << std::endl;
 	}
-	else
-		std::cout << "NULLPTR" << std::endl;
+	//else
+		//std::cout << "NULLPTR" << std::endl;
 
 	// 최종적으로 삭제
 	scene.DeleteObject(this);
