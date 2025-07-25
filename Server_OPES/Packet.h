@@ -92,8 +92,6 @@ struct ExistingClientsDataPacket {
     unsigned int count; // 클라이언트 수
     struct {
         unsigned int id;
-        float x, y, z;
-        float angle_x, angle_y, angle_z;
     } clients[1024]; // 또는 동적 크기로 관리
 };
 

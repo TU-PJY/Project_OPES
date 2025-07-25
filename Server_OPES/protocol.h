@@ -64,6 +64,8 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 //디팬스 몬스터 수
 constexpr int                  DEFENSE_MONSTER = 20;
 
+//start 인원수 
+constexpr int				  MIN_PLAYER_COUNT = 3;
 
 // 스테이지 1
 // Plant Monster

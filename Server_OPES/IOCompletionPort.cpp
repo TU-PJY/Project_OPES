@@ -6,7 +6,6 @@
 #include <DirectXMath.h>
 #include<random>
 #include<cmath>
-#include"protocol.h"
 #pragma comment(lib, "Mswsock.lib")
 
 using namespace DirectX;
@@ -672,16 +671,13 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
     ExistingClientsDataPacket* packet = new ExistingClientsDataPacket{};
     packet->type = PacketType::EXISTING_CLIENTS;
     packet->count = 0;
-    for (auto& client : clients) {
-        if (!client || client == receiver || client->roomID != receiver->roomID) continue;
-        auto& dst = packet->clients[packet->count++];
-        dst.id = client->id;
-        dst.x = client->x;
-        dst.y = client->y;
-        dst.z = client->z;
-        dst.angle_x = client->angle_x;
-        dst.angle_y = client->angle_y;
-        dst.angle_z = client->angle_z;
+    for (int i = 0; i < clientCount;i++) {
+        if (!clients[i] || clients[i] == receiver /*|| *//*client->roomID != receiver->roomID*/) continue;
+
+        auto& dst = packet->clients[i];
+        packet->count++;
+        dst.id = clients[i]->id;
+        
     }
 
     if (packet->count == 0) { delete packet; return; }
@@ -694,7 +690,7 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
     sendOver->cleanup = [packet, sendOver]() {
         delete packet;
         delete sendOver;
-        };
+       };
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,
         NULL);
@@ -708,8 +704,8 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
 }
 
 void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
-    for (auto& other : clients) {
-        if (!other || other == newClient || other->roomID != newClient->roomID) continue;
+    for (int i = 0; i < clientCount;i++) {
+        if (!clients[i] || clients[i] == newClient/* ||*/ /*other->roomID != newClient->roomID*/) continue;
 
         NewClientPacket* pkt = new NewClientPacket{};
         pkt->type = PacketType::NEW_CLIENT;
@@ -724,13 +720,13 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
             delete pkt;
             delete sendOver;
             };
-        int ret = WSASend(other->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        int ret = WSASend(clients[i]->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
             &sendOver->overlapped,
             NULL);
 
         if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-            closesocket(other->socketClient);
-            RemoveClient(other);
+            closesocket(clients[i]->socketClient);
+            RemoveClient(clients[i]);
             delete pkt;
             delete sendOver;
         }
@@ -1046,7 +1042,7 @@ void IOCompletionPort::WorkThread() {
             
             std::cout << "입장:" << idCount << std::endl;
 
-            if (randomTreadFlag&&clientCount>=2) {
+            if (randomTreadFlag&&clientCount>= MIN_PLAYER_COUNT) {
                 randomPositionThread = std::thread([this]() { RandomPositionThread(); });
                 randomTreadFlag = false;
             }
