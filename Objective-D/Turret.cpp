@@ -73,7 +73,7 @@ void Turret::Update(float Delta) {
 	}
 
 	if (!operationStart) {
-		heightOffset -= Delta * 0.5;
+		heightOffset -= Delta * TURRET_INSTALL_SPEED;
 		if (heightOffset <= 0.0) {
 			heightOffset = 0.0;
 			operationStart = true;
@@ -145,8 +145,8 @@ void Turret::Update(float Delta) {
 			std::cout << "HP: " << target->GetHP() << std::endl;
 		}
 
-		currentShootDelay = 0.2;
-		flameRenderTime = 0.05;
+		currentShootDelay = TURRET_SHOOT_DELAY;
+		flameRenderTime = FLAME_RENDER_TIME;
 	}
 	
 	if (targeted) {
