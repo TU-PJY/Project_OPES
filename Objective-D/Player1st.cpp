@@ -273,7 +273,7 @@ void Player1st::updateTerrainCollision() {
 
 // 카메라를 업데이트 한다.
 void Player1st::updateCamera(float Delta) {
-	if (currentState == STATE_DEATH) return;
+	//if (currentState == STATE_DEATH) return;
 
 	// 벡터 및 카메라 추적 업데이트
 	Math::UpdateVector(playerVector, currentRotation);

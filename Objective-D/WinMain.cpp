@@ -61,28 +61,27 @@ WSABUF recv_wsabuf[1];
 char recv_buffer[MAX_SOCKBUF];
 WSAOVERLAPPED recv_over;
 
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
 bool IsNewPlayer(unsigned int ID) {
-	if (!ID_List.contains(ID)) {
-		ID_List.insert(ID);
-
-		{
-			std::lock_guard<std::mutex> lock (PacketMutex);
+	{
+		std::lock_guard<std::mutex> lock(PacketMutex);
+		if (!ID_List.contains(ID)) {
+			ID_List.insert(ID);
 			scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
 			auto indicator = scene.Find("otherIndicator");
 			if (!indicator)
 				GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
 			static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
+			
+			return true;
 		}
 
-		return true;
+		return false;
 	}
-
-	return false;
 }
 
 void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
