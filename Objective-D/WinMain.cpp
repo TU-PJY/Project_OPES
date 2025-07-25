@@ -129,6 +129,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(recv_buffer);
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
+
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
 			Found->InputState(aniPacket->animationType);
 	}
@@ -138,8 +139,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 		std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
 
-		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster)
-			monster->InputState(packet->state);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster)
+				monster->InputState(packet->state);
+		}
 	}
 
 	else if (*type == PacketType::MONSTER_MOVE) {
@@ -148,21 +152,27 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
 		//	<< packet->z << " angle:" << packet->angle_y << std::endl;
 		
-		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
-			XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
-			float recvRotation = packet->angle_y;
-			monster->InputPosition(recvPosition);
-			monster->InputRotation(recvRotation);
-			monster->InputTargetID(packet->playerId);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
+				XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
+				float recvRotation = packet->angle_y;
+				monster->InputPosition(recvPosition);
+				monster->InputRotation(recvRotation);
+				monster->InputTargetID(packet->playerId);
+			}
 		}
 	}
 
 	else if (*type == PacketType::PTOM_DAMAGE) {
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(recv_buffer);
 		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID <<"damage: "<< packet->attackHp << std::endl;
-		
-		if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
-			monster->InputHP(packet->attackHp);
+
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
+				monster->InputHP(packet->attackHp);
+		}
 		
 		//처리부분
 	}
@@ -172,14 +182,18 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
 
 		if (packet->playerID == GLOBAL.myID) {
+			std::lock_guard<std::mutex> lock(PacketMutex);
 			if (auto me = scene.SearchLayer(LAYER_PLAYER, "player"); me)
 				me->InputHP(packet->attackHp);
 		}
 
 		else {
-			if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other) {
-				other->InputHP(packet->attackHp);
-				static_cast<GameObject*>(GLOBAL.otherIndicator)->InputHP(packet->playerID, packet->attackHp);
+			{
+				std::lock_guard<std::mutex> lock(PacketMutex);
+				if (auto other = scene.SearchLayer(LAYER_PLAYER, std::to_string(packet->playerID)); other) {
+					other->InputHP(packet->attackHp);
+					static_cast<GameObject*>(GLOBAL.otherIndicator)->InputHP(packet->playerID, packet->attackHp);
+				}
 			}
 		}
 		
