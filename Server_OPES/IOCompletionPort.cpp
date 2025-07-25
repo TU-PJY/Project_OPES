@@ -25,7 +25,7 @@ std::vector<MonsterData> monsterData;
 
 std::vector<MonsterData> myMonsters;//임시
 
-std::vector<MonsterData> defenseMonsters(20);//임시
+std::vector<MonsterData> defenseMonsters(DEFENSE_MONSTER);//임시
 
 std::mutex defenseMonsterMutex;//임시
 
@@ -228,7 +228,7 @@ void IOCompletionPort::RandomPositionThread() {
             }
         }
         monsterIdCount++;
-        if (monsterIdCount ==20) {
+        if (monsterIdCount == DEFENSE_MONSTER) {
             std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
             break;
         }
