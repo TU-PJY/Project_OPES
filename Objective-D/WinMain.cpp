@@ -293,10 +293,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(recv_buffer);
 		for (unsigned int i = 0; i < pkt->count; ++i) {
 			auto& info = pkt->clients[i];
-			std::cout << "[초기화] 클라이언트 " << info.id
-				<< " 위치: " << info.x << "," << info.y << "," << info.z
-				<< " 시선: " << info.angle_x << "," << info.angle_y << "," << info.angle_z
-				<< std::endl;
+			std::cout << "[초기화] 클라이언트 ID" << info.id << std::endl;
 			IsNewPlayer(info.id);
 
 			// TODO: ID에 해당하는 게임 객체 생성 또는 초기화
