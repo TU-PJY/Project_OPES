@@ -266,11 +266,15 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		if (weaponPtr && !weaponPtr->getReloadState()) {
 			weaponPtr->enableZoom();
 			zoomState = true;
-			destFOV = -45.0;
 			currentSpeed = maxSpeed * 0.5;
 
-			if (characterType == CHARACTER_DMR)
+			if (characterType == CHARACTER_DMR) {
+				destFOV = -45.0;
 				scopePtr->SetRenderState(true);
+			}
+			else {
+			}destFOV = -20.0;
+
 		}
 		
 		break;
