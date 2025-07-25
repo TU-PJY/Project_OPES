@@ -12,7 +12,7 @@
 #include<functional>
 #include "TerrainUtil.h"
 #include "ScriptUtil.h"
-
+#include"protocol.h"
 #include"Packet.h"
 #define MAX_SOCKBUF 1024  
 #define SERVER_PORT 9000
