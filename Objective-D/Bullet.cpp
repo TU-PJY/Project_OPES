@@ -10,6 +10,10 @@ Bullet::Bullet(int damage) {
 	bulletDamage = damage;
 }
 
+Bullet::~Bullet() {
+	std::cout << "destroyed bullet object" << std::endl;
+}
+
 void Bullet::updateCollision() {
 	// 먼저 터레인과 맵 오브젝트에 광선이 충돌하는지 검사 후, 충돌하면 충돌 타겟 후보에 추가한다.
 

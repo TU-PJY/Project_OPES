@@ -11,6 +11,8 @@ private:
 
 public:
 	Bullet(int damage);
+	~Bullet();
+	Bullet() {};
 	void updateTerrainCollision();
 	void updateCollision();
 	void Update(float Delta) override;

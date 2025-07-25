@@ -88,11 +88,11 @@ void Scene::RegisterControlObjectList(std::deque<GameObject*>& ControlObjectList
 // 객체를 추가한다. 원하는 객체와 태그, 레이어를 설정할 수 있다.
 // 이 함수에서 입력한 태그는 Find()함수에서 사용된다.
 GameObject* Scene::AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController) {
-	ObjectList[InputLayer].emplace_back(Object);
+	ObjectList[InputLayer].push_back(Object);
 	Object->ObjectTag = Tag;
 	Object->ObjectLayer = InputLayer;
 	if (UseController)
-		ControlObjectListPtr->emplace_back(Object);
+		ControlObjectListPtr->push_back(Object);
 
 	return Object;
 }

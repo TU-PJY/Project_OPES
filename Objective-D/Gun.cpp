@@ -103,7 +103,7 @@ void Gun::updateFire(float Delta) {
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
 		if (userPtr) userPtr->InputRecoil(recoil);
-		scene.AddObject(new Bullet(damage), "bullet", LAYER1);
+		scene.AddObject(new Bullet(damage), "bullet", LAYER3);
 		currentAmmo--;
 		fireEnableState = false;
 	}
