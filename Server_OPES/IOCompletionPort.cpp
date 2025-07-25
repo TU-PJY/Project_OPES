@@ -1100,6 +1100,7 @@ void IOCompletionPort::WorkThread() {
 
                     // clearCount 갱신
                     room.clearCount = arrivedCount;
+                    //여기 room.clearCount가 3이면 다음 스테이지?
 
                     // 모든 room 클라이언트에게 clearCount 전송
                     for (auto* c : room.clients) {
