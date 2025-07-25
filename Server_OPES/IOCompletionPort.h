@@ -76,7 +76,7 @@ struct stClientInfo {
         angle_x=0, angle_y=0, angle_z=0;
         animationType = 0;
         stageState = 1;
-        hp = 100;
+        hp = CHARACTER_MG_HP;
         prev=false;
         curr=false;
         //-130.0, 20.0, -130.0 

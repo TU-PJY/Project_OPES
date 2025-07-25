@@ -6,6 +6,7 @@
 #include <DirectXMath.h>
 #include<random>
 #include<cmath>
+#include"protocol.h"
 #pragma comment(lib, "Mswsock.lib")
 
 using namespace DirectX;
@@ -33,7 +34,7 @@ bool defenseState = true;//임시
 int clearCount = 0;//임시
 
 
-int roomHp=500;//임시
+int roomHp= CENTER_HP;//임시
 
 std::thread npcThread;
 

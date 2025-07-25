@@ -360,7 +360,7 @@ void Player1st::GiveDamage(int damage) {
 
 	if (!GLOBAL.useServer) {
 		currentHP -= damage;
-		if (currentHP <= 0)
+		if (currentHP < 0)
 			currentHP = 0;
 	}
 

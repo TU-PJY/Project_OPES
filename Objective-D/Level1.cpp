@@ -22,7 +22,7 @@ void Level1::Start() {
 	bool editMode = false;
 
 	// 활성화 시 디펜스 모드 건너뜀
-	bool skipDefenseMode = false;
+	bool skipDefenseMode = true;
 
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
 
