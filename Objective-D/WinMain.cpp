@@ -58,6 +58,9 @@ std::mutex PacketMutex;
 SOCKET clientSocket;
 bool isRunning = true;
 bool enter_room = true;//false;
+WSABUF recv_wsabuf[1];
+char recv_buffer[MAX_SOCKBUF];
+WSAOVERLAPPED recv_over;
 
 struct RecvContext {
 	WSAOVERLAPPED overlapped;
@@ -328,10 +331,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		}
 	}
 
-	if (context && context->cleanup)
-		context->cleanup();  // 사용 완료 후 해제
-
-	// 다음 수신 등록
+	// 다음 수신 요청
 	auto* newContext = new RecvContext{};
 	ZeroMemory(newContext, sizeof(RecvContext));
 	newContext->wsabuf.buf = newContext->buffer;
@@ -399,16 +399,20 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 
 	std::cout << "[클라이언트] 서버에 연결됨\n";
 
-	recv_wsabuf[0].buf = recv_buffer;
-	recv_wsabuf[0].len = sizeof(recv_buffer);
-	DWORD recv_flag = 0;
-	ZeroMemory(&recv_over, sizeof(recv_over));
+	auto* initialRecv = new RecvContext{};
+	ZeroMemory(initialRecv, sizeof(RecvContext));
+	initialRecv->wsabuf.buf = initialRecv->buffer;
+	initialRecv->wsabuf.len = sizeof(initialRecv->buffer);
+	initialRecv->cleanup = [initialRecv]() { delete initialRecv; };
 
-	int __result = WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
-	if (__result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+	DWORD flags = 0;
+	int result = WSARecv(clientSocket, &initialRecv->wsabuf, 1, NULL, &flags, &initialRecv->overlapped, RecvCallback);
+	if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
 		std::cerr << "[클라이언트] 첫 번째 데이터 수신 오류\n";
+		initialRecv->cleanup();
 		return;
 	}
+
 
 	// 콜백 실행 루프
 	while (NetRunning.load()) {
