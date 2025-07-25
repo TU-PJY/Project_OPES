@@ -365,8 +365,8 @@ void Player1st::GiveDamage(int damage) {
 	}
 
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.
-	//if (currentHP == 0)
-	//	currentState = STATE_DEATH;
+	if (currentHP == 0)
+		currentState = STATE_DEATH;
 }
 
 void Player1st::InputHP(int currentHP) {
