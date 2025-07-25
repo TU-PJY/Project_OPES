@@ -358,6 +358,12 @@ void Player1st::GiveDamage(int damage) {
 	if (currentState == STATE_DEATH) return;
 	SendMtoPDamagePacket(GLOBAL.myID, 0, damage);
 
+	if (!GLOBAL.useServer) {
+		currentHP -= damage;
+		if (currentHP < 0)
+			currentHP = 0;
+	}
+
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.
 	//if (currentHP == 0)
 	//	currentState = STATE_DEATH;

@@ -55,7 +55,8 @@ void PoisonBall::updateCollision() {
 	if (GLOBAL.map1DefenseState) {
 		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding) {
 			if (bs.CheckCollision(centerBuilding->GetOOBB())) {
-				//centerBuilding->GiveDamage(5);
+				if (!GLOBAL.useServer)
+					centerBuilding->GiveDamage(5);
 				disappearState = true;
 				SendCenterBuildingPacket(5);
 			}
