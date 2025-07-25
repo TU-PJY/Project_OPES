@@ -49,7 +49,7 @@ constexpr float                TURRET_RPM		= 0.2f;
 
 // 캐릭터 LMG 기관총 사수 / DMR 지정사수 / ENG 엔지니어
 // HP 체력, SPEED 이동속도(km/h)
-constexpr unsigned int         CHARACTER_MG_HP      = 100;// 300; // 임시로 100으로 지정
+constexpr unsigned int         CHARACTER_MG_HP = 100; //300; //  임시로 100으로 변경
 constexpr float                CHARACTER_MG_SPEED   = 8.0f;
 
 constexpr unsigned int         CHARACTER_DMR_HP		= 125;
