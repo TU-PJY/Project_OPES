@@ -45,6 +45,7 @@
 
 #include <iostream>
 #include <filesystem>
+#include <mutex>
 
 #define FBXSDK_SHARED
 #include <fbxsdk.h>
@@ -55,6 +56,8 @@
 // 쉬프트 누르기 귀찮아서 만든 별칭
 using xmfloat3 = XMFLOAT3;
 using xmfloat2 = XMFLOAT2;
+
+extern std::mutex PacketMutex;
 
 
 typedef struct{

@@ -103,7 +103,10 @@ void Gun::updateFire(float Delta) {
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
 		if (userPtr) userPtr->InputRecoil(recoil);
-		scene.AddObject(new Bullet(damage), "bullet", LAYER3);
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			scene.AddObject(new Bullet(damage), "bullet", LAYER3);
+		}
 		currentAmmo--;
 		fireEnableState = false;
 	}
