@@ -273,115 +273,7 @@ void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
 }
 
 
-//void IOCompletionPort::AcceptThread() {
-//    while (isRunning) {
-//        SOCKADDR_IN clientAddr;
-//        int addrLen = sizeof(SOCKADDR_IN);
-//
-//        // 클라이언트 구조체를 동적 할당하여 저장
-//        stClientInfo* newClient = new stClientInfo();
-//        newClient->socketClient = accept(listenSocket, (SOCKADDR*)&clientAddr, &addrLen);
-//        if (newClient->socketClient == INVALID_SOCKET) {
-//            std::cerr << "[에러] accept() 실패\n";
-//            delete newClient;  // 메모리 해제
-//            continue;
-//        }
-//
-//        // NAGLE 비활성화
-//        BOOL bNoDelay = TRUE;
-//        int result = setsockopt(newClient->socketClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
-//        if (result == SOCKET_ERROR) {
-//            std::cerr << "[에러] setsockopt(TCP_NODELAY) 실패: " << WSAGetLastError() << std::endl;
-//        }
-//        ///
-//
-//        CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
-//
-//        idCount++;
-//        newClient->id = idCount;
-//        clients.push_back(newClient);
-//        NotifyOthersAboutNewClient(newClient);
-//        SendExistingClientsToNewClient(newClient);
-//        std::cout << "새로운 클라이언트 접속! 현재 클라이언트 수: " << clients.size() << "\n";
-//        //
-//        std::lock_guard<std::mutex> lock(waitMutex);
-//        waitingClients.push_back(newClient);
-//        if (waitingClients.size() >= 3) {
-//            std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + 3);
-//            waitingClients.erase(waitingClients.begin(), waitingClients.begin() + 3);
-//
-//            CreateRoom(roomMembers);
-//            for (auto& client : roomMembers) {
-//                SendData_EnterRoom(client);
-//                RegisterRecv(client);
-//            }
-//        }
-//        else {
-//            SendData_EnterRoom(newClient);
-//            RegisterRecv(newClient);
-//        }
-//
-//
-//    }
-//}
-//void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* newClient) {
-//    ExistingClientsDataPacket packet;
-//    packet.type = PacketType::EXISTING_CLIENTS;
-//    packet.count = 0;
-//
-//    for (auto& client : clients) {
-//        if (!client) continue;
-//        if (client != newClient && client->roomID == newClient->roomID) {
-//            auto& dst = packet.clients[packet.count++];
-//            dst.id = client->id;
-//            dst.x = client->x;
-//            dst.y = client->y;
-//            dst.z = client->z;
-//            dst.angle_x = client->angle_x;
-//            dst.angle_y = client->angle_y;
-//            dst.angle_z = client->angle_z;
-//        }
-//    }
-//
-//    if (packet.count == 0)
-//        return;
-//
-//    newClient->sendOverlapped.operation = IOOperation::SEND;
-//    ZeroMemory(&newClient->sendOverlapped.overlapped, sizeof(newClient->sendOverlapped.overlapped));
-//    newClient->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&packet);
-//    newClient->sendOverlapped.wsaBuf.len = sizeof(PacketType) + sizeof(unsigned int) + packet.count * sizeof(packet.clients[0]);
-//
-//    DWORD size_sent = 0;
-//    int ret = WSASend(newClient->socketClient, &newClient->sendOverlapped.wsaBuf, 1, &size_sent, 0, &newClient->sendOverlapped.overlapped, NULL);
-//    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-//        std::cerr << "[에러] WSASend(EXISTING_CLIENTS) 실패: " << WSAGetLastError() << std::endl;
-//        closesocket(newClient->socketClient);
-//        RemoveClient(newClient);
-//    }
-//}
-//void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
-//    NewClientPacket pkt;
-//    pkt.type = PacketType::NEW_CLIENT;
-//    pkt.id = newClient->id;
-//
-//    for (auto& other : clients) {
-//        if (!other) continue;
-//        if (other != newClient && other->roomID == newClient->roomID) {
-//            other->sendOverlapped.operation = IOOperation::SEND;
-//            ZeroMemory(&other->sendOverlapped.overlapped, sizeof(other->sendOverlapped.overlapped));
-//            other->sendOverlapped.wsaBuf.buf = reinterpret_cast<char*>(&pkt);
-//            other->sendOverlapped.wsaBuf.len = sizeof(pkt);
-//
-//            DWORD sent = 0;
-//            int ret = WSASend(other->socketClient, &other->sendOverlapped.wsaBuf, 1, &sent, 0, &other->sendOverlapped.overlapped, NULL);
-//            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-//                std::cerr << "[에러] WSASend 실패 (NEW_CLIENT): " << WSAGetLastError() << "\n";
-//                closesocket(other->socketClient);
-//                RemoveClient(other);
-//            }
-//        }
-//    }
-//}
+
 void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     //std::lock_guard<std::mutex> lock(roomMutex);
 
@@ -432,6 +324,27 @@ void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
         delete sendOver;
     }
 }
+//void IOCompletionPort::RegisterRecv(stClientInfo* client) {
+//    if (!client || client->socketClient == INVALID_SOCKET) {
+//        std::cerr << "[에러] 유효하지 않은 클라이언트 소켓\n";
+//        return;
+//    }
+//
+//    DWORD flags = 0;
+//    DWORD bytesReceived = 0;
+//    ZeroMemory(&client->recvOverlapped, sizeof(stOverlappedEx));
+//    client->recvOverlapped.operation = IOOperation::RECV;
+//    client->recvOverlapped.wsaBuf.len = MAX_SOCKBUF;
+//    client->recvOverlapped.wsaBuf.buf = client->recvOverlapped.buffer;
+//
+//    int result = WSARecv(client->socketClient, &client->recvOverlapped.wsaBuf, 1, &bytesReceived, &flags, &client->recvOverlapped.overlapped, NULL);
+//    std::cout << "recv\n";
+//    if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//        std::cerr << "[에러] WSARecv 실패: " << WSAGetLastError() << std::endl;
+//        closesocket(client->socketClient);
+//        RemoveClient(client);
+//    }
+//}
 void IOCompletionPort::RegisterRecv(stClientInfo* client) {
     if (!client || client->socketClient == INVALID_SOCKET) {
         std::cerr << "[에러] 유효하지 않은 클라이언트 소켓\n";
@@ -440,17 +353,39 @@ void IOCompletionPort::RegisterRecv(stClientInfo* client) {
 
     DWORD flags = 0;
     DWORD bytesReceived = 0;
-    client->recvOverlapped.operation = IOOperation::RECV;
-    client->recvOverlapped.wsaBuf.len = MAX_SOCKBUF;
-    client->recvOverlapped.wsaBuf.buf = client->recvOverlapped.buffer;
 
-    int result = WSARecv(client->socketClient, &client->recvOverlapped.wsaBuf, 1, &bytesReceived, &flags, &client->recvOverlapped.overlapped, NULL);
+    stOverlappedEx* recvOver = new stOverlappedEx{};
+    ZeroMemory(recvOver, sizeof(stOverlappedEx));
+
+    recvOver->operation = IOOperation::RECV;
+    recvOver->wsaBuf.len = MAX_SOCKBUF;
+    recvOver->wsaBuf.buf = recvOver->buffer;
+
+    // ✅ cleanup 콜백 등록
+    recvOver->cleanup = [recvOver]() {
+        delete recvOver;
+        };
+
+    int result = WSARecv(
+        client->socketClient,
+        &recvOver->wsaBuf,
+        1,
+        &bytesReceived,
+        &flags,
+        &recvOver->overlapped,
+        NULL
+    );
+
+    //std::cout << "[DEBUG] RegisterRecv 요청\n";
+
     if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         std::cerr << "[에러] WSARecv 실패: " << WSAGetLastError() << std::endl;
         closesocket(client->socketClient);
         RemoveClient(client);
+        recvOver->cleanup();  // 실패 시 즉시 해제
     }
 }
+
 bool IOCompletionPort::AddClient(stClientInfo* c)
 {
     for (auto& slot : clients)
@@ -1169,7 +1104,7 @@ void IOCompletionPort::WorkThread() {
                 //}
 
                 MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
-                std::cout << pkt->id<<" --  Monstertype:" << pkt->Mtype <<", state:"<< pkt->state << std::endl;
+                std::cout << pkt->id<<" --  Monstertype:" << pkt->Mtype<<" monID:"<< pkt->id<< ", state:" << pkt->state << std::endl;
                 if (defenseState) {
 
                     {
@@ -1219,10 +1154,7 @@ void IOCompletionPort::WorkThread() {
                 }
             }
             else if (*packetType == PacketType::PTOM_DAMAGE) {
-                if (bytesTransferred != sizeof(PtoMDamagePacket)) {
-                    std::cerr << "[에러] PTOM_DAMAGE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-                    continue;
-                }
+                
                 std::cout << "[DEBUG] 받은 바이트 수: " << bytesTransferred << std::endl;
                 PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(pOverlappedEx->buffer);
                 std::cout <<"PTOM_DAMAGE Mid:" << pkt->monsterID <<", Attackhp:" << pkt->attackHp << std::endl;
@@ -1381,6 +1313,12 @@ void IOCompletionPort::WorkThread() {
            //}
 
             RegisterRecv(client);  // 다시 수신 대기
+            if (pOverlappedEx->cleanup) {
+                pOverlappedEx->cleanup();
+            }
+            else {
+                delete pOverlappedEx;
+            }
         }
         if (pOverlappedEx->operation == IOOperation::SEND) {
             if (pOverlappedEx->cleanup) {
