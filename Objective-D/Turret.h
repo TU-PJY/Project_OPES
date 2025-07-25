@@ -9,14 +9,14 @@ private:
 	xmfloat3 headRotationDest{};
 	bool     createdByServer{};
 
-	float    heightOffset{0.0};
+	float    heightOffset{1.0};
 
 	AABB     frustumBound{};
 	BoundSphere lookRange{};
 	OOBB     hitBox{};
 
 	// 20초후 스스로 파괴된다.
-	float    currentHP{20};
+	float    currentHP{TURRET_DURABILITY};
 
 	float    currentShootDelay{};
 	float    flameRenderTime{};
@@ -24,6 +24,13 @@ private:
 	bool    inFrustum{};
 	bool    targeted{};
 	bool    prevTargeted{};
+
+	bool    operationStart{};
+	bool    destroyState{};
+	float   flyAcc{};
+	xmfloat3 rotationOffset{};
+	float   destroyTime{};
+	float   currentSmokeFrame{};
 
 	unsigned int currentTargetID{};
 
