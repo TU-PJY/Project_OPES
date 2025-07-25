@@ -22,6 +22,7 @@ ScriptUtil monsterDataScript;
 // 현재 로드된 몬스터 생성 타입 및 위치
 std::vector<MonsterData> monsterData;
 
+std::mutex roomMapMutex;
 //std::vector<MonsterData> myMonsters;//임시
 
 //std::vector<MonsterData> defenseMonsters(DEFENSE_MONSTER);//임시
@@ -230,46 +231,48 @@ void IOCompletionPort::RandomPositionThread() {
 
     while (isRunning) {
         
+        {
+            std::lock_guard<std::mutex> lock(roomMapMutex);
+            for (auto& [roomID, room] : rooms) {
+                if (!room.isCreat)
+                    continue;
 
-        for (auto& [roomID, room] : rooms) {
-            if (!room.isCreat)
-                continue;
+                for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
 
-            for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
-                
-                std::this_thread::sleep_for(std::chrono::seconds(2));
+                    std::this_thread::sleep_for(std::chrono::seconds(2));
 
-                for (auto* client : room.clients) {
-                    if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-                        continue;
+                    for (auto* client : room.clients) {
+                        if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
+                            continue;
 
-                    DefenseRandomPacket* packet = new DefenseRandomPacket{};
-                    packet->type = PacketType::RANDOM_POSITION;
-                    packet->monsterID = monsterId;
-                    packet->x = room.defenseMonsters[monsterId].createPointX;
-                    packet->z = room.defenseMonsters[monsterId].createPointZ;
+                        DefenseRandomPacket* packet = new DefenseRandomPacket{};
+                        packet->type = PacketType::RANDOM_POSITION;
+                        packet->monsterID = monsterId;
+                        packet->x = room.defenseMonsters[monsterId].createPointX;
+                        packet->z = room.defenseMonsters[monsterId].createPointZ;
 
-                    stOverlappedEx* sendOver = new stOverlappedEx{};
-                    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-                    sendOver->operation = IOOperation::SEND;
-                    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-                    sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-                    sendOver->cleanup = [packet, sendOver]() {
-                        delete packet;
-                        delete sendOver;
-                        };
+                        stOverlappedEx* sendOver = new stOverlappedEx{};
+                        ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+                        sendOver->operation = IOOperation::SEND;
+                        sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+                        sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+                        sendOver->cleanup = [packet, sendOver]() {
+                            delete packet;
+                            delete sendOver;
+                            };
 
-                    int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
-                    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-                        std::cerr << "[에러] 랜덤 위치 전송 실패 (room " << roomID << "): " << WSAGetLastError() << std::endl;
-                        RemoveClient(client);
+                        int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
+                        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+                            std::cerr << "[에러] 랜덤 위치 전송 실패 (room " << roomID << "): " << WSAGetLastError() << std::endl;
+                            RemoveClient(client);
+                        }
                     }
+
                 }
 
+                room.isCreat = false;
+                std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
             }
-
-            room.isCreat = false;
-            std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
         }
     }
 }
@@ -359,7 +362,11 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     newRoom.centerHp = CENTER_HP;
     newRoom.clearCount = 0;
     newRoom.defenseState = true;
-    rooms[newRoom.roomID] = std::move(newRoom);
+    //rooms[newRoom.roomID] = std::move(newRoom);
+    {
+        std::lock_guard<std::mutex> lock(roomMapMutex);
+        rooms[newRoom.roomID] = std::move(newRoom);
+    }
     std::cout << "create room!: " << newRoom.roomID << std::endl;
 
     if (randomTreadFlag ) {
@@ -925,6 +932,32 @@ void IOCompletionPort::SendData_ClearCountPacket(stClientInfo* receiver, int Pla
         delete sendOver;
     }
 }
+void IOCompletionPort::SendData_ChooseJobPacket(stClientInfo* receiver, unsigned int playerID,int job) {
+    ChooseJobPacket* pkt = new ChooseJobPacket{};
+    pkt->type = PacketType::CHOOSE_JOB;
+    pkt->playerID = playerID;
+    pkt->job = job;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(ClearCountPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
 float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
     XMVECTOR VecA = XMLoadFloat3(&A);
     XMVECTOR VecB = XMLoadFloat3(&B);
@@ -1410,27 +1443,15 @@ void IOCompletionPort::WorkThread() {
                    SendData_GrenadePacket(otherClient, pkt->posX, pkt->posY, pkt->posZ, pkt->rotX, pkt->rotY, pkt->rotZ);
                }
             }
-            
-           //else if (*packetType == PacketType::CHAT) {
-           //    //if (bytesTransferred < sizeof(ChatPacket)) {
-           //    //    std::cerr << "[에러] CHAT 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-           //    //    continue;
-           //    //}
-           //
-           //    ChatPacket_CtoS* chatPacket = reinterpret_cast<ChatPacket_CtoS*>(pOverlappedEx->buffer);
-           //    std::string msg{ chatPacket->message,bytesTransferred - sizeof(PacketType) };
-           //
-           //    std::cout << "[채팅] 클라이언트 " << client->id << ": " << msg << std::endl;
-           //
-           //    //채팅 패킷을 모든 클라이언트에게 전송
-           //    for (stClientInfo* otherClient : clients) {
-           //        if (!otherClient) continue;
-           //        if (otherClient != client) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-           //            SendData(client, otherClient, msg.c_str(), bytesTransferred);
-           //            std::cout << "send\n";
-           //        }
-           //    }
-           //}
+            else if (*packetType == PacketType::CHOOSE_JOB) {
+
+                ChooseJobPacket* pkt = reinterpret_cast<ChooseJobPacket*>(pOverlappedEx->buffer);
+                for (auto* otherClient : room.clients) {
+                    if (!otherClient || otherClient == client) continue;
+                    SendData_ChooseJobPacket(otherClient, pkt->playerID, pkt->job);
+                }
+            }
+           
 
             RegisterRecv(client);  // 다시 수신 대기
             if (pOverlappedEx->cleanup) {
