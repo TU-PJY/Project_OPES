@@ -330,7 +330,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			// TODO: ID에 해당하는 게임 객체 생성 또는 초기화
 		}
 	}
-
+	if (context && context->cleanup)
+		context->cleanup();  // 사용 완료 후 해제
 	// 다음 수신 요청
 	auto* newContext = new RecvContext{};
 	ZeroMemory(newContext, sizeof(RecvContext));
@@ -359,11 +360,19 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		context->cleanup();
 
 //	std::cout << "send\n";
-	recv_wsabuf[0].buf = recv_buffer;
-	recv_wsabuf[0].len = sizeof(recv_buffer);
-	DWORD recv_flag = 0;
-	ZeroMemory(&recv_over, sizeof(recv_over));
-	WSARecv(clientSocket, recv_wsabuf, 1, NULL, &recv_flag, &recv_over, RecvCallback);
+	//auto* newRecv = new RecvContext{};
+	//ZeroMemory(newRecv, sizeof(RecvContext));
+	//newRecv->wsabuf.buf = newRecv->buffer;
+	//newRecv->wsabuf.len = sizeof(newRecv->buffer);
+	//newRecv->cleanup = [newRecv]() { delete newRecv; };
+	//
+	//DWORD recv_flag = 0;
+	//int result = WSARecv(clientSocket, &newRecv->wsabuf, 1, NULL, &recv_flag, &newRecv->overlapped, RecvCallback);
+	//if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+	//	//std::cerr << "[클라이언트] SendCallback 수신 등록 실패\n";
+	//	newRecv->cleanup();
+	//	isRunning = false;
+	//}
 }
 void NetworkThread(bool localServer, const wchar_t* cmdLine)
 {
