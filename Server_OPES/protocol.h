@@ -35,10 +35,18 @@ constexpr unsigned int         SG_MAGAZINE		= 6;
 // DAMAGE 데미지, DURABILITY 내구도, INSTALL 설치 시간, RPM 연사속도, COOLDOWN 파괴된 후 쿨타임
 
 // 포탑(TURRET)
+constexpr unsigned int         TURRET_ID            = 1;
 constexpr unsigned int         TURRET_DAMAGE	    = 10;
 constexpr float                TURRET_DURABILITY    = 20.0f;
 constexpr float                TURRET_INSTALL_SPEED	= 0.5f;
 constexpr float                TURRET_SHOOT_DELAY   = 0.2f;
+constexpr float                TURRET_INSTALL_COOLTIME = 40.0f;
+
+constexpr unsigned int         BEACON_ID = 2;
+constexpr unsigned int         BEACON_HEAL = 5;
+constexpr float                BEACON_DURABILITY = 30.0f;
+constexpr float                BEACON_HEAL_DELAY = 0.5f;
+constexpr float                BEACON_INSTALL_COOLTIME = 50.0f;
 
 // 스파이크(SPIKE)
 //constexpr unsigned int         SPIKE_DAMAGE		= 0;

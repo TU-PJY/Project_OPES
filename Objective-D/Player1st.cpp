@@ -7,6 +7,7 @@
 #include "Shotgun.h"
 #include "PlayerIndicator.h"
 #include "Turret.h"
+#include "Beacon.h"
 
 #include "Grenade.h"
 
@@ -32,11 +33,11 @@ Player1st::Player1st(int characterType) {
 		currentHP = CHARACTER_ENG_HP;
 		break;
 	}
-
+	this->characterType = characterType;
 	currentSpeed = maxSpeed;
 	
 	// 플레이어 인디케이터에 필요한 정보들을 전달한다.
-	IndicatorPtr = scene.AddObject(new PlayerIndicator, "playerInd", LAYERUI);
+	IndicatorPtr = scene.AddObject(new PlayerIndicator(this->characterType), "playerInd", LAYERUI);
 	if (IndicatorPtr) {
 		IndicatorPtr->InputHP(totalHP, currentHP);
 		IndicatorPtr->InputGrenade(currentGrenadeCount);
@@ -112,12 +113,79 @@ void Player1st::InputMouseMotion(MotionEvent& Event) {
 void Player1st::InputMouse(MouseEvent& Event) {
 	// 총 발사 상태 활성화 / 비활성화
 	switch (Event.Type) {
+	case WM_MOUSEWHEEL:
+	{
+		int delta = GET_WHEEL_DELTA_WPARAM(Event.wParam); // 휠 스크롤량 (+120, -120 등)
+
+		if (delta > 0) 
+			IndicatorPtr->ScrollRight();
+		else 
+			IndicatorPtr->ScrollLeft();
+
+		if (weaponPtr) weaponPtr->releaseTrigger();
+		triggerState = false;
+
+		if (weaponPtr) weaponPtr->disableZoom();
+		zoomState = false;
+		destFOV = 0.0;
+		currentSpeed = maxSpeed;
+	}
+	break;
+
 	case WM_LBUTTONDOWN:
 		// 마우스 모션 캡쳐 상태가 해제된 경우(윈도우 버튼 등으로 다른 윈도우에 포커싱된 경우)
 		// 원래의 윈도우에 좌클릭으로 포커싱하면 모션 캡쳐 상태가 다시 활성화 된다.
 		mouse.StartMotionCapture(GlobalHWND);
-		if (weaponPtr) weaponPtr->pullTrigger();
-		triggerState = true;
+
+		if (characterType == CHARACTER_MG || characterType == CHARACTER_DMR) {
+			switch (IndicatorPtr->GetCurrentIndex()) {
+			case 0:
+				if (currentGrenadeCount > 0) {
+					XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
+					XMFLOAT3 createPosition = cameraPosition;
+					Math::CalcForwardOffset(createPosition, currentRotation.y, 2.0, 0.0);
+					scene.AddObject(new Grenade(createPosition, rotation), "grenade", LAYER3);
+					currentGrenadeCount--;
+				}
+				break;
+			
+			case 1:
+				if (weaponPtr) weaponPtr->pullTrigger();
+				triggerState = true;
+				break;
+			}
+		}
+
+		else {
+			switch (IndicatorPtr->GetCurrentIndex()) {
+			case 0:
+				if (turretCoolTime <= 0.0) {
+					float distance;
+					xmfloat3 createPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
+					scene.AddObject(new Turret(createPosition, currentRotation.y, false), "turret", LAYER3);
+					turretCoolTime = TURRET_INSTALL_COOLTIME;
+				}
+				break;
+
+			case 1:
+				if (beaconCoolTime <= 0.0) {
+					float distance;
+					xmfloat3 createPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
+					scene.AddObject(new Beacon(createPosition, currentRotation.y), "beacon", LAYER3);
+					beaconCoolTime = BEACON_INSTALL_COOLTIME;
+				}
+			
+			break;
+
+			case 2:
+				break;
+
+			case 3:
+				if (weaponPtr) weaponPtr->pullTrigger();
+				triggerState = true;
+				break;
+			}
+		}
 		break;
 
 	case WM_LBUTTONUP:
@@ -126,6 +194,11 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		break;
 
 	case WM_RBUTTONDOWN:
+		if ((characterType == CHARACTER_MG || characterType == CHARACTER_DMR) && IndicatorPtr->GetCurrentIndex() != 1)
+			break;
+		if (characterType == CHARACTER_ENG && IndicatorPtr->GetCurrentIndex() != 3)
+			break;
+
 		if (weaponPtr && !weaponPtr->getReloadState()) {
 			weaponPtr->enableZoom();
 			zoomState = true;
@@ -140,13 +213,6 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		destFOV = 0.0;
 		currentSpeed = maxSpeed;
 		break;
-
-	case WM_MBUTTONDOWN:
-	{
-		float distance;
-		xmfloat3 createPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
-		scene.AddObject(new Turret(createPosition, currentRotation.y, false), "turret", LAYER3);
-	}
 	break;
 	}
 }
@@ -170,19 +236,6 @@ void Player1st::InputKey(KeyEvent& Event) {
 			}
 			break;
 
-		case 'G':
-		{
-			//최대 2개까지 던지기 가능하다.
-			if (currentGrenadeCount > 0) {
-				XMFLOAT3 rotation = XMFLOAT3(-currentRotation.x, currentRotation.y, currentRotation.z);
-				XMFLOAT3 createPosition = cameraPosition;
-				Math::CalcForwardOffset(createPosition, currentRotation.y, 2.0, 0.0);
-				scene.AddObject(new Grenade(createPosition, rotation), "grenade", LAYER3);
-				currentGrenadeCount--;
-				if (IndicatorPtr)
-					IndicatorPtr->InputGrenade(currentGrenadeCount);
-			}
-		}
 		break;
 		}
 	}
@@ -316,6 +369,9 @@ void Player1st::updateIndicator() {
 		int currentAmmo = weaponPtr->getCurrentAmmo();
 		int totalAmmo = weaponPtr->getTotalAmmo();
 		IndicatorPtr->InputAmmo(totalAmmo, currentAmmo);
+		IndicatorPtr->InputTurretCoolTime(turretCoolTime);
+		IndicatorPtr->InputBeaconCoolTime(beaconCoolTime);
+		IndicatorPtr->InputGrenade(currentGrenadeCount);
 	}
 }
 
@@ -323,6 +379,11 @@ void Player1st::updateIndicator() {
 
 
 void Player1st::Update(float Delta) {
+	turretCoolTime -= Delta;
+	beaconCoolTime -= Delta;
+	Clamp::LimitValue(turretCoolTime, 0.0, CLAMP_DIR_LESS);
+	Clamp::LimitValue(beaconCoolTime, 0.0, CLAMP_DIR_LESS);
+
 	updateState();
 	updateMove(Delta);
 	updateTerrainCollision();
@@ -354,11 +415,21 @@ void Player1st::InputRecoil(float Value) {
 	currentRotation.x -= Value;
 }
 
+void Player1st::GiveHeal(int healHP) {
+	if (currentState == STATE_DEATH)
+		return;
+
+	currentHP += healHP;
+	Clamp::LimitValue(currentHP, totalHP, CLAMP_DIR_GREATER);
+	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
+}
+
 void Player1st::GiveDamage(int damage) {
 	if (currentState == STATE_DEATH) return;
 	SendMtoPDamagePacket(GLOBAL.myID, 0, damage);
 
 	if (!GLOBAL.useServer) {
+		scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
 		currentHP -= damage;
 		if (currentHP < 0)
 			currentHP = 0;

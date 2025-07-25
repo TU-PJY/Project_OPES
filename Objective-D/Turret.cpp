@@ -41,6 +41,10 @@ Turret::Turret(const xmfloat3& createPosition, float createRotation, bool create
 	rotation.y = createRotation;
 	createdByServer = createFromServer;
 	hpInd = scene.AddObject(new HP_Indicator, "indicator", LAYER3);
+	if (hpInd) {
+		hpInd->SetIndColor(xmfloat3(0.0, 1.0, 0.0));
+		hpInd->InputPosition(position, 2.0);
+	}
 
 	if (!createFromServer)
 		SendEngineerInstallPacket(CONSTRUCT_TURRET, 0, rotation.y, position.x, position.y, position.z);
@@ -85,10 +89,8 @@ void Turret::Update(float Delta) {
 
 	currentHP -= Delta;
 
-	if (hpInd) {
-		hpInd->InputPosition(position, 2.0);
-		hpInd->InputHP(20, (int)currentHP);
-	}
+	if (hpInd)
+		hpInd->InputHP((int)TURRET_DURABILITY, (int)currentHP);
 
 	if (currentHP <= 0.0) {
 		scene.DeleteObject(hpInd);
@@ -139,7 +141,7 @@ void Turret::Update(float Delta) {
 	if (currentShootDelay <= 0.0 && targeted) {
 		if (!createdByServer) {
 			if(!GLOBAL.useServer)
-				target->GiveDamage(5);
+				target->GiveDamage(10);
 			SendPtoMDamagePacket( target->GetID(), 5);
 			std::cout << "ID: " << target->GetID() << std::endl;
 			std::cout << "HP: " << target->GetHP() << std::endl;

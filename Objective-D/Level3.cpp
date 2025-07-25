@@ -19,8 +19,8 @@ void Level3::Start() {
 
 	GLOBAL.mapName = "map3";
 	GLOBAL.offsetFOV = 0.0;
-	GLOBAL.map3DefenseState = true;
-	GLOBAL.map3DefenseEnemyRemained = 20;
+	GLOBAL.DefenseState = true;
+	GLOBAL.DefenseEnemyRemained = 20;
 
 	FOG_DATA FogData{
 		{0.68, 0.28, 0.1}, // Fog Color

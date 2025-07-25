@@ -4,13 +4,13 @@
 Map1DefenseIndicator::Map1DefenseIndicator() {
 	text.EnableShadow();
 	text.SetShadow(XMFLOAT2(0.01, -0.01), 0.5);
-	totalRemain = GLOBAL.map1DefenseEnemyRemained;
-	currentRemain = GLOBAL.map1DefenseEnemyRemained;
-	prevRemain = GLOBAL.map1DefenseEnemyRemained;
+	totalRemain = GLOBAL.DefenseEnemyRemained;
+	currentRemain = GLOBAL.DefenseEnemyRemained;
+	prevRemain = GLOBAL.DefenseEnemyRemained;
 }
 
 void Map1DefenseIndicator::Update(float Delta) {
-	currentRemain = GLOBAL.map1DefenseEnemyRemained;
+	currentRemain = GLOBAL.DefenseEnemyRemained;
 	renderString = std::to_string(totalRemain) + "/" + std::to_string(currentRemain);
 
 	// 적이 처치될때마다 피드백을 보여준다.

@@ -12,6 +12,8 @@ private:
 		BACK
 	};
 
+	int characterType{};
+
 	// 4 방향 이동 상태
 	bool     moveState[4]{};
 
@@ -58,6 +60,10 @@ private:
 	bool fallDown{};
 	float fallAcc{};
 
+	// 엔지니어 전용 변수
+	float turretCoolTime{};
+	float beaconCoolTime{};
+
 	// 플레이어 당 2개 사용 가능
 	int currentGrenadeCount{ 2 };
 
@@ -103,6 +109,7 @@ public:
 	OOBB GetOOBB() override;
 	XMFLOAT3 GetSize() override;
 	void InputRecoil(float Value) override;
+	void GiveHeal(int healHP);
 	void GiveDamage(int damage) override;
 	void InputHP(int currentHP) override;
 	unsigned int GetID() override;

@@ -119,6 +119,7 @@ public:
 	virtual void InputTargetID(unsigned int target) {  }
 	virtual bool GetBehaviorState() { return true; }
 	virtual int GetHP() { return {}; }
+	virtual void GiveHeal(int healHP) {}
 
 	// 인디케이터 함수
 	virtual void SetRenderState(bool Flag) {}
@@ -128,6 +129,13 @@ public:
 	virtual void InputAmmo(int fullAmmo, int currentAmmo) {}
 	virtual void InputGrenade(int value) {}
 	virtual void SetSize(float Value) {}
+	virtual void SetIndColor(const xmfloat3& color) {}
+	virtual void InputTurretCoolTime(float time) {}
+	virtual void InputBeaconCoolTime(float time) {}
+	virtual void InputBarrierCoolTime(float time) {}
+	virtual int GetCurrentIndex() { return{}; }
+	virtual void ScrollRight() {}
+	virtual void ScrollLeft() {}
 
 	// 서버 테스트
 	virtual void InputPosition(XMFLOAT3& value) {}
