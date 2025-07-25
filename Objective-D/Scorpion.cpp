@@ -298,6 +298,9 @@ XMFLOAT3 Scorpion::GetPosition() {
 }
 
 bool Scorpion::CheckHit(BoundSphere& bound) {
+	if (currentState == SCOR_DEATH)
+		return false;
+
 	for (int i = 0; i < 3; i++) {
 		if (hitBox[i].CheckCollision(bound))
 			return true;

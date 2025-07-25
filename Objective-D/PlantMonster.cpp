@@ -337,6 +337,9 @@ XMFLOAT3 PlantMonster::GetPosition() {
 }
 
 bool PlantMonster::CheckHit(BoundSphere& bound) {
+	if (currentState == PLANT_DEATH)
+		return false;
+
 	for (int i = 0; i < 3; i++) {
 		if (hitBox[i].CheckCollision(bound))
 			return true;
