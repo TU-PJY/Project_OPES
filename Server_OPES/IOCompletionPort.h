@@ -155,6 +155,9 @@ private:
     std::thread accepterThread;
     std::thread workerThread;
     std::thread randomPositionThread;
+    std::thread randomPositionThread2;
+    std::thread randomPositionThread3;
+
     bool isRunning = true;
     std::mutex clientMutex;
     //
