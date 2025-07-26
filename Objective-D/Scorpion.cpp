@@ -24,11 +24,11 @@ Scorpion::~Scorpion() {
 
 // 서버로부터 위치를 입력 받으면 바로 반영하지 않고 1프레임 늦게 반영한다.
 void Scorpion::updateInputedPosition() {
-	if (!positionInputedState)
+	/*if (!positionInputedState)
 		return;
 
 	position = inputedPosition;
-	positionInputedState = false;
+	positionInputedState = false;*/
 }
 
 void Scorpion::updateBound(float Delta) {
