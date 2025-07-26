@@ -58,7 +58,7 @@ struct stClientInfo {
     float angle_x, angle_y, angle_z;
     unsigned short animationType;
     int stageState;
-    //bool modeState;
+    bool ready;
     int job;
     bool prev;
     bool curr;
@@ -77,6 +77,7 @@ struct stClientInfo {
         hp = CHARACTER_MG_HP;
         prev=false;
         curr=false;
+        ready = false;
         //-130.0, 20.0, -130.0 
     }
 };
@@ -133,6 +134,7 @@ public:
     void SendData_PlayerArrivalPacket(stClientInfo* receiver, unsigned int playerID, bool arrive);
     void SendData_ClearCountPacket(stClientInfo* receiver, int PlayerCount);
     void SendData_ChooseJobPacket(stClientInfo* receiver, unsigned int playerID, int job);
+    void SendData_ReadyPacket(stClientInfo* receiver, unsigned int id);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 

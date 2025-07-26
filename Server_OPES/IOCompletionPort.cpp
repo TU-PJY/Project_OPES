@@ -894,12 +894,37 @@ void IOCompletionPort::SendData_ChooseJobPacket(stClientInfo* receiver, unsigned
     pkt->type = PacketType::CHOOSE_JOB;
     pkt->playerID = playerID;
     pkt->job = job;
-    std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
     sendOver->wsaBuf.len = sizeof(ChooseJobPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+
+void IOCompletionPort::SendData_ReadyPacket(stClientInfo* receiver,unsigned int id ) {
+    ReadyPacket* pkt = new ReadyPacket{};
+    pkt->type = PacketType::READY;
+    pkt->playerID = id;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(ReadyPacket);
     sendOver->cleanup = [pkt, sendOver]() {
         delete pkt;
         delete sendOver;
@@ -1076,26 +1101,7 @@ void IOCompletionPort::WorkThread() {
                 }
             }
             else if (*packetType == PacketType::VIEW_ANGLE) {
-                //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-                //    continue;
-                //}
-
-                //ViewingAnglePacket_CtoS* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_CtoS*>(pOverlappedEx->buffer);
-                //
-                //client->angle_x = viewAnglePacket->x;
-                //client->angle_y = viewAnglePacket->y;
-                //client->angle_z = viewAnglePacket->z;
-                ////std::cout << "[시선] 클라이언트 " << client->id
-                ////    << " 시선각도: (" << client->angle_x << ", " << client->angle_y << ", " << client->angle_z << ")\n";
-                //
-                //// 이동 패킷을 모든 클라이언트에게 전송
-                //for (stClientInfo* otherClient : clients) {
-                //    if (!otherClient) continue;
-                //    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                //        SendData_ViewAngle(client, otherClient);
-                //    }
-                //}
+          
                 ViewingAnglePacket_CtoS* pkt = reinterpret_cast<ViewingAnglePacket_CtoS*>(pOverlappedEx->buffer);
                 client->angle_x = pkt->x;
                 client->angle_y = pkt->y;
@@ -1283,31 +1289,7 @@ void IOCompletionPort::WorkThread() {
 
             else if (*packetType == PacketType::MTOP_DAMAGE) {
 
-                //MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(pOverlappedEx->buffer);
-                //
-                //// 데미지 패킷을 모든 클라이언트에게 전송
-                //int myHP;
-                //for (stClientInfo* targetClient : clients) {
-                //    if (!targetClient) continue;
-                //    if (targetClient->id == pkt->playerID /* && targetClient->roomID == client->roomID */) {
-                //
-                //        // 서버에서 체력 계산
-                //        targetClient->hp -= pkt->attackHp;
-                //        if (targetClient->hp < 0)
-                //            targetClient->hp = 0;
-                //        myHP = targetClient->hp;
-                //
-                //        break;
-                //    }
-                //}
-                //
-                //std::cout << pkt->playerID <<"---실제체력:" << myHP << std::endl;
-                //for (stClientInfo* otherClient : clients) {
-                //    if (!otherClient) continue;
-                //    if (true /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                //        SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, myHP);
-                //    }
-                //}
+                
                 MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(pOverlappedEx->buffer);
                 int myHP = 0;
                 {
@@ -1330,15 +1312,7 @@ void IOCompletionPort::WorkThread() {
             }
             else if (*packetType == PacketType::ENGINEER_INSTALL) {
 
-                //EngineerInstallPacket* pkt = reinterpret_cast<EngineerInstallPacket*>(pOverlappedEx->buffer);
-                //
-                //// 데미지 패킷을 모든 클라이언트에게 전송
-                //for (stClientInfo* otherClient : clients) {
-                //    if (!otherClient) continue;
-                //    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                //        SendData_EngineerInstallPacket(otherClient, pkt->Etype, pkt->ID, pkt->rotY, pkt->posX, pkt->posY, pkt->posZ);
-                //    }
-                //}
+               
                 EngineerInstallPacket* pkt = reinterpret_cast<EngineerInstallPacket*>(pOverlappedEx->buffer);
                 for (auto* otherClient : room.clients) {
                     if (!otherClient || otherClient == client) continue;
@@ -1347,15 +1321,7 @@ void IOCompletionPort::WorkThread() {
             }
             else if (*packetType == PacketType::ENGINEER_OBJECT) {
 
-                //EngineerObjectPacket* pkt = reinterpret_cast<EngineerObjectPacket*>(pOverlappedEx->buffer);
-                //
-                //// 데미지 패킷을 모든 클라이언트에게 전송
-                //for (stClientInfo* otherClient : clients) {
-                //    if (!otherClient) continue;
-                //    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                //        SendData_EngineerObjectPacket(otherClient, pkt->ID, pkt->hp);
-                //    }
-                //}
+                
                 EngineerObjectPacket* pkt = reinterpret_cast<EngineerObjectPacket*>(pOverlappedEx->buffer);
                 for (auto* otherClient : room.clients) {
                     if (!otherClient || otherClient == client) continue;
@@ -1364,26 +1330,7 @@ void IOCompletionPort::WorkThread() {
             }
             else if (*packetType == PacketType::CENTER_HP) {
 
-                //CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(pOverlappedEx->buffer);
-                //
-                //
-                //auto it = rooms.find(client->roomID);
-                //if (it == rooms.end()) break;
-                //Room& room = it->second;
-                //{
-                //    std::lock_guard<std::mutex> lock(*room.roomMutex);
-                //    room.centerHp -= pkt->damage;
-                //    if (room.centerHp < 0) room.centerHp = 0;
-                //}
-                ////roomHp -= pkt->damage;
-                ////std::cout << "room_hp:" << roomHp << std::endl;
-                //// 데미지 패킷을 모든 클라이언트에게 전송
-                //for (stClientInfo* otherClient : clients) {
-                //    if (!otherClient) continue;
-                //    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                //        SendData_CenterBuildingPacket(otherClient, roomHp);
-                //    }
-                //}
+               
                 CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(pOverlappedEx->buffer);
                 {
                     std::lock_guard<std::mutex> lock(*room.roomMutex);
@@ -1424,6 +1371,17 @@ void IOCompletionPort::WorkThread() {
                 }
             }
            
+            else if (*packetType == PacketType::READY) {
+
+                ReadyPacket* pkt = reinterpret_cast<ReadyPacket*>(pOverlappedEx->buffer);
+                //std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
+                client->ready = true;
+
+                for (auto* otherClient : room.clients) {
+                    if (!otherClient || otherClient == client) continue;
+                    SendData_ReadyPacket(otherClient, pkt->playerID);
+                }
+            }
 
             RegisterRecv(client);  // 다시 수신 대기
             if (pOverlappedEx->cleanup) {
