@@ -17,20 +17,44 @@ void Lobby::InputMouse(MouseEvent& Event) {
 			return;
 		}
 
-		// 한 번 준비되면 해제 불가
-		// 캐릭터를 선택하지 않으면 준비 불가
-		if (!GLOBAL.imReady && selectedCharacter != -1 && readyButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
-			GLOBAL.imReady = !GLOBAL.imReady;
-			GLOBAL.myCharacter = selectedCharacter;
-			SendReadyPacket(GLOBAL.myID);
+		// 플레이어가 없을 경우 누를 수 없음
+		// 서버를 사용하는 경우에 한 함
+		if (GLOBAL.useServer) {
+			if (!GLOBAL.playerList.empty()) {
+				// 한 번 준비되면 해제 불가
+				// 캐릭터를 선택하지 않으면 준비 불가
+				if (!GLOBAL.imReady && selectedCharacter != -1 && readyButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
+					GLOBAL.imReady = !GLOBAL.imReady;
+					GLOBAL.myCharacter = selectedCharacter;
+					SendReadyPacket(GLOBAL.myID);
+				}
+
+				if (!GLOBAL.imReady) {
+					for (int i = 0; i < 3; i++) {
+						if (button[i].CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
+							selectedCharacter = i;
+							SendChooseJobPacket(GLOBAL.myID, selectedCharacter);
+							return;
+						}
+					}
+				}
+			}
 		}
 
-		if (!GLOBAL.imReady) {
-			for (int i = 0; i < 3; i++) {
-				if (button[i].CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
-					selectedCharacter = i;
-					SendChooseJobPacket(GLOBAL.myID, selectedCharacter);
-					return;
+		else {
+			if (!GLOBAL.imReady && selectedCharacter != -1 && readyButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
+				GLOBAL.imReady = !GLOBAL.imReady;
+				GLOBAL.myCharacter = selectedCharacter;
+				//SendReadyPacket(GLOBAL.myID);
+			}
+
+			if (!GLOBAL.imReady) {
+				for (int i = 0; i < 3; i++) {
+					if (button[i].CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
+						selectedCharacter = i;
+						//SendChooseJobPacket(GLOBAL.myID, selectedCharacter);
+						return;
+					}
 				}
 			}
 		}

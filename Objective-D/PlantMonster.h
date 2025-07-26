@@ -86,6 +86,7 @@ public:
 	XMFLOAT3 GetPosition() override;
 	bool CheckHit(float& distance) override;
 	bool CheckHit(BoundSphere& bound) override;
+	bool CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) override;
 	unsigned int GetID() override;
 	void InputState(unsigned int state) override;
 	void InputTargetID(unsigned int id) override;

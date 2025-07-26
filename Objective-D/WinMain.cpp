@@ -75,7 +75,7 @@ bool skipTitleMode = false;
 bool skipDefenseMode = false;
 bool editMode = false;
 
-bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;

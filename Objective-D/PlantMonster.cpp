@@ -348,6 +348,15 @@ bool PlantMonster::CheckHit(BoundSphere& bound) {
 	return false;
 }
 
+bool PlantMonster::CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) {
+	for (int i = 0; i < 3; i++) {
+		if (hitBox[i].oobb.Intersects(start, direction, distance))
+			return true;
+	}
+
+	return false;
+}
+
 bool PlantMonster::CheckHit(float& distance) {
 	if (currentState == PLANT_DEATH)
 		return false;

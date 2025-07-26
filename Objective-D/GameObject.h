@@ -120,6 +120,7 @@ public:
 	virtual bool GetBehaviorState() { return true; }
 	virtual int GetHP() { return {}; }
 	virtual void GiveHeal(int healHP) {}
+	virtual bool CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) { return {}; }
 
 	// 인디케이터 함수
 	virtual void SetRenderState(bool Flag) {}

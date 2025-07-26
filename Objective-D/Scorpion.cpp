@@ -281,6 +281,15 @@ void Scorpion::Render() {
 	frustumAABB.Render();
 }
 
+bool Scorpion::CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) {
+	for (int i = 0; i < 3; i++) {
+		if (hitBox[i].oobb.Intersects(start, direction, distance))
+			return true;
+	}
+
+	return false;
+}
+
 bool Scorpion::CheckHit(float& distance) {
 	if (currentState == SCOR_DEATH)
 		return false;

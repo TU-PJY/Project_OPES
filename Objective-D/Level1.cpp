@@ -23,9 +23,11 @@ namespace Level1 {
 void Level1::Start() {
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
 	GLOBAL.mapName = "map1";
-	GLOBAL.offsetFOV = 0.0;
+	GLOBAL.mapOOBBdata.clear();
+	GLOBAL.defenseIDList.clear();
 	GLOBAL.DefenseEnemyRemained = 20;
 	GLOBAL.DefenseState = true;
+	GLOBAL.offsetFOV = 0.0;
 
 	FOG_DATA FogData{
 		{0.63, 0.77, 0.98}, // Fog Color
@@ -86,9 +88,4 @@ void Level1::Start() {
 
 // 다른 모드로 전환 시 맵 오브젝트 바운드 데이터 삭제
 void Level1::Destructor() {
-	GLOBAL.mapOOBBdata.clear();
-	GLOBAL.defenseIDList.clear();
-	GLOBAL.DefenseEnemyRemained = 20;
-	GLOBAL.DefenseState = true;
-	GLOBAL.offsetFOV = 0.0;
 }

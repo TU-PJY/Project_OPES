@@ -16,6 +16,11 @@ namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 void Level3::Start() {
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
 	GLOBAL.mapName = "map3";
+	GLOBAL.mapOOBBdata.clear();
+	GLOBAL.defenseIDList.clear();
+	GLOBAL.DefenseEnemyRemained = 20;
+	GLOBAL.DefenseState = true;
+	GLOBAL.offsetFOV = 0.0;
 
 	FOG_DATA FogData{
 		{0.68, 0.28, 0.1}, // Fog Color
@@ -61,9 +66,4 @@ void Level3::Start() {
 }
 
 void Level3::Destructor() {
-	GLOBAL.mapOOBBdata.clear();
-	GLOBAL.defenseIDList.clear();
-	GLOBAL.DefenseEnemyRemained = 20;
-	GLOBAL.DefenseState = true;
-	GLOBAL.offsetFOV = 0.0;
 }

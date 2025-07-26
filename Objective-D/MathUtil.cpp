@@ -1,4 +1,6 @@
 #include "MathUtil.h"
+#include "RandomUtil.h"
+#include "CameraUtil.h"
 #include <cmath>
 
 // 벡터 연산을 위한 함수들이다. 객체가 가지는 벡터 삼형제와 회전값을 파라미터에 넣어주면 된다.
@@ -419,4 +421,27 @@ XMFLOAT3 Math::CalcForwardOffset(const XMFLOAT3& Position, float DegreesY, float
 	Result.z = Position.z + forwardZ * ForwardDistance;
 
 	return Result;
+}
+
+void Math::GenRandomSpreadingRaysFromCenter(std::vector<std::pair<XMVECTOR, XMVECTOR>>& rays, int rayCount, float maxAngleDegrees){
+	rays.clear();
+
+	XMMATRIX invView = XMMatrixInverse(nullptr, XMLoadFloat4x4(&camera.GetViewMatrix()));
+	XMVECTOR camPos = invView.r[3];
+
+	for (int i = 0; i < rayCount; ++i) {
+		float theta = Random.Gen(0.0f, XM_2PI); 
+		float angle = Random.Gen(0.0f, XMConvertToRadians(maxAngleDegrees)); 
+
+		float x = sinf(angle) * cosf(theta);
+		float y = sinf(angle) * sinf(theta);
+		float z = cosf(angle);
+
+		XMVECTOR localDir = XMVectorSet(x, y, z, 0.0f);
+
+		XMVECTOR worldDir = XMVector3TransformNormal(localDir, invView);
+		worldDir = XMVector3Normalize(worldDir);
+
+		rays.emplace_back(camPos, worldDir);
+	}
 }
