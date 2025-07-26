@@ -221,30 +221,54 @@ void Grenade::Update(float Delta) {
 	// 3초가 지나면 폭발한다.
     // 가까울수록 강한 대미지를 가한다.
     // 타 클라이언트 유저가 던진 수류탄은 대미지를 주지 않는다.
-	explodeTime += Delta;
-	if (explodeTime >= 3.0) {
-        if (!createFromServer) {
-            size_t size = scene.LayerSize(LAYER_MONSTER);
-            for (int i = 0; i < size; i++) {
-                if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
-                    if(monster->CheckHit(hitBound)) {
-                        float distance = Math::CalcDistance3D(position, monster->GetPosition());
-                        float t = (15.0 - distance) / 15.0;
-                        t = std::clamp(t, 0.0f, 1.0f);
-                        int damage = (int)(300.0 * t);
-                        if(!GLOBAL.useServer && damage > 0)
-                            monster->GiveDamage(damage);
+    if (!exploded) {
+        explodeTime += Delta;
+        if (explodeTime >= 3.0) {
+            if (!createFromServer) {
+                size_t size = scene.LayerSize(LAYER_MONSTER);
+                for (int i = 0; i < size; i++) {
+                    if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
+                        if (monster->CheckHit(hitBound)) {
+                            float distance = Math::CalcDistance3D(position, monster->GetPosition());
+                            float t = (15.0 - distance) / 15.0;
+                            t = std::clamp(t, 0.0f, 1.0f);
+                            int damage = (int)(300.0 * t);
 
-                        if(damage > 0)
-                            SendPtoMDamagePacket(monster->GetID(), damage);
+                            if (!GLOBAL.useServer)
+                                monster->GiveDamage(damage);
+
+                            else {
+                                if (damage > 0)
+                                    damageList.emplace(monster->GetID(), damage);
+                            }
+                        }
                     }
                 }
             }
-        }
 
-		scene.AddObject(new Explosion(position), "explosion", LAYER3);
-		scene.DeleteObject(this);
-	}
+            scene.AddObject(new Explosion(position), "explosion", LAYER3);
+
+            if(createFromServer)
+                scene.DeleteObject(this);
+
+            exploded = true;
+        }
+    }
+
+    else {
+        if (!createFromServer) {
+            auto It = damageList.begin();
+            auto ID = It->first;
+            auto damage = It->second;
+
+            SendPtoMDamagePacket(ID, damage);
+
+            damageList.erase(It);
+
+            if(damageList.empty())
+                scene.DeleteObject(this);
+        }
+    }
 }
 
 void Grenade::Render() {

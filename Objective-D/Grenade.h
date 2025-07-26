@@ -24,6 +24,8 @@ private:
 	float       explodeTime{};
 
 	bool       createFromServer{};
+	bool       exploded{};
+	std::map<unsigned int, int> damageList{};
 
 public:
 	Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation, bool createFromServer=false);
