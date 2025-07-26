@@ -1013,9 +1013,9 @@ void IOCompletionPort::WorkThread() {
             stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
 
             PacketType* packetType = reinterpret_cast<PacketType*>(pOverlappedEx->buffer);
-
-           // std::cout << "[디버깅] 수신된 패킷 타입: " << static_cast<int>(*packetType)
-           //     << ", 받은 바이트: " << bytesTransferred << std::endl;
+            if (bytesTransferred >= sizeof(PacketType))
+                std::cout << "[디버깅]: " << static_cast<int>(*packetType)
+                << ", 받은 바이트: " << bytesTransferred << std::endl;
             auto it = rooms.find(client->roomID);
             if (it == rooms.end()) return;
             Room& room = it->second;
@@ -1194,29 +1194,35 @@ void IOCompletionPort::WorkThread() {
                 {
                     std::lock_guard<std::mutex> lock(*room.roomMutex);
                     if (room.defenseState) {
-                        //if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER) {
+                        if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER) {
                         auto& m = room.defenseMonsters[pkt->monsterID];
                         m.hp -= pkt->attackHp;
                         if (m.hp < 0) m.hp = 0;
                         sendHP = m.hp;
                         if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; }))
                             room.defenseState = false;
-                        // }
+                        }
+                        std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                        for (auto* otherClient : room.clients) {
+                            if (!otherClient) continue;
+                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        }
                     }
                     else {
-                        //if (pkt->monsterID<=1000) {
+                        if (pkt->monsterID<=1000) {
                         auto& m = room.myMonsters[pkt->monsterID];
                         m.hp -= pkt->attackHp;
                         if (m.hp < 0) m.hp = 0;
                         sendHP = m.hp;
-                        //}
+                        std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                        for (auto* otherClient : room.clients) {
+                            if (!otherClient) continue;
+                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        }
+                        }
                     }
                 }
-                std::cout<< pkt->monsterID <<"번---PTOM_DAMAGE HP: " << sendHP << std::endl;
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient) continue;
-                    SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                }
+               
                 //int sendHP;
                 //if (defenseState) {
                 //    //if (0 <= pkt->monsterID && pkt->monsterID <= 19) {

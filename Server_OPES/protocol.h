@@ -15,11 +15,10 @@ constexpr float                MG_RELOAD_TIME  = 3.0f;
 constexpr unsigned int         MG_MAGAZINE	   = 100;
 
 // 지정 사수 소총
+constexpr unsigned int         DMR_DAMAGE	    = 70;
 constexpr float                DMR_RECOIL       = 13.0;
 constexpr float                DMR_RECOIL_BACK   = 0.2f;
 constexpr float                DMR_SHOOT_DELAY   = 0.7f;
-constexpr unsigned int         DMR_DAMAGE	    = 70;
-constexpr float                DMR_RPM_ADS		= 24.0f;
 constexpr float                DMR_RELOAD_TIME  = 2.0f;
 constexpr unsigned int         DMR_MAGAZINE		= 10;
 
