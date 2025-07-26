@@ -1,5 +1,6 @@
 #include "Lobby.h"
 #include "MouseUtil.h"
+#include "ModePack.h"
 
 Lobby::Lobby() {
 	
@@ -11,6 +12,12 @@ void Lobby::InputKey(KeyEvent& Event) {
 
 void Lobby::InputMouse(MouseEvent& Event) {
 	if (Event.Type == WM_LBUTTONDOWN) {
+		// 뒤로가기 버튼을 누르면 다시 타이틀로 되돌아 간다.
+		if (backButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
+			scene.SwitchMode(TitleMode::Start);
+			return;
+		}
+
 		for (int i = 0; i < 3; i++) {
 			if (button[i].CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
 				selectedCharacter = i;
@@ -27,8 +34,13 @@ void Lobby::Render() {
 	Render2D(TEX.ColorTex);
 
 	BeginRender(RENDER_TYPE_2D);
-	Transform::Scale2D(ScaleMatrix, 4.0, 4.0);
+	Transform::Scale2D(ScaleMatrix, 3.5, 3.5);
 	Render2D(TEX.UI_lobbyBackground, 0.3);
+
+	BeginRender(RENDER_TYPE_2D);
+	Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.125, 1.0 - 0.125);
+	Transform::Scale2D(ScaleMatrix, 0.15, 0.15);
+	Render2D(TEX.UI_back);
 
 	text.SetAlign(ALIGN_MIDDLE);
 	text.Render(xmfloat2(0.0, 1.0 - 0.15), 0.3, "Lobby");
@@ -108,4 +120,5 @@ void Lobby::Update(float Delta) {
 	button[0].Update(xmfloat3(-1.0 * ASPECT + 0.3, -1.0 + 0.3, 0.0), xmfloat3(0.25, 0.25, 0.0));
 	button[1].Update(xmfloat3(-1.0 * ASPECT + 0.3 + 0.55, -1.0 + 0.3, 0.0), xmfloat3(0.25, 0.25, 0.0));
 	button[2].Update(xmfloat3(-1.0 * ASPECT + 0.3 + 1.1, -1.0 + 0.3, 0.0), xmfloat3(0.25, 0.25, 0.0));
+	backButton.Update(xmfloat3(-1.0 * ASPECT + 0.125, 1.0 - 0.125, 0.0), xmfloat3(0.075, 0.75, 0.0));
 }

@@ -5,8 +5,6 @@ namespace LobbyMode { std::deque<GameObject*> ControlObjectList; }
 
 void LobbyMode::Start() {
 	scene.SetupMode("LobbyMode", Destructor, ControlObjectList);
-	// add works here
-
 	scene.AddObject(new Lobby, "lobby", LAYERUI, true);
 }
 

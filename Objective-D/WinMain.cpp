@@ -86,14 +86,15 @@ bool IsNewPlayer(unsigned int ID) {
 		if (!ID_List.contains(ID)) {
 			ID_List.insert(ID);
 
+			// 새로운 플레이어가 접속하면 전역 플레이어 리스트에 등록한다.
 			PlayerLobbyInfo newInfo;
 			GLOBAL.playerList.emplace(ID, newInfo);
-
 			scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
-			auto indicator = scene.Find("otherIndicator");
+
+		/*	auto indicator = scene.Find("otherIndicator");
 			if (!indicator)
 				GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
-			static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
+			static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));*/
 			
 			return true;
 		}

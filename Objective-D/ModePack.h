@@ -18,6 +18,11 @@ namespace Level3 {
 	void Destructor();
 }
 
+namespace TitleMode {
+	void Start();
+	void Destructor();
+}
+
 namespace LobbyMode {
 	void Start();
 	void Destructor();

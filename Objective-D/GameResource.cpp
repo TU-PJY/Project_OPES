@@ -283,6 +283,7 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.UI_marksmanIcon, L"Resources//Image//ui//icon-marksman.png");
 	LoadTexture(TEX.UI_engineerIcon, L"Resources//Image//ui//icon-engineer.png");
 	LoadTexture(TEX.UI_selected, L"Resources//Image//ui//selected.png");
+	LoadTexture(TEX.UI_back, L"Resources//Image//ui//back.png");
 	LoadTexture(TEX.UI_lobbyBackground, L"Resources//Image//ui//lobby-background.png");
 }
 /////////////////////////////////////////////////////////////////////////////////

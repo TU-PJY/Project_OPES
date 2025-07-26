@@ -238,6 +238,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="TimerUtil.h" />
     <ClInclude Include="tinyxml\tinystr.h" />
     <ClInclude Include="tinyxml\tinyxml.h" />
+    <ClInclude Include="Title.h" />
     <ClInclude Include="TransformUtil.h" />
     <ClInclude Include="Treant.h" />
     <ClInclude Include="Troll.h" />
@@ -324,6 +325,8 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="tinyxml\tinyxml.cpp" />
     <ClCompile Include="tinyxml\tinyxmlerror.cpp" />
     <ClCompile Include="tinyxml\tinyxmlparser.cpp" />
+    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="TitleMode.cpp" />
     <ClCompile Include="TransformUtil.cpp" />
     <ClCompile Include="Treant.cpp" />
     <ClCompile Include="Troll.cpp" />

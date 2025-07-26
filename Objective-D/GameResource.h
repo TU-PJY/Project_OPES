@@ -60,6 +60,7 @@ typedef struct {
 	// 현재 접속한 나의 ID
 	unsigned int myID;
 
+	// 서버에 접속한 인원들의 정보
 	std::map<unsigned int, PlayerLobbyInfo> playerList;
 
 }GlobalValue;
@@ -211,6 +212,7 @@ typedef struct {
 	Texture* UI_marksmanIcon;
 	Texture* UI_engineerIcon;
 	Texture* UI_selected;
+	Texture* UI_back;
 	Texture* UI_lobbyBackground;
 }TextureResource;
 extern TextureResource TEX;

@@ -6,6 +6,10 @@ class Lobby : public GameObject {
 private:
 	// 직업 선택 버튼
 	AABB button[3]{};
+
+	// 뒤로가기 버튼
+	AABB backButton{};
+
 	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0)};
 	Text playerText{ ALIGN_DEFAULT, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0) };
 
