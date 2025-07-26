@@ -155,7 +155,7 @@ void OtherPlayer::InputHP(int currentHP) {
 	if (currentState == STATE_DEATH)
 		return;
 
-	this->currentHP = currentHP;
+	//this->currentHP = currentHP;
 	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
 	if (this->currentHP == 0) {
 		currentState = STATE_DEATH;

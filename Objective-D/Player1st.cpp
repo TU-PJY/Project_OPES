@@ -345,7 +345,7 @@ void Player1st::InputKey(KeyEvent& Event) {
 
 // 상태를 업데이트 한다.
 void Player1st::updateState() {
-	if (currentState == STATE_DEATH) return;
+	//if (currentState == STATE_DEATH) return;
 
 	if ((moveState[FRONT] && !moveState[BACK]) || (!moveState[FRONT] && moveState[BACK]) ||
 		(moveState[RIGHT] && !moveState[LEFT]) || (!moveState[RIGHT] && moveState[LEFT])) {
@@ -454,7 +454,7 @@ void Player1st::updateGun() {
 
 // 플레이어 바운드 업데이트
 void Player1st::updateBound() {
-	if (currentState == STATE_DEATH) return;
+	//if (currentState == STATE_DEATH) return;
 
 	// 맵 - 플레이어 충돌 바운드
 	playerSphere.Update(XMFLOAT3(playerPosition.x, playerPosition.y + 0.5, playerPosition.z), 1.0);
@@ -547,7 +547,7 @@ void Player1st::GiveDamage(int damage) {
 void Player1st::InputHP(int currentHP) {
 	if (currentState == STATE_DEATH) return;
 
-	this->currentHP = currentHP;
+	//this->currentHP = currentHP;
 	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
 	if (IndicatorPtr) 
 		IndicatorPtr->InputHP(totalHP, this->currentHP);

@@ -21,7 +21,7 @@ Beacon::Beacon(const xmfloat3& createPosition, float rotation, bool createFromSe
 	}
 
 	if(!createFromServer)
-		SendEngineerInstallPacket(TURRET_ID, 0, rotation, position.x, position.y, position.z);
+		SendEngineerInstallPacket(BEACON_ID, 0, rotation, position.x, position.y, position.z);
 }
 
 Beacon::~Beacon() {
