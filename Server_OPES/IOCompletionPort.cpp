@@ -1372,10 +1372,11 @@ void IOCompletionPort::WorkThread() {
                         room.stageState++;
                         randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
                         randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
+                        room.clearCount = 0;
                     }
                     // 모든 room 클라이언트에게 clearCount 전송
                     for (auto* c : room.clients) {
-                        if (c) SendData_ClearCountPacket(c, room.clearCount);
+                        if (c) SendData_ClearCountPacket(c, arrivedCount);
                     }
                 }
 
