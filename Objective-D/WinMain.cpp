@@ -94,11 +94,7 @@ bool IsNewPlayer(unsigned int ID) {
 			// 새로운 플레이어가 접속하면 전역 플레이어 리스트에 등록한다.
 
 			PlayerLobbyInfo newInfo{};
-
-			{
-				std::lock_guard<std::mutex> lock(PacketMutex);
-				GLOBAL.playerList.emplace(ID, newInfo);
-			}
+			GLOBAL.playerList.emplace(ID, newInfo);
 
 			if (skipTitleMode) {
 				scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
