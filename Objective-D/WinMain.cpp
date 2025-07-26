@@ -241,8 +241,6 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		xmfloat3 createPosition = xmfloat3(packet->x, 0.0, packet->z);
 		
 		if (!GLOBAL.defenseIDList.contains(packet->monsterID)) {
-			static int count;
-			std::cout << "Created " << count << " times" << std::endl;
 			GLOBAL.defenseIDList.insert(packet->monsterID);
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			scene.AddObject(new PlantMonster(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
