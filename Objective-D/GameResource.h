@@ -65,6 +65,9 @@ typedef struct {
 	// 서버에 접속한 인원들의 정보
 	std::map<unsigned int, PlayerLobbyInfo> playerList;
 
+	// 디펜스 모드 아이디 관리용 set
+	std::set<unsigned int> defenseIDList;
+
 	// 마지막으로 입력한 서버 주소
 	std::string enterIP;
 	std::wstring enterIPw;
