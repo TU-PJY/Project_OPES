@@ -13,6 +13,7 @@
 #include "MonsterGenerator.h"
 #include "MonsterSpawner.h"
 #include "EditHelper.h"
+#include "OtherPlayer.h"
 
 namespace Level1 { 
 	std::deque<GameObject*> ControlObjectList; 
@@ -71,6 +72,9 @@ void Level1::Start() {
 		}
 
 		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
+
+		for(auto& p : GLOBAL.playerList)
+			scene.AddObject(new OtherPlayer(CHARACTER_MG, p.first), std::to_string(p.first), LAYER_PLAYER);
 
 		if(!skipDefenseMode)
 			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);
