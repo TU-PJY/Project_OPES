@@ -7,7 +7,10 @@ void LobbyMode::Start() {
 	scene.SetupMode("LobbyMode", Destructor, ControlObjectList);
 
 	//if(GLOBAL.useServer)
-	GLOBAL.netThread = std::thread(NetworkThread, GLOBAL.useLocalServer, GLOBAL.enterIPw);
+	if (!GLOBAL.enterServerState) {
+		GLOBAL.netThread = std::thread(NetworkThread, GLOBAL.useLocalServer, GLOBAL.enterIPw.c_str());
+		GLOBAL.enterServerState = true;
+	}
 
 	scene.AddObject(new Lobby, "lobby", LAYERUI, true);
 }

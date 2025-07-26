@@ -69,6 +69,7 @@ typedef struct {
 	std::wstring enterIPw;
 
 	// 서버 스레드
+	bool enterServerState;
 	std::thread netThread;
 
 }GlobalValue;
