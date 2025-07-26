@@ -225,24 +225,21 @@ void Scene::AddDeleteLocation(int Layer, int Position) {
 
 // 삭제 마크가 표시된 객체들을 컨테이너에서 제거한다. 실제로 객체가 삭제되는것이 아님에 유의한다.
 void Scene::ProcessObjectCommand() {
-	int Offset{};
-
 	for (int L = 0; L < Layers; ++L) {
-		size_t Size = DeleteLocation[L].size();
-		if (Size == 0)
+		auto& DeleteList = DeleteLocation[L];
+		if (DeleteList.empty())
 			continue;
 
-		for (int O = 0; O < Size; ++O) {
-			auto Object = begin(ObjectList[L]) + DeleteLocation[L][O] - Offset;
-			delete *Object;
+		std::sort(DeleteList.begin(), DeleteList.end(), std::greater<int>());
+
+		for (auto& Index : DeleteList) {
+			auto Object = ObjectList[L].begin() + Index;
+			delete* Object;
 			*Object = nullptr;
-			Object = ObjectList[L].erase(Object);
-		//	++SceneCommandCount;
-			++Offset;
+			ObjectList[L].erase(Object);
 		}
 
-		DeleteLocation[L].clear();
-		Offset = 0;
+		DeleteList.clear();
 	}
 }
 

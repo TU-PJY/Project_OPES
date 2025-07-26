@@ -94,7 +94,11 @@ bool IsNewPlayer(unsigned int ID) {
 			// 새로운 플레이어가 접속하면 전역 플레이어 리스트에 등록한다.
 
 			PlayerLobbyInfo newInfo{};
-			GLOBAL.playerList.emplace(ID, newInfo);
+
+			{
+				std::lock_guard<std::mutex> lock(PacketMutex);
+				GLOBAL.playerList.emplace(ID, newInfo);
+			}
 
 			if (skipTitleMode) {
 				scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
@@ -241,6 +245,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		xmfloat3 createPosition = xmfloat3(packet->x, 0.0, packet->z);
 		
 		if (!GLOBAL.defenseIDList.contains(packet->monsterID)) {
+			static int count;
+			std::cout << "Created " << count << " times" << std::endl;
 			GLOBAL.defenseIDList.insert(packet->monsterID);
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			scene.AddObject(new PlantMonster(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
