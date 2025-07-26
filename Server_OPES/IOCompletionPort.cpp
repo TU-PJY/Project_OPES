@@ -22,6 +22,19 @@ ScriptUtil monsterDataScript;
 // 현재 로드된 몬스터 생성 타입 및 위치
 std::vector<MonsterData> monsterData;
 
+// 몬스터 생성 데이터를 읽기 위한 스크립트 객체2
+ScriptUtil monsterDataScript2;
+
+// 현재 로드된 몬스터 생성 타입 및 위치2
+std::vector<MonsterData> monsterData2;
+
+// 몬스터 생성 데이터를 읽기 위한 스크립트 객체3
+ScriptUtil monsterDataScript3;
+
+// 현재 로드된 몬스터 생성 타입 및 위치3
+std::vector<MonsterData> monsterData3;
+
+
 std::mutex roomMapMutex;
 //std::vector<MonsterData> myMonsters;//임시
 
@@ -140,7 +153,7 @@ bool IOCompletionPort::StartServer() {
     terrainScript.LoadAllData(LoadBehavior);
 
 
-    // 몬스터 타입 및 생성 위치 로드
+    // 몬스터 타입 및 생성 위치 로드-1
     monsterDataScript.Release();
     monsterData.clear();
 
@@ -154,10 +167,44 @@ bool IOCompletionPort::StartServer() {
             loadedData.createPointZ = monsterDataScript.LoadDigitData(Category, "z");
             loadedData.id = monsterIdCounter++; // 고유 ID 부여
             monsterData.emplace_back(loadedData);
-            //myMonsters.emplace_back(loadedData);//임시데이터
         };
     monsterDataScript.LoadAllData(LoadMonsterData);
 
+    // 몬스터 타입 및 생성 위치 로드-2
+    monsterDataScript2.Release();
+    monsterData2.clear();
+
+    monsterDataScript2.Load("mapData//monster_map2.xml");/////////--------------------------받아야함
+    monsterIdCounter = 0;
+    auto LoadMonsterData2 = [&](CategoryPtr Category)
+        {
+            MonsterData loadedData2{};
+            loadedData2.monsterType = (int)monsterDataScript2.LoadDigitData(Category, "type");
+            loadedData2.createPointX = monsterDataScript2.LoadDigitData(Category, "x");
+            loadedData2.createPointZ = monsterDataScript2.LoadDigitData(Category, "z");
+            loadedData2.id = monsterIdCounter++; // 고유 ID 부여
+            monsterData2.emplace_back(loadedData2);
+        };
+    monsterDataScript2.LoadAllData(LoadMonsterData2);
+
+    // 몬스터 타입 및 생성 위치 로드-3
+    monsterDataScript3.Release();
+    monsterData3.clear();
+
+    monsterDataScript3.Load("mapData//monster_map3.xml");/////////--------------------------받아야함
+    monsterIdCounter = 0;
+    auto LoadMonsterData3 = [&](CategoryPtr Category)
+        {
+            MonsterData loadedData3{};
+            loadedData3.monsterType = (int)monsterDataScript3.LoadDigitData(Category, "type");
+            loadedData3.createPointX = monsterDataScript3.LoadDigitData(Category, "x");
+            loadedData3.createPointZ = monsterDataScript3.LoadDigitData(Category, "z");
+            loadedData3.id = monsterIdCounter++; // 고유 ID 부여
+            monsterData3.emplace_back(loadedData3);
+        };
+    monsterDataScript3.LoadAllData(LoadMonsterData3);
+
+    //
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
@@ -479,6 +526,14 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     for (const auto& m : monsterData) {
         MonsterData copy = m;
         newRoom.myMonsters.push_back(copy);
+    }
+    for (const auto& m : monsterData2) {
+        MonsterData copy = m;
+        newRoom.myMonsters2.push_back(copy);
+    }
+    for (const auto& m : monsterData3) {
+        MonsterData copy = m;
+        newRoom.myMonsters3.push_back(copy);
     }
     //->이거에 대한 접근 예시
     //auto& room = rooms[2];
