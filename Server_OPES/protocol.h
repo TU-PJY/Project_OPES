@@ -48,13 +48,6 @@ constexpr float                BEACON_DURABILITY = 30.0f;
 constexpr float                BEACON_HEAL_DELAY = 0.5f;
 constexpr float                BEACON_INSTALL_COOLTIME = 50.0f;
 
-// 스파이크(SPIKE)
-//constexpr unsigned int         SPIKE_DAMAGE		= 0;
-//constexpr unsigned int         SPIKE_DURABILITY = 20;
-//constexpr float                SPIKE_INSTALL	= 5.0f;
-//constexpr float                SPIKE_RPM		= 0.0f;
-//constexpr float                SPIKE_COOLDOWN	= 10.0f;
-
 // 캐릭터 LMG 기관총 사수 / DMR 지정사수 / ENG 엔지니어
 // HP 체력, SPEED 이동속도(km/h)
 
@@ -80,7 +73,7 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 constexpr int                  DEFENSE_MONSTER = 20;
 
 //start 인원수 
-constexpr int				  MIN_PLAYER_COUNT = 3;          
+constexpr int				  MIN_PLAYER_COUNT = 2;          
 
 // 스테이지 1
 // Plant Monster
@@ -154,8 +147,36 @@ constexpr float PENALTY_STRUCTURE_HP_ENG = 0.7f;// 불안정한 설계 (Flawed Structu
 constexpr float PENALTY_PELLET_DAMAGE_SG = 0.8f;// 불량 탄약 (Faulty Ammo), 샷건 펠릿당 데미지 -20%
 
 /*
-	MG = 평균딜이 제일 나쁨
-	DMR = 정조준 딜링 TTK가 너무 강함
-	SG = 사거리에 따른 위험 보상형으로 나쁘지 않은 것 같음.
-	보너스/페널티 = 아직 고민중
+	게임의 긴장감을 위해서 전체적으로 체력을 낮추고자 함.
+	MG HP 300 -> 200 / DMR HP 125 -> 100 / SG HP 150 -> 125
+	MG DMG 10 -> 12? 기관총병의 DPS 상향 고민
+
+	회복 체감 약함. 5 -> 50
+
+	몬스터 패치
+	보너스/페널티로 얻는 수치에 비해 몬스터가 과하게 강해 너프
+	Troll HP 250 -> 200 / DMG 25 -> 20
+	Treant HP 600 -> 500 / DMG 50 -> 40
+	3스테이지는 2스테이지에 비해 낙사가 있지만 감안해도 쉬워 몬스터 추가 배치나 몬스터의 상향이 필요해보임.
+	몬스터 배치를 한다면 지금보다 약 2배 많은 것이 좋아보이고
+	IMP의 체력을 순간 점사로 죽지 않게 만들고, 데미지를 크게 버프해 긴장감을 부여하는 것이 좋아보임.
+
+	보너스 / 페널티는 각 스테이지가 지나갈 때 마다 +2/-1 or 모든 테이블 중 하나가 적당한 것 같음.
+	보너스
+	연사속도 20->30%
+	장전 속도 30 -> 45%
+	수류탄 +2 -> 3
+
+	기관총병 - 반동 -50 -> -40%
+	저격병 - 보너스 -> 삭제
+	엔지니어 - 적응형 구조 체력 -> 유지 시간
+
+	페널티
+	연사속도 -15 -> -10
+	이동속도 -15 -> -10
+
+	저격병 - 페널티 삭제
+	엔지니어 - 체력 -> 유지시간 / 데미지 -20% -> 펠릿 - 1개
+
+
 */

@@ -59,9 +59,7 @@ std::mutex PacketMutex;
 SOCKET clientSocket;
 bool isRunning = true;
 bool enter_room = true;//false;
-WSABUF recv_wsabuf[1];
-char recv_buffer[MAX_SOCKBUF];
-WSAOVERLAPPED recv_over;
+
 
 struct RecvContext {
 	WSAOVERLAPPED overlapped;
@@ -302,9 +300,15 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//처리부분
 	}
 
+	else if (*type == PacketType::READY) {
+		ReadyPacket* packet = reinterpret_cast<ReadyPacket*>(context->buffer);
+		std::cout << "[READY] playerID: " << packet->playerID << std::endl;
+
+		//처리부분
+	}
 	else if (*type == PacketType::CHOOSE_JOB) {
 		ChooseJobPacket* packet = reinterpret_cast<ChooseJobPacket*>(context->buffer);
-		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << " Job: " << packet->job << std::endl;
+		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID<< "job:" << packet->job << std::endl;
 
 		//처리부분
 		{
@@ -761,7 +765,30 @@ void SendGrenadePacket(float posX, float posY, float posZ, float rotX, float rot
 	}
 }
 
+void SendReadyPacket(unsigned int id) {
+	if (enter_room) {
+		auto* pkt = new ReadyPacket{ PacketType::READY,id };
 
+		auto* context = new SendContext{};
+		ZeroMemory(context, sizeof(SendContext));
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+		wsaBuf.len = sizeof(ReadyPacket);
+
+		context->cleanup = [pkt, context]() {
+			delete pkt;
+			delete context;
+			};
+
+		DWORD bytesSent = 0;
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+			std::cerr << "[클라이언트] 수류탄 패킷 전송 실패\n";
+			context->cleanup();
+		}
+	}
+}
 
 // 채팅 패킷 전송 함수
 //void SendChatPacket(const char* message) {
