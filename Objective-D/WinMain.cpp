@@ -307,6 +307,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << std::endl;
 
 		//처리부분
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			auto Found = GLOBAL.playerList.find(packet->playerID);
+			if (Found != GLOBAL.playerList.end())
+				Found->second.characterType = packet->job;
+		}
 	}
 
 
