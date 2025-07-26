@@ -181,51 +181,7 @@ XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& C
     return XMFLOAT2(X, Y);
     //GenPointInDonut(30.0,60.0,XMFLOAT2(-120.0,-120.0));
 }
-///void IOCompletionPort::RandomPositionThread() {
-///    using namespace std::chrono;
-///    int monsterIdCount = 0;
-///    while (defenseState) {
-///        std::this_thread::sleep_for(std::chrono::seconds(2));
-///        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
-///
-///        for (auto* client : clients) {
-///            if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-///                continue;
-///            DefenseRandomPacket* packet = new DefenseRandomPacket{};
-///            packet->type = PacketType::RANDOM_POSITION;
-///            packet->monsterID = monsterIdCount; // 특별한 ID 
-///            packet->x = rendomPosition.x;
-///            packet->z = rendomPosition.y; 
-///            {
-///                std::lock_guard<std::mutex> lock(defenseMonsterMutex);
-///                defenseMonsters[monsterIdCount].createPointX = rendomPosition.x;
-///                defenseMonsters[monsterIdCount].createPointZ = rendomPosition.y;
-///                defenseMonsters[monsterIdCount].id = monsterIdCount;
-///            }
-///            stOverlappedEx* sendOver = new stOverlappedEx{};
-///            ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-///            sendOver->operation = IOOperation::SEND;
-///            sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-///            sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-///            sendOver->cleanup = [packet, sendOver]() {
-///                delete packet;
-///                delete sendOver;
-///            };
-///
-///            int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
-///            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-///                std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
-///                RemoveClient(client);
-///            }
-///        }
-///        monsterIdCount++;
-///        if (monsterIdCount == DEFENSE_MONSTER) {
-///            std::cout << "[랜덤 위치 전송] 20개 완료 → 쓰레드 종료됨\n";
-///            break;
-///        }
-///       // std::this_thread::sleep_for(std::chrono::seconds(2));
-///    }
-///}
+
 void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
 
@@ -1256,6 +1212,7 @@ void IOCompletionPort::WorkThread() {
                         //}
                     }
                 }
+                std::cout<< pkt->monsterID <<"번---PTOM_DAMAGE HP: " << sendHP << std::endl;
                 for (auto* otherClient : room.clients) {
                     if (!otherClient) continue;
                     SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);

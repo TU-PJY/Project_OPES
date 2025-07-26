@@ -109,12 +109,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	//std::cout << "recv\n";
 
 	PacketType* type = reinterpret_cast<PacketType*>(context->buffer);
-	std::cout << static_cast<int>(*type) <<"----[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
+	//std::cout << static_cast<int>(*type) <<"----[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
 //	std::cout << typeid(type).name() << std::endl;
 
 	if (*type == PacketType::MOVE) {
 		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(context->buffer);
-		std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
+		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
 		
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 			Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
@@ -122,7 +122,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::CLEAR_COUNT) {
 		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(context->buffer);
-		std::cout << "[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
+		//std::cout << "[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
 
 		// 현재 접속한 사람이 모두 도착 지점에 들어가면 다음 스테이지로 넘어간다.
 		// 자신의 아이디는 ID_List에 없기 때문에 1을 더한 값으로 비교한다.
