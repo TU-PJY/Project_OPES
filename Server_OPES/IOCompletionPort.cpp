@@ -40,7 +40,8 @@ std::mutex roomMapMutex;
 // NPC 스레드 프레임 시간
 float deltaTime{};
 
-bool randomTreadFlag = true;
+bool randomTreadFlag1 = true;//임시
+
 extern LPFN_ACCEPTEX lpfnAcceptEx = nullptr; // 전역으로 AcceptEx 포인터
 IOCompletionPort::IOCompletionPort() {}
 
@@ -195,7 +196,7 @@ void IOCompletionPort::RandomPositionThread() {
 
                 for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
 
-                    std::this_thread::sleep_for(std::chrono::seconds(2));
+                    std::this_thread::sleep_for(std::chrono::seconds(4));
 
                     for (auto* client : room.clients) {
                         if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
@@ -1234,9 +1235,6 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
                
-               
-                
-               
             }
 
             else if (*packetType == PacketType::MTOP_DAMAGE) {
@@ -1343,6 +1341,10 @@ void IOCompletionPort::WorkThread() {
                 if (allReady) {
                     //randomthread
                     std::cout << "all players ready!!!\n";
+                    if (randomTreadFlag1 ) {
+                        randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+                        randomTreadFlag1 = false;
+                    }
                 }
             }
 
