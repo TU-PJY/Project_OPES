@@ -33,6 +33,7 @@ private:
 	// 현재 상태 및 이전 상태. 이전 상태와 현재 상태가 다를때만 패킷을 전송한다.
 	int      currentState{ STATE_IDLE };
 	int      prevState{ STATE_IDLE };
+	int      serverState{ STATE_IDLE };
 
 	// 방아쇠를 당긴 상태. 활성화 되면 무기 객체가 동작한다.
 	bool     triggerState{};

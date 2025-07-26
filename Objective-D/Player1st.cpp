@@ -98,7 +98,10 @@ void Player1st::sendPacket(float Delta) {
 			break;
 
 		case 3:
-			SendAnimaionPacket(currentState);
+			if (serverState != currentState) {
+				SendAnimaionPacket(currentState);
+				serverState = currentState;
+			}
 			break;
 		}
 
