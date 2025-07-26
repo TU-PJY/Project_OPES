@@ -976,6 +976,7 @@ void IOCompletionPort::SendData_ChooseJobPacket(stClientInfo* receiver, unsigned
     pkt->type = PacketType::CHOOSE_JOB;
     pkt->playerID = playerID;
     pkt->job = job;
+    std::cout << "SendData_ChooseJobPacket:P: " << pkt->playerID << "J: " << pkt->job << std::endl;
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
     sendOver->operation = IOOperation::SEND;
@@ -1125,9 +1126,9 @@ void IOCompletionPort::WorkThread() {
             stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
 
             PacketType* packetType = reinterpret_cast<PacketType*>(pOverlappedEx->buffer);
-            if (bytesTransferred >= sizeof(PacketType))
-                std::cout << "[디버깅]: " << static_cast<int>(*packetType)
-                << ", 받은 바이트: " << bytesTransferred << std::endl;
+           // if (bytesTransferred >= sizeof(PacketType))
+           //     std::cout << "[디버깅]: " << static_cast<int>(*packetType)
+           //     << ", 받은 바이트: " << bytesTransferred << std::endl;
             auto it = rooms.find(client->roomID);
             if (it == rooms.end()) 
                 continue;
@@ -1170,7 +1171,9 @@ void IOCompletionPort::WorkThread() {
                     // clearCount 갱신
                     room.clearCount = arrivedCount;
                     //여기 room.clearCount가 3이면 다음 스테이지?
-
+                    if (room.clearCount >= MIN_PLAYER_COUNT) {
+                        std::cout << "다들어옴!\n";
+                    }
                     // 모든 room 클라이언트에게 clearCount 전송
                     for (auto* c : room.clients) {
                         if (c) SendData_ClearCountPacket(c, room.clearCount);
@@ -1291,11 +1294,18 @@ void IOCompletionPort::WorkThread() {
                         if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER) {
                         auto& m = room.defenseMonsters[pkt->monsterID];
                         m.hp -= pkt->attackHp;
-                        if (m.hp < 0) m.hp = 0;
+                        if (m.hp < 0) { 
+                            m.hp = 0;
+                            for (auto* otherClient : room.clients) {
+                                if (!otherClient) continue;
+                                SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
+                            }
+                        }
                         sendHP = m.hp;
                         if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; }))
                             room.defenseState = false;
                         }
+
                         std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
                         for (auto* otherClient : room.clients) {
                             if (!otherClient) continue;
@@ -1306,7 +1316,13 @@ void IOCompletionPort::WorkThread() {
                         if (pkt->monsterID<=1000) {
                         auto& m = room.myMonsters[pkt->monsterID];
                         m.hp -= pkt->attackHp;
-                        if (m.hp < 0) m.hp = 0;
+                        if (m.hp < 0) {
+                            m.hp = 0; 
+                            for (auto* otherClient : room.clients) {
+                                if (!otherClient) continue;
+                                SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
+                            }
+                        }
                         sendHP = m.hp;
                         std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
                         for (auto* otherClient : room.clients) {
@@ -1399,6 +1415,7 @@ void IOCompletionPort::WorkThread() {
                 
                 for (auto* otherClient : room.clients) {
                     if (!otherClient || otherClient == client) continue;
+                    std::cout << "INroomPlayer: " << otherClient->id << std::endl;
                     SendData_ChooseJobPacket(otherClient, pkt->playerID, pkt->job);
                 }
             }

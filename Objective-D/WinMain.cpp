@@ -134,7 +134,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::CLEAR_COUNT) {
 		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(context->buffer);
-		//std::cout << "[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
+		std::cout << "==================================================[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
 
 		// 현재 접속한 사람이 모두 도착 지점에 들어가면 다음 스테이지로 넘어간다.
 		// 자신의 아이디는 ID_List에 없기 때문에 1을 더한 값으로 비교한다.
@@ -165,7 +165,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_STATE) {
 		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(context->buffer);
 
-		std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
+		//std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
 
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
