@@ -167,6 +167,8 @@ private:
     void WorkThread();
     void PostAccept();
     void RandomPositionThread();
+    void RandomPositionThread2();
+    void RandomPositionThread3();
     //void AcceptThread();
 
 };
