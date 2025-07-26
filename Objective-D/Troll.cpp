@@ -68,6 +68,9 @@ void Troll::updateBound() {
 	inFrustum = camera.CheckFrustum(frustumBound);
 	lookRange.Update(boundPosition, 60.0);
 	trollBound.Update(XMFLOAT3(position.x, position.y + 0.5, position.z), 2.0);
+
+	XMFLOAT3 attackBoundPosition = Math::CalcForwardOffset(position, rotation.y, 3.0, size.y * 0.5);
+	attackBound.Update(attackBoundPosition, 4.0);
 }
 
 void Troll::detectPlayer(float Delta) {
