@@ -1178,25 +1178,41 @@ void IOCompletionPort::WorkThread() {
             {
                 std::lock_guard<std::mutex> lock(waitMutex);
                 waitingClients.push_back(newClient);
-                if (waitingClients.size() >= MIN_PLAYER_COUNT) {
-                    std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + MIN_PLAYER_COUNT);
-                    waitingClients.erase(waitingClients.begin(), waitingClients.begin() + MIN_PLAYER_COUNT);
-                    CreateRoom(roomMembers);
-                    std::cout <<"---room:" << waitingClients.size() << std::endl;
-                    for (auto& client : roomMembers) {
-                        //SendData_EnterRoom(client);  // 여기서 먼저 룸 ID를 클라이언트에 전송
-                        //NotifyOthersAboutNewClient(client);
-                        //SendExistingClientsToNewClient(client);
-                        
+
+                std::vector<stClientInfo*> validClients;
+                for (auto* client : waitingClients) {
+                    if (client && !client->alreadyRemoved)
+                        validClients.push_back(client);
+                }
+
+                if (validClients.size() >= MIN_PLAYER_COUNT) {
+                    std::vector<stClientInfo*> roomMembers(validClients.begin(), validClients.begin() + MIN_PLAYER_COUNT);
+
+                    for (auto* c : roomMembers) {
+                        waitingClients.erase(std::remove(waitingClients.begin(), waitingClients.end(), c), waitingClients.end());
                     }
-                    //(newClient);
+
+                    CreateRoom(roomMembers);
                 }
-                else {
-                    //SendData_EnterRoom(newClient);  // 대기 중인 상태 전송 (roomID == 0)
-                    //NotifyOthersAboutNewClient(newClient );
-                    //SendExistingClientsToNewClient(newClient);
-                    //RegisterRecv(newClient);
-                }
+                //if (waitingClients.size() >= MIN_PLAYER_COUNT) {
+                //    std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + MIN_PLAYER_COUNT);
+                //    waitingClients.erase(waitingClients.begin(), waitingClients.begin() + MIN_PLAYER_COUNT);
+                //    CreateRoom(roomMembers);
+                //    std::cout <<"---room:" << waitingClients.size() << std::endl;
+                //    for (auto& client : roomMembers) {
+                //        //SendData_EnterRoom(client);  // 여기서 먼저 룸 ID를 클라이언트에 전송
+                //        //NotifyOthersAboutNewClient(client);
+                //        //SendExistingClientsToNewClient(client);
+                //        
+                //    }
+                //    //(newClient);
+                //}
+                //else {
+                //    //SendData_EnterRoom(newClient);  // 대기 중인 상태 전송 (roomID == 0)
+                //    //NotifyOthersAboutNewClient(newClient );
+                //    //SendExistingClientsToNewClient(newClient);
+                //    //RegisterRecv(newClient);
+                //}
             }
             RegisterRecv(newClient);
             // 다음 AcceptEx 등록
