@@ -9,6 +9,7 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 
 Treant::Treant(const xmfloat3& createPosition, unsigned int ID, bool defenseModeState) {
 	position = createPosition;
+	positionDest = createPosition;
 	this->defenseMoveState = defenseModeState;
 	this->ID = ID;
 
@@ -25,7 +26,7 @@ Treant::~Treant() {
 
 void Treant::updateIndicator() {
 	if (hpInd) {
-		hpInd->InputPosition(position, 12.0);
+		hpInd->InputPosition(position, 8.0);
 		hpInd->InputHP(totalHP, currentHP);
 	}
 }
@@ -164,7 +165,7 @@ void Treant::updateAttack() {
 		return;
 	}
 
-	if (treantFBX[TREANT_ATTACK].GetTimeSectionPassed(0.65)) {
+	if (treantFBX[TREANT_ATTACK].GetTimeSectionPassed(1.0)) {
 		if (!attackDid) {
 			if (currentTargetID == GLOBAL.myID) {
 				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
@@ -195,6 +196,7 @@ void Treant::Update(float Delta) {
 	updateBound();
 	updateState();
 	updateAttack();
+	updateDeath();
 	updateAnimation(Delta);
 }
 

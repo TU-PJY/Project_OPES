@@ -65,13 +65,13 @@ void Level2::Start() {
 		}
 	}
 
-	if (GLOBAL.skipDefenseMode)
+	//if (GLOBAL.skipDefenseMode)
 		scene.AddObject(new MonsterSpawner(true), "monsterSpwaner", LAYER1, true);
-	else
-		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpwaner", LAYER1, GLOBAL.editMode);
+	//else
+		//scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpwaner", LAYER1, GLOBAL.editMode);
 
-	if (!GLOBAL.skipDefenseMode)
-		scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);
+	/*if (!GLOBAL.skipDefenseMode)
+		scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);*/
 }
 
 void Level2::Destructor() {

@@ -9,6 +9,7 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 
 Troll::Troll(const xmfloat3& createPosition, unsigned int ID) {
 	position = createPosition;
+	positionDest = createPosition;
 	this->ID = ID;
 	trollOOBB.SetUpdateFrequency(24);
 
@@ -22,7 +23,7 @@ Troll::~Troll() {
 
 void Troll::updateIndicator() {
 	if (hpInd) {
-		hpInd->InputPosition(position, 8.0);
+		hpInd->InputPosition(position, 5.0);
 		hpInd->InputHP(totalHP, currentHP);
 	}
 }
@@ -37,15 +38,19 @@ void Troll::updateState() {
 		switch (currentState) {
 		case TROLL_IDLE:
 			trollFBX.SelectAnimation("Idle");
+			trollFBX.SetSpeed(1.0);
 			break;
 		case TROLL_MOVE:
 			trollFBX.SelectAnimation("Walk");
+			trollFBX.SetSpeed(2.0);
 			break;
 		case TROLL_ATTACK:
 			trollFBX.SelectAnimation("Attack 3");
+			trollFBX.SetSpeed(1.0);
 			break;
 		case TROLL_DEATH:
 			trollFBX.SelectAnimation("Death");
+			trollFBX.SetSpeed(1.0);
 			break;
 		}
 		prevState = currentState;
@@ -179,7 +184,7 @@ void Troll::updateAttack() {
 		return;
 	}
 
-	if (trollFBX.GetTimeSectionPassed(25.0)) {
+	if (trollFBX.GetTimeSectionPassed(24.2)) {
 		if (!attackDid) {
 			if (currentTargetID == GLOBAL.myID) {
 				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
@@ -211,6 +216,7 @@ void Troll::Update(float Delta) {
 	updateState();
 	updateAttack();
 	updateAnimation(Delta);
+	updateDeath();
 }
 
 void Troll::Render() {

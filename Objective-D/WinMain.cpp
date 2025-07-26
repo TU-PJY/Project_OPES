@@ -70,12 +70,12 @@ struct RecvContext {
 
 // 인게임 모드로 스킵하려면 true
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
-bool skipTitleMode = false;
+bool skipTitleMode = true;
 
-bool skipDefenseMode = false;
+bool skipDefenseMode = true;
 bool editMode = false;
 
-bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
