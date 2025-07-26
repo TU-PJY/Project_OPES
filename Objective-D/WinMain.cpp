@@ -90,9 +90,12 @@ bool IsNewPlayer(unsigned int ID) {
 			ID_List.insert(ID);
 
 			// 새로운 플레이어가 접속하면 전역 플레이어 리스트에 등록한다.
-			PlayerLobbyInfo newInfo;
-			GLOBAL.playerList.emplace(ID, newInfo);
-			scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
+
+			if (skipTitleMode) {
+				PlayerLobbyInfo newInfo;
+				GLOBAL.playerList.emplace(ID, newInfo);
+				scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
+			}
 
 		/*	auto indicator = scene.Find("otherIndicator");
 			if (!indicator)
