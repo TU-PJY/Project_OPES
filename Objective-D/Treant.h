@@ -43,6 +43,8 @@ private:
 
 	GameObject* hpInd{};
 
+	bool attackDid{};
+
 	unsigned int ID{};
 
 	float sendState{};
@@ -63,6 +65,8 @@ public:
 	void detectPlayer(float Delta);
 	void updateTerrainCollision();
 	void updateBound();
+	void updateAttack();
+	void updateDeath();
 	void Update(float Delta) override;
 	void Render() override;
 

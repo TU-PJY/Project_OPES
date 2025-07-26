@@ -155,6 +155,35 @@ void Treant::updateMove(float Delta) {
 	position.z = std::lerp(position.z, positionDest.z, 10.0 * Delta);
 }
 
+void Treant::updateAttack() {
+	if (currentState != TREANT_ATTACK) {
+		attackDid = false;
+		return;
+	}
+
+	if (treantFBX[TREANT_ATTACK].GetTimeSectionPassed(1.0)) {
+		if (!attackDid) {
+			if (currentTargetID == GLOBAL.myID) {
+				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
+					player->GiveDamage(60);
+					std::cout << "treant attack" << std::endl;
+				}
+			}
+			attackDid = true;
+		}
+	}
+	else
+		attackDid = false;
+}
+
+void Treant::updateDeath() {
+	if (currentState != TREANT_DEATH)
+		return;
+
+	if (treantFBX[TREANT_DEATH].GetAnimationEndState())
+		scene.DeleteObject(this);
+}
+
 void Treant::Update(float Delta) {
 	detectPlayer(Delta);
 	updateMove(Delta);
@@ -162,6 +191,7 @@ void Treant::Update(float Delta) {
 	updateIndicator();
 	updateBound();
 	updateState();
+	updateAttack();
 	updateAnimation(Delta);
 }
 

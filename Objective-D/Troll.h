@@ -37,6 +37,8 @@ private:
 
 	GameObject* hpInd{};
 
+	bool attackDid{};
+
 	unsigned int ID{};
 
 	float sendState{};
@@ -56,6 +58,8 @@ public:
 	void updateBound();
 	void updateMove(float Delta);
 	void detectPlayer(float Delta);
+	void updateAttack();
+	void updateDeath();
 	void Update(float Delta) override;
 	void Render() override;
 

@@ -163,11 +163,40 @@ void Troll::updateMove(float Delta) {
 
 	// 나를 추격하는 상태일때만 MoveWithSlide를 실행한다.
 	if (currentState == TROLL_MOVE && currentTargetID == GLOBAL.myID)
-		Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, trollBound, GLOBAL.mapOOBBdata, Delta);
+		Math::MoveWithSlide(positionDest, rotation.y, 6.0, 0.0, trollBound, GLOBAL.mapOOBBdata, Delta);
 
 	//	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
 	position.x = std::lerp(position.x, positionDest.x, 10.0 * Delta);
 	position.z = std::lerp(position.z, positionDest.z, 10.0 * Delta);
+}
+
+void Troll::updateAttack() {
+	if (currentState != TROLL_ATTACK) {
+		attackDid = false;
+		return;
+	}
+
+	if (trollFBX.GetTimeSectionPassed(25.0)) {
+		if (!attackDid) {
+			if (currentTargetID == GLOBAL.myID) {
+				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
+					player->GiveDamage(30);
+					std::cout << "troll attack" << std::endl;
+				}
+			}
+			attackDid = true;
+		}
+	}
+	else
+		attackDid = false;
+}
+
+void Troll::updateDeath() {
+	if (currentState != TROLL_DEATH)
+		return;
+
+	if (trollFBX.GetAnimationEndState())
+		scene.DeleteObject(this);
 }
 
 void Troll::Update(float Delta) {
@@ -177,6 +206,7 @@ void Troll::Update(float Delta) {
 	updateIndicator();
 	updateBound();
 	updateState();
+	updateAttack();
 	updateAnimation(Delta);
 }
 
