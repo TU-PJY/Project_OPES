@@ -59,9 +59,7 @@ std::mutex PacketMutex;
 SOCKET clientSocket;
 bool isRunning = true;
 bool enter_room = true;//false;
-WSABUF recv_wsabuf[1];
-char recv_buffer[MAX_SOCKBUF];
-WSAOVERLAPPED recv_over;
+
 
 struct RecvContext {
 	WSAOVERLAPPED overlapped;
