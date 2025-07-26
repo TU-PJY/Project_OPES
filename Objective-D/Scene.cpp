@@ -227,18 +227,20 @@ void Scene::AddDeleteLocation(int Layer, int Position) {
 void Scene::ProcessObjectCommand() {
 	for (int L = 0; L < Layers; ++L) {
 		auto& DeleteList = DeleteLocation[L];
+		auto& OriginList = ObjectList[L];
+
 		if (DeleteList.empty())
 			continue;
 
 		std::sort(DeleteList.begin(), DeleteList.end(), std::greater<int>());
 
 		for (auto& Index : DeleteList) {
-			auto Object = ObjectList[L].begin() + Index;
-			delete* Object;
-			*Object = nullptr;
-			ObjectList[L].erase(Object);
+			auto& Object = OriginList[Index];
+			delete Object;
+			Object = nullptr;
 		}
 
+		OriginList.erase(std::remove(OriginList.begin(), OriginList.end(), nullptr), OriginList.end());
 		DeleteList.clear();
 	}
 }
