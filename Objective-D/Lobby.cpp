@@ -46,35 +46,37 @@ void Lobby::Render() {
 	text.SetAlign(ALIGN_DEFAULT);
 	text.Render(xmfloat2(-1.0 * ASPECT + 0.2, 1.0 - 0.3), 0.2, "Players");
 
+	std::string renderStr{};
+
 	float renderHeight = 1.0 - 0.4;
 	for (auto& p : GLOBAL.playerList) {
 		switch (p.second.characterType) {
 		case -1: 
 			{
-				std::string renderStr = "ID: " + std::to_string(p.first) + " Name: " + p.second.name + " Type: Not Selected";
+				renderStr = "ID: " + std::to_string(p.first) + " Name: " + p.second.name + " Type: Not Selected";
 				break;
 			}
 
 		case 0:
 			{
-				std::string renderStr = "ID: " + std::to_string(p.first) + " Name: " + p.second.name + " Type: Heavy";
+				renderStr = "ID: " + std::to_string(p.first) + " Name: " + p.second.name + " Type: Heavy";
 				break;
 			}
 
 		case 1:
 			{
-				std::string renderStr = "ID: " + std::to_string(p.first) + " Name: " + p.second.name + " Type: MarksMan";
+				renderStr = "ID: " + std::to_string(p.first) + " Name: " + p.second.name + " Type: MarksMan";
 				break;
 			}
 
 		case 2:
 			{
-				std::string renderStr = "ID: " + std::to_string(p.first) + " Name: " + p.second.name + " Type: Engineer";
+				renderStr = "ID: " + std::to_string(p.first) + " Name: " + p.second.name + " Type: Engineer";
 				break;
 			}
 		}
 
-		text.Render(xmfloat2(-1.0 * ASPECT + 0.2, renderHeight), 0.1, "Players");
+		text.Render(xmfloat2(-1.0 * ASPECT + 0.2, renderHeight), 0.1, renderStr);
 
 		renderHeight -= 0.12;
 	}
