@@ -12,7 +12,7 @@ Lobby::Lobby() {
 void Lobby::InputMouse(MouseEvent& Event) {
 	if (Event.Type == WM_LBUTTONDOWN) {
 		// 뒤로가기 버튼을 누르면 다시 타이틀로 되돌아 간다.
-		if (backButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
+		if (!GLOBAL.imReady && backButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
 			scene.SwitchMode(TitleMode::Start);
 			return;
 		}
@@ -156,4 +156,14 @@ void Lobby::Update(float Delta) {
 	button[2].Update(xmfloat3(-1.0 * ASPECT + 0.3 + 1.1, -1.0 + 0.3, 0.0), xmfloat3(0.25, 0.25, 0.0));
 	backButton.Update(xmfloat3(-1.0 * ASPECT + 0.125, 1.0 - 0.125, 0.0), xmfloat3(0.075, 0.75, 0.0));
 	readyButton.Update(xmfloat3(-1.0 * ASPECT + 0.3 + 1.65, -1.0 + 0.2, 0.0), xmfloat3(0.25, 0.125, 0.0));
+
+	bool allReady{};
+	for (auto& p : GLOBAL.playerList) {
+		if (!p.second.readyState) {
+			allReady = false;
+		}
+	}
+
+	if (allReady && GLOBAL.imReady)
+		scene.SwitchMode(Level1::Start);
 }

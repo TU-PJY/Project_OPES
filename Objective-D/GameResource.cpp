@@ -24,7 +24,7 @@ bool DevMode = true;
 bool LoadMap1Resources = true;
 bool LoadMap2Resources = false;
 bool LoadMap3Resources = false;
-bool UIcreateMode = true;
+bool UIcreateMode = false;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
