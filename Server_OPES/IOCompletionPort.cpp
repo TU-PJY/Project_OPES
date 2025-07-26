@@ -1184,14 +1184,14 @@ void IOCompletionPort::WorkThread() {
                     if (client && !client->alreadyRemoved)
                         validClients.push_back(client);
                 }
-
+                
                 if (validClients.size() >= MIN_PLAYER_COUNT) {
                     std::vector<stClientInfo*> roomMembers(validClients.begin(), validClients.begin() + MIN_PLAYER_COUNT);
-
+                
                     for (auto* c : roomMembers) {
                         waitingClients.erase(std::remove(waitingClients.begin(), waitingClients.end(), c), waitingClients.end());
                     }
-
+                
                     CreateRoom(roomMembers);
                 }
                 //if (waitingClients.size() >= MIN_PLAYER_COUNT) {
@@ -1260,8 +1260,10 @@ void IOCompletionPort::WorkThread() {
            //     std::cout << "[디버깅]: " << static_cast<int>(*packetType)
            //     << ", 받은 바이트: " << bytesTransferred << std::endl;
             auto it = rooms.find(client->roomID);
-            if (it == rooms.end()) 
+            if (it == rooms.end()) {
                 continue;
+                std::cout << "continue\n";
+            }
             Room& room = it->second;
             if (*packetType == PacketType::MOVE) {
                 MovePacket_CtoS* movePacket = reinterpret_cast<MovePacket_CtoS*>(pOverlappedEx->buffer);
