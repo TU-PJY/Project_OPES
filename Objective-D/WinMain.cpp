@@ -304,7 +304,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::CHOOSE_JOB) {
 		ChooseJobPacket* packet = reinterpret_cast<ChooseJobPacket*>(context->buffer);
-		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << std::endl;
+		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID<< "job:" << packet->job << std::endl;
 
 		//처리부분
 		{

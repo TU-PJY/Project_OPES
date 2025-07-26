@@ -287,6 +287,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     Room newRoom;
     newRoom.roomID = nextRoomID;
     newRoom.clients = members;
+    std::cout << "---newRoom.roomID:" << newRoom.roomID << std::endl;
     nextRoomID++;
     for (const auto& m : monsterData) {
         MonsterData copy = m;
@@ -325,10 +326,10 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     }
     std::cout << "create room!: " << newRoom.roomID << std::endl;
 
-    if (randomTreadFlag ) {
-        randomPositionThread = std::thread([this]() { RandomPositionThread(); });
-        randomTreadFlag = false;
-    }
+    //if (randomTreadFlag ) {
+    //    randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+    //    randomTreadFlag = false;
+    //}
 }
 
 void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
@@ -893,12 +894,12 @@ void IOCompletionPort::SendData_ChooseJobPacket(stClientInfo* receiver, unsigned
     pkt->type = PacketType::CHOOSE_JOB;
     pkt->playerID = playerID;
     pkt->job = job;
-
+    std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
-    sendOver->wsaBuf.len = sizeof(ClearCountPacket);
+    sendOver->wsaBuf.len = sizeof(ChooseJobPacket);
     sendOver->cleanup = [pkt, sendOver]() {
         delete pkt;
         delete sendOver;
@@ -948,17 +949,20 @@ void IOCompletionPort::WorkThread() {
             
             std::cout << "입장idcount:" << idCount << std::endl;
             std::cout << "clientCount:" << clientCount << std::endl;
+
+            SendData_EnterRoom(newClient);
             NotifyOthersAboutNewClient(newClient);
             SendExistingClientsToNewClient(newClient);
             {
                 std::lock_guard<std::mutex> lock(waitMutex);
                 waitingClients.push_back(newClient);
-                if (waitingClients.size() >= 3) {
-                    std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + 3);
-                    waitingClients.erase(waitingClients.begin(), waitingClients.begin() + 3);
+                if (waitingClients.size() >= MIN_PLAYER_COUNT) {
+                    std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + MIN_PLAYER_COUNT);
+                    waitingClients.erase(waitingClients.begin(), waitingClients.begin() + MIN_PLAYER_COUNT);
                     CreateRoom(roomMembers);
+                    std::cout <<"---room:" << waitingClients.size() << std::endl;
                     for (auto& client : roomMembers) {
-                        SendData_EnterRoom(client);  // 여기서 먼저 룸 ID를 클라이언트에 전송
+                        //SendData_EnterRoom(client);  // 여기서 먼저 룸 ID를 클라이언트에 전송
                         //NotifyOthersAboutNewClient(client);
                         //SendExistingClientsToNewClient(client);
                         RegisterRecv(client);
@@ -968,7 +972,7 @@ void IOCompletionPort::WorkThread() {
                     //SendData_EnterRoom(newClient);  // 대기 중인 상태 전송 (roomID == 0)
                     //NotifyOthersAboutNewClient(newClient );
                     //SendExistingClientsToNewClient(newClient);
-                    //RegisterRecv(newClient);
+                    RegisterRecv(newClient);
                 }
             }
 
@@ -1017,7 +1021,8 @@ void IOCompletionPort::WorkThread() {
                 std::cout << "[디버깅]: " << static_cast<int>(*packetType)
                 << ", 받은 바이트: " << bytesTransferred << std::endl;
             auto it = rooms.find(client->roomID);
-            if (it == rooms.end()) return;
+            if (it == rooms.end()) 
+                continue;
             Room& room = it->second;
             if (*packetType == PacketType::MOVE) {
                 MovePacket_CtoS* movePacket = reinterpret_cast<MovePacket_CtoS*>(pOverlappedEx->buffer);
@@ -1410,7 +1415,7 @@ void IOCompletionPort::WorkThread() {
             else if (*packetType == PacketType::CHOOSE_JOB) {
 
                 ChooseJobPacket* pkt = reinterpret_cast<ChooseJobPacket*>(pOverlappedEx->buffer);
-
+                //std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
                 client->job = pkt->job;
                 
                 for (auto* otherClient : room.clients) {

@@ -198,6 +198,7 @@ struct ClearCountPacket {
     PacketType type;
     int PlayerCount;
 };
+
 struct ChooseJobPacket {
     PacketType type;
     unsigned int playerID;
