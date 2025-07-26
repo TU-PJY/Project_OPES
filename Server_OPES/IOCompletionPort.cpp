@@ -1234,55 +1234,7 @@ void IOCompletionPort::WorkThread() {
                     }
                 }
                
-                //int sendHP;
-                //if (defenseState) {
-                //    //if (0 <= pkt->monsterID && pkt->monsterID <= 19) {
-                //        {
-                //            std::lock_guard<std::mutex> lock(defenseMonsterMutex);
-                //            defenseMonsters[pkt->monsterID].hp -= pkt->attackHp;
-                //            if (defenseMonsters[pkt->monsterID].hp < 0)
-                //                defenseMonsters[pkt->monsterID].hp = 0;
-                //        }
-                //        std::cout << "MonstersHP:" << defenseMonsters[pkt->monsterID].hp << std::endl;
-                //
-                //        bool allDead = true;
-                //        for (const MonsterData& m : defenseMonsters) {
-                //            if (m.hp > 0) { // 하나라도 살아있으면 allDead를 false로
-                //                allDead = false;
-                //                break;
-                //            }
-                //        }
-                //
-                //        if (allDead) {
-                //            defenseState = false;
-                //            std::cout << "[알림] 모든 방어 몬스터가 사망하여 defenseState가 false로 전환되었습니다." << std::endl;
-                //        }
-                //        sendHP = defenseMonsters[pkt->monsterID].hp;
-                //        for (stClientInfo* otherClient : clients) {
-                //            if (!otherClient) continue;
-                //            if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                //                SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                //            }
-                //        }
-                //   // }
-                //}
-                //else {
-                //    //if (pkt->monsterID<=1000) {
-                //        myMonsters[pkt->monsterID].hp -= pkt->attackHp;
-                //        std::cout << "MonstersHP:" << myMonsters[pkt->monsterID].hp << std::endl;
-                //        if (myMonsters[pkt->monsterID].hp < 0)
-                //            myMonsters[pkt->monsterID].hp = 0;
-                //
-                //        sendHP = myMonsters[pkt->monsterID].hp;
-                //        for (stClientInfo* otherClient : clients) {
-                //            if (!otherClient) continue;
-                //            if (true /*otherClient != client*/ /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-                //                SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                //            }
-                //        }
-                //    //}
-                //}
-                //// 데미지 패킷을 모든 클라이언트에게 전송
+               
                 
                
             }
@@ -1377,9 +1329,20 @@ void IOCompletionPort::WorkThread() {
                 //std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
                 client->ready = true;
 
+
                 for (auto* otherClient : room.clients) {
                     if (!otherClient || otherClient == client) continue;
                     SendData_ReadyPacket(otherClient, pkt->playerID);
+                }
+                bool allReady = true;
+                for (auto* otherClient : room.clients) {
+                    if (otherClient->ready == false) {
+                        allReady = false;
+                    }
+                }
+                if (allReady) {
+                    //randomthread
+                    std::cout << "all players ready!!!\n";
                 }
             }
 
