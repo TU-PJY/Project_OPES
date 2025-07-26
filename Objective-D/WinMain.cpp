@@ -461,7 +461,7 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 		SleepEx(INFINITE, TRUE); // RecvCallback, SendCallback 실행됨
 	}
 }
-void SendChooseJobPacket(unsigned int playerID,int job) {
+void SendChooseJobPacket(unsigned int playerID, int job) {
 	if (enter_room) {
 		auto* pkt = new ChooseJobPacket{ PacketType::CHOOSE_JOB, playerID, job};
 
@@ -483,6 +483,9 @@ void SendChooseJobPacket(unsigned int playerID,int job) {
 			std::cerr << "[클라이언트] 전송 실패\n";
 			context->cleanup(); // 실패 시 즉시 해제
 		}
+
+
+		std::cout << "내 아이디: " << playerID << "선택: " << job << std::endl;
 	}
 }
 // 이동 패킷 전송 함수
