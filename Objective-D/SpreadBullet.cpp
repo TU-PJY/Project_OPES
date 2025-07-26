@@ -6,7 +6,7 @@ void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
 SpreadBullet::SpreadBullet(int damage) {
 	this->damage = damage;
 
-	std::cout << "spread bullet created" << std::endl;
+	//std::cout << "spread bullet created" << std::endl;
 }
 
 void SpreadBullet::Update(float Delta) {

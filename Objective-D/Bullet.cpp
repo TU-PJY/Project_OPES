@@ -11,7 +11,7 @@ Bullet::Bullet(int damage) {
 }
 
 Bullet::~Bullet() {
-	std::cout << "destroyed bullet object" << std::endl;
+	//std::cout << "destroyed bullet object" << std::endl;
 }
 
 void Bullet::updateCollision() {
@@ -33,17 +33,15 @@ void Bullet::updateCollision() {
 	}
 
 	// 그 다음 몬스터들이 광선과 충돌하면 충돌 타켓 후보에 추가한다.
-	if (GLOBAL.mapName.compare("map1") == 0) {
-		size_t size = scene.LayerSize(LAYER_MONSTER);
-		for (int i = 0; i < size; i++) {
-			if (auto object = scene.ReferLayer(LAYER_MONSTER, i); object) {
-				float distance{};
-				if (object->CheckHit(distance)) 
-					rayTarget.Add(object, distance);
-			}
+	size_t size = scene.LayerSize(LAYER_MONSTER);
+	for (int i = 0; i < size; i++) {
+		if (auto object = scene.ReferLayer(LAYER_MONSTER, i); object) {
+			float distance{};
+			if (object->CheckHit(distance)) 
+				rayTarget.Add(object, distance);
 		}
 	}
-
+	
 	// 가장 가까운 거리를 가지는 타겟이 지형이나 맵 오브젝트라면 nullptr을 리턴하여 어떠한 몬스터도 대미지를 입지 않게 된다.
 	auto ptr = rayTarget.GetNearestTarget();
 	if (ptr) {
