@@ -188,7 +188,7 @@ void Troll::updateAttack() {
 		if (!attackDid) {
 			if (currentTargetID == GLOBAL.myID) {
 				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
-					player->GiveDamage(30);
+					player->GiveDamage(TROLL_DAMAGE);
 					std::cout << "troll attack" << std::endl;
 				}
 			}

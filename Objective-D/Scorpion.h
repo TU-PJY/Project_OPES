@@ -32,8 +32,8 @@ private:
 
 	bool        attackDid{};
 
-	int         totalHP{ 100 };
-	int         currentHP{ 100 };
+	int         totalHP{ SCORPION_HP };
+	int         currentHP{ SCORPION_HP };
 	GameObject* hpIndicator{};
 
 	TerrainUtil terrainUtil{};

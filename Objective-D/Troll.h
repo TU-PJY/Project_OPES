@@ -17,8 +17,8 @@ private:
 	int prevState{ -1 };
 	int serverState{ -1 };
 
-	int totalHP{ 200 };
-	int currentHP{ 200 };
+	int totalHP{ TROLL_HP };
+	int currentHP{ TROLL_HP };
 
 	xmfloat3 position{};
 	xmfloat3 positionDest{};

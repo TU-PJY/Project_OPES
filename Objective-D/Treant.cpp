@@ -169,7 +169,7 @@ void Treant::updateAttack() {
 		if (!attackDid) {
 			if (currentTargetID == GLOBAL.myID) {
 				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
-					player->GiveDamage(60);
+					player->GiveDamage(TREANT_DAMAGE);
 					std::cout << "treant attack" << std::endl;
 				}
 			}

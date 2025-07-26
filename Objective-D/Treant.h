@@ -26,8 +26,8 @@ private:
 	xmfloat3 rotationDest{};
 	xmfloat3 size{ 3.0f, 3.0f, 3.0f };
 
-	int totalHP{ 400 };
-	int currentHP{ 400 };
+	int totalHP{ TREANT_HP };
+	int currentHP{ TREANT_HP };
 
 	bool defenseMoveState{};
 

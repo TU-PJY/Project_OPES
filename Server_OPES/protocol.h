@@ -78,34 +78,35 @@ constexpr int				  MIN_PLAYER_COUNT = 2;
 // 스테이지 1
 // Plant Monster
 constexpr unsigned int         PLANT_HP			= 100;
-constexpr float                PLANT_SPEED		= 0.0f;     // 이동하지 않음
 constexpr unsigned int         PLANT_DAMAGE		= 5;
+constexpr int                  PLANT_TYPE       = 1;
 
 // Scorpion
 constexpr unsigned int         SCORPION_HP		= 300;
-constexpr float                SCORPION_SPEED	= 6.0f;
 constexpr unsigned int         SCORPION_DAMAGE	= 20;
+constexpr int                  SCORPION_TYPE    = 2;
 
 // 스테이지 2
 // Troll
-constexpr unsigned int         TROLL_HP = 250;
-constexpr float                TROLL_SPEED = 10.0f;
-constexpr unsigned int         TROLL_DAMAGE = 25;
+constexpr unsigned int         TROLL_HP = 200;
+constexpr unsigned int         TROLL_DAMAGE = 30;
+constexpr int                  TROLL_TYPE = 1;
 
 // Treant
-constexpr unsigned int         TREANT_HP = 600;
-constexpr float                TREANT_SPEED = 6.0f;
-constexpr unsigned int         TREANT_DAMAGE = 50;
+constexpr unsigned int         TREANT_HP = 400;
+constexpr unsigned int         TREANT_DAMAGE = 60;
+constexpr int                  TREANT_TYPE = 2;
 
 // 스테이지 3
 // gazer
-constexpr unsigned int         GAZER_HP         = 200;
-constexpr float                GAZER_SPEED      = 7.0f;
-constexpr unsigned int         GAZER_DAMAGE     = 30;
-
 constexpr unsigned int         IMP_HP           = 150;
-constexpr float                IMP_SPEED        = 10.0f;
 constexpr unsigned int         IMP_DAMAGE       = 15;
+constexpr int                  IMP_TYPE          = 1;
+
+// imp
+constexpr unsigned int         GAZER_HP         = 200;
+constexpr unsigned int         GAZER_DAMAGE     = 30;
+constexpr int                  GAZER_TYPE       = 2;
 
 
 // 보너스 & 페널티

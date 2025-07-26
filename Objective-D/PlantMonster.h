@@ -38,8 +38,8 @@ private:
 	bool        defenseModeState{};
 
 	// 전체 체력, 현재 체력
-	int         totalHP   = 100;
-	int         currentHP = 100;
+	int         totalHP   = PLANT_HP;
+	int         currentHP = PLANT_HP;
 
 	// 죽은 상태 활성화 이후 삭제 지연 시간
 	float       deleteDelayTime{};
