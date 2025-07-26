@@ -75,7 +75,7 @@ void OtherPlayer::updateBound() {
 	inFrustum = camera.CheckFrustum(frustumAABB);
 	playerBound.Update(
 		XMFLOAT3(position.x, position.y + size.y * 0.5, position.z),
-		XMFLOAT3(size.x * 0.5, size.y, size.z * 0.5), rotation
+		XMFLOAT3(size.x * 0.5, size.y * 2.0, size.z * 0.5), rotation
 	);
 }
 

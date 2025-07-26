@@ -47,7 +47,7 @@ Turret::Turret(const xmfloat3& createPosition, float createRotation, bool create
 	}
 
 	if (!createFromServer)
-		SendEngineerInstallPacket(CONSTRUCT_TURRET, 0, rotation.y, position.x, position.y, position.z);
+		SendEngineerInstallPacket(TURRET_ID, 0, rotation.y, position.x, position.y, position.z);
 }
 
 Turret::~Turret() {

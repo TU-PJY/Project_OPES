@@ -17,6 +17,7 @@
 #include "OtherPlayerIndicator.h"
 #include "Grenade.h"
 #include "Turret.h"
+#include "Beacon.h"
 #include "PlantMonster.h"
 
 #include <locale>
@@ -233,7 +234,10 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
-			scene.AddObject(new Turret(installPosition, installRotation, true), "turret", LAYER3);
+			if(packet->Etype == TURRET_ID)
+				scene.AddObject(new Turret(installPosition, installRotation, true), "turret", LAYER3);
+			else if(packet->Etype == BEACON_ID)
+				scene.AddObject(new Beacon(installPosition, installRotation, true), "beacon", LAYER3);
 		}
 
 		//처리부분

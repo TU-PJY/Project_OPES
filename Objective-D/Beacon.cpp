@@ -3,7 +3,10 @@
 #include "TerrainUtil.h"
 #include "HP_Indicator.h"
 
-Beacon::Beacon(const xmfloat3& createPosition, float rotation) {
+void SendEngineerInstallPacket(int type, unsigned int ID, float rotY, float posX, float posY, float posZ);
+
+
+Beacon::Beacon(const xmfloat3& createPosition, float rotation, bool createFromServer) {
 	position = createPosition;
 	this->rotation.y = rotation;
 	TerrainUtil terrainUtil{};
@@ -16,6 +19,9 @@ Beacon::Beacon(const xmfloat3& createPosition, float rotation) {
 		hpInd->InputPosition(position, 2.0);
 		hpInd->SetIndColor(xmfloat3(0.0, 1.0, 0.0));
 	}
+
+	if(!createFromServer)
+		SendEngineerInstallPacket(TURRET_ID, 0, rotation, position.x, position.y, position.z);
 }
 
 Beacon::~Beacon() {

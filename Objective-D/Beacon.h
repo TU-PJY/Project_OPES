@@ -17,7 +17,7 @@ private:
 	GameObject* hpInd{};
 	
 public:
-	Beacon(const xmfloat3& createPosition, float rotation);
+	Beacon(const xmfloat3& createPosition, float rotation, bool createFromServer=false);
 	~Beacon();
 	void Update(float Delta) override;
 	void Render() override;

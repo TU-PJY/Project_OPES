@@ -24,8 +24,8 @@ extern DeviceSystem LoadSystem;
 enum GlobalEnum : unsigned int {
 	// 엔지니어 설치물 타입
 	CONSTRUCT_TURRET,
-	CONSTRUCT_WALL,
-	CONSTRUCT_HEAL
+	CONSTRUCT_BEACON,
+	CONSTRUCT_BARRIER
 };
 
 // 프로젝트 전역에서 사용하는 변수들

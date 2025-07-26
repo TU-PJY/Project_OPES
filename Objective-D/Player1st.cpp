@@ -437,7 +437,7 @@ void Player1st::updateBound() {
 	// 몬스터 - 플레이어 충돌 바운드
 	playerBound.Update(
 		XMFLOAT3(playerPosition.x, playerPosition.y + playerSize.y * 0.5, playerPosition.z), 
-		XMFLOAT3(playerSize.x * 0.5, playerSize.y, playerSize.z * 0.5), currentRotation
+		XMFLOAT3(playerSize.x * 0.5, playerSize.y * 2.0, playerSize.z * 0.5), currentRotation
 	);
 }
 
