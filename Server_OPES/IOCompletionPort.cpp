@@ -1330,8 +1330,16 @@ void IOCompletionPort::WorkThread() {
                //auto it = rooms.find(client->roomID);
                //if (it == rooms.end()) break;  // 해당 룸이 없다면 무시
                //Room& room = it->second;
-
-                XMFLOAT3 arrivePosition{ 120.0f, 0.0f, 94.0f };
+                XMFLOAT3 arrivePosition{};
+                if (room.stageState == 1) {
+                    arrivePosition= XMFLOAT3(120.0f, 0.0f, 94.0f );
+                }
+                else if (room.stageState == 2) {
+                    //arrivePosition = XMFLOAT3(120.0f, 0.0f, 94.0f);->바꿔줘야함
+                }
+                else if (room.stageState == 3) {
+                    //arrivePosition = XMFLOAT3(120.0f, 0.0f, 94.0f);->바꿔줘야함
+                }
 
                 {
                     std::lock_guard<std::mutex> lock(*room.roomMutex);
