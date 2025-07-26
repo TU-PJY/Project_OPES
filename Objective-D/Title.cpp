@@ -43,7 +43,7 @@ void Title::Render() {
 	std::string renderStr = "-> " + GLOBAL.enterIP;
 	text.Render(xmfloat2(0.0, 0.1), 0.1, renderStr);
 
-	text.Render(xmfloat2(0.0, -0.15), 0.3, "Start Game");
+	text.Render(xmfloat2(0.0, -0.15), 0.2, "Start Game");
 }
 
 void Title::Update(float Delta) {

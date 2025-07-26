@@ -3,6 +3,7 @@
 #include "ModePack.h"
 
 void SendChooseJobPacket(unsigned int playerID, int job);
+void SendReadyPacket(unsigned int id);
 
 Lobby::Lobby() {
 	
@@ -21,13 +22,14 @@ void Lobby::InputMouse(MouseEvent& Event) {
 		if (!GLOBAL.imReady && selectedCharacter != -1 && readyButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
 			GLOBAL.imReady = !GLOBAL.imReady;
 			GLOBAL.myCharacter = selectedCharacter;
-			SendChooseJobPacket(GLOBAL.myID, selectedCharacter);
+			SendReadyPacket(GLOBAL.myID);
 		}
 
 		if (!GLOBAL.imReady) {
 			for (int i = 0; i < 3; i++) {
 				if (button[i].CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
 					selectedCharacter = i;
+					SendChooseJobPacket(GLOBAL.myID, selectedCharacter);
 					return;
 				}
 			}
@@ -88,6 +90,11 @@ void Lobby::Render() {
 			}
 		}
 
+		if (!p.second.readyState)
+			renderStr += " | NOT READY";
+		else
+			renderStr += " | READY";
+
 		text.Render(xmfloat2(-1.0 * ASPECT + 0.2, renderHeight), 0.1, renderStr);
 
 		renderHeight -= 0.12;
@@ -102,7 +109,7 @@ void Lobby::Render() {
 	Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.3, -1.0 + 0.3);
 	Transform::Scale2D(ScaleMatrix, 0.5, 0.5);
 	Render2D(TEX.UI_heavyIcon);
-	if (selectedCharacter == 0)
+	if (!GLOBAL.imReady && selectedCharacter == 0 || GLOBAL.imReady && GLOBAL.myCharacter == 0)
 		Render2D(TEX.UI_selected);
 
 	text.Render(xmfloat2(-1.0 * ASPECT + 0.3, -1.0 + 0.6), 0.1, "HEAVY");
@@ -111,7 +118,7 @@ void Lobby::Render() {
 	Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.3 + 0.55, -1.0 + 0.3);
 	Transform::Scale2D(ScaleMatrix, 0.5, 0.5);
 	Render2D(TEX.UI_marksmanIcon);
-	if (selectedCharacter == 1)
+	if (!GLOBAL.imReady && selectedCharacter == 1 || GLOBAL.imReady && GLOBAL.myCharacter == 1)
 		Render2D(TEX.UI_selected);
 
 	text.Render(xmfloat2(-1.0 * ASPECT + 0.3 + 0.55, -1.0 + 0.6), 0.1, "MARKS MAN");
@@ -120,7 +127,7 @@ void Lobby::Render() {
 	Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.3 + 1.1, -1.0 + 0.3);
 	Transform::Scale2D(ScaleMatrix, 0.5, 0.5);
 	Render2D(TEX.UI_engineerIcon);
-	if (selectedCharacter == 2)
+	if (!GLOBAL.imReady && selectedCharacter == 2 || GLOBAL.imReady && GLOBAL.myCharacter == 2)
 		Render2D(TEX.UI_selected);
 
 	text.Render(xmfloat2(-1.0 * ASPECT + 0.3 + 1.1, -1.0 + 0.6), 0.1, "ENGINEER");

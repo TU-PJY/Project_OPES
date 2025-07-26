@@ -31,6 +31,7 @@ enum GlobalEnum : unsigned int {
 struct PlayerLobbyInfo {
 	int characterType = -1;
 	std::string name = "N/A";
+	bool readyState;
 };
 
 // 프로젝트 전역에서 사용하는 변수들
