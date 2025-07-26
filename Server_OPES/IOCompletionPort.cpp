@@ -260,7 +260,7 @@ void IOCompletionPort::RandomPositionThread() {
                             delete packet;
                             delete sendOver;
                         };
-                        std::cout << "random-count:" << monsterId << std::endl;
+                        std::cout << client->id <<"에게 보내줌   random-count:" << monsterId << std::endl;
                         int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
                         if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
                             std::cerr << "[에러] 랜덤 위치 전송 실패 (room " << roomID << "): " << WSAGetLastError() << std::endl;

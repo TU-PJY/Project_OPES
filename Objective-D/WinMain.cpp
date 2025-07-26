@@ -107,9 +107,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		return;
 	}
 	//std::cout << "recv\n";
-	//std::cout << "[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
 
 	PacketType* type = reinterpret_cast<PacketType*>(context->buffer);
+	std::cout << static_cast<int>(*type) <<"----[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
 //	std::cout << typeid(type).name() << std::endl;
 
 	if (*type == PacketType::MOVE) {
@@ -144,7 +144,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(context->buffer);
-		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
+		std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
 			Found->InputState(aniPacket->animationType);
