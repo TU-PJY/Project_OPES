@@ -28,6 +28,11 @@ enum GlobalEnum : unsigned int {
 	CONSTRUCT_BARRIER
 };
 
+struct PlayerLobbyInfo {
+	int characterType = -1;
+	std::string name = "N/A";
+};
+
 // 프로젝트 전역에서 사용하는 변수들
 typedef struct {
 	// 디펜스 모드에서 사용할 남은 적 수  및 디펜스 모드 상태 여부
@@ -54,6 +59,8 @@ typedef struct {
 
 	// 현재 접속한 나의 ID
 	unsigned int myID;
+
+	std::map<unsigned int, PlayerLobbyInfo> playerList;
 
 }GlobalValue;
 extern GlobalValue GLOBAL;
@@ -200,6 +207,11 @@ typedef struct {
 	Texture* UI_mgIcon;
 	Texture* UI_dmrIcon;
 	Texture* UI_grenadeIcon;
+	Texture* UI_heavyIcon;
+	Texture* UI_marksmanIcon;
+	Texture* UI_engineerIcon;
+	Texture* UI_selected;
+	Texture* UI_lobbyBackground;
 }TextureResource;
 extern TextureResource TEX;
 

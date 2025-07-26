@@ -24,7 +24,7 @@ bool DevMode = true;
 bool LoadMap1Resources = true;
 bool LoadMap2Resources = false;
 bool LoadMap3Resources = false;
-bool UIcreateMode = false;
+bool UIcreateMode = true;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {
@@ -279,6 +279,11 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.UI_mgIcon, L"Resources//Image//ui//icon-mg.png");
 	LoadTexture(TEX.UI_dmrIcon, L"Resources//Image//ui//icon-dmr.png");
 	LoadTexture(TEX.UI_grenadeIcon, L"Resources//Image//ui//icon-grenade.png");
+	LoadTexture(TEX.UI_heavyIcon, L"Resources//Image//ui//icon-heavy.png");
+	LoadTexture(TEX.UI_marksmanIcon, L"Resources//Image//ui//icon-marksman.png");
+	LoadTexture(TEX.UI_engineerIcon, L"Resources//Image//ui//icon-engineer.png");
+	LoadTexture(TEX.UI_selected, L"Resources//Image//ui//selected.png");
+	LoadTexture(TEX.UI_lobbyBackground, L"Resources//Image//ui//lobby-background.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

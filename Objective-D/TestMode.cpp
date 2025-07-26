@@ -11,6 +11,8 @@
 
 #include "Imp.h"
 #include "Gazer.h"
+
+#include "Lobby.h"
 //테스트 작업을 위한 모드.
 
 GameObject* ind;
@@ -45,19 +47,7 @@ public:
 	}
 
 	void Render() {
-		BeginRender(RENDER_TYPE_2D);
-		Transform::Scale2D(ScaleMatrix, 4.0, 4.0);
-		Render2D(TEX.scope);
-
-		BeginRender(RENDER_TYPE_2D);
-		Transform::Move2D(TranslateMatrix, 1.0 * ASPECT - 0.1, 0.0);
-		Transform::Scale2D(ScaleMatrix, 1.0, 4.0);
-		Render2D(TEX.ColorTex);
-
-		BeginRender(RENDER_TYPE_2D);
-		Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.1, 0.0);
-		Transform::Scale2D(ScaleMatrix, 1.0, 4.0);
-		Render2D(TEX.ColorTex);
+		
 	}
 };
 
@@ -68,6 +58,7 @@ void TestMode::Start() {
 	scene.SetupMode("TestMode", Destructor, ControlObjectList);
 	scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 	scene.AddObject(new TestObject, "testObject", LAYER1, true);
+	scene.AddObject(new Lobby, "lobby", LAYERUI, true);
 	//ind = scene.AddObject(new PlayerIndicator(CHARACTER_MG), "ind", LAYER1);
 	//scene.AddObject(new EngineerIndicator, "ind", LAYER1);
 }

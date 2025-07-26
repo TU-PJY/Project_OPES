@@ -43,6 +43,7 @@ public:
 	bool CheckCollision(const AABB& Other);
 	bool CheckCollision(const OOBB& Other);
 	bool CheckCollision(const BoundSphere& Other);
+	bool CheckCollisionPoint(xmfloat2& Point);
 };
 
 

@@ -235,6 +235,14 @@ bool AABB::CheckCollision(const BoundSphere& Other) {
 	return false;
 }
 
+bool AABB::CheckCollisionPoint(xmfloat2& Point) {
+	xmfloat3 input = xmfloat3(Point.x, Point.y, 0.0);
+	XMVECTOR pointVec = XMLoadFloat3(&input);
+	if (aabb.Contains(pointVec) == DirectX::CONTAINS)
+		return true;
+	return false;
+}
+
 
 
 void BoundSphere::Update(const XMFLOAT3& Center, float SizeValue) {

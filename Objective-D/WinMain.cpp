@@ -85,6 +85,10 @@ bool IsNewPlayer(unsigned int ID) {
 		std::lock_guard<std::mutex> lock(PacketMutex);
 		if (!ID_List.contains(ID)) {
 			ID_List.insert(ID);
+
+			PlayerLobbyInfo newInfo;
+			GLOBAL.playerList.emplace(ID, newInfo);
+
 			scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
 			auto indicator = scene.Find("otherIndicator");
 			if (!indicator)
@@ -334,6 +338,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			// TODO: ID에 해당하는 게임 객체 생성 또는 초기화
 		}
 	}
+
+	else {
+		std::cout << "== [ERROR] 알 수 없는 패킷 타입 ==" << std::endl;
+	}
+	
 	if (context && context->cleanup)
 		context->cleanup();  // 사용 완료 후 해제
 	// 다음 수신 요청
