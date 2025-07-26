@@ -68,6 +68,12 @@ typedef struct {
 	std::string enterIP;
 	std::wstring enterIPw;
 
+	// 로비에서 준비 여부
+	bool imReady;
+
+	// 내가 선택한 캐릭터
+	int myCharacter;
+
 	// 서버 스레드
 	bool enterServerState;
 	std::thread netThread;

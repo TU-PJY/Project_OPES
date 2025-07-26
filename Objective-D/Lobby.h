@@ -10,6 +10,9 @@ private:
 	// 뒤로가기 버튼
 	AABB backButton{};
 
+	// 준비 버튼
+	AABB readyButton{};
+
 	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0)};
 	Text playerText{ ALIGN_DEFAULT, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0) };
 

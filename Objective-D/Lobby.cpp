@@ -16,11 +16,20 @@ void Lobby::InputMouse(MouseEvent& Event) {
 			return;
 		}
 
-		for (int i = 0; i < 3; i++) {
-			if (button[i].CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
-				selectedCharacter = i;
-				SendChooseJobPacket(GLOBAL.myID, i);
-				return;
+		// 한 번 준비되면 해제 불가
+		// 캐릭터를 선택하지 않으면 준비 불가
+		if (!GLOBAL.imReady && selectedCharacter != -1 && readyButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
+			GLOBAL.imReady = !GLOBAL.imReady;
+			GLOBAL.myCharacter = selectedCharacter;
+			SendChooseJobPacket(GLOBAL.myID, selectedCharacter);
+		}
+
+		if (!GLOBAL.imReady) {
+			for (int i = 0; i < 3; i++) {
+				if (button[i].CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
+					selectedCharacter = i;
+					return;
+				}
 			}
 		}
 	}
@@ -44,7 +53,7 @@ void Lobby::Render() {
 	text.SetAlign(ALIGN_MIDDLE);
 	text.Render(xmfloat2(0.0, 1.0 - 0.15), 0.3, "Lobby");
 	text.SetAlign(ALIGN_LEFT);
-	text.Render(xmfloat2(1.0 * ASPECT - 0.1, -1.0 + 0.1), 0.1, "Waiting for players to prepare...");
+	text.Render(xmfloat2(1.0 * ASPECT - 0.05, -1.0 + 0.1), 0.08, "Waiting for players to prepare...");
 
 	text.SetAlign(ALIGN_DEFAULT);
 	text.Render(xmfloat2(-1.0 * ASPECT + 0.2, 1.0 - 0.3), 0.2, "Players");
@@ -115,6 +124,23 @@ void Lobby::Render() {
 		Render2D(TEX.UI_selected);
 
 	text.Render(xmfloat2(-1.0 * ASPECT + 0.3 + 1.1, -1.0 + 0.6), 0.1, "ENGINEER");
+
+	BeginRender(RENDER_TYPE_2D);
+	Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.3 + 1.65, -1.0 + 0.2);
+	Transform::Scale2D(ScaleMatrix, 0.5, 0.25);
+	SetColor(0.4, 0.4, 0.4);
+
+	if (GLOBAL.imReady) {
+		Render2D(TEX.ColorTex, 0.5);
+		text.SetOpacity(0.5);
+		text.Render(xmfloat2(-1.0 * ASPECT + 0.3 + 1.65, -1.0 + 0.2), 0.07, "READY");
+	}
+	else {
+		Render2D(TEX.ColorTex);
+		text.Render(xmfloat2(-1.0 * ASPECT + 0.3 + 1.65, -1.0 + 0.2), 0.07, "PRESS READY");
+	}
+
+	text.SetOpacity(1.0);
 }
 
 void Lobby::Update(float Delta) {
@@ -122,4 +148,5 @@ void Lobby::Update(float Delta) {
 	button[1].Update(xmfloat3(-1.0 * ASPECT + 0.3 + 0.55, -1.0 + 0.3, 0.0), xmfloat3(0.25, 0.25, 0.0));
 	button[2].Update(xmfloat3(-1.0 * ASPECT + 0.3 + 1.1, -1.0 + 0.3, 0.0), xmfloat3(0.25, 0.25, 0.0));
 	backButton.Update(xmfloat3(-1.0 * ASPECT + 0.125, 1.0 - 0.125, 0.0), xmfloat3(0.075, 0.75, 0.0));
+	readyButton.Update(xmfloat3(-1.0 * ASPECT + 0.3 + 1.65, -1.0 + 0.2, 0.0), xmfloat3(0.25, 0.125, 0.0));
 }

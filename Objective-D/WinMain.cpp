@@ -304,7 +304,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::CHOOSE_JOB) {
 		ChooseJobPacket* packet = reinterpret_cast<ChooseJobPacket*>(context->buffer);
-		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << std::endl;
+		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << " Job: " << packet->job << std::endl;
 
 		//처리부분
 		{
@@ -457,7 +457,7 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 		SleepEx(INFINITE, TRUE); // RecvCallback, SendCallback 실행됨
 	}
 }
-void SendChooseJobPacket(unsigned int playerID,int job) {
+void SendChooseJobPacket(unsigned int playerID, int job) {
 	if (enter_room) {
 		auto* pkt = new ChooseJobPacket{ PacketType::CHOOSE_JOB, playerID, job};
 
@@ -479,6 +479,9 @@ void SendChooseJobPacket(unsigned int playerID,int job) {
 			std::cerr << "[클라이언트] 전송 실패\n";
 			context->cleanup(); // 실패 시 즉시 해제
 		}
+
+
+		std::cout << "내 아이디: " << playerID << "선택: " << job << std::endl;
 	}
 }
 // 이동 패킷 전송 함수
