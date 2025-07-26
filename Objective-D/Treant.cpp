@@ -53,6 +53,9 @@ void Treant::updateBound() {
 	inFrustum = camera.CheckFrustum(frustumBound);
 	lookRange.Update(boundPosition, 60.0);
 	treantBound.Update(XMFLOAT3(position.x, position.y + 0.5, position.z), 2.0);
+
+	XMFLOAT3 attackBoundPosition = Math::CalcForwardOffset(position, rotation.y, 5.0, size.y * 0.5);
+	attackBound.Update(attackBoundPosition, 5.0);
 }
 
 void Treant::detectPlayer(float Delta) {
@@ -161,7 +164,7 @@ void Treant::updateAttack() {
 		return;
 	}
 
-	if (treantFBX[TREANT_ATTACK].GetTimeSectionPassed(1.0)) {
+	if (treantFBX[TREANT_ATTACK].GetTimeSectionPassed(0.65)) {
 		if (!attackDid) {
 			if (currentTargetID == GLOBAL.myID) {
 				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
@@ -217,7 +220,7 @@ XMFLOAT3 Treant::GetPosition() {
 
 bool Treant::CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) {
 	if (currentState == TREANT_DEATH)
-		return;
+		return false;
 
 	if (treantOOBB.oobb.Intersects(start, direction, distance))
 		return true;
@@ -226,7 +229,7 @@ bool Treant::CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) {
 
 bool Treant::CheckHit(float& distance) {
 	if (currentState == TREANT_DEATH)
-		return;
+		return false;
 
 	if (PickingUtil::PickByViewportOOBB(xmfloat2(0.0, 0.0), distance, treantOOBB))
 		return true;
@@ -235,7 +238,7 @@ bool Treant::CheckHit(float& distance) {
 
 bool Treant::CheckHit(BoundSphere& bound) {
 	if (currentState == TREANT_DEATH)
-		return;
+		return false;
 
 	if (treantOOBB.CheckCollision(bound))
 		return true;

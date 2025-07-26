@@ -21,7 +21,7 @@ DeviceSystem LoadSystem;
 // DevMode 활성화 시에만 아래 3개의 플래그가 의미가 있음
 bool DevMode = true;
 
-bool LoadMap1Resources = true;
+bool LoadMap1Resources = false;
 bool LoadMap2Resources = true;
 bool LoadMap3Resources = false;
 bool UIcreateMode = false;
