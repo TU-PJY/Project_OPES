@@ -183,56 +183,137 @@ XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& C
     //GenPointInDonut(30.0,60.0,XMFLOAT2(-120.0,-120.0));
 }
 
+//oid IOCompletionPort::RandomPositionThread() {
+//   using namespace std::chrono;
+//
+//   while (isRunning) {
+//       
+//       {
+//           std::lock_guard<std::mutex> lock(roomMapMutex);
+//           for (auto& [roomID, room] : rooms) {
+//               if (!room.isCreat)
+//                   continue;
+//
+//               for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
+//
+//                   std::this_thread::sleep_for(std::chrono::seconds(4));
+//
+//                   for (auto* client : room.clients) {
+//                       if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
+//                           continue;
+//
+//                       DefenseRandomPacket* packet = new DefenseRandomPacket{};
+//                       packet->type = PacketType::RANDOM_POSITION;
+//                       packet->monsterID = monsterId;
+//                       packet->x = room.defenseMonsters[monsterId].createPointX;
+//                       packet->z = room.defenseMonsters[monsterId].createPointZ;
+//
+//                       stOverlappedEx* sendOver = new stOverlappedEx{};
+//                       ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+//                       sendOver->operation = IOOperation::SEND;
+//                       sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+//                       sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+//                       sendOver->cleanup = [packet, sendOver]() {
+//                           delete packet;
+//                           delete sendOver;
+//                       };
+//                       std::cout << client->id <<"에게 보내줌   random-count:" << monsterId << std::endl;
+//                       int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
+//                       if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//                           std::cerr << "[에러] 랜덤 위치 전송 실패 (room " << roomID << "): " << WSAGetLastError() << std::endl;
+//                           RemoveClient(client);
+//                       }
+//
+//                   }
+//
+//               }
+//
+//               room.isCreat = false;
+//               std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
+//           }
+//       }
+//   }
+//
 void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
 
+    std::unordered_map<int, time_point<steady_clock>> monsterStartTimes;
+    const seconds monsterInterval(4);
+    const seconds sendInterval(1); // 전송 주기
+
     while (isRunning) {
-        
+        auto now = steady_clock::now();
+
         {
             std::lock_guard<std::mutex> lock(roomMapMutex);
+
             for (auto& [roomID, room] : rooms) {
-                if (!room.isCreat)
+                if (!room.defenseState)
                     continue;
 
                 for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
-
-                    std::this_thread::sleep_for(std::chrono::seconds(4));
-
-                    for (auto* client : room.clients) {
-                        if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-                            continue;
-
-                        DefenseRandomPacket* packet = new DefenseRandomPacket{};
-                        packet->type = PacketType::RANDOM_POSITION;
-                        packet->monsterID = monsterId;
-                        packet->x = room.defenseMonsters[monsterId].createPointX;
-                        packet->z = room.defenseMonsters[monsterId].createPointZ;
-
-                        stOverlappedEx* sendOver = new stOverlappedEx{};
-                        ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-                        sendOver->operation = IOOperation::SEND;
-                        sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-                        sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-                        sendOver->cleanup = [packet, sendOver]() {
-                            delete packet;
-                            delete sendOver;
-                        };
-                        std::cout << client->id <<"에게 보내줌   random-count:" << monsterId << std::endl;
-                        int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
-                        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-                            std::cerr << "[에러] 랜덤 위치 전송 실패 (room " << roomID << "): " << WSAGetLastError() << std::endl;
-                            RemoveClient(client);
-                        }
+                    // 시작 시간 설정 (처음 한 번만)
+                    if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
+                        monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
+                        continue;
                     }
 
-                }
+                    // 아직 시작 안 됨
+                    if (now < monsterStartTimes[monsterId])
+                        continue;
 
-                room.isCreat = false;
-                std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
+                    // 이 몬스터가 마지막으로 전송된 시간 저장
+                    static std::unordered_map<int, time_point<steady_clock>> lastSentTime;
+
+                    if (lastSentTime.find(monsterId) == lastSentTime.end()) {
+                        lastSentTime[monsterId] = now - sendInterval;
+                    }
+
+                    if (now - lastSentTime[monsterId] >= sendInterval) {
+                        lastSentTime[monsterId] = now;
+
+                        float x = room.defenseMonsters[monsterId].createPointX;
+                        float z = room.defenseMonsters[monsterId].createPointZ;
+
+                        for (auto* client : room.clients) {
+                            if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
+                                continue;
+
+                            DefenseRandomPacket* packet = new DefenseRandomPacket{};
+                            packet->type = PacketType::RANDOM_POSITION;
+                            packet->monsterID = monsterId;
+                            packet->x = x;
+                            packet->z = z;
+
+                            stOverlappedEx* sendOver = new stOverlappedEx{};
+                            ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+                            sendOver->operation = IOOperation::SEND;
+                            sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+                            sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+                            sendOver->cleanup = [packet, sendOver]() {
+                                delete packet;
+                                delete sendOver;
+                                };
+
+                            std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
+
+                            int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+                                &sendOver->overlapped, NULL);
+                            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+                                std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
+                                RemoveClient(client);
+                            }
+                        }
+                    }
+                }
             }
         }
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // CPU 낭비 방지
     }
 }
+
+
 void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
     
     for (auto* client : clients) {
@@ -424,7 +505,7 @@ void IOCompletionPort::RemoveClient(stClientInfo* c)
 
     for (auto& slot : clients)
         if (slot == c) { slot = nullptr; --clientCount; break; }
-
+    std::cout<<"clientCount: " << clientCount << std::endl;
     waitingClients.erase(
         std::remove(waitingClients.begin(), waitingClients.end(), c),
         waitingClients.end());
@@ -554,14 +635,14 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
     packet->type = PacketType::EXISTING_CLIENTS;
     packet->count = 0;
     for (int i = 0; i < clientCount;i++) {
-        if (!clients[i] || clients[i] == receiver /*|| *//*client->roomID != receiver->roomID*/) continue;
+        if (!clients[i] || clients[i] == receiver || clients[i]->roomID != receiver->roomID) continue;
 
         auto& dst = packet->clients[i];
         packet->count++;
         dst.id = clients[i]->id;
         
     }
-
+    std::cout << "SendExistingClientsToNewClient:\n";
     if (packet->count == 0) { delete packet; return; }
 
     stOverlappedEx* sendOver = new stOverlappedEx{};
@@ -587,7 +668,7 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
 
 void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
     for (int i = 0; i < clientCount;i++) {
-        if (!clients[i] || clients[i] == newClient/* ||*/ /*other->roomID != newClient->roomID*/) continue;
+        if (!clients[i] || clients[i] == newClient || clients[i]->roomID != newClient->roomID) continue;
 
         NewClientPacket* pkt = new NewClientPacket{};
         pkt->type = PacketType::NEW_CLIENT;
@@ -991,17 +1072,18 @@ void IOCompletionPort::WorkThread() {
                         //SendData_EnterRoom(client);  // 여기서 먼저 룸 ID를 클라이언트에 전송
                         //NotifyOthersAboutNewClient(client);
                         //SendExistingClientsToNewClient(client);
-                        RegisterRecv(client);
+                        
                     }
+                    //(newClient);
                 }
                 else {
                     //SendData_EnterRoom(newClient);  // 대기 중인 상태 전송 (roomID == 0)
                     //NotifyOthersAboutNewClient(newClient );
                     //SendExistingClientsToNewClient(newClient);
-                    RegisterRecv(newClient);
+                    //RegisterRecv(newClient);
                 }
             }
-
+            RegisterRecv(newClient);
             // 다음 AcceptEx 등록
             PostAccept();
             delete pOverlappedEx;
