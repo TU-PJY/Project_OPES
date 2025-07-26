@@ -1202,6 +1202,11 @@ void IOCompletionPort::WorkThread() {
                         if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; }))
                             room.defenseState = false;
                         }
+                        std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                        for (auto* otherClient : room.clients) {
+                            if (!otherClient) continue;
+                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        }
                     }
                     else {
                         if (pkt->monsterID<=1000) {
@@ -1209,14 +1214,15 @@ void IOCompletionPort::WorkThread() {
                         m.hp -= pkt->attackHp;
                         if (m.hp < 0) m.hp = 0;
                         sendHP = m.hp;
+                        std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                        for (auto* otherClient : room.clients) {
+                            if (!otherClient) continue;
+                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        }
                         }
                     }
                 }
-                std::cout<< pkt->monsterID <<"번---PTOM_DAMAGE HP: " << sendHP << std::endl;
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient) continue;
-                    SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                }
+               
                 //int sendHP;
                 //if (defenseState) {
                 //    //if (0 <= pkt->monsterID && pkt->monsterID <= 19) {
