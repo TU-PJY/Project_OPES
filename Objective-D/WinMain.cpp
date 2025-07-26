@@ -72,6 +72,9 @@ struct RecvContext {
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
 bool skipTitleMode = false;
 
+bool skipDefenseMode = false;
+bool editMode = false;
+
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
@@ -93,14 +96,12 @@ bool IsNewPlayer(unsigned int ID) {
 			PlayerLobbyInfo newInfo{};
 			GLOBAL.playerList.emplace(ID, newInfo);
 
-			if (skipTitleMode)
+			if (skipTitleMode) {
 				scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
-			
-
-		/*	auto indicator = scene.Find("otherIndicator");
-			if (!indicator)
-				GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
-			static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));*/
+				if (!GLOBAL.otherIndicator)
+					GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
+				static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
+			}
 			
 			return true;
 		}
@@ -878,6 +879,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	// 전역 서버 사용 여부 저장
 	GLOBAL.useServer = useServer;
 	GLOBAL.useLocalServer = localServer;
+	GLOBAL.skipDefenseMode = skipDefenseMode;
+	GLOBAL.skipTitleMode = skipTitleMode;
+	GLOBAL.editMode = editMode;
 
 	// 타이틀 모드 스킵 시 cmd로 입력해야 접속 가능
 	if (skipTitleMode)

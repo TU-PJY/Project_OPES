@@ -40,7 +40,7 @@ void OtherPlayerIndicator::Render() {
 	int currentIndex{};
 	for (auto& p : playerList) {
 		std::string renderStr = p.second.name + "(ID: " + std::to_string(p.first) + ") " + std::to_string(p.second.hp);
-		text.Render(XMFLOAT2(-1.0 * ASPECT + 0.05, 1.0 - currentIndex * 0.05), 0.1, renderStr);
+		text.Render(XMFLOAT2(-1.0 * ASPECT + 0.05, 1.0 - currentIndex * 0.1), 0.1, renderStr);
 		currentIndex++;
 	}
 }

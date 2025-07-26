@@ -12,9 +12,6 @@
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
 void Level3::Start() {
-	bool editMode = true;
-	bool skipDefenseMode = true;
-
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
 
 	GLOBAL.mapName = "map3";
@@ -42,17 +39,17 @@ void Level3::Start() {
 	GLOBAL.mapOOBBdata = mapObject->GetMapWallOOBB();
 	GLOBAL.mapOOBBdata.emplace_back(centerObject->GetOOBB());
 
-	if (editMode) {
+	if (GLOBAL.editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else
 		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
 
-	if (skipDefenseMode)
+	if (GLOBAL.skipDefenseMode)
 		scene.AddObject(new MonsterSpawner(true), "monsterSpawner", LAYER1, true);
 	else
-		scene.AddObject(new MonsterSpawner(editMode), "monsterSpawner", LAYER1, editMode);
+		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpawner", LAYER1, GLOBAL.editMode);
 
 }
 

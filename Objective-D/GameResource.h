@@ -79,6 +79,15 @@ typedef struct {
 	bool enterServerState;
 	std::thread netThread;
 
+	// 타이틀 모드 넘김 여부
+	bool skipTitleMode;
+
+	// 디펜스모드 넘김 여부
+	bool skipDefenseMode;
+
+	// 에디터 모드 여부
+	bool editMode;
+
 }GlobalValue;
 extern GlobalValue GLOBAL;
 

@@ -14,17 +14,13 @@
 #include "MonsterSpawner.h"
 #include "EditHelper.h"
 #include "OtherPlayer.h"
+#include "OtherPlayerIndicator.h"
 
 namespace Level1 { 
 	std::deque<GameObject*> ControlObjectList; 
 }
 
 void Level1::Start() {
-	bool editMode = false;
-
-	// 활성화 시 디펜스 모드 건너뜀
-	bool skipDefenseMode = false;
-
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
 
 	GLOBAL.offsetFOV = 0.0;
@@ -54,17 +50,17 @@ void Level1::Start() {
 	GLOBAL.mapOOBBdata = mapObject->GetMapWallOOBB();
 	GLOBAL.mapOOBBdata.emplace_back(centerObject->GetOOBB());
 
-	if(skipDefenseMode)
+	if(GLOBAL.skipDefenseMode)
 		scene.AddObject(new MonsterSpawner(true), "monsterSpawner", LAYER1, true);
 	else
-		scene.AddObject(new MonsterSpawner(editMode), "monsterSpawner", LAYER1, editMode);
+		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpawner", LAYER1, GLOBAL.editMode);
 
-	if (editMode) {
+	if (GLOBAL.editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else {
-		if (!skipDefenseMode) {
+		if (!GLOBAL.skipDefenseMode) {
 			scene.AddObject(new RoadBlock(XMFLOAT3(-91.0, 5.0, -93.0), 20.0, 10), "roadBlock", LAYER1);
 
 			// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
@@ -73,10 +69,18 @@ void Level1::Start() {
 
 		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
 
-		for(auto& p : GLOBAL.playerList)
-			scene.AddObject(new OtherPlayer(CHARACTER_MG, p.first), std::to_string(p.first), LAYER_PLAYER);
+	
+		if (!GLOBAL.skipTitleMode) {
+			GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
 
-		if(!skipDefenseMode)
+			for (auto& p : GLOBAL.playerList) {
+				scene.AddObject(new OtherPlayer(CHARACTER_MG, p.first), std::to_string(p.first), LAYER_PLAYER);
+				if (GLOBAL.otherIndicator)
+					static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(p.first, CHARACTER_MG, std::to_string(p.first));
+			}
+		}
+
+		if(!GLOBAL.skipDefenseMode)
 			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);
 	}
 
