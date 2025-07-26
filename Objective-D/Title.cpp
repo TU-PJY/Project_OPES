@@ -2,6 +2,22 @@
 #include "MouseUtil.h"
 #include "ModePack.h"
 
+void Title::InputKey(KeyEvent& Event) {
+	if (Event.Type == WM_CHAR) {
+		if ((Event.Key >= '0' && Event.Key <= '9') || Event.Key == '.') {
+			GLOBAL.enterIP += Event.Key;
+		}
+		else if (Event.Key == VK_BACK) {
+			if (GLOBAL.enterIP.empty())
+				return;
+
+			GLOBAL.enterIP.pop_back();
+			if(GLOBAL.enterIP.back() == '.')
+				GLOBAL.enterIP.pop_back();
+		}
+	}
+}
+
 void Title::InputMouse(MouseEvent& Event) {
 	if (Event.Type == WM_LBUTTONDOWN) {
 		if(button.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y)))
@@ -22,7 +38,7 @@ void Title::Render() {
 	text.Render(xmfloat2(0.0, 1.0 - 0.35), 0.8, "OPES");
 
 	text.Render(xmfloat2(0.0, 0.2), 0.1, "Enter Server IP");
-	std::string renderStr = "-> " + ipStr;
+	std::string renderStr = "-> " + GLOBAL.enterIP;
 	text.Render(xmfloat2(0.0, 0.1), 0.1, renderStr);
 
 	text.Render(xmfloat2(0.0, -0.15), 0.3, "Start Game");

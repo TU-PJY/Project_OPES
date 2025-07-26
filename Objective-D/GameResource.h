@@ -63,6 +63,9 @@ typedef struct {
 	// 서버에 접속한 인원들의 정보
 	std::map<unsigned int, PlayerLobbyInfo> playerList;
 
+	// 마지막으로 입력한 서버 주소
+	std::string enterIP;
+
 }GlobalValue;
 extern GlobalValue GLOBAL;
 

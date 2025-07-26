@@ -1031,7 +1031,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lPara
 		scene.InputMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 
-	case WM_KEYDOWN: case WM_KEYUP:
+	case WM_KEYDOWN: case WM_KEYUP: case WM_CHAR:
 		scene.InputKeyMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 

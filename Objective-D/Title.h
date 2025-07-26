@@ -9,6 +9,7 @@ private:
 	std::string ipStr{};
 
 public:
+	void InputKey(KeyEvent& Event) override;
 	void InputMouse(MouseEvent& Event) override;
 	void Render() override;
 	void Update(float Delta) override;

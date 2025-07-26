@@ -6,10 +6,6 @@ Lobby::Lobby() {
 	
 }
 
-void Lobby::InputKey(KeyEvent& Event) {
-
-}
-
 void Lobby::InputMouse(MouseEvent& Event) {
 	if (Event.Type == WM_LBUTTONDOWN) {
 		// 뒤로가기 버튼을 누르면 다시 타이틀로 되돌아 간다.
