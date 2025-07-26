@@ -71,6 +71,7 @@ struct RecvContext {
 };
 
 // 인게임 모드로 스킵하려면 true
+// StartMod도 Level1 ~ Level3으로 변경해주어야 함
 bool skipTitleMode = false;
 
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
@@ -91,11 +92,12 @@ bool IsNewPlayer(unsigned int ID) {
 
 			// 새로운 플레이어가 접속하면 전역 플레이어 리스트에 등록한다.
 
-			if (skipTitleMode) {
-				PlayerLobbyInfo newInfo;
-				GLOBAL.playerList.emplace(ID, newInfo);
+			PlayerLobbyInfo newInfo;
+			GLOBAL.playerList.emplace(ID, newInfo);
+
+			if (skipTitleMode)
 				scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
-			}
+			
 
 		/*	auto indicator = scene.Find("otherIndicator");
 			if (!indicator)
