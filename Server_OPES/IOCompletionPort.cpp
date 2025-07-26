@@ -1339,6 +1339,8 @@ void IOCompletionPort::WorkThread() {
                         std::cout << "다들어옴!\n";
                         room.defenseState = true;
                         room.stageState++;
+                        randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
+                        randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
                     }
                     // 모든 room 클라이언트에게 clearCount 전송
                     for (auto* c : room.clients) {
