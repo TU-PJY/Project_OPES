@@ -8,16 +8,14 @@
 #include "CBVUtil.h"
 #include "CenterBuilding.h"
 #include "MonsterSpawner.h"
+#include "OtherPlayer.h"
+#include "OtherPlayerIndicator.h"
 
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
 void Level3::Start() {
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
-
 	GLOBAL.mapName = "map3";
-	GLOBAL.offsetFOV = 0.0;
-	GLOBAL.DefenseState = true;
-	GLOBAL.DefenseEnemyRemained = 20;
 
 	FOG_DATA FogData{
 		{0.68, 0.28, 0.1}, // Fog Color
@@ -46,12 +44,26 @@ void Level3::Start() {
 	else
 		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
 
+	if (!GLOBAL.skipTitleMode) {
+		GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
+
+		for (auto& p : GLOBAL.playerList) {
+			scene.AddObject(new OtherPlayer(p.second.characterType, p.first), std::to_string(p.first), LAYER_PLAYER);
+			if (GLOBAL.otherIndicator)
+				static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(p.first, p.second.characterType, std::to_string(p.first));
+		}
+	}
+
 	if (GLOBAL.skipDefenseMode)
 		scene.AddObject(new MonsterSpawner(true), "monsterSpawner", LAYER1, true);
 	else
 		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpawner", LAYER1, GLOBAL.editMode);
-
 }
 
 void Level3::Destructor() {
+	GLOBAL.mapOOBBdata.clear();
+	GLOBAL.defenseIDList.clear();
+	GLOBAL.DefenseEnemyRemained = 20;
+	GLOBAL.DefenseState = true;
+	GLOBAL.offsetFOV = 0.0;
 }

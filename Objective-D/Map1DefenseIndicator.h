@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "TextUtil.h"
 
-class Map1DefenseIndicator : public GameObject {
+class DefenseIndicator : public GameObject {
 private:
 	Text text{ ALIGN_MIDDLE, HEIGHT_UNDER, XMFLOAT3(1.0, 1.0, 1.0) };
 	float       renderHeight{};
@@ -13,7 +13,7 @@ private:
 	std::string renderString{};
 
 public:
-	Map1DefenseIndicator();
+	DefenseIndicator();
 	void Update(float Delta) override;
 	void Render() override;
 };

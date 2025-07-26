@@ -8,24 +8,30 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 
 	switch (this->characterType) {
 	case CHARACTER_MG:
-		for (int i = 0; i < 4; i++) 
-			playerFBX[i].SelectFBXMesh(MESH.heavy[i]);
+		idleFBX.SelectFBXMesh(MESH.heavy[0]);
+		moveFBX.SelectFBXMesh(MESH.heavy[1]);
+		shootFBX.SelectFBXMesh(MESH.heavy[2]);
+		deathFBX.SelectFBXMesh(MESH.heavy[3]);
 
 		totalHP = CHARACTER_MG_HP;
 		currentHP = CHARACTER_MG_HP;
 		break;
 
 	case CHARACTER_DMR:
-		for (int i = 0; i < 4; i++)
-			playerFBX[i].SelectFBXMesh(MESH.marksman[i]);
+		idleFBX.SelectFBXMesh(MESH.marksman[0]);
+		moveFBX.SelectFBXMesh(MESH.marksman[1]);
+		shootFBX.SelectFBXMesh(MESH.marksman[2]);
+		deathFBX.SelectFBXMesh(MESH.marksman[3]);
 
 		totalHP = CHARACTER_DMR_HP;
 		currentHP = CHARACTER_DMR_HP;
 		break;
 
 	case CHARACTER_ENG:
-		for (int i = 0; i < 4; i++)
-			playerFBX[i].SelectFBXMesh(MESH.engineer[i]);
+		idleFBX.SelectFBXMesh(MESH.engineer[0]);
+		moveFBX.SelectFBXMesh(MESH.engineer[1]);
+		shootFBX.SelectFBXMesh(MESH.engineer[2]);
+		deathFBX.SelectFBXMesh(MESH.engineer[3]);
 
 		totalHP = CHARACTER_ENG_HP;
 		currentHP = CHARACTER_ENG_HP;
@@ -42,7 +48,20 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 
 void OtherPlayer::updateState() {
 	if (prevState != currentState) {
-		playerFBX[currentState].ResetAnimation();
+		switch (currentState) {
+		case STATE_IDLE:
+			idleFBX.ResetAnimation();
+			break;
+
+		case STATE_MOVE:
+			moveFBX.ResetAnimation();
+			break;
+
+		case STATE_DEATH:
+			deathFBX.ResetAnimation();
+			break;
+		}
+
 		prevState = currentState;
 	}
 }
@@ -50,11 +69,11 @@ void OtherPlayer::updateState() {
 void OtherPlayer::updateAnimation(float Delta) {
 	switch (currentState) {
 	case STATE_IDLE: case STATE_IDLE_SHOOT:
-		playerFBX[STATE_IDLE].UpdateAnimation(Delta, false, !inFrustum);
+		idleFBX.UpdateAnimation(Delta, false, !inFrustum);
 		break;
 
 	case STATE_MOVE: case STATE_MOVE_SHOOT:
-		playerFBX[STATE_MOVE].UpdateAnimation(Delta, false, !inFrustum);
+		moveFBX.UpdateAnimation(Delta, false, !inFrustum);
 		break;
 	}
 }
@@ -78,7 +97,7 @@ void OtherPlayer::updateDeath() {
 		return;
 
 	// 사망 시 사망 애니메이션이 끝난 후 삭제된다.
-	if (playerFBX[3].GetAnimationEndState())
+	if (deathFBX.GetAnimationEndState())
 		scene.DeleteObject(this);
 }
 
@@ -98,7 +117,20 @@ void OtherPlayer::Render() {
 	Transform::Scale(ScaleMatrix, size);
 	Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 
-	RenderFBX(playerFBX[renderState], TEX.scifi);
+	switch (renderState) {
+	case STATE_IDLE: case STATE_IDLE_SHOOT:
+		RenderFBX(idleFBX, TEX.scifi);
+		break;
+
+	case STATE_MOVE: case STATE_MOVE_SHOOT:
+		RenderFBX(moveFBX, TEX.scifi);
+		break;
+
+	case STATE_DEATH:
+		RenderFBX(deathFBX, TEX.scifi);
+		break;
+	}
+
 	renderState = currentState;
 }
 

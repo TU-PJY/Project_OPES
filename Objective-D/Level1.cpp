@@ -22,9 +22,8 @@ namespace Level1 {
 
 void Level1::Start() {
 	scene.SetupMode("Level1", Destructor, ControlObjectList);
-
-	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.mapName = "map1";
+	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.DefenseEnemyRemained = 20;
 	GLOBAL.DefenseState = true;
 
@@ -67,26 +66,29 @@ void Level1::Start() {
 			scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 		}
 
-		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
 
 	
 		if (!GLOBAL.skipTitleMode) {
 			GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
 
 			for (auto& p : GLOBAL.playerList) {
-				scene.AddObject(new OtherPlayer(CHARACTER_MG, p.first), std::to_string(p.first), LAYER_PLAYER);
+				scene.AddObject(new OtherPlayer(p.second.characterType, p.first), std::to_string(p.first), LAYER_PLAYER);
 				if (GLOBAL.otherIndicator)
-					static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(p.first, CHARACTER_MG, std::to_string(p.first));
+					static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(p.first, p.second.characterType, std::to_string(p.first));
 			}
 		}
 
 		if(!GLOBAL.skipDefenseMode)
-			scene.AddObject(new Map1DefenseIndicator, "map1DefenseIndicator", LAYERUI);
+			scene.AddObject(new DefenseIndicator, "map1DefenseIndicator", LAYERUI);
 	}
-
 }
 
 // 다른 모드로 전환 시 맵 오브젝트 바운드 데이터 삭제
 void Level1::Destructor() {
 	GLOBAL.mapOOBBdata.clear();
+	GLOBAL.defenseIDList.clear();
+	GLOBAL.DefenseEnemyRemained = 20;
+	GLOBAL.DefenseState = true;
+	GLOBAL.offsetFOV = 0.0;
 }

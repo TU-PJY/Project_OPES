@@ -4,7 +4,12 @@
 
 class OtherPlayer : public GameObject {
 private:
-	FBX playerFBX[4]{};
+	//FBX playerFBX[4]{};
+	
+	FBX idleFBX{};
+	FBX moveFBX{};
+	FBX shootFBX{};
+	FBX deathFBX{};
 
 	XMFLOAT3 position{ -140.0, -1.483, -130.0 };
 	XMFLOAT3 positionDest{ -140.0, -1.483, -130.0 };

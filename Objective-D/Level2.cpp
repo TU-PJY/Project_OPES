@@ -8,17 +8,16 @@
 #include "MonsterSpawner.h"
 #include "EditHelper.h"
 #include "Player1st.h"
+#include "OtherPlayer.h"
+#include "OtherPlayerIndicator.h"
+#include "Map1DefenseIndicator.h"
 
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
 
 void Level2::Start() {
 	scene.SetupMode("Level2", Destructor, ControlObjectList);
-
-	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.mapName = "map2";
-	GLOBAL.DefenseState = true;
-	GLOBAL.DefenseEnemyRemained = 20;
 
 	FOG_DATA FogData{
 		{0.63, 0.77, 0.98}, // Fog Color
@@ -48,16 +47,32 @@ void Level2::Start() {
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else
-		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
+
+
+	if (!GLOBAL.skipTitleMode) {
+		GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
+
+		for (auto& p : GLOBAL.playerList) {
+			scene.AddObject(new OtherPlayer(p.second.characterType, p.first), std::to_string(p.first), LAYER_PLAYER);
+			if (GLOBAL.otherIndicator)
+				static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(p.first, p.second.characterType, std::to_string(p.first));
+		}
+	}
 
 	if (GLOBAL.skipDefenseMode)
 		scene.AddObject(new MonsterSpawner(true), "monsterSpwaner", LAYER1, true);
 	else
 		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpwaner", LAYER1, GLOBAL.editMode);
 
-	SetBackgroundColorRGB(135, 206, 235);
+	if (!GLOBAL.skipDefenseMode)
+		scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);
 }
 
 void Level2::Destructor() {
 	GLOBAL.mapOOBBdata.clear();
+	GLOBAL.defenseIDList.clear();
+	GLOBAL.DefenseEnemyRemained = 20;
+	GLOBAL.DefenseState = true;
+	GLOBAL.offsetFOV = 0.0;
 }
