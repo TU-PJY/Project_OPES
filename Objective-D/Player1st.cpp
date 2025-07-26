@@ -90,7 +90,12 @@ void Player1st::sendPacket(float Delta) {
 
 		switch (sendOrder) {
 		case 1:
-			if (currentState == STATE_MOVE || currentState == STATE_MOVE_SHOOT)
+			// map2는 미끄러지기 때문에 계속해서 보내줘야 한다.
+			if (GLOBAL.mapName != "map2") {
+				if (currentState == STATE_MOVE || currentState == STATE_MOVE_SHOOT)
+					SendMovePacket(playerPosition.x, playerPosition.y, playerPosition.z);
+			}
+			else
 				SendMovePacket(playerPosition.x, playerPosition.y, playerPosition.z);
 			break;
 

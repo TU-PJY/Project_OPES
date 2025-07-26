@@ -22,6 +22,7 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 		moveFBX.SelectFBXMesh(MESH.marksman[1]);
 		shootFBX.SelectFBXMesh(MESH.marksman[2]);
 		deathFBX.SelectFBXMesh(MESH.marksman[3]);
+		moveFBX.SetSpeed(2.0);
 
 		totalHP = CHARACTER_DMR_HP;
 		currentHP = CHARACTER_DMR_HP;
