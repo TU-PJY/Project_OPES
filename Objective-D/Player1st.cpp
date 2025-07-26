@@ -282,6 +282,8 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		break;
 
 	case WM_RBUTTONDOWN:
+		mouse.StartMotionCapture(GlobalHWND);
+
 		if ((characterType == CHARACTER_MG || characterType == CHARACTER_DMR) && IndicatorPtr->GetCurrentIndex() != 1)
 			break;
 		if (characterType == CHARACTER_ENG && IndicatorPtr->GetCurrentIndex() != 3)
@@ -296,9 +298,8 @@ void Player1st::InputMouse(MouseEvent& Event) {
 				destFOV = -45.0;
 				scopePtr->SetRenderState(true);
 			}
-			else {
-			}destFOV = -20.0;
-
+			else
+				destFOV = -20.0;
 		}
 		
 		break;

@@ -1,7 +1,7 @@
 #include "Map1DefenseIndicator.h"
 #include "TransformUtil.h"
 
-Map1DefenseIndicator::Map1DefenseIndicator() {
+DefenseIndicator::DefenseIndicator() {
 	text.EnableShadow();
 	text.SetShadow(XMFLOAT2(0.01, -0.01), 0.5);
 	totalRemain = GLOBAL.DefenseEnemyRemained;
@@ -9,7 +9,7 @@ Map1DefenseIndicator::Map1DefenseIndicator() {
 	prevRemain = GLOBAL.DefenseEnemyRemained;
 }
 
-void Map1DefenseIndicator::Update(float Delta) {
+void DefenseIndicator::Update(float Delta) {
 	currentRemain = GLOBAL.DefenseEnemyRemained;
 	renderString = std::to_string(totalRemain) + "/" + std::to_string(currentRemain);
 
@@ -28,7 +28,7 @@ void Map1DefenseIndicator::Update(float Delta) {
 	}
 }
 
-void Map1DefenseIndicator::Render() {
+void DefenseIndicator::Render() {
 	// ¹è°æ
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, 0.0, 1.0 - 0.15 + renderHeight);
