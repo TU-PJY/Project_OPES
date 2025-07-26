@@ -169,7 +169,7 @@ bool IOCompletionPort::StartServer() {
             monsterData.emplace_back(loadedData);
         };
     monsterDataScript.LoadAllData(LoadMonsterData);
-
+    std::cout << "monster_map1.xml로드 완료!\n";
     // 몬스터 타입 및 생성 위치 로드-2
     monsterDataScript2.Release();
     monsterData2.clear();
@@ -186,7 +186,7 @@ bool IOCompletionPort::StartServer() {
             monsterData2.emplace_back(loadedData2);
         };
     monsterDataScript2.LoadAllData(LoadMonsterData2);
-
+    std::cout << "monster_map2.xml로드 완료!\n";
     // 몬스터 타입 및 생성 위치 로드-3
     monsterDataScript3.Release();
     monsterData3.clear();
@@ -203,7 +203,7 @@ bool IOCompletionPort::StartServer() {
             monsterData3.emplace_back(loadedData3);
         };
     monsterDataScript3.LoadAllData(LoadMonsterData3);
-
+    std::cout << "monster_map3.xml로드 완료!\n";
     //
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
@@ -1330,8 +1330,16 @@ void IOCompletionPort::WorkThread() {
                //auto it = rooms.find(client->roomID);
                //if (it == rooms.end()) break;  // 해당 룸이 없다면 무시
                //Room& room = it->second;
-
-                XMFLOAT3 arrivePosition{ 120.0f, 0.0f, 94.0f };
+                XMFLOAT3 arrivePosition{};
+                if (room.stageState == 1) {
+                    arrivePosition= XMFLOAT3(120.0f, 0.0f, 94.0f );
+                }
+                else if (room.stageState == 2) {
+                    //arrivePosition = XMFLOAT3(120.0f, 0.0f, 94.0f);->바꿔줘야함
+                }
+                else if (room.stageState == 3) {
+                    //arrivePosition = XMFLOAT3(120.0f, 0.0f, 94.0f);->바꿔줘야함
+                }
 
                 {
                     std::lock_guard<std::mutex> lock(*room.roomMutex);
