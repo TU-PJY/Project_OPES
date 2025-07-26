@@ -183,57 +183,7 @@ XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& C
     //GenPointInDonut(30.0,60.0,XMFLOAT2(-120.0,-120.0));
 }
 
-//oid IOCompletionPort::RandomPositionThread() {
-//   using namespace std::chrono;
-//
-//   while (isRunning) {
-//       
-//       {
-//           std::lock_guard<std::mutex> lock(roomMapMutex);
-//           for (auto& [roomID, room] : rooms) {
-//               if (!room.isCreat)
-//                   continue;
-//
-//               for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
-//
-//                   std::this_thread::sleep_for(std::chrono::seconds(4));
-//
-//                   for (auto* client : room.clients) {
-//                       if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-//                           continue;
-//
-//                       DefenseRandomPacket* packet = new DefenseRandomPacket{};
-//                       packet->type = PacketType::RANDOM_POSITION;
-//                       packet->monsterID = monsterId;
-//                       packet->x = room.defenseMonsters[monsterId].createPointX;
-//                       packet->z = room.defenseMonsters[monsterId].createPointZ;
-//
-//                       stOverlappedEx* sendOver = new stOverlappedEx{};
-//                       ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-//                       sendOver->operation = IOOperation::SEND;
-//                       sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-//                       sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-//                       sendOver->cleanup = [packet, sendOver]() {
-//                           delete packet;
-//                           delete sendOver;
-//                       };
-//                       std::cout << client->id <<"에게 보내줌   random-count:" << monsterId << std::endl;
-//                       int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0, &sendOver->overlapped, NULL);
-//                       if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-//                           std::cerr << "[에러] 랜덤 위치 전송 실패 (room " << roomID << "): " << WSAGetLastError() << std::endl;
-//                           RemoveClient(client);
-//                       }
-//
-//                   }
-//
-//               }
-//
-//               room.isCreat = false;
-//               std::cout << "[Room " << roomID << "] 랜덤 위치 20개 전송 완료\n";
-//           }
-//       }
-//   }
-//
+
 void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
 
@@ -373,7 +323,7 @@ void IOCompletionPort::RandomPositionThread2() {
                                 delete sendOver;
                                 };
 
-                            std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
+                            std::cout << "2stage[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
 
                             int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
                                 &sendOver->overlapped, NULL);
@@ -451,7 +401,7 @@ void IOCompletionPort::RandomPositionThread3() {
                                 delete sendOver;
                                 };
 
-                            std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
+                            std::cout << "[3stageRoom " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
 
                             int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
                                 &sendOver->overlapped, NULL);
