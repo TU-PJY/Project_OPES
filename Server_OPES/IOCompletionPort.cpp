@@ -1160,7 +1160,7 @@ void IOCompletionPort::WorkThread() {
                         c->curr = (distance <= 40.0f);
 
                         if (c->curr != prev) {
-                            SendData_PlayerArrivalPacket(c, c->id, c->curr);
+                            //SendData_PlayerArrivalPacket(c, c->id, c->curr);
                             c->prev = c->curr;
                         }
 
