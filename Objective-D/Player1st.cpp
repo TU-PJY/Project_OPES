@@ -32,13 +32,12 @@ Player1st::Player1st(int characterType) {
 	case CHARACTER_DMR:
 		weaponPtr = scene.AddObject(new DMR(this), "dmr", LAYER4);
 		scopePtr = scene.AddObject(new Scope, "scope", LAYERUI);
-		maxSpeed = CHARACTER_MG_SPEED;
-		totalHP = CHARACTER_MG_HP;
-		currentHP = CHARACTER_MG_HP;
+		maxSpeed = CHARACTER_DMR_SPEED;
+		totalHP = CHARACTER_DMR_HP;
+		currentHP = CHARACTER_DMR_HP;
 		break;
 
 	case CHARACTER_ENG:
-	{
 		weaponPtr = scene.AddObject(new Shotgun(this), "shotgun", LAYER4);
 		maxSpeed = CHARACTER_ENG_SPEED;
 		totalHP = CHARACTER_ENG_HP;
@@ -47,9 +46,10 @@ Player1st::Player1st(int characterType) {
 		installPtr = scene.AddObject(new InstallIndicator, "inst", LAYER5);
 		if (installPtr)
 			installPtr->SetRenderState(false);
-	}
+	
 		break;
 	}
+
 	this->characterType = characterType;
 	currentSpeed = maxSpeed;
 	
@@ -75,8 +75,12 @@ Player1st::Player1st(int characterType) {
 Player1st::~Player1st() {
 	if (weaponPtr)
 		scene.DeleteObject(weaponPtr);
+
 	if (IndicatorPtr)
 		scene.DeleteObject(IndicatorPtr);
+
+	if (installPtr)
+		scene.DeleteObject(installPtr);
 }
 
 void Player1st::sendPacket(float Delta) {
@@ -144,16 +148,20 @@ void Player1st::InputMouse(MouseEvent& Event) {
 
 		if (delta > 0) {
 			IndicatorPtr->ScrollRight();
+			int index = IndicatorPtr->GetCurrentIndex();
 
 			if (characterType == CHARACTER_ENG) {
-				if (IndicatorPtr->GetCurrentIndex() < 3) {
-					if ((IndicatorPtr->GetCurrentIndex() == 0 && turretCoolTime <= 0.0))
+				if (index < 3) {
+					if (index == 0 && turretCoolTime <= 0.0)
 						installPtr->SetRenderState(true);
-					else if ((IndicatorPtr->GetCurrentIndex() == 1 && beaconCoolTime <= 0.0))
+
+					else if (index == 1 && beaconCoolTime <= 0.0)
 						installPtr->SetRenderState(true);
+
 					else
 						installPtr->SetRenderState(false);
-					installPtr->SetItem(IndicatorPtr->GetCurrentIndex());
+
+					installPtr->SetItem(index);
 				}
 				else
 					installPtr->SetRenderState(false);
@@ -162,18 +170,24 @@ void Player1st::InputMouse(MouseEvent& Event) {
 			else if (characterType == CHARACTER_DMR)
 				scopePtr->SetRenderState(false);
 		}
+
 
 		else {
 			IndicatorPtr->ScrollLeft();
+			int index = IndicatorPtr->GetCurrentIndex();
+
 			if (characterType == CHARACTER_ENG) {
-				if (IndicatorPtr->GetCurrentIndex() < 3) {
-					if ((IndicatorPtr->GetCurrentIndex() == 0 && turretCoolTime <= 0.0))
+				if (index < 3) {
+					if (index == 0 && turretCoolTime <= 0.0)
 						installPtr->SetRenderState(true);
-					else if (IndicatorPtr->GetCurrentIndex() == 1 && beaconCoolTime <= 0.0)
+
+					else if (index == 1 && beaconCoolTime <= 0.0)
 						installPtr->SetRenderState(true);
+
 					else
 						installPtr->SetRenderState(false);
-					installPtr->SetItem(IndicatorPtr->GetCurrentIndex());
+
+					installPtr->SetItem(index);
 				}
 				else
 					installPtr->SetRenderState(false);
@@ -183,8 +197,10 @@ void Player1st::InputMouse(MouseEvent& Event) {
 				scopePtr->SetRenderState(false);
 		}
 
+
 		if (weaponPtr) weaponPtr->releaseTrigger();
 		triggerState = false;
+
 
 		if (weaponPtr) weaponPtr->disableZoom();
 		zoomState = false;
@@ -192,6 +208,11 @@ void Player1st::InputMouse(MouseEvent& Event) {
 		currentSpeed = maxSpeed;
 	}
 	break;
+
+	// 창 위에서 움직이면 자동 포커싱 된다.
+	case WM_MOUSEMOVE:
+		mouse.StartMotionCapture(GlobalHWND);
+		break;
 
 	case WM_LBUTTONDOWN:
 		// 마우스 모션 캡쳐 상태가 해제된 경우(윈도우 버튼 등으로 다른 윈도우에 포커싱된 경우)
@@ -527,7 +548,8 @@ void Player1st::InputHP(int currentHP) {
 
 	this->currentHP = currentHP;
 	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
-	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
+	if (IndicatorPtr) 
+		IndicatorPtr->InputHP(totalHP, this->currentHP);
 	scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
 	std::cout << "PLAYER HP: " << this->currentHP << std::endl;
 }

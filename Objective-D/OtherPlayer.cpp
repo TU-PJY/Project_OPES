@@ -8,27 +8,32 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 
 	switch (this->characterType) {
 	case CHARACTER_MG:
-		idleFBX.SelectFBXMesh(MESH.heavyIdle);
-		moveFBX.SelectFBXMesh(MESH.heavyMove);
-		shootFBX.SelectFBXMesh(MESH.heavyShoot);
-		deathFBX.SelectFBXMesh(MESH.heavyDeath);
+		for (int i = 0; i < 4; i++) 
+			playerFBX[i].SelectFBXMesh(MESH.heavy[i]);
 
-		totalHP = 100;
-		currentHP = 100;
+		totalHP = CHARACTER_MG_HP;
+		currentHP = CHARACTER_MG_HP;
 		break;
 
 	case CHARACTER_DMR:
-		totalHP = 100;
-		currentHP = 100;
+		for (int i = 0; i < 4; i++)
+			playerFBX[i].SelectFBXMesh(MESH.marksman[i]);
+
+		totalHP = CHARACTER_DMR_HP;
+		currentHP = CHARACTER_DMR_HP;
 		break;
 
 	case CHARACTER_ENG:
-		totalHP = 100;
-		currentHP = 100;
+		for (int i = 0; i < 4; i++)
+			playerFBX[i].SelectFBXMesh(MESH.engineer[i]);
+
+		totalHP = CHARACTER_ENG_HP;
+		currentHP = CHARACTER_ENG_HP;
 		break;
 	}
 
 	TerrainUtil terrainUtil;
+	terrainUtil.InputPosition(position);
 	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, positionDest, 0.0);
 	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);
 
@@ -37,31 +42,20 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 
 void OtherPlayer::updateState() {
 	if (prevState != currentState) {
-		switch (currentState) {
-		case STATE_IDLE:
-			idleFBX.ResetAnimation(); break;
-		case STATE_MOVE:
-			moveFBX.ResetAnimation(); break;
-		case STATE_IDLE_SHOOT:
-			shootFBX.ResetAnimation(); break;
-		case STATE_MOVE_SHOOT:
-			moveFBX.ResetAnimation(); break;
-		}
-
+		playerFBX[currentState].ResetAnimation();
 		prevState = currentState;
 	}
 }
 
 void OtherPlayer::updateAnimation(float Delta) {
 	switch (currentState) {
-	case STATE_IDLE:
-		idleFBX.UpdateAnimation(Delta, false, !inFrustum); break;
-	case STATE_MOVE:
-		moveFBX.UpdateAnimation(Delta, false, !inFrustum); break;
-	case STATE_IDLE_SHOOT:
-		shootFBX.UpdateAnimation(Delta, false, !inFrustum); break;
-	case STATE_MOVE_SHOOT:
-		moveFBX.UpdateAnimation(Delta, false, !inFrustum); break;
+	case STATE_IDLE: case STATE_IDLE_SHOOT:
+		playerFBX[STATE_IDLE].UpdateAnimation(Delta, false, !inFrustum);
+		break;
+
+	case STATE_MOVE: case STATE_MOVE_SHOOT:
+		playerFBX[STATE_MOVE].UpdateAnimation(Delta, false, !inFrustum);
+		break;
 	}
 }
 
@@ -71,11 +65,11 @@ void OtherPlayer::updateRenderValue(float Delta) {
 }
 
 void OtherPlayer::updateBound() {
-	frustumAABB.Update(position, size);
-	inFrustum = camera.CheckFrustum(frustumAABB);
+	frustumBound.Update(position, 10.0);
+	inFrustum = camera.CheckFrustum(frustumBound);
 	playerBound.Update(
-		XMFLOAT3(position.x, position.y + size.y * 0.5, position.z),
-		XMFLOAT3(size.x * 0.5, size.y * 2.0, size.z * 0.5), rotation
+		XMFLOAT3(position.x, position.y + size.y * 1.5, position.z),
+		XMFLOAT3(size.x * 0.5, size.y, size.z * 0.5), rotation
 	);
 }
 
@@ -84,7 +78,7 @@ void OtherPlayer::updateDeath() {
 		return;
 
 	// 사망 시 사망 애니메이션이 끝난 후 삭제된다.
-	if (deathFBX.GetAnimationEndState())
+	if (playerFBX[3].GetAnimationEndState())
 		scene.DeleteObject(this);
 }
 
@@ -104,18 +98,7 @@ void OtherPlayer::Render() {
 	Transform::Scale(ScaleMatrix, size);
 	Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 
-	switch (renderState) {
-	case STATE_IDLE:
-		RenderFBX(idleFBX, TEX.scifi); break;
-	case STATE_MOVE:
-		RenderFBX(moveFBX, TEX.scifi); break;
-	case STATE_IDLE_SHOOT:
-		RenderFBX(shootFBX, TEX.scifi); break;
-	case STATE_MOVE_SHOOT:
-		RenderFBX(moveFBX, TEX.scifi); break;
-	}
-
-	// 잔상 방지를 위해 실제 렌더링 되는 상태는 늦게 평가한다.
+	RenderFBX(playerFBX[renderState], TEX.scifi);
 	renderState = currentState;
 }
 

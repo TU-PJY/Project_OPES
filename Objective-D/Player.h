@@ -7,7 +7,7 @@
 class Player : public GameObject {
 private:
 	// 바운드박스용 fbx, 렌더링 없이 바운드박스 업데이트용으로 사용한다.
-	FBX         playerFBX{ MESH.heavyIdle };
+	FBX         playerFBX{ MESH.heavy[0]};
 	OOBB        playerBound{};
 	XMFLOAT3    playerPosition{};
 

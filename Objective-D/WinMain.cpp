@@ -134,7 +134,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::CLEAR_COUNT) {
 		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(context->buffer);
-		//std::cout << "[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
+		std::cout << "[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
 
 		// 현재 접속한 사람이 모두 도착 지점에 들어가면 다음 스테이지로 넘어간다.
 		// 자신의 아이디는 ID_List에 없기 때문에 1을 더한 값으로 비교한다.
@@ -333,11 +333,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::ENTER) {
 		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(context->buffer);
-		std::cout <<"MYID-"<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
+		std::cout <<"MYID: "<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
 		
 		// 전역 변수에 내 ID 저장
 		GLOBAL.myID = EnterPacket->myID;
 		std::cout << "접속 아이디: " << GLOBAL.myID << std::endl;
+		GLOBAL.serverConnected = true;
 
 		//if (0 != EnterPacket->roomID) {
 		//	enter_room = true;

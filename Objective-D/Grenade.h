@@ -4,6 +4,13 @@
 
 class Grenade : public GameObject {
 private:
+	struct damageInfo {
+		int damage;
+		unsigned int id;
+	};
+
+	std::vector<damageInfo> damageList{};
+
 	XMFLOAT3 position{};
 	XMFLOAT3 velocity{};
 	XMFLOAT3 rotation{};
@@ -25,7 +32,7 @@ private:
 
 	bool       createFromServer{};
 	bool       exploded{};
-	std::map<unsigned int, int> damageList{};
+//	std::map<unsigned int, int> damageList{};
 
 public:
 	Grenade(const XMFLOAT3& createPosition, const XMFLOAT3& rotation, bool createFromServer=false);

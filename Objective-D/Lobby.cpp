@@ -54,6 +54,10 @@ void Lobby::Render() {
 
 	text.SetAlign(ALIGN_MIDDLE);
 	text.Render(xmfloat2(0.0, 1.0 - 0.15), 0.3, "Lobby");
+
+	if (!GLOBAL.serverConnected)
+		text.Render(xmfloat2(0.0, 0.0), 0.2, "Server not connected...");
+
 	text.SetAlign(ALIGN_LEFT);
 	text.Render(xmfloat2(1.0 * ASPECT - 0.05, -1.0 + 0.1), 0.08, "Waiting for players to prepare...");
 
@@ -158,6 +162,7 @@ void Lobby::Update(float Delta) {
 	readyButton.Update(xmfloat3(-1.0 * ASPECT + 0.3 + 1.65, -1.0 + 0.2, 0.0), xmfloat3(0.25, 0.125, 0.0));
 
 	bool allReady = true;
+
 	for (auto& p : GLOBAL.playerList) {
 		if (!p.second.readyState) {
 			allReady = false;

@@ -238,8 +238,10 @@ void Grenade::Update(float Delta) {
                                 monster->GiveDamage(damage);
 
                             else {
-                                if (damage > 0)
-                                    damageList.emplace(monster->GetID(), damage);
+                                if (damage > 0) {
+                                    damageInfo newInfo{ damage, monster->GetID() };
+                                    damageList.emplace_back(newInfo);
+                                }
                             }
                         }
                     }
@@ -247,27 +249,27 @@ void Grenade::Update(float Delta) {
             }
 
             scene.AddObject(new Explosion(position), "explosion", LAYER3);
-
-            if(createFromServer)
-                scene.DeleteObject(this);
-
             exploded = true;
         }
     }
 
-    else {
+    if(exploded) {
         if (!createFromServer) {
-            auto It = damageList.begin();
-            auto ID = It->first;
-            auto damage = It->second;
-
-            SendPtoMDamagePacket(ID, damage);
-
-            damageList.erase(It);
-
-            if(damageList.empty())
+            if (damageList.empty()) {
                 scene.DeleteObject(this);
+                return;
+            }
+
+            auto& It = damageList.back();
+            unsigned int id = It.id;
+            int damage = It.damage;
+            damageList.pop_back();
+
+            SendPtoMDamagePacket(id, damage);
         }
+
+        else
+            scene.DeleteObject(this);
     }
 }
 

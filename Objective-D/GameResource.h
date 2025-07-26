@@ -82,6 +82,9 @@ typedef struct {
 	bool enterServerState;
 	std::thread netThread;
 
+	// 현재 서버 연결 여부
+	bool serverConnected;
+
 	// 타이틀 모드 넘김 여부
 	bool skipTitleMode;
 
@@ -134,11 +137,10 @@ typedef struct {
 	Mesh* beacon;
 	Mesh* barrier;
 
-	// polygon scifi asset - heavy
-	FBXMesh heavyIdle;
-	FBXMesh heavyMove;
-	FBXMesh heavyShoot;
-	FBXMesh heavyDeath;
+	// polygon scifi asset - heavy, marksman, engineer
+	FBXMesh heavy[4];
+	FBXMesh marksman[4];
+	FBXMesh engineer[4];
 
 	Mesh* center_building;
 

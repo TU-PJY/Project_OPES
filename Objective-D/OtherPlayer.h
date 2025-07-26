@@ -4,10 +4,7 @@
 
 class OtherPlayer : public GameObject {
 private:
-	FBX idleFBX{};
-	FBX moveFBX{};
-	FBX shootFBX{};
-	FBX deathFBX{};
+	FBX playerFBX[4]{};
 
 	XMFLOAT3 position{ -140.0, -1.483, -130.0 };
 	XMFLOAT3 positionDest{ -140.0, -1.483, -130.0 };
@@ -18,11 +15,11 @@ private:
 	OOBB     playerBound{};
 
 	int currentState{ STATE_IDLE };
-	int prevState{ STATE_IDLE };
+	int prevState{ -1 };
 	int renderState{ STATE_IDLE };
 	int characterType{};
 
-	AABB frustumAABB{};
+	BoundSphere frustumBound{};
 	bool inFrustum{};
 
 	int totalHP{};

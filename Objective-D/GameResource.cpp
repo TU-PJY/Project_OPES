@@ -22,7 +22,7 @@ DeviceSystem LoadSystem;
 bool DevMode = true;
 
 bool LoadMap1Resources = true;
-bool LoadMap2Resources = false;
+bool LoadMap2Resources = true;
 bool LoadMap3Resources = false;
 bool UIcreateMode = false;
 
@@ -167,17 +167,43 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.turretFlameBack, "Resources//Models//weapon//flame-turret-back.fbx");*/
 
 	// polygon scifi player asset - heavy
-	LoadAnimatedFBX(MESH.heavyIdle, "Resources//Models//player//heavy//heavy_idle.fbx", 
+	LoadAnimatedFBX(MESH.heavy[0], "Resources//Models//player//heavy//heavy_idle.fbx",
 		"Resources//Animation Data//heavy_idle.pca", "", false);
 
-	LoadAnimatedFBX(MESH.heavyMove, "Resources//Models//player//heavy//heavy_move.fbx", 
+	LoadAnimatedFBX(MESH.heavy[1], "Resources//Models//player//heavy//heavy_move.fbx",
 		"Resources//Animation Data///heavy_move.pca", "", false);
 
-	LoadAnimatedFBX(MESH.heavyShoot, "Resources//Models//player//heavy//heavy_shoot.fbx", 
+	LoadAnimatedFBX(MESH.heavy[2], "Resources//Models//player//heavy//heavy_shoot.fbx",
 		"Resources//Animation Data///heavy_shoot.pca", "", false);
 
-	LoadAnimatedFBX(MESH.heavyDeath, "Resources//Models//player//heavy//heavy_death.fbx", 
+	LoadAnimatedFBX(MESH.heavy[3], "Resources//Models//player//heavy//heavy_death.fbx",
 		"Resources//Animation Data///heavy_death.pca", "", false);
+
+
+	LoadAnimatedFBX(MESH.marksman[0], "Resources//Models//player//marksman//marksmanIdle.fbx",
+		"Resources//Animation Data//marksmanIdle.pca", "", false);
+
+	LoadAnimatedFBX(MESH.marksman[1], "Resources//Models//player//marksman//marksmanMove.fbx",
+		"Resources//Animation Data//marksmanMove.pca", "", false);
+
+	LoadAnimatedFBX(MESH.marksman[2], "Resources//Models//player//marksman//marksmanIdle.fbx",
+		"Resources//Animation Data//marksmanIdle.pca", "", false);
+
+	LoadAnimatedFBX(MESH.marksman[3], "Resources//Models//player//marksman//marksmanDeath.fbx",
+		"Resources//Animation Data//marksmanDeath.pca", "", false);
+
+
+	LoadAnimatedFBX(MESH.engineer[0], "Resources//Models//player//engineer//engineerIdle.fbx",
+		"Resources//Animation Data//engineerIdle.pca", "", false);
+
+	LoadAnimatedFBX(MESH.engineer[1], "Resources//Models//player//engineer//engineerMove.fbx",
+		"Resources//Animation Data//engineerMove.pca", "", false);
+
+	LoadAnimatedFBX(MESH.engineer[2], "Resources//Models//player//engineer//engineerIdle.fbx",
+		"Resources//Animation Data//engineerIdle.pca", "", false);
+
+	LoadAnimatedFBX(MESH.engineer[3], "Resources//Models//player//engineer//engineerDeath.fbx",
+		"Resources//Animation Data//engineerDeath.pca", "", false);
 }
 /////////////////////////////////////////////////////////////////////////////////
 
