@@ -153,3 +153,10 @@ constexpr float PENALTY_HIP_RPM_DMR = 0.75f;	// 빠른 지향의 대가 (Hipfire Penalt
 // 엔지니어 페널티
 constexpr float PENALTY_STRUCTURE_HP_ENG = 0.7f;// 불안정한 설계 (Flawed Structure), 설치 구조물 체력 -30%
 constexpr float PENALTY_PELLET_DAMAGE_SG = 0.8f;// 불량 탄약 (Faulty Ammo), 샷건 펠릿당 데미지 -20%
+
+/*
+	MG = 평균딜이 제일 나쁨
+	DMR = 정조준 딜링 TTK가 너무 강함
+	SG = 사거리에 따른 위험 보상형으로 나쁘지 않은 것 같음.
+	보너스/페널티 = 아직 고민중
+*/
