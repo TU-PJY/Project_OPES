@@ -5,6 +5,10 @@ namespace LobbyMode { std::deque<GameObject*> ControlObjectList; }
 
 void LobbyMode::Start() {
 	scene.SetupMode("LobbyMode", Destructor, ControlObjectList);
+
+	//if(GLOBAL.useServer)
+	GLOBAL.netThread = std::thread(NetworkThread, GLOBAL.useLocalServer, GLOBAL.enterIPw);
+
 	scene.AddObject(new Lobby, "lobby", LAYERUI, true);
 }
 

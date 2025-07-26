@@ -56,6 +56,7 @@ typedef struct {
 
 	// 서버 사용 여부
 	bool useServer;
+	bool useLocalServer;
 
 	// 현재 접속한 나의 ID
 	unsigned int myID;
@@ -65,6 +66,10 @@ typedef struct {
 
 	// 마지막으로 입력한 서버 주소
 	std::string enterIP;
+	std::wstring enterIPw;
+
+	// 서버 스레드
+	std::thread netThread;
 
 }GlobalValue;
 extern GlobalValue GLOBAL;

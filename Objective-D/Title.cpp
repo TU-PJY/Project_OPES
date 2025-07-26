@@ -8,13 +8,15 @@ void Title::InputKey(KeyEvent& Event) {
 			GLOBAL.enterIP += Event.Key;
 		}
 		else if (Event.Key == VK_BACK) {
-			if (GLOBAL.enterIP.empty())
-				return;
-
-			GLOBAL.enterIP.pop_back();
-			if(GLOBAL.enterIP.back() == '.')
+			if (!GLOBAL.enterIP.empty()) {
 				GLOBAL.enterIP.pop_back();
+				if (GLOBAL.enterIP.back() == '.')
+					GLOBAL.enterIP.pop_back();
+			}
 		}
+
+		std::wstring copyWstr(GLOBAL.enterIP.begin(), GLOBAL.enterIP.end());
+		GLOBAL.enterIPw = copyWstr;
 	}
 }
 

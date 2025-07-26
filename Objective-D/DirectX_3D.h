@@ -234,6 +234,9 @@ extern HWND GlobalHWND;
 extern int SCREEN_WIDTH, SCREEN_HEIGHT;
 #define ASPECT (float(SCREEN_WIDTH) / float(SCREEN_HEIGHT))
 
+// 네트워크 스레드 함수
+void NetworkThread(bool localServer, const wchar_t* cmdLine);
+
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using Microsoft::WRL::ComPtr;

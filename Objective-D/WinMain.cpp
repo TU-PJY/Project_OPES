@@ -70,6 +70,9 @@ struct RecvContext {
 	std::function<void()> cleanup;
 };
 
+// 인게임 모드로 스킵하려면 true
+bool skipTitleMode = false;
+
 bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 bool localServer = false; //!useServer;
 
@@ -388,6 +391,7 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	//	isRunning = false;
 	//}
 }
+
 void NetworkThread(bool localServer, const wchar_t* cmdLine)
 {
 	char ipStr[64] = { 0 };
@@ -822,16 +826,21 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		return(FALSE);
 
 	AccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT045));
-	std::thread netThread;
 
 	// 전역 서버 사용 여부 저장
+	GLOBAL.useServer = useServer;
+	GLOBAL.useLocalServer = localServer;
 
-	if (useServer) {
-		netThread = std::thread(NetworkThread, localServer, lpCmdLine);
+	// 타이틀 모드 스킵 시 cmd로 입력해야 접속 가능
+	if (skipTitleMode)
+		GLOBAL.netThread = std::thread(NetworkThread, localServer, lpCmdLine);
+
+	/*if (useServer) {
+		GLOBAL.netThread = std::thread(NetworkThread, localServer, lpCmdLine);
 		GLOBAL.useServer = true;
-	}
-	else
-		GLOBAL.useServer = false;
+	*///}
+	//else
+		//GLOBAL.useServer = false;
 //	if (useServer) {
 //
 //		//if (lpCmdLine == NULL || _tcslen(lpCmdLine) == 0) {
@@ -917,8 +926,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	shutdown(clientSocket, SD_BOTH);    // ② 진행 중 I/O 모두 취소
 	closesocket(clientSocket);          //    → SleepEx(INFINITE,TRUE) 깨움
 
-	if (netThread.joinable())           // ③ 즉시 조인 가능
-		netThread.join();
+	if (GLOBAL.netThread.joinable())           // ③ 즉시 조인 가능
+		GLOBAL.netThread.join();
 
 	WSACleanup();                       // ④ Winsock 해제
 	framework.Destroy();                // ⑤ DirectX·리소스 정리
