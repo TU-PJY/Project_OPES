@@ -15,7 +15,6 @@
 #include "EditHelper.h"
 #include "OtherPlayer.h"
 #include "OtherPlayerIndicator.h"
-#include "DestMark.h"
 
 namespace Level1 { 
 	std::deque<GameObject*> ControlObjectList; 
