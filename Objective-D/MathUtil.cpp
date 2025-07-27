@@ -253,7 +253,7 @@ XMVECTOR Math::ClosestPointOnOOBB(const OOBB& Box, FXMVECTOR& Point) {
 	return Closest;
 }
 
-void Math::MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, BoundSphere& A, std::vector<OOBB>& B, float FrameTime) {
+void Math::MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed, float StrafeSpeed, BoundSphere& A, std::vector<OOBB>& B, float FrameTime) {	
 	XMFLOAT3 PrevPosition = Position;
 	XMFLOAT3 Delta{ 0,0,0 };
 
@@ -263,6 +263,9 @@ void Math::MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed
 	XMVECTOR PrevVector = XMLoadFloat3(&PrevPosition);
 	XMVECTOR Movevector = XMVectorSet(Delta.x, 0, Delta.z, 0);
 	XMVECTOR TestVector = PrevVector + Movevector;
+
+	if (B.empty())
+		return;
 
 	XMStoreFloat3(&A.sphere.Center, TestVector);
 	bool FullOK = true;

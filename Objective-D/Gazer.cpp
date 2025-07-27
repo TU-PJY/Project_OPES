@@ -16,7 +16,7 @@ Gazer::Gazer(const xmfloat3& createPosition, unsigned int ID, bool defenseState)
 	this->ID = ID;
 
 	if (defenseState)
-		position.y = -10.0;
+		position.y = -15.0;
 
 	hpInd = scene.AddObject(new HP_Indicator, "ind", LAYER3);
 }
@@ -84,11 +84,11 @@ void Gazer::gz_updateAttack() {
 				}
 			}
 			else {
-				if (auto center = scene.SearchLayer(LAYER1, "center)building"); center) {
+				if (auto center = scene.SearchLayer(LAYER1, "center_building"); center) {
 					if (!GLOBAL.useServer)
 						center->GiveDamage(10);
 					else
-						SendCenterBuildingPacket(10);
+						SendCenterBuildingPacket(10 / GLOBAL.playerList.size());
 				}
 			}
 			attackDid = true;
@@ -236,7 +236,7 @@ void Gazer::gz_updateMove(float Delta) {
 		return;
 
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
-
+	
 	// 나를 추격하는 상태일때만 MoveWithSlide를 실행한다.
 	if (!defenseState) {
 		if (currentState == GAZER_WALK && currentTargetID == GLOBAL.myID)
@@ -244,13 +244,17 @@ void Gazer::gz_updateMove(float Delta) {
 	}
 
 	else {
-		if (currentState == GAZER_WALK)
-			Math::MoveWithSlide(positionDest, rotation.y, 6.0, 0.0, gazerBound, GLOBAL.mapOOBBdata, Delta);
+		if (currentState == GAZER_WALK) {
+			Math::MoveForward(position, rotation.y, 6.0 * Delta);
+		//	Math::MoveStrafe(position, rotation.y, 6.0 * Delta);
+		}
 	}
 
 	//	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
-	position.x = std::lerp(position.x, positionDest.x, 10.0 * Delta);
-	position.z = std::lerp(position.z, positionDest.z, 10.0 * Delta);
+	if (!defenseState) {
+		position.x = std::lerp(position.x, positionDest.x, 10.0 * Delta);
+		position.z = std::lerp(position.z, positionDest.z, 10.0 * Delta);
+	}
 
 	if (fallDown) {
 		if (fallDown) {

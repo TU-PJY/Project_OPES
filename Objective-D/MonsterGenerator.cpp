@@ -2,10 +2,15 @@
 #include "RandomUtil.h"
 #include "Treant.h"
 #include "PlantMonster.h"
-
+#include "Gazer.h"
 
 DefenseModeMonsterGenerator::DefenseModeMonsterGenerator() {
-	maxGenerateCount = GLOBAL.Map1DefenseEnemyRemained;
+	if(GLOBAL.mapName.compare("map1") == 0)
+		maxGenerateCount = GLOBAL.Map1DefenseEnemyRemained;
+	if (GLOBAL.mapName.compare("map2") == 0)
+		maxGenerateCount = GLOBAL.Map2DefenseEnemyRemained;
+	if (GLOBAL.mapName.compare("map3") == 0)
+		maxGenerateCount = GLOBAL.Map3DefenseEnemyRemained;
 }
 
 // GLOBAL.useServer가 true일 경우 서버로부터 패킷을 받아 그 자리에 생성한다.
@@ -27,19 +32,35 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 	if (currentTime >= destGenerateTime) {
 		currentTime -= destGenerateTime;
 		XMFLOAT3 randomPosition{};
-		XMFLOAT2 RandomXZ = Random.GenPointInDonut(40.0, 70.0, XMFLOAT2(-120.0, -120.0));
-
-		// 위치 랜덤
-		randomPosition.x = RandomXZ.x;
-		randomPosition.z = RandomXZ.y;
+	
 
 		if (GLOBAL.mapName.compare("map1") == 0) {
+			XMFLOAT2 RandomXZ = Random.GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+
+			// 위치 랜덤
+			randomPosition.x = RandomXZ.x;
+			randomPosition.z = RandomXZ.y;
 			scene.AddObject(new PlantMonster(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
 			std::cout << currentGenerateCount << "번째 생성" << std::endl;
 		}
 
 		if (GLOBAL.mapName.compare("map2") == 0) {
+			XMFLOAT2 RandomXZ = Random.GenPointInDonut(40.0, 70.0, XMFLOAT2(-120.0, -120.0));
+
+			// 위치 랜덤
+			randomPosition.x = RandomXZ.x;
+			randomPosition.z = RandomXZ.y;
 			scene.AddObject(new Treant(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
+			std::cout << currentGenerateCount << "번째 생성" << std::endl;
+		}
+
+		if (GLOBAL.mapName.compare("map3") == 0) {
+			XMFLOAT2 RandomXZ = Random.GenPointInDonut(150.0, 180.0, XMFLOAT2(-120.0, -120.0));
+
+			// 위치 랜덤
+			randomPosition.x = RandomXZ.x;
+			randomPosition.z = RandomXZ.y;
+			scene.AddObject(new Gazer(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
 			std::cout << currentGenerateCount << "번째 생성" << std::endl;
 		}
 

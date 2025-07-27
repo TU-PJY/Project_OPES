@@ -221,7 +221,7 @@ void Treant::updateAttack() {
 				if (auto center = scene.SearchLayer(LAYER1, "center_building"); center) {
 					if(!GLOBAL.useServer)
 						center->GiveDamage(15);
-					SendCenterBuildingPacket(15);
+					SendCenterBuildingPacket(15 / GLOBAL.playerList.size());
 				}
 			}
 			attackDid = true;

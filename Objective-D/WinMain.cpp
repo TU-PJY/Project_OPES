@@ -77,8 +77,8 @@ struct RecvContext {
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
 constexpr bool skipTitleMode = true;
 
-constexpr bool skipDefenseMode = true;
-constexpr bool editMode = false;
+constexpr bool skipDefenseMode = false;
+constexpr bool editMode = true;
 
 constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
