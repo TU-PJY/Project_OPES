@@ -140,10 +140,9 @@ void Scorpion::updateDetectPlayer(float Delta) {
 	}
 
 	if (!foundTarget) {
-		if (currentState != SCOR_IDLE) {
-			currentState = SCOR_IDLE;
-		}
-		currentTargetID = 0;
+		currentState = SCOR_IDLE;
+		if (currentTargetID == GLOBAL.myID)
+			currentTargetID = 0;
 	}
 
 	if (serverState != currentState) {
