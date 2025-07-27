@@ -113,15 +113,32 @@ void FBX::UpdateAnimation(float Delta, bool Inplace, bool OnlyDeltaUpdate) {
 
 	CurrentTime += Delta * CurrentSpeed;
 
-	if (CurrentTime >= TotalTime) {
-		float OverTime = CurrentTime - TotalTime;
+	if (CurrentSpeed > 0) {
+		if (CurrentTime >= TotalTime) {
+			float OverTime = CurrentTime - TotalTime;
 
-		if (!Serialized)
-			CurrentTime = OverTime;
-		else
-			CurrentTime = StartTime + OverTime;
+			if (!Serialized)
+				CurrentTime = OverTime;
+			else
+				CurrentTime = StartTime + OverTime;
 
-		CurrentEndCount++;
+			CurrentEndCount++;
+		}
+	}
+
+	else if(CurrentSpeed < 0) {
+		if (!Serialized) {
+			if (CurrentTime <= StartTime) {
+				CurrentTime = TotalTime;
+				CurrentEndCount++;
+			}
+		}
+		else {
+			if (CurrentTime <= 0.0) {
+				CurrentTime = TotalTime;
+				CurrentEndCount++;
+			}
+		}
 	}
 
 	CurrentDelay += Delta;

@@ -95,7 +95,7 @@ bool LoadMap2Resources = true;
 bool LoadMap3Resources = false;
 
 // 시작 모드
-START_MODE_PTR StartMode = Level1::Start;
+START_MODE_PTR StartMode = TestMode::Start;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
