@@ -11,6 +11,9 @@
 #include "OtherPlayer.h"
 #include "OtherPlayerIndicator.h"
 #include "Map1DefenseIndicator.h"
+#include "MonsterGenerator.h"
+
+#include "RoadBlock.h"
 
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
@@ -54,6 +57,14 @@ void Level2::Start() {
 	else
 		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
 
+	if (!GLOBAL.skipDefenseMode) {
+		std::cout << GLOBAL.skipDefenseMode << std::endl;
+		scene.AddObject(new RoadBlock(XMFLOAT3(-91.0, 5.0, -93.0), 20.0, 10), "roadBlock", LAYER1);
+
+		// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
+		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
+	}
+
 
 	if (!GLOBAL.skipTitleMode) {
 		GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
@@ -65,13 +76,13 @@ void Level2::Start() {
 		}
 	}
 
-	//if (GLOBAL.skipDefenseMode)
+	if (GLOBAL.skipDefenseMode)
 		scene.AddObject(new MonsterSpawner(true), "monsterSpwaner", LAYER1, true);
-	//else
-		//scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpwaner", LAYER1, GLOBAL.editMode);
+	else
+		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpwaner", LAYER1, GLOBAL.editMode);
 
-	/*if (!GLOBAL.skipDefenseMode)
-		scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);*/
+	if (!GLOBAL.skipDefenseMode)
+		scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);
 }
 
 void Level2::Destructor() {

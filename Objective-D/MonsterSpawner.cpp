@@ -108,12 +108,7 @@ void MonsterSpawner::Update(float Delta) {
 	if (editMode)
 		return;
 	
-	if (GLOBAL.mapName.compare("map1") == 0 && GLOBAL.DefenseEnemyRemained == 0) {
-		LoadDataAndSpawnMonster();
-		scene.DeleteObject(this);
-	}
-
-	else if (GLOBAL.mapName.compare("map2") == 0 && GLOBAL.DefenseEnemyRemained == 0) {
+	if (GLOBAL.DefenseEnemyRemained == 0) {
 		LoadDataAndSpawnMonster();
 		scene.DeleteObject(this);
 	}

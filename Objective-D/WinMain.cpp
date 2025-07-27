@@ -70,13 +70,13 @@ struct RecvContext {
 
 // 인게임 모드로 스킵하려면 true
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
-bool skipTitleMode = true;
+constexpr bool skipTitleMode = true;
 
-bool skipDefenseMode = true;
-bool editMode = false;
+constexpr bool skipDefenseMode = false;
+constexpr bool editMode = false;
 
-bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
-bool localServer = false; //!useServer;
+constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+constexpr bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -880,13 +880,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	AccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT045));
 
-	// 전역 서버 사용 여부 저장
-	GLOBAL.useServer = useServer;
-	GLOBAL.useLocalServer = localServer;
-	GLOBAL.skipDefenseMode = skipDefenseMode;
-	GLOBAL.skipTitleMode = skipTitleMode;
-	GLOBAL.editMode = editMode;
-
 	// 타이틀 모드 스킵 시 cmd로 입력해야 접속 가능
 	if (skipTitleMode)
 		GLOBAL.netThread = std::thread(NetworkThread, localServer, lpCmdLine);
@@ -1039,6 +1032,16 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 
 	if (!MainWnd)
 		return(FALSE);
+
+	// 전역 서버 사용 여부 저장
+	GLOBAL.useServer = useServer;
+	GLOBAL.useLocalServer = localServer;
+	GLOBAL.skipDefenseMode = skipDefenseMode;
+	GLOBAL.skipTitleMode = skipTitleMode;
+	GLOBAL.editMode = editMode;
+
+	std::cout << "전역 변수 초기화 완료" << std::endl;
+
 
 	framework.Create(hInstance, MainWnd);
 
