@@ -24,6 +24,7 @@ public:
 	FBX fbx{ MESH.engineer[1]};
 
 	ScriptUtil script{};
+	xmfloat3 position{ 10.0, 0.0, 5.0 };
 	FlameOffset offset{};
 		float rotation{};
 
@@ -39,9 +40,9 @@ public:
 		script.Load("Resources//Scripts//weapon//flamePosition.xml");
 
 		auto load = [&](CategoryPtr cat) {
-			offset.forward = script.LoadDigitData(cat, "forward");
-			offset.strafe = script.LoadDigitData(cat, "strafe");
-			offset.height = script.LoadDigitData(cat, "height");
+			offset.forward = script.LoadDigitData(cat, "z");
+			offset.strafe = script.LoadDigitData(cat, "x");
+			offset.height = script.LoadDigitData(cat, "y");
 		};
 
 		script.LoadAllData(load);
@@ -59,34 +60,28 @@ public:
 
 	void Update(float Delta) {
 		fbx.UpdateAnimation(Delta);
-		rotation += Delta * 120.0;
+		//rotation += Delta * 120.0;
 	}
 
 	void Render() {
 		BeginRender();
+		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
+		Transform::Move(TranslateMatrix, position);
 		Transform::Rotate(RotateMatrix, 0.0, rotation, 0.0);
 		RenderFBX(fbx, TEX.scifi);
 
-		// heavy Idle flame
+	
+		//Transform::Rotate(TranslateMatrix , 0.0, rotation, 0.0);
+	
+		// heavy move flame
 		BeginRender();
-		xmfloat3 oft{};
 		SetLightUse(DISABLE_LIGHT);
-		oft = Math::CalcForwardOffset(oft, rotation, offset.forward, offset.height);
-		oft = Math::CalcStrafeOffset(oft, rotation, offset.strafe, 0.0);
-		Transform::Move(TranslateMatrix, oft);
-		Transform::Rotate(RotateMatrix,0.0, rotation, 0.0);
+		Transform::Move(TranslateMatrix, position);
+		Transform::Rotate(TranslateMatrix, 0.0, rotation, 0.0);
+		Transform::Move(TranslateMatrix, offset.strafe, offset.height, offset.forward);
+		Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
 		Render3D(MESH.gun_flame, TEX.gun_flame);
 		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
-
-		// heavy move flame
-		/*BeginRender();
-		xmfloat3 offset{};
-		SetLightUse(DISABLE_LIGHT);
-		offset = Math::CalcForwardOffset(offset, 0.0, 0.45, 1.15);
-		offset = Math::CalcStrafeOffset(offset, 0.0, 0.35, 0.0);
-		Transform::Move(TranslateMatrix, offset);
-		Render3D(MESH.gun_flame, TEX.gun_flame);
-		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);*/
 	}
 };
 

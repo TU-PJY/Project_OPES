@@ -2,6 +2,8 @@
 #include "ClampUtil.h"
 #include "Bullet.h"
 
+void SendBangPacket(unsigned int ID);
+
 void Gun::enableZoom() {
 	if (reloadState)
 		return;
@@ -106,6 +108,7 @@ void Gun::updateFire(float Delta) {
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			scene.AddObject(new Bullet(damage), "bullet", LAYER3);
+			SendBangPacket(GLOBAL.myID);
 		}
 		currentAmmo--;
 		fireEnableState = false;

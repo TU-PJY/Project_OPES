@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <Script>
-    <heavyIdle forward="0.48" strafe="0.35" height="1.13" />
-    <heavyMove forward="0.3" strafe="0.16" height="1.28" />
-    <engineerIdle forward="0.1" strafe="0.18" height="1.22" />
-    <engineerMove forward="0.3" strafe="0.28" height="1.02" />
+    <heavyIdle x="0.32" y="2.55" z="0.6 " />
+    <heavyMove x="0.7" y="2.27" z="1.0" />
+    <engineerIdle x="0.34" y="2.45" z="0.2 " />
+    <engineerMove x="0.55" y="2.0" z="0.6" />
 </Script>

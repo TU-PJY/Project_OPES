@@ -1,5 +1,6 @@
 #include "Shotgun.h"
 #include "SpreadBullet.h"
+void SendBangPacket(unsigned int ID);
 
 
 Shotgun::Shotgun(GameObject* Ptr) {
@@ -49,6 +50,7 @@ void Shotgun::updateFire(float Delta) {
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			scene.AddObject(new SpreadBullet(SG_DAMAGE), "spreadBullet", LAYER3);
+			SendBangPacket(GLOBAL.myID);
 		}
 		currentAmmo--;
 		fireEnableState = false;

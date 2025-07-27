@@ -34,13 +34,13 @@ private:
 
 	float flameRenderTime{};
 
-	float flameIdleForward{};
-	float flameIdleStrafe{};
-	float flameIdleHeight{};
+	float flameIdlex{};
+	float flameIdley{};
+	float flameIdlez{};
 
-	float flameMoveForward{};
-	float flameMoveStrafe{};
-	float flameMoveHeight{};
+	float flameMovex{};
+	float flameMovey{};
+	float flameMovez{};
 
 public:
 	OtherPlayer(int characterType, unsigned int ID);
@@ -51,6 +51,8 @@ public:
 	void updateDeath();
 	void Update(float Delta) override;
 	void Render() override;
+	void RenderIdleFlame();
+	void RenderMoveFlame();
 	void InputPosition(XMFLOAT3& position) override;
 	void InputRotation(XMFLOAT3& rotation) override;
 	void InputState(unsigned int state) override;
@@ -59,4 +61,6 @@ public:
 	OOBB GetOOBB() override;
 	void GiveDamage(int damage) override;
 	unsigned int GetID() override;
+
+	void addFlameTime() override;
 };

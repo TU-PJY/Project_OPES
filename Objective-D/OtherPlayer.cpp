@@ -19,13 +19,13 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 		totalHP = CHARACTER_MG_HP;
 		currentHP = CHARACTER_MG_HP;
 
-		flameIdleForward = script.LoadDigitData("heavyIdle", "forward");
-		flameIdleStrafe = script.LoadDigitData("heavyIdle", "strafe");
-		flameIdleHeight = script.LoadDigitData("heavyIdle", "height");
+		flameIdlex = script.LoadDigitData("heavyIdle", "x");
+		flameIdley = script.LoadDigitData("heavyIdle", "y");
+		flameIdlez = script.LoadDigitData("heavyIdle", "z");
 
-		flameMoveForward = script.LoadDigitData("heavyMove", "forward");
-		flameMoveStrafe = script.LoadDigitData("heavyMove", "strafe");
-		flameMoveHeight = script.LoadDigitData("heavyMove", "height");
+		flameMovex = script.LoadDigitData("heavyMove", "x");
+		flameMovey = script.LoadDigitData("heavyMove", "y");
+		flameMovez = script.LoadDigitData("heavyMove", "z");
 		break;
 
 		// 소음기가 장착된 총이므로 불꽃을 렌더링하지 않는다.
@@ -49,13 +49,13 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 		totalHP = CHARACTER_ENG_HP;
 		currentHP = CHARACTER_ENG_HP;
 
-		flameIdleForward = script.LoadDigitData("engineerIdle", "forward");
-		flameIdleStrafe = script.LoadDigitData("engineerIdle", "strafe");
-		flameIdleHeight = script.LoadDigitData("engineerIdle", "height");
+		flameIdlex = script.LoadDigitData("engineerIdle", "x");
+		flameIdley = script.LoadDigitData("engineerIdle", "y");
+		flameIdlez = script.LoadDigitData("engineerIdle", "z");
 
-		flameMoveForward = script.LoadDigitData("engineerMove", "forward");
-		flameMoveStrafe = script.LoadDigitData("engineerMove", "strafe");
-		flameMoveHeight = script.LoadDigitData("engineerMove", "height");
+		flameMovex = script.LoadDigitData("engineerMove", "x");
+		flameMovey = script.LoadDigitData("engineerMove", "y");
+		flameMovez = script.LoadDigitData("engineerMove", "z");
 		break;
 	}
 
@@ -127,6 +127,8 @@ void OtherPlayer::Update(float Delta) {
 	updateAnimation(Delta);
 	updateRenderValue(Delta);
 	updateBound();
+	flameRenderTime -= Delta;
+	Clamp::LimitValue(flameRenderTime, 0.0, CLAMP_DIR_LESS);
 }
 
 void OtherPlayer::Render() {
@@ -141,10 +143,12 @@ void OtherPlayer::Render() {
 	switch (renderState) {
 	case STATE_IDLE: case STATE_IDLE_SHOOT:
 		RenderFBX(idleFBX, TEX.scifi);
+		RenderIdleFlame();
 		break;
 
 	case STATE_MOVE: case STATE_MOVE_SHOOT:
 		RenderFBX(moveFBX, TEX.scifi);
+		RenderMoveFlame();
 		break;
 
 	case STATE_DEATH:
@@ -152,20 +156,38 @@ void OtherPlayer::Render() {
 		break;
 	}
 
+
+	renderState = currentState;
+}
+
+void OtherPlayer::RenderIdleFlame() {
 	if (characterType != CHARACTER_DMR) {
 		if (flameRenderTime > 0.0) {
-			xmfloat3 renderPos = Math::CalcForwardOffset(position, rotation.y, flameIdleForward, flameIdleHeight);
-			renderPos = Math::CalcStrafeOffset(renderPos, rotation.y, flameIdleStrafe, 0.0);
 			BeginRender();
 			SetLightUse(DISABLE_LIGHT);
-			Transform::Move(TranslateMatrix, renderPos);
-			Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
+			Transform::Move(TranslateMatrix, position);
+			Transform::Rotate(TranslateMatrix, 0.0, rotation.y, 0.0);
+			Transform::Move(TranslateMatrix, flameIdlex, flameIdley, flameIdlez);
+			Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
 			Render3D(MESH.gun_flame, TEX.gun_flame);
 			Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
 		}
 	}
+}
 
-	renderState = currentState;
+void OtherPlayer::RenderMoveFlame() {
+	if (characterType != CHARACTER_DMR) {
+		if (flameRenderTime > 0.0) {
+			BeginRender();
+			SetLightUse(DISABLE_LIGHT);
+			Transform::Move(TranslateMatrix, position);
+			Transform::Rotate(TranslateMatrix, 0.0, rotation.y, 0.0);
+			Transform::Move(TranslateMatrix, flameMovex, flameMovey, flameMovez);
+			Transform::Scale(ScaleMatrix, 2.0, 2.0, 2.0);
+			Render3D(MESH.gun_flame, TEX.gun_flame);
+			Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
+		}
+	}
 }
 
 void OtherPlayer::InputPosition(XMFLOAT3& position) {
@@ -206,4 +228,8 @@ void OtherPlayer::GiveDamage(int damage)
 
 unsigned int OtherPlayer::GetID() {
 	return ID;
+}
+
+void OtherPlayer::addFlameTime(){
+	flameRenderTime = 0.05;
 }
