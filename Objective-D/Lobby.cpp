@@ -20,7 +20,7 @@ void Lobby::InputMouse(MouseEvent& Event) {
 		// 플레이어가 없을 경우 누를 수 없음
 		// 서버를 사용하는 경우에 한 함
 		if (GLOBAL.useServer) {
-			if (!GLOBAL.playerList.empty()) {
+			if (!GLOBAL.playerList.size() >= MIN_PLAYER_COUNT - 1) {
 				// 한 번 준비되면 해제 불가
 				// 캐릭터를 선택하지 않으면 준비 불가
 				if (!GLOBAL.imReady && selectedCharacter != -1 && readyButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
