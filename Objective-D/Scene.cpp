@@ -237,7 +237,6 @@ void Scene::ProcessObjectCommand() {
 			delete *Object;
 			*Object = nullptr;
 			Object = ObjectList[L].erase(Object);
-		//	++SceneCommandCount;
 			++Offset;
 		}
 
@@ -257,9 +256,6 @@ void Scene::ClearAll() {
 			AddDeleteLocation(L, O);
 		}
 	}
-
-	// 모션 탭쳐 상태를 강제로 해제한다.
-	mouse.EndMotionCapture();
 
 	LoopEscapeCommand = true;
 }
