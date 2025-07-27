@@ -113,6 +113,14 @@ constexpr unsigned int         GAZER_HP         = 200;
 constexpr unsigned int         GAZER_DAMAGE     = 30;
 constexpr int                  GAZER_TYPE       = 2;
 
+// 스테이지 1 도착 지점 위치
+constexpr XMFLOAT3             MAP1_DESTINATION = XMFLOAT3(-120.0, 0.0, 94.0);
+
+// 스테이지 2 도착 지점 위치
+constexpr XMFLOAT3             MAP2_DESTINATION = XMFLOAT3(-210.0, 0.0, 65.0);
+
+// 스테이지 3 도착 지점 위치
+constexpr XMFLOAT3             MAP3_DESTINATION = XMFLOAT3(275.0, 0.0, 185.0);
 
 // 보너스 & 페널티
 // 공통 보너스

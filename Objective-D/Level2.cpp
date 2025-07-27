@@ -55,7 +55,7 @@ void Level2::Start() {
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else
-		scene.AddObject(new Player1st(2), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
 
 	if (!GLOBAL.skipDefenseMode) {
 		scene.AddObject(new RoadBlock(XMFLOAT3(-45.0, 1.0, -116.0), 90.0, 10), "roadBlock", LAYER1);

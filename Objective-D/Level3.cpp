@@ -47,7 +47,7 @@ void Level3::Start() {
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else
-		scene.AddObject(new Player1st(CHARACTER_MG), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
 
 	if (!GLOBAL.skipTitleMode) {
 		GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);

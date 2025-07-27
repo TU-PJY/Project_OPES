@@ -70,7 +70,7 @@ struct RecvContext {
 
 // 인게임 모드로 스킵하려면 true
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
-constexpr bool skipTitleMode = true;
+constexpr bool skipTitleMode = false;
 
 constexpr bool skipDefenseMode = false;
 constexpr bool editMode = false;
