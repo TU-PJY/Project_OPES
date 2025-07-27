@@ -140,11 +140,17 @@ void Scorpion::updateDetectPlayer(float Delta) {
 	}
 
 	if (currentTargetID == GLOBAL.myID) {
+		//std::cout << "CHANGED===" << std::endl;
 		if (!foundTarget) {
+		//	for (int i = 0; i < 3; i++) {
 			SendMonstertypePacket(2, SCOR_IDLE, ID);
-			SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, 0);
+				//SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, 0);
+			//}
+
 			currentState = SCOR_IDLE;
 			currentTargetID = 0;
+
+			//std::cout << "SENDED===" << std::endl;
 		}
 	}
 }
@@ -350,6 +356,10 @@ void Scorpion::InputState(unsigned int state) {
 			hpIndicator = nullptr;
 		}
 		//SendMonstertypePacket(2, currentState, ID);
+	}
+
+	else if (currentState == state) {
+		currentTargetID = 0;
 	}
 }
 

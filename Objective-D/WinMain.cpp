@@ -203,8 +203,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(context->buffer);
 
-		//std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
-		//	<< packet->z << " angle:" << packet->angle_y << std::endl;
+		std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
+			<< packet->z << " angle:" << packet->angle_y << std::endl;
 		XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
 		float recvRotation = packet->angle_y;
 		
