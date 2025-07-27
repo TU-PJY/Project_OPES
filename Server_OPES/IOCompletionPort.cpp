@@ -1671,6 +1671,8 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 room.centerHp = CENTER_HP;
                 room.DeathCount = 0;
                 room.monsterRandomSent = false;
+                room.nextMonsterToSend = 0;
+                room.clearCount = 0;
                 //if (randomTreadFlag2) {
                 //    randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
                 //    randomTreadFlag2 = false;
@@ -1679,7 +1681,6 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 //    randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
                 //    randomTreadFlag3 = false;
                 //}
-                room.clearCount = 0;
             }
             // 모든 room 클라이언트에게 clearCount 전송
            //for (auto* c : room.clients) {
