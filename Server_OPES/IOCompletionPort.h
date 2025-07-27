@@ -1,4 +1,5 @@
 ﻿#pragma once
+#define NOMINMAX
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>
 #include <Ws2tcpip.h>
@@ -103,7 +104,14 @@ struct Room {
     bool defenseState = true;
     //bool isCreat = true;
     int stageState = 1;
+  
     std::shared_ptr<std::mutex> roomMutex = std::make_shared<std::mutex>();
+
+
+    int nextMonsterToSend = 0;
+    bool monsterRandomSent = false;
+    std::chrono::steady_clock::time_point defenseStartTime = std::chrono::steady_clock::time_point::min();
+    std::chrono::steady_clock::time_point lastMonsterSendTime = std::chrono::steady_clock::time_point::min();
 };
 
 class IOCompletionPort {

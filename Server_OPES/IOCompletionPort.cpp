@@ -251,12 +251,88 @@ XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& C
 }
 
 
+//void IOCompletionPort::RandomPositionThread() {
+//    using namespace std::chrono;
+//
+//    std::unordered_map<int, time_point<steady_clock>> monsterStartTimes;
+//    const seconds monsterInterval(4);
+//    const seconds sendInterval(1); // 전송 주기
+//
+//    while (isRunning) {
+//        auto now = steady_clock::now();
+//
+//        {
+//            std::lock_guard<std::mutex> lock(roomMapMutex);
+//
+//            for (auto& [roomID, room] : rooms) {
+//                if (!room.defenseState||room.stageState!=1)
+//                    continue;
+//
+//                for (int monsterId = 0; monsterId < DEFENSE_MONSTER1; ++monsterId) {
+//                    // 시작 시간 설정 (처음 한 번만)
+//                    if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
+//                        monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
+//                        continue;
+//                    }
+//
+//                    // 아직 시작 안 됨
+//                    if (now < monsterStartTimes[monsterId])
+//                        continue;
+//
+//                    // 이 몬스터가 마지막으로 전송된 시간 저장
+//                    static std::unordered_map<int, time_point<steady_clock>> lastSentTime;
+//
+//                    if (lastSentTime.find(monsterId) == lastSentTime.end()) {
+//                        lastSentTime[monsterId] = now - sendInterval;
+//                    }
+//
+//                    if (now - lastSentTime[monsterId] >= sendInterval) {
+//                        lastSentTime[monsterId] = now;
+//
+//                        float x = room.defenseMonsters[monsterId].createPointX;
+//                        float z = room.defenseMonsters[monsterId].createPointZ;
+//
+//                        for (auto* client : room.clients) {
+//                            if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
+//                                continue;
+//
+//                            DefenseRandomPacket* packet = new DefenseRandomPacket{};
+//                            packet->type = PacketType::RANDOM_POSITION;
+//                            packet->monsterID = monsterId;
+//                            packet->x = x;
+//                            packet->z = z;
+//
+//                            stOverlappedEx* sendOver = new stOverlappedEx{};
+//                            ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+//                            sendOver->operation = IOOperation::SEND;
+//                            sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+//                            sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+//                            sendOver->cleanup = [packet, sendOver]() {
+//                                delete packet;
+//                                delete sendOver;
+//                                };
+//
+//                            std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
+//
+//                            int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+//                                &sendOver->overlapped, NULL);
+//                            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//                                std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
+//                                RemoveClient(client);
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//
+//        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // CPU 낭비 방지
+//    }
+//}
 void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
 
-    std::unordered_map<int, time_point<steady_clock>> monsterStartTimes;
-    const seconds monsterInterval(4);
-    const seconds sendInterval(1); // 전송 주기
+    const seconds sendInterval(4);  // 몬스터 1마리당 간격
 
     while (isRunning) {
         auto now = steady_clock::now();
@@ -265,76 +341,76 @@ void IOCompletionPort::RandomPositionThread() {
             std::lock_guard<std::mutex> lock(roomMapMutex);
 
             for (auto& [roomID, room] : rooms) {
-                if (!room.defenseState||room.stageState!=1)
+                if (!room.defenseState || room.stageState != 1 || room.monsterRandomSent)
                     continue;
 
-                for (int monsterId = 0; monsterId < DEFENSE_MONSTER1; ++monsterId) {
-                    // 시작 시간 설정 (처음 한 번만)
-                    if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
-                        monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
+                // 3초 지연 시작 설정 (딱 한 번만)
+                if (room.defenseStartTime == steady_clock::time_point::min()) {
+                    room.defenseStartTime = now + seconds(3);
+                    room.lastMonsterSendTime = room.defenseStartTime;
+                    std::cout << "[Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
+                }
+
+                if (now < room.defenseStartTime)
+                    continue;
+
+                if (now - room.lastMonsterSendTime < sendInterval)
+                    continue;
+
+                int monsterId = room.nextMonsterToSend;
+
+                if (monsterId >= DEFENSE_MONSTER1) {
+                    room.monsterRandomSent = true;
+                    std::cout << "[Room " << roomID << "] 모든 몬스터 전송 완료\n";
+                    continue;
+                }
+
+                float x = room.defenseMonsters[monsterId].createPointX;
+                float z = room.defenseMonsters[monsterId].createPointZ;
+
+                for (auto* client : room.clients) {
+                    if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
                         continue;
-                    }
 
-                    // 아직 시작 안 됨
-                    if (now < monsterStartTimes[monsterId])
-                        continue;
+                    DefenseRandomPacket* packet = new DefenseRandomPacket{};
+                    packet->type = PacketType::RANDOM_POSITION;
+                    packet->monsterID = monsterId;
+                    packet->x = x;
+                    packet->z = z;
 
-                    // 이 몬스터가 마지막으로 전송된 시간 저장
-                    static std::unordered_map<int, time_point<steady_clock>> lastSentTime;
+                    stOverlappedEx* sendOver = new stOverlappedEx{};
+                    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+                    sendOver->operation = IOOperation::SEND;
+                    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+                    sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+                    sendOver->cleanup = [packet, sendOver]() {
+                        delete packet;
+                        delete sendOver;
+                        };
 
-                    if (lastSentTime.find(monsterId) == lastSentTime.end()) {
-                        lastSentTime[monsterId] = now - sendInterval;
-                    }
+                    std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
 
-                    if (now - lastSentTime[monsterId] >= sendInterval) {
-                        lastSentTime[monsterId] = now;
-
-                        float x = room.defenseMonsters[monsterId].createPointX;
-                        float z = room.defenseMonsters[monsterId].createPointZ;
-
-                        for (auto* client : room.clients) {
-                            if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-                                continue;
-
-                            DefenseRandomPacket* packet = new DefenseRandomPacket{};
-                            packet->type = PacketType::RANDOM_POSITION;
-                            packet->monsterID = monsterId;
-                            packet->x = x;
-                            packet->z = z;
-
-                            stOverlappedEx* sendOver = new stOverlappedEx{};
-                            ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-                            sendOver->operation = IOOperation::SEND;
-                            sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-                            sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-                            sendOver->cleanup = [packet, sendOver]() {
-                                delete packet;
-                                delete sendOver;
-                                };
-
-                            std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
-
-                            int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
-                                &sendOver->overlapped, NULL);
-                            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-                                std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
-                                RemoveClient(client);
-                            }
-                        }
+                    int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+                        &sendOver->overlapped, NULL);
+                    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+                        std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
+                        RemoveClient(client);
                     }
                 }
+
+                // 다음 몬스터로 넘어감
+                room.nextMonsterToSend++;
+                room.lastMonsterSendTime = now;
             }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // CPU 낭비 방지
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 void IOCompletionPort::RandomPositionThread2() {
     using namespace std::chrono;
 
-    std::unordered_map<int, time_point<steady_clock>> monsterStartTimes;
-    const seconds monsterInterval(4);
-    const seconds sendInterval(1); // 전송 주기
+    const seconds sendInterval(4);  // 몬스터 1마리당 간격
 
     while (isRunning) {
         auto now = steady_clock::now();
@@ -343,76 +419,76 @@ void IOCompletionPort::RandomPositionThread2() {
             std::lock_guard<std::mutex> lock(roomMapMutex);
 
             for (auto& [roomID, room] : rooms) {
-                if (!room.defenseState||room.stageState != 2)
+                if (!room.defenseState || room.stageState != 2 || room.monsterRandomSent)
                     continue;
 
-                for (int monsterId = 0; monsterId < DEFENSE_MONSTER2; ++monsterId) {
-                    // 시작 시간 설정 (처음 한 번만)
-                    if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
-                        monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
+                // 3초 지연 시작 설정 (딱 한 번만)
+                if (room.defenseStartTime == steady_clock::time_point::min()) {
+                    room.defenseStartTime = now + seconds(3);
+                    room.lastMonsterSendTime = room.defenseStartTime;
+                    std::cout << "[Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
+                }
+
+                if (now < room.defenseStartTime)
+                    continue;
+
+                if (now - room.lastMonsterSendTime < sendInterval)
+                    continue;
+
+                int monsterId = room.nextMonsterToSend;
+
+                if (monsterId >= DEFENSE_MONSTER1) {
+                    room.monsterRandomSent = true;
+                    std::cout << "[Room " << roomID << "] 모든 몬스터 전송 완료\n";
+                    continue;
+                }
+
+                float x = room.defenseMonsters2[monsterId].createPointX;
+                float z = room.defenseMonsters2[monsterId].createPointZ;
+
+                for (auto* client : room.clients) {
+                    if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
                         continue;
-                    }
 
-                    // 아직 시작 안 됨
-                    if (now < monsterStartTimes[monsterId])
-                        continue;
+                    DefenseRandomPacket* packet = new DefenseRandomPacket{};
+                    packet->type = PacketType::RANDOM_POSITION;
+                    packet->monsterID = monsterId;
+                    packet->x = x;
+                    packet->z = z;
 
-                    // 이 몬스터가 마지막으로 전송된 시간 저장
-                    static std::unordered_map<int, time_point<steady_clock>> lastSentTime;
+                    stOverlappedEx* sendOver = new stOverlappedEx{};
+                    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+                    sendOver->operation = IOOperation::SEND;
+                    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+                    sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+                    sendOver->cleanup = [packet, sendOver]() {
+                        delete packet;
+                        delete sendOver;
+                        };
 
-                    if (lastSentTime.find(monsterId) == lastSentTime.end()) {
-                        lastSentTime[monsterId] = now - sendInterval;
-                    }
+                    std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
 
-                    if (now - lastSentTime[monsterId] >= sendInterval) {
-                        lastSentTime[monsterId] = now;
-
-                        float x = room.defenseMonsters2[monsterId].createPointX;
-                        float z = room.defenseMonsters2[monsterId].createPointZ;
-
-                        for (auto* client : room.clients) {
-                            if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-                                continue;
-
-                            DefenseRandomPacket* packet = new DefenseRandomPacket{};
-                            packet->type = PacketType::RANDOM_POSITION;
-                            packet->monsterID = monsterId;
-                            packet->x = x;
-                            packet->z = z;
-
-                            stOverlappedEx* sendOver = new stOverlappedEx{};
-                            ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-                            sendOver->operation = IOOperation::SEND;
-                            sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-                            sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-                            sendOver->cleanup = [packet, sendOver]() {
-                                delete packet;
-                                delete sendOver;
-                                };
-
-                            std::cout << "2stage[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
-
-                            int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
-                                &sendOver->overlapped, NULL);
-                            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-                                std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
-                                RemoveClient(client);
-                            }
-                        }
+                    int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+                        &sendOver->overlapped, NULL);
+                    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+                        std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
+                        RemoveClient(client);
                     }
                 }
+
+                // 다음 몬스터로 넘어감
+                room.nextMonsterToSend++;
+                room.lastMonsterSendTime = now;
             }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // CPU 낭비 방지
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 void IOCompletionPort::RandomPositionThread3() {
     using namespace std::chrono;
 
-    std::unordered_map<int, time_point<steady_clock>> monsterStartTimes;
-    const seconds monsterInterval(4);
-    const seconds sendInterval(1); // 전송 주기
+    const seconds sendInterval(4);  // 몬스터 1마리당 간격
 
     while (isRunning) {
         auto now = steady_clock::now();
@@ -421,68 +497,70 @@ void IOCompletionPort::RandomPositionThread3() {
             std::lock_guard<std::mutex> lock(roomMapMutex);
 
             for (auto& [roomID, room] : rooms) {
-                if (!room.defenseState || room.stageState != 3)
+                if (!room.defenseState || room.stageState != 3 || room.monsterRandomSent)
                     continue;
 
-                for (int monsterId = 0; monsterId < DEFENSE_MONSTER3; ++monsterId) {
-                    // 시작 시간 설정 (처음 한 번만)
-                    if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
-                        monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
+                // 3초 지연 시작 설정 (딱 한 번만)
+                if (room.defenseStartTime == steady_clock::time_point::min()) {
+                    room.defenseStartTime = now + seconds(3);
+                    room.lastMonsterSendTime = room.defenseStartTime;
+                    std::cout << "[Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
+                }
+
+                if (now < room.defenseStartTime)
+                    continue;
+
+                if (now - room.lastMonsterSendTime < sendInterval)
+                    continue;
+
+                int monsterId = room.nextMonsterToSend;
+
+                if (monsterId >= DEFENSE_MONSTER1) {
+                    room.monsterRandomSent = true;
+                    std::cout << "[Room " << roomID << "] 모든 몬스터 전송 완료\n";
+                    continue;
+                }
+
+                float x = room.defenseMonsters3[monsterId].createPointX;
+                float z = room.defenseMonsters3[monsterId].createPointZ;
+
+                for (auto* client : room.clients) {
+                    if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
                         continue;
-                    }
 
-                    // 아직 시작 안 됨
-                    if (now < monsterStartTimes[monsterId])
-                        continue;
+                    DefenseRandomPacket* packet = new DefenseRandomPacket{};
+                    packet->type = PacketType::RANDOM_POSITION;
+                    packet->monsterID = monsterId;
+                    packet->x = x;
+                    packet->z = z;
 
-                    // 이 몬스터가 마지막으로 전송된 시간 저장
-                    static std::unordered_map<int, time_point<steady_clock>> lastSentTime;
+                    stOverlappedEx* sendOver = new stOverlappedEx{};
+                    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+                    sendOver->operation = IOOperation::SEND;
+                    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
+                    sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
+                    sendOver->cleanup = [packet, sendOver]() {
+                        delete packet;
+                        delete sendOver;
+                        };
 
-                    if (lastSentTime.find(monsterId) == lastSentTime.end()) {
-                        lastSentTime[monsterId] = now - sendInterval;
-                    }
+                    std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
 
-                    if (now - lastSentTime[monsterId] >= sendInterval) {
-                        lastSentTime[monsterId] = now;
-
-                        float x = room.defenseMonsters3[monsterId].createPointX;
-                        float z = room.defenseMonsters3[monsterId].createPointZ;
-
-                        for (auto* client : room.clients) {
-                            if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-                                continue;
-
-                            DefenseRandomPacket* packet = new DefenseRandomPacket{};
-                            packet->type = PacketType::RANDOM_POSITION;
-                            packet->monsterID = monsterId;
-                            packet->x = x;
-                            packet->z = z;
-
-                            stOverlappedEx* sendOver = new stOverlappedEx{};
-                            ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-                            sendOver->operation = IOOperation::SEND;
-                            sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-                            sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-                            sendOver->cleanup = [packet, sendOver]() {
-                                delete packet;
-                                delete sendOver;
-                                };
-
-                            std::cout << "[3stageRoom " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
-
-                            int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
-                                &sendOver->overlapped, NULL);
-                            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-                                std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
-                                RemoveClient(client);
-                            }
-                        }
+                    int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+                        &sendOver->overlapped, NULL);
+                    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+                        std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
+                        RemoveClient(client);
                     }
                 }
+
+                // 다음 몬스터로 넘어감
+                room.nextMonsterToSend++;
+                room.lastMonsterSendTime = now;
             }
         }
 
-        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // CPU 낭비 방지
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 }
 
@@ -541,6 +619,8 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     Room newRoom;
     newRoom.roomID = nextRoomID;
     newRoom.clients = members;
+    newRoom.defenseStartTime = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+    newRoom.lastMonsterSendTime = newRoom.defenseStartTime;
     std::cout << "---newRoom.roomID:" << newRoom.roomID << std::endl;
     nextRoomID++;
     for (const auto& m : monsterData) {
