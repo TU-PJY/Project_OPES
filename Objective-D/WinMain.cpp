@@ -518,21 +518,19 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	if (context && context->cleanup)
 		context->cleanup();
 
-	//	std::cout << "send\n";
-		//auto* newRecv = new RecvContext{};
-		//ZeroMemory(newRecv, sizeof(RecvContext));
-		//newRecv->wsabuf.buf = newRecv->buffer;
-		//newRecv->wsabuf.len = sizeof(newRecv->buffer);
-		//newRecv->cleanup = [newRecv]() { delete newRecv; };
-		//
-		//DWORD recv_flag = 0;
-		//int result = WSARecv(clientSocket, &newRecv->wsabuf, 1, NULL, &recv_flag, &newRecv->overlapped, RecvCallback);
-		//if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-		//	//std::cerr << "[클라이언트] SendCallback 수신 등록 실패\n";
-		//	newRecv->cleanup();
-		//	isRunning = false;
-		//}
-	//std::cout << "send!!!" << std::endl;
+	//auto* newContext = new RecvContext{};
+	//ZeroMemory(newContext, sizeof(RecvContext));
+	//newContext->wsabuf.buf = newContext->buffer;
+	//newContext->wsabuf.len = sizeof(newContext->buffer);
+	//newContext->cleanup = [newContext]() { delete newContext; };
+	//
+	//DWORD flags = 0;
+	//int result = WSARecv(clientSocket, &newContext->wsabuf, 1, NULL, &flags, &newContext->overlapped, RecvCallback);
+	//if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+	//	std::cerr << "[클라이언트] 데이터 수신 오류\n";
+	//	isRunning = false;
+	//	newContext->cleanup();
+	//}
 }
 
 void NetworkThread(bool localServer, const wchar_t* cmdLine)
