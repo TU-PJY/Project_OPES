@@ -500,14 +500,12 @@ void Player1st::Update(float Delta) {
 
 	QP::SoundSystem.SetListenerPosition(playerPosition);
 
-	footstepTime += Delta;
-	if (footstepTime > footstepInterval) {
+	if (footstepTime > 0.0)
 		footstepTime -= Delta;
-	}
 
 	if (currentState == STATE_MOVE || currentState == STATE_MOVE_SHOOT) {
-		if (footstepTime >= footstepInterval) {
-			footstepTime -= footstepInterval;
+		if (footstepTime <= 0.0) {
+			footstepTime = footstepInterval;
 			SOUND.footstep.Play();
 		}
 	}
