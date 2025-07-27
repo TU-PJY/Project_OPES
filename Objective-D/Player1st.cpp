@@ -80,6 +80,9 @@ Player1st::~Player1st() {
 
 	if (installPtr)
 		scene.DeleteObject(installPtr);
+
+	if (scopePtr)
+		scene.DeleteObject(scopePtr);
 }
 
 void Player1st::sendPacket(float Delta) {

@@ -143,6 +143,8 @@ void OtherPlayer::Update(float Delta) {
 			SOUND.footstep.Play();
 		}
 	}
+
+	updateDeath();
 }
 
 void OtherPlayer::Render() {
