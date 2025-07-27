@@ -320,6 +320,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Destination Mark ]">
       <UniqueIdentifier>{2efb1bf9-f92e-48b7-b457-e9ead195c748}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Spector UI ]">
+      <UniqueIdentifier>{e7e9444b-870d-468b-8daf-aad0b0064f1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -580,6 +583,9 @@
     </ClInclude>
     <ClInclude Include="Lobby.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
+    </ClInclude>
+    <ClInclude Include="SpecterUI.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Spector UI ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -855,6 +861,9 @@
     </ClCompile>
     <ClCompile Include="WinMain.cpp">
       <Filter>[ 0_Main ]</Filter>
+    </ClCompile>
+    <ClCompile Include="SpecterUI.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Spector UI ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

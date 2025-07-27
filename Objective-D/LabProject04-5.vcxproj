@@ -229,6 +229,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Shotgun.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Scorpion.h" />
+    <ClInclude Include="SpecterUI.h" />
     <ClInclude Include="SpreadBullet.h" />
     <ClInclude Include="StartMode.h" />
     <ClInclude Include="targetver.h" />
@@ -315,6 +316,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Shotgun.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Scorpion.cpp" />
+    <ClCompile Include="SpecterUI.cpp" />
     <ClCompile Include="SpreadBullet.cpp" />
     <ClCompile Include="StartMode.cpp" />
     <ClCompile Include="Stencils.cpp" />

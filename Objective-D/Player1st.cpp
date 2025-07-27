@@ -12,6 +12,7 @@
 #include "InstallIndicator.h"
 #include "Scope.h"
 #include "CameraController.h"
+#include "SpecterUI.h"
 
 #include "Grenade.h"
 
@@ -548,6 +549,7 @@ void Player1st::GiveDamage(int damage) {
 
 		if (this->currentHP <= 0) {
 			scene.AddObject(new CameraController, "camControll", LAYER1, true);
+			scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
 			scene.DeleteObject(this);
 		}
 	}
@@ -576,6 +578,7 @@ void Player1st::InputHP(int currentHP) {
 
 	if (this->currentHP <= 0) {
 		scene.AddObject(new CameraController, "camControll", LAYER1, true);
+		scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
 		scene.DeleteObject(this);
 	}
 	//std::cout << "PLAYER HP: " << this->currentHP << std::endl;
