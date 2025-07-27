@@ -18,6 +18,7 @@
 #include "Grenade.h"
 #include "Turret.h"
 #include "Beacon.h"
+#include "Treant.h"
 #include "PlantMonster.h"
 
 #include <locale>
@@ -243,7 +244,12 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		if (!GLOBAL.defenseIDList.contains(packet->monsterID)) {
 			GLOBAL.defenseIDList.insert(packet->monsterID);
 			std::lock_guard<std::mutex> lock(PacketMutex);
-			scene.AddObject(new PlantMonster(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
+
+			if(GLOBAL.mapName.compare("map1") == 0)
+				scene.AddObject(new PlantMonster(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
+
+			else if(GLOBAL.mapName.compare("map2") == 0)
+				scene.AddObject(new Treant(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
 		}
 		
 		//처리부분
@@ -261,6 +267,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			if(packet->Etype == TURRET_ID)
 				scene.AddObject(new Turret(installPosition, installRotation, true), "turret", LAYER3);
+
 			else if(packet->Etype == BEACON_ID)
 				scene.AddObject(new Beacon(installPosition, installRotation, true), "beacon", LAYER3);
 		}

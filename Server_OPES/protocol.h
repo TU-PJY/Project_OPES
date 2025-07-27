@@ -1,3 +1,6 @@
+#include <DirectXMath.h>
+using namespace DirectX;
+
 // 기지 체력
 constexpr int                  CENTER_HP		= 500;
 
@@ -116,11 +119,23 @@ constexpr int                  GAZER_TYPE       = 2;
 // 스테이지 1 도착 지점 위치
 constexpr XMFLOAT3             MAP1_DESTINATION = XMFLOAT3(-120.0, 0.0, 94.0);
 
+// 스테이지1 랜덤 생성 범위
+constexpr float                MAP1_RANDOM_MIN_RADIANS = 30.0;
+constexpr float                MAP1_RANDOM_MAX_RADIANS = 60.0;
+
 // 스테이지 2 도착 지점 위치
 constexpr XMFLOAT3             MAP2_DESTINATION = XMFLOAT3(-210.0, 0.0, 65.0);
 
+// 스테이지 2 랜덤 생성 위치
+constexpr float                MAP2_RANDOM_MIN_RADIANS = 40.0;
+constexpr float                MAP2_RANDOM_MAX_RADIANS = 70.0;
+
 // 스테이지 3 도착 지점 위치
 constexpr XMFLOAT3             MAP3_DESTINATION = XMFLOAT3(275.0, 0.0, 185.0);
+
+// 스테이지 3 랜덤 생성 위치
+constexpr float                MAP3_RANDOM_MIN_RADIANS = 30.0;
+constexpr float                MAP3_RANDOM_MAX_RADIANS = 60.0;
 
 // 보너스 & 페널티
 // 공통 보너스

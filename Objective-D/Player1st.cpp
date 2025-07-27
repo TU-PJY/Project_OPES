@@ -26,7 +26,6 @@ Player1st::Player1st(int characterType) {
 		weaponPtr = scene.AddObject(new HeavyMachineGun(this), "mg", LAYER4);
 		maxSpeed = CHARACTER_MG_SPEED;
 		totalHP = CHARACTER_MG_HP;
-		currentHP = CHARACTER_MG_HP;
 		break;
 
 	case CHARACTER_DMR:
@@ -34,14 +33,12 @@ Player1st::Player1st(int characterType) {
 		scopePtr = scene.AddObject(new Scope, "scope", LAYERUI);
 		maxSpeed = CHARACTER_DMR_SPEED;
 		totalHP = CHARACTER_DMR_HP;
-		currentHP = CHARACTER_DMR_HP;
 		break;
 
 	case CHARACTER_ENG:
 		weaponPtr = scene.AddObject(new Shotgun(this), "shotgun", LAYER4);
 		maxSpeed = CHARACTER_ENG_SPEED;
 		totalHP = CHARACTER_ENG_HP;
-		currentHP = CHARACTER_ENG_HP;
 
 		installPtr = scene.AddObject(new InstallIndicator, "inst", LAYER5);
 		if (installPtr)
@@ -49,6 +46,9 @@ Player1st::Player1st(int characterType) {
 	
 		break;
 	}
+
+	currentHP == totalHP;
+	prevHP = totalHP;
 
 	this->characterType = characterType;
 	currentSpeed = maxSpeed;
@@ -562,8 +562,16 @@ void Player1st::InputHP(int currentHP) {
 	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
 	if (IndicatorPtr) 
 		IndicatorPtr->InputHP(totalHP, this->currentHP);
-	scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
-	std::cout << "PLAYER HP: " << this->currentHP << std::endl;
+
+	// 이전 체력보다 현재ㅐ 체력이 낮을 떄만 피격 이팩트 출력
+	if (prevHP > this->currentHP)
+		scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
+
+	prevHP = this->currentHP;
+
+	// 인디케이터 업데이트
+	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
+	//std::cout << "PLAYER HP: " << this->currentHP << std::endl;
 }
 
 unsigned int Player1st::GetID() {
