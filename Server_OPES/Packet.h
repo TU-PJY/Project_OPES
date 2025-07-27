@@ -24,6 +24,7 @@ enum class PacketType:unsigned int {
     CLEAR_COUNT,
     CHOOSE_JOB,
     READY,
+    BANG,
 };
 
 constexpr int MONSTER_TYPE1 = 1;//²É
@@ -208,6 +209,10 @@ struct ChooseJobPacket {
 };
 
 struct ReadyPacket {
+    PacketType type;
+    unsigned int playerID;
+};
+struct BangPacket {
     PacketType type;
     unsigned int playerID;
 };

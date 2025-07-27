@@ -1312,6 +1312,31 @@ void IOCompletionPort::SendData_ReadyPacket(stClientInfo* receiver,unsigned int 
         delete sendOver;
     }
 }
+void IOCompletionPort::SendData_BangPacket(stClientInfo* receiver, unsigned int id) {
+    BangPacket* pkt = new BangPacket{};
+    pkt->type = PacketType::BANG;
+    pkt->playerID = id;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(ReadyPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
 float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
     XMVECTOR VecA = XMLoadFloat3(&A);
     XMVECTOR VecB = XMLoadFloat3(&B);
@@ -1515,6 +1540,7 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     if (type == PT::MONSTER_STATE) return sizeof(MonsterStatePacket_CtoS);  // 또는 _StoC?
     if (type == PT::MONSTER_MOVE) return sizeof(MonsterMovePacket);
     if (type == PT::RANDOM_POSITION) return sizeof(DefenseRandomPacket);
+    if (type == PT::BANG) return sizeof(BangPacket);
 
     return 0; // 알 수 없는 타입이면 0
 }
@@ -1990,6 +2016,21 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 randomTreadFlag1 = false;
             }
         }
+    }
+    else if (*packetType == PacketType::BANG) {
+
+        BangPacket* pkt = reinterpret_cast<BangPacket*>(buffer);
+        std::cout << "BANG--id:" << pkt->playerID << std::endl;
+        
+
+
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_BangPacket(otherClient, pkt->playerID);
+        }
+
+
+
     }
 
 }
