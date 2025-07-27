@@ -11,15 +11,15 @@ void OtherPlayerIndicator::AddPlayer(unsigned int ID, int chracterType, const st
 
 	switch (chracterType) {
 	case CHARACTER_MG:
-		newInfo.hp = 100;
+		newInfo.hp = CHARACTER_MG_HP;
 		break;
 
 	case CHARACTER_DMR:
-		newInfo.hp = 100;
+		newInfo.hp = CHARACTER_DMR_HP;
 		break;
 
 	case CHARACTER_ENG:
-		newInfo.hp = 100;
+		newInfo.hp = CHARACTER_ENG_HP;
 		break;
 	}
 
