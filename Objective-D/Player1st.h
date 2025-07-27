@@ -55,6 +55,7 @@ private:
 
 	// 체력
 	int totalHP{};
+	int prevHP{};
 	int currentHP{};
 
 	// 맵3용 변수
