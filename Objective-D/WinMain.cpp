@@ -101,7 +101,8 @@ START_MODE_PTR StartMode = TitleMode::Start;
 /////////////////////////////////////////////////
 
 
-
+char RecvRemainBuffer[MAX_SOCKBUF * 2] = { 0 };
+int RecvRemainSize = 0;
 
 std::unordered_set<unsigned int> ID_List;
 
@@ -127,39 +128,27 @@ bool IsNewPlayer(unsigned int ID) {
 					GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
 				static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
 			}
-			
+
 			return true;
 		}
 
 		return false;
 	}
 }
-
-void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
-	auto* context = reinterpret_cast<RecvContext*>(p_over);
-	if (err != 0 || num_bytes == 0) {
-		//std::cout << "[클라이언트] 서버 연결 종료\n";
-		isRunning = false;
-		if (context && context->cleanup) context->cleanup();
-		return;
-	}
-	//std::cout << "recv\n";
-
-	PacketType* type = reinterpret_cast<PacketType*>(context->buffer);
-	//std::cout << static_cast<int>(*type) <<"----[클라이언트] 수신된 데이터 크기: " << num_bytes << " bytes\n";
-//	std::cout << typeid(type).name() << std::endl;
+void ProcessPacketOnClient(char* buffer, int size) {
+	PacketType* type = reinterpret_cast<PacketType*>(buffer);
 
 	if (*type == PacketType::MOVE) {
-		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(context->buffer);
+		MovePacket_StoC* movePacket = reinterpret_cast<MovePacket_StoC*>(buffer);
 		//std::cout << "[서버]이동: " << movePacket->id << ":" << movePacket->x << "," << movePacket->y<<"," << movePacket->z << std::endl;
-		
+
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(movePacket->id)); Found)
 			Found->InputPosition(XMFLOAT3(movePacket->x, movePacket->y, movePacket->z));
 	}
 
 	else if (*type == PacketType::CLEAR_COUNT) {
-		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(context->buffer);
-		std::cout << "[서버]CLEAR: " << Packet->PlayerCount <<  std::endl;
+		ClearCountPacket* Packet = reinterpret_cast<ClearCountPacket*>(buffer);
+		std::cout << "[서버]CLEAR: " << Packet->PlayerCount << std::endl;
 
 		// 현재 접속한 사람이 모두 도착 지점에 들어가면 다음 스테이지로 넘어간다.
 		// 자신의 아이디는 ID_List에 없기 때문에 1을 더한 값으로 비교한다.
@@ -169,10 +158,10 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 				scene.SwitchMode(Level2::Start);
 			}
 		}
-		
+
 	}
 	else if (*type == PacketType::VIEW_ANGLE) {
-		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(context->buffer);
+		ViewingAnglePacket_StoC* viewAnglePacket = reinterpret_cast<ViewingAnglePacket_StoC*>(buffer);
 		//std::cout << "[서버]시선: " << viewAnglePacket->id << ":" << viewAnglePacket->x << "," << viewAnglePacket->y << "," << viewAnglePacket->z << std::endl;
 
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(viewAnglePacket->id)); Found)
@@ -180,7 +169,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 
 	else if (*type == PacketType::ANIMATION) {
-		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(context->buffer);
+		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(buffer);
 		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
@@ -188,7 +177,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 
 	else if (*type == PacketType::MONSTER_STATE) {
-		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(context->buffer);
+		MonsterStatePacket_StoC* packet = reinterpret_cast<MonsterStatePacket_StoC*>(buffer);
 
 		//std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
 
@@ -201,13 +190,13 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 
 	else if (*type == PacketType::MONSTER_MOVE) {
-		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(context->buffer);
+		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(buffer);
 
 		std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
 			<< packet->z << " angle:" << packet->angle_y << std::endl;
 		XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
 		float recvRotation = packet->angle_y;
-		
+
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
@@ -219,20 +208,20 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 
 	else if (*type == PacketType::PTOM_DAMAGE) {
-		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(context->buffer);
-		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID <<"damage: "<< packet->attackHp << std::endl;
+		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(buffer);
+		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << "damage: " << packet->attackHp << std::endl;
 
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
 			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterID)); monster)
 				monster->InputHP(packet->attackHp);
 		}
-		
+
 		//처리부분
 	}
-	
+
 	else if (*type == PacketType::MTOP_DAMAGE) {
-		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(context->buffer);
+		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(buffer);
 		std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
 
 		if (packet->playerID == GLOBAL.myID) {
@@ -252,11 +241,11 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 				}
 			}
 		}
-		
+
 		//처리부분
 	}
 	else if (*type == PacketType::RANDOM_POSITION) {
-		DefenseRandomPacket* packet = reinterpret_cast<DefenseRandomPacket*>(context->buffer);
+		DefenseRandomPacket* packet = reinterpret_cast<DefenseRandomPacket*>(buffer);
 		std::cout << "[RANDOM_POSITION] ID: " << packet->monsterID << ", pos: (" << packet->x << ", " << packet->z
 			<< "), rotY: " << std::endl;
 
@@ -264,22 +253,22 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 			defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);*/
 
 		xmfloat3 createPosition = xmfloat3(packet->x, 0.0, packet->z);
-		
+
 		if (!GLOBAL.defenseIDList.contains(packet->monsterID)) {
 			GLOBAL.defenseIDList.insert(packet->monsterID);
 			std::lock_guard<std::mutex> lock(PacketMutex);
 
-			if(GLOBAL.mapName.compare("map1") == 0)
+			if (GLOBAL.mapName.compare("map1") == 0)
 				scene.AddObject(new PlantMonster(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
 
-			else if(GLOBAL.mapName.compare("map2") == 0)
+			else if (GLOBAL.mapName.compare("map2") == 0)
 				scene.AddObject(new Treant(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
 		}
-		
+
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_INSTALL) {
-		EngineerInstallPacket* packet = reinterpret_cast<EngineerInstallPacket*>(context->buffer);
+		EngineerInstallPacket* packet = reinterpret_cast<EngineerInstallPacket*>(buffer);
 		std::cout << "[ENGINEER_INSTALL] ID: " << packet->ID << ", type: " << packet->Etype
 			<< ", pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
 			<< "), rotY: " << packet->rotY << std::endl;
@@ -289,32 +278,32 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
-			if(packet->Etype == TURRET_ID)
+			if (packet->Etype == TURRET_ID)
 				scene.AddObject(new Turret(installPosition, installRotation, true), "turret", LAYER3);
 
-			else if(packet->Etype == BEACON_ID)
+			else if (packet->Etype == BEACON_ID)
 				scene.AddObject(new Beacon(installPosition, installRotation, true), "beacon", LAYER3);
 		}
 
 		//처리부분
 	}
 	else if (*type == PacketType::ENGINEER_OBJECT) {
-		EngineerObjectPacket* packet = reinterpret_cast<EngineerObjectPacket*>(context->buffer);
+		EngineerObjectPacket* packet = reinterpret_cast<EngineerObjectPacket*>(buffer);
 		std::cout << "[ENGINEER_OBJECT] ID: " << packet->ID << ", hp: " << packet->hp << std::endl;
 
 		//처리부분
 	}
 	else if (*type == PacketType::CENTER_HP) {
-		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(context->buffer);
+		CenterBuildingPacket* packet = reinterpret_cast<CenterBuildingPacket*>(buffer);
 		//std::cout << "[CENTER_HP] hp: " << packet->damage << std::endl;
 
 		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding)
 			centerBuilding->InputHP(packet->damage);
-		
+
 		//처리부분
 	}
 	else if (*type == PacketType::GRENADE) {
-		GrenadePacket* packet = reinterpret_cast<GrenadePacket*>(context->buffer);
+		GrenadePacket* packet = reinterpret_cast<GrenadePacket*>(buffer);
 		std::cout << "[GRENADE] pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
 			<< "), rot: (" << packet->rotX << ", " << packet->rotY << ", " << packet->rotZ << ")" << std::endl;
 
@@ -329,14 +318,14 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//처리부분
 	}
 	else if (*type == PacketType::PLAYER_ARRIVAL) {
-		PlayerArrivalPacket* packet = reinterpret_cast<PlayerArrivalPacket*>(context->buffer);
+		PlayerArrivalPacket* packet = reinterpret_cast<PlayerArrivalPacket*>(buffer);
 		std::cout << "[PLAYER_ARRIVAL] playerID: " << packet->playerID << std::endl;
 
 		//처리부분
 	}
 
 	else if (*type == PacketType::READY) {
-		ReadyPacket* packet = reinterpret_cast<ReadyPacket*>(context->buffer);
+		ReadyPacket* packet = reinterpret_cast<ReadyPacket*>(buffer);
 		std::cout << "[READY] playerID: " << packet->playerID << std::endl;
 
 		{
@@ -349,8 +338,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//처리부분
 	}
 	else if (*type == PacketType::CHOOSE_JOB) {
-		ChooseJobPacket* packet = reinterpret_cast<ChooseJobPacket*>(context->buffer);
-		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID<< "job:" << packet->job << std::endl;
+		ChooseJobPacket* packet = reinterpret_cast<ChooseJobPacket*>(buffer);
+		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << "job:" << packet->job << std::endl;
 
 		//처리부분
 		{
@@ -363,9 +352,9 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 
 	else if (*type == PacketType::ENTER) {
-		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(context->buffer);
-		std::cout <<"MYID: "<< EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
-		
+		EnterRoomPacket* EnterPacket = reinterpret_cast<EnterRoomPacket*>(buffer);
+		std::cout << "MYID: " << EnterPacket->myID << " / roomID: " << EnterPacket->roomID << std::endl;///룸 id가 0일시 만들어 진것이 아님 대기중인 상태임
+
 		// 전역 변수에 내 ID 저장
 		GLOBAL.myID = EnterPacket->myID;
 		std::cout << "접속 아이디: " << GLOBAL.myID << std::endl;
@@ -380,34 +369,106 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	}
 
 	else if (*type == PacketType::NEW_CLIENT) {
-		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(context->buffer);
-		std::cout << "[접속] 새로운 클라들어옴! ID: " << newClientPacket->id <<std::endl;
+		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(buffer);
+		std::cout << "[접속] 새로운 클라들어옴! ID: " << newClientPacket->id << std::endl;
 		IsNewPlayer(newClientPacket->id);
 
-	//	std::cout << "ID: " << newClientPacket->id << std::endl;
-	
-		//player_enter = true;
-		//enter_player_id = newClientPacket->id;
+		//	std::cout << "ID: " << newClientPacket->id << std::endl;
+
+			//player_enter = true;
+			//enter_player_id = newClientPacket->id;
 	}
 
-	else if (*type == PacketType::EXISTING_CLIENTS) { 
-		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(context->buffer);
-		for (unsigned int i = 0; i < pkt->count; ++i) {
-			auto& info = pkt->clients[i];
-			std::cout << "[초기화] 현재 접속한 클라이언트 ID: " << info.id << std::endl;
-			IsNewPlayer(info.id);
-
-			// TODO: ID에 해당하는 게임 객체 생성 또는 초기화
-		}
+	else if (*type == PacketType::EXISTING_CLIENTS) {
+		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(buffer);
+		IsNewPlayer(pkt->id);
+		//for (unsigned int i = 0; i < pkt->count; ++i) {
+		//	auto& info = pkt->clients[i];
+		//	std::cout << "[초기화] 현재 접속한 클라이언트 ID: " << info.id << std::endl;
+		//	IsNewPlayer(info.id);
+		//
+		//	// TODO: ID에 해당하는 게임 객체 생성 또는 초기화
+		//}
 	}
 
 	else {
 		std::cout << "== [ERROR] 알 수 없는 패킷 타입 ==" << std::endl;
 	}
-	
+	std::cout << "process\n";
+}
+int GetPacketSizeByType(PacketType type) {
+	switch (type) {
+	case PacketType::MOVE: return sizeof(MovePacket_StoC);
+	case PacketType::CLEAR_COUNT: return sizeof(ClearCountPacket);
+	case PacketType::VIEW_ANGLE: return sizeof(ViewingAnglePacket_StoC);
+	case PacketType::ANIMATION: return sizeof(AnimationPacket_StoC);
+	case PacketType::MONSTER_STATE: return sizeof(MonsterStatePacket_StoC);
+	case PacketType::MONSTER_MOVE: return sizeof(MonsterMovePacket);
+	case PacketType::PTOM_DAMAGE: return sizeof(PtoMDamagePacket);
+	case PacketType::MTOP_DAMAGE: return sizeof(MtoPDamagePacket);
+	case PacketType::RANDOM_POSITION: return sizeof(DefenseRandomPacket);
+	case PacketType::ENGINEER_INSTALL: return sizeof(EngineerInstallPacket);
+	case PacketType::ENGINEER_OBJECT: return sizeof(EngineerObjectPacket);
+	case PacketType::CENTER_HP: return sizeof(CenterBuildingPacket);
+	case PacketType::GRENADE: return sizeof(GrenadePacket);
+	case PacketType::PLAYER_ARRIVAL: return sizeof(PlayerArrivalPacket);
+	case PacketType::READY: return sizeof(ReadyPacket);
+	case PacketType::CHOOSE_JOB: return sizeof(ChooseJobPacket);
+	case PacketType::ENTER: return sizeof(EnterRoomPacket);
+	case PacketType::NEW_CLIENT: return sizeof(NewClientPacket);
+	case PacketType::EXISTING_CLIENTS: return sizeof(ExistingClientsDataPacket);
+	default:
+		std::cout << "타입?\n";
+		return 0;
+	}
+}
+void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, DWORD flag) {
+	auto* context = reinterpret_cast<RecvContext*>(p_over);
+	if (err != 0 || num_bytes == 0) {
+		std::cout << "[클라이언트] 서버 연결 종료\n";
+		isRunning = false;
+		if (context && context->cleanup) context->cleanup();
+		return;
+	}
+
+	// 1. 기존 버퍼 + 새로 받은 데이터를 하나로 합침
+	int totalSize = RecvRemainSize + num_bytes;
+	char* fullBuffer = new char[totalSize];
+	memcpy(fullBuffer, RecvRemainBuffer, RecvRemainSize);
+	memcpy(fullBuffer + RecvRemainSize, context->buffer, num_bytes);
+
+	int processed = 0;
+
+	// 2. 패킷 단위로 분해
+	while (totalSize - processed >= sizeof(PacketType)) {
+		PacketType* type = reinterpret_cast<PacketType*>(fullBuffer + processed);
+		int packetSize = GetPacketSizeByType(*type); // 이 함수는 서버와 동일하게 만들어야 함
+
+		if (packetSize <= 0 || totalSize - processed < packetSize)
+			break;  // 아직 다 못 받음
+
+		ProcessPacketOnClient(fullBuffer + processed, packetSize); // 기존 코드 일부 이동
+
+		processed += packetSize;
+	}
+
+	// 3. 남은 조각 저장
+	RecvRemainSize = totalSize - processed;
+	if (RecvRemainSize > 0) {
+		if (RecvRemainSize > MAX_SOCKBUF) {
+			std::cerr << "[클라] 수신 버퍼 초과 경고, 잘림\n";
+			RecvRemainSize = 0;
+		}
+		else {
+			memcpy(RecvRemainBuffer, fullBuffer + processed, RecvRemainSize);
+		}
+	}
+
+	delete[] fullBuffer;
 	if (context && context->cleanup)
-		context->cleanup();  // 사용 완료 후 해제
-	// 다음 수신 요청
+		context->cleanup();
+
+	// 다음 수신 등록
 	auto* newContext = new RecvContext{};
 	ZeroMemory(newContext, sizeof(RecvContext));
 	newContext->wsabuf.buf = newContext->buffer;
@@ -421,6 +482,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		isRunning = false;
 		newContext->cleanup();
 	}
+	std::cout << "WSARecv" << std::endl;
 }
 
 // 데이터 전송 콜백 함수
@@ -434,20 +496,21 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	if (context && context->cleanup)
 		context->cleanup();
 
-//	std::cout << "send\n";
-	//auto* newRecv = new RecvContext{};
-	//ZeroMemory(newRecv, sizeof(RecvContext));
-	//newRecv->wsabuf.buf = newRecv->buffer;
-	//newRecv->wsabuf.len = sizeof(newRecv->buffer);
-	//newRecv->cleanup = [newRecv]() { delete newRecv; };
-	//
-	//DWORD recv_flag = 0;
-	//int result = WSARecv(clientSocket, &newRecv->wsabuf, 1, NULL, &recv_flag, &newRecv->overlapped, RecvCallback);
-	//if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-	//	//std::cerr << "[클라이언트] SendCallback 수신 등록 실패\n";
-	//	newRecv->cleanup();
-	//	isRunning = false;
-	//}
+	//	std::cout << "send\n";
+		//auto* newRecv = new RecvContext{};
+		//ZeroMemory(newRecv, sizeof(RecvContext));
+		//newRecv->wsabuf.buf = newRecv->buffer;
+		//newRecv->wsabuf.len = sizeof(newRecv->buffer);
+		//newRecv->cleanup = [newRecv]() { delete newRecv; };
+		//
+		//DWORD recv_flag = 0;
+		//int result = WSARecv(clientSocket, &newRecv->wsabuf, 1, NULL, &recv_flag, &newRecv->overlapped, RecvCallback);
+		//if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+		//	//std::cerr << "[클라이언트] SendCallback 수신 등록 실패\n";
+		//	newRecv->cleanup();
+		//	isRunning = false;
+		//}
+	std::cout << "send!!!" << std::endl;
 }
 
 void NetworkThread(bool localServer, const wchar_t* cmdLine)
@@ -484,21 +547,33 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 
 	std::cout << "[클라이언트] 서버에 연결됨\n";
 
-	auto* initialRecv = new RecvContext{};
-	ZeroMemory(initialRecv, sizeof(RecvContext));
-	initialRecv->wsabuf.buf = initialRecv->buffer;
-	initialRecv->wsabuf.len = sizeof(initialRecv->buffer);
-	initialRecv->cleanup = [initialRecv]() { delete initialRecv; };
+	auto* newContext = new RecvContext{};
+	ZeroMemory(newContext, sizeof(RecvContext));
+	newContext->wsabuf.buf = newContext->buffer;
+	newContext->wsabuf.len = sizeof(newContext->buffer);
+	newContext->cleanup = [newContext]() { delete newContext; };
 
 	DWORD flags = 0;
-	int result = WSARecv(clientSocket, &initialRecv->wsabuf, 1, NULL, &flags, &initialRecv->overlapped, RecvCallback);
+	int result = WSARecv(clientSocket, &newContext->wsabuf, 1, NULL, &flags, &newContext->overlapped, RecvCallback);
 	if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-		std::cerr << "[클라이언트] 첫 번째 데이터 수신 오류\n";
-		initialRecv->cleanup();
-		return;
+		std::cerr << "[클라이언트] 데이터 수신 오류\n";
+		isRunning = false;
+		newContext->cleanup();
 	}
 
-
+	//auto* newContext2 = new RecvContext{};
+	//ZeroMemory(newContext2, sizeof(RecvContext));
+	//newContext2->wsabuf.buf = newContext2->buffer;
+	//newContext2->wsabuf.len = sizeof(newContext2->buffer);
+	//newContext2->cleanup = [newContext2]() { delete newContext2; };
+	//
+	//flags = 0;
+	//result = WSARecv(clientSocket, &newContext2->wsabuf, 1, NULL, &flags, &newContext2->overlapped, RecvCallback);
+	//if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+	//	std::cerr << "[클라이언트] 데이터 수신 오류\n";
+	//	isRunning = false;
+	//	newContext2->cleanup();
+	//}
 	// 콜백 실행 루프
 	while (NetRunning.load()) {
 		SleepEx(INFINITE, TRUE); // RecvCallback, SendCallback 실행됨
@@ -506,7 +581,7 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 }
 void SendChooseJobPacket(unsigned int playerID, int job) {
 	if (enter_room) {
-		auto* pkt = new ChooseJobPacket{ PacketType::CHOOSE_JOB, playerID, job};
+		auto* pkt = new ChooseJobPacket{ PacketType::CHOOSE_JOB, playerID, job };
 
 		auto* context = new SendContext{};
 		ZeroMemory(context, sizeof(SendContext));
@@ -1001,7 +1076,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			//Sleep(0);
 		}
 		// 비동기 I/O 콜백 실행
-		
+
 	}
 
 	// _tWinMain() 루프를 빠져나온 직후 ---------

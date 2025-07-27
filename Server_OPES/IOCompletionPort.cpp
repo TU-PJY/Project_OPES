@@ -835,41 +835,46 @@ void IOCompletionPort::SendData(stClientInfo* sender, stClientInfo* receiver, co
 }
 
 void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
-    ExistingClientsDataPacket* packet = new ExistingClientsDataPacket{};
-    packet->type = PacketType::EXISTING_CLIENTS;
-    packet->count = 0;
-    for (int i = 0; i < clientCount;i++) {
-        if (!clients[i] || clients[i] == receiver || clients[i]->roomID != receiver->roomID) continue;
+    if (receiver == nullptr)
+        return;
 
-        auto& dst = packet->clients[i];
-        packet->count++;
-        dst.id = clients[i]->id;
-        
-    }
     std::cout << "SendExistingClientsToNewClient:\n";
-    if (packet->count == 0) { delete packet; return; }
 
-    stOverlappedEx* sendOver = new stOverlappedEx{};
-    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-    sendOver->operation = IOOperation::SEND;
-    sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-    sendOver->wsaBuf.len = sizeof(PacketType) + sizeof(unsigned int) + packet->count * sizeof(packet->clients[0]);
-    sendOver->cleanup = [packet, sendOver]() {
-        delete packet;
-        delete sendOver;
-       };
-    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
-        &sendOver->overlapped,
-        NULL);
+    for (int i = 0; i < MAX_CLIENTS; ++i) {
+        stClientInfo* client = clients[i];
 
-    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-        closesocket(receiver->socketClient);
-        RemoveClient(receiver);
-        delete packet;
-        delete sendOver;
+        if (client == nullptr) continue;
+        if (client == receiver) continue;
+        if (client->roomID != receiver->roomID) continue;
+
+        ExistingClientsDataPacket* pkt = new ExistingClientsDataPacket{};
+        pkt->type = PacketType::EXISTING_CLIENTS;
+        pkt->id = client->id;
+
+        stOverlappedEx* sendOver = new stOverlappedEx{};
+        ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+        sendOver->operation = IOOperation::SEND;
+        sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+        sendOver->wsaBuf.len = sizeof(ExistingClientsDataPacket);
+        sendOver->cleanup = [pkt, sendOver]() {
+            delete pkt;
+            delete sendOver;
+            };
+
+        std::cout << "→ 기존 클라 ID 전송: " << pkt->id << "\n";
+
+        int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+            &sendOver->overlapped, NULL);
+
+        if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+            std::cerr << "[SendExistingClientsToNewClient] WSASend 실패: ID " << client->id << "\n";
+            closesocket(receiver->socketClient);
+            RemoveClient(receiver);
+            delete pkt;
+            delete sendOver;
+        }
     }
 }
-
 void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
     for (int i = 0; i < clientCount;i++) {
         if (!clients[i] || clients[i] == newClient || clients[i]->roomID != newClient->roomID) continue;
@@ -1345,473 +1350,47 @@ void IOCompletionPort::WorkThread() {
 
         if (pOverlappedEx->operation == IOOperation::RECV) {
             stClientInfo* client = reinterpret_cast<stClientInfo*>(completionKey);
+            stOverlappedEx* overEx = reinterpret_cast<stOverlappedEx*>(overlapped);
 
-            PacketType* packetType = reinterpret_cast<PacketType*>(pOverlappedEx->buffer);
-           // if (bytesTransferred >= sizeof(PacketType))
-           //     std::cout << "[디버깅]: " << static_cast<int>(*packetType)
-           //     << ", 받은 바이트: " << bytesTransferred << std::endl;
-            auto it = rooms.find(client->roomID);
-            if (it == rooms.end()) {
-                continue;
-                std::cout << "continue\n";
+            int totalSize = bytesTransferred + client->prevRemainSize;
+            char* buffer = new char[totalSize];
+            memcpy(buffer, client->prevBuffer, client->prevRemainSize);
+            memcpy(buffer + client->prevRemainSize, overEx->buffer, bytesTransferred);
+
+            int processed = 0;
+
+            while (totalSize - processed >= sizeof(PacketType)) {
+                PacketType* type = reinterpret_cast<PacketType*>(buffer + processed);
+                int packetSize = GetPacketSizeByType(*type);
+
+                if (packetSize <= 0 || totalSize - processed < packetSize)
+                    break;
+
+                ProcessPacket(buffer + processed, client);
+
+                processed += packetSize;
             }
-            Room& room = it->second;
-            if (*packetType == PacketType::MOVE) {
-                MovePacket_CtoS* movePacket = reinterpret_cast<MovePacket_CtoS*>(pOverlappedEx->buffer);
 
-                client->x = movePacket->x;
-                client->y = movePacket->y;
-                client->z = movePacket->z;
-
-               //auto it = rooms.find(client->roomID);
-               //if (it == rooms.end()) break;  // 해당 룸이 없다면 무시
-               //Room& room = it->second;
-                XMFLOAT3 arrivePosition{};
-                if (room.stageState == 1) {
-                    //arrivePosition= XMFLOAT3(120.0f, 0.0f, 94.0f );
-                    arrivePosition = MAP1_DESTINATION;
-                }
-                else if (room.stageState == 2) {
-                    arrivePosition = MAP2_DESTINATION;
-                }
-                else if (room.stageState == 3) {
-                    arrivePosition = MAP3_DESTINATION;
-                }
-
-                {
-                    std::lock_guard<std::mutex> lock(*room.roomMutex);
-                    int arrivedCount = 0;
-
-                    for (auto* c : room.clients) {
-                        if (!c) continue;
-
-                        XMFLOAT3 playerPosition{ c->x, c->y, c->z };
-                        float distance = CalcDistance3D(playerPosition, arrivePosition);
-
-                        bool prev = c->curr;
-                        c->curr = (distance <= 40.0f);
-
-                        if (c->curr != prev) {
-                            //SendData_PlayerArrivalPacket(c, c->id, c->curr);
-                            c->prev = c->curr;
-                        }
-
-                        if (c->curr)
-                            arrivedCount++;
-                    }
-
-                    // clearCount 갱신
-                    room.clearCount = arrivedCount;
-
-                    auto now = std::chrono::steady_clock::now();
-                    auto time = now - Ltime;
-                    if (time > std::chrono::milliseconds(2000)) {
-                        for (auto* c : room.clients) {
-                            if (c) {
-                                SendData_ClearCountPacket(c, arrivedCount);
-                                SendData_ClearCountPacket(c, arrivedCount);
-                                SendData_ClearCountPacket(c, arrivedCount);
-                                RegisterRecv(client);
-                                RegisterRecv(client);
-                                std::cout << "arrivedCount:" << room.clearCount << std::endl;
-                            }
-                        }
-                        Ltime = now;
-                    }
-
-                    //여기 room.clearCount가 3이면 다음 스테이지?
-                    if (room.clearCount >= MIN_PLAYER_COUNT) {
-                        std::cout << "다들어옴!\n";
-                        room.defenseState = true;
-                        room.stageState++;
-                        room.centerHp = CENTER_HP;
-                        for (auto* Client : room.clients) {
-
-                            if (Client->job == MG_JOB_TYPE) {
-                                Client->hp = CHARACTER_MG_HP;
-                            }
-                            else if (Client->job == DMR_JOB_TYPE) {
-                                Client->hp = CHARACTER_DMR_HP;
-                            }
-                            else if (Client->job == ENG_JOB_TYPE) {
-                                Client->hp = CHARACTER_ENG_HP;
-                            }
-                            Client->curr = false;
-                            Client->prev = false;
-                        }
-                        if (randomTreadFlag2) {
-                            randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
-                            randomTreadFlag2 = false;
-                        }
-                        if (randomTreadFlag2==false&& randomTreadFlag3==true&& room.stageState>2) {
-                            randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
-                            randomTreadFlag3 = false;
-                        }
-                        room.clearCount = 0;
-                    }
-                    // 모든 room 클라이언트에게 clearCount 전송
-                   //for (auto* c : room.clients) {
-                   //    if (c) SendData_ClearCountPacket(c, arrivedCount);
-                   //}
-                    
-                }
-
-                // 이동 패킷을 같은 방 클라이언트들에게만 전송
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_Move(client, otherClient);
-                }
-            }
-            else if (*packetType == PacketType::VIEW_ANGLE) {
-          
-                ViewingAnglePacket_CtoS* pkt = reinterpret_cast<ViewingAnglePacket_CtoS*>(pOverlappedEx->buffer);
-                client->angle_x = pkt->x;
-                client->angle_y = pkt->y;
-                client->angle_z = pkt->z;
-
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_ViewAngle(client, otherClient);
-                }
-
-            }
-            else if (*packetType == PacketType::ANIMATION) {
-                //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-                //    continue;
-                //}
-
-                
-                AnimationPacket_CtoS* pkt = reinterpret_cast<AnimationPacket_CtoS*>(pOverlappedEx->buffer);
-                client->animationType = pkt->anymationType;
-
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_Animaion(client, otherClient);
-                }
-            }
-            else if (*packetType == PacketType::MONSTER_STATE) {
-                //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-                //    continue;
-                //}
-
-                
-                
-                MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(pOverlappedEx->buffer);
-                std::cout << pkt->id << " --  Monstertype:" << pkt->Mtype << " monID:" << pkt->id << ", state:" << pkt->state << std::endl;
-                std::lock_guard<std::mutex> lock(*room.roomMutex);
-                if (room.defenseState) {
-                    if (room.stageState == 1) {
-                        room.defenseMonsters[pkt->id].state = pkt->state;
-                    }
-                    else if (room.stageState == 2) {
-                        room.defenseMonsters2[pkt->id].state = pkt->state;
-                    }
-                    else if (room.stageState == 3) {
-                        room.defenseMonsters3[pkt->id].state = pkt->state;
-                    }
+            client->prevRemainSize = totalSize - processed;
+           //if (client->prevRemainSize > 0)
+           //    memcpy(client->prevBuffer, buffer + processed, client->prevRemainSize);
+            if (client->prevRemainSize > 0) {
+                if (client->prevRemainSize > MAX_SOCKBUF) {
+                    std::cout << "[WARN] Remaining buffer too large, discarding\n";
+                    client->prevRemainSize = 0;
                 }
                 else {
-                    if (room.stageState == 1) {
-                        room.myMonsters[pkt->id].state = pkt->state;
-                    }
-                    else if (room.stageState == 2) {
-                        room.myMonsters2[pkt->id].state = pkt->state;
-                    }
-                    else if (room.stageState == 3) {
-                        room.myMonsters3[pkt->id].state = pkt->state;
-                    }
-                }
-
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_MonsterState(otherClient, pkt->Mtype, pkt->state, pkt->id);
+                    memcpy(client->prevBuffer, buffer + processed, client->prevRemainSize);
                 }
             }
-            else if (*packetType == PacketType::MONSTER_MOVE) {
-                //if (bytesTransferred < sizeof(MovePacket)) {
-                //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
-                //    continue;
-                //}
-
-              
-                
-                MonsterMovePacket* pkt = reinterpret_cast<MonsterMovePacket*>(pOverlappedEx->buffer);
-                std::cout << "MonsterMovePacket: " << pkt->playerId << std::endl;
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_MonsterMove(otherClient, pkt->x, pkt->y, pkt->z, pkt->angle_y, pkt->monsterId, pkt->playerId);
-                }
-            }
-            else if (*packetType == PacketType::PTOM_DAMAGE) {
-                
-                //std::cout << "[DEBUG] 받은 바이트 수: " << bytesTransferred << std::endl;
-                PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(pOverlappedEx->buffer);
-                int sendHP = 0;
-                {
-                    std::lock_guard<std::mutex> lock(*room.roomMutex);
-                    if (room.defenseState) {
-                        if (room.stageState == 1) {
-                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER1) {
-                                auto& m = room.defenseMonsters[pkt->monsterID];
-                                m.hp -= pkt->attackHp;
-                                if (m.hp < 0) {
-                                    m.hp = 0;
-                                    for (auto* otherClient : room.clients) {
-                                        if (!otherClient) continue;
-                                        SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
-                                    }
-                                }
-                                sendHP = m.hp;
-                                if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; }))
-                                    room.defenseState = false;
-                            }
-
-                            std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
-                            for (auto* otherClient : room.clients) {
-                                if (!otherClient) continue;
-                                SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                            }
-                        }
-                        else if (room.stageState == 2) {
-                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER2) {
-                                auto& m = room.defenseMonsters2[pkt->monsterID];
-                                m.hp -= pkt->attackHp;
-                                if (m.hp < 0) {
-                                    m.hp = 0;
-                                    for (auto* otherClient : room.clients) {
-                                        if (!otherClient) continue;
-                                        SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
-                                    }
-                                }
-                                sendHP = m.hp;
-                                if (std::all_of(room.defenseMonsters2.begin(), room.defenseMonsters2.end(), [](const MonsterData& m) { return m.hp <= 0; }))
-                                    room.defenseState = false;
-                            }
-
-                            std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
-                            for (auto* otherClient : room.clients) {
-                                if (!otherClient) continue;
-                                SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                            }
-                        }
-                        else if (room.stageState == 3) {
-                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER3) {
-                                auto& m = room.defenseMonsters3[pkt->monsterID];
-                                m.hp -= pkt->attackHp;
-                                if (m.hp < 0) {
-                                    m.hp = 0;
-                                    for (auto* otherClient : room.clients) {
-                                        if (!otherClient) continue;
-                                        SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
-                                    }
-                                }
-                                sendHP = m.hp;
-                                if (std::all_of(room.defenseMonsters3.begin(), room.defenseMonsters3.end(), [](const MonsterData& m) { return m.hp <= 0; }))
-                                    room.defenseState = false;
-                            }
-
-                            std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
-                            for (auto* otherClient : room.clients) {
-                                if (!otherClient) continue;
-                                SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                            }
-                        
-                        }
-                    }
-                    else {
-                        if (pkt->monsterID<=1000) {
-                            if (room.stageState == 1) {
-                                auto& m = room.myMonsters[pkt->monsterID];
-                                m.hp -= pkt->attackHp;
-                                if (m.hp < 0) {
-                                    m.hp = 0;
-                                    for (auto* otherClient : room.clients) {
-                                        if (!otherClient) continue;
-                                        SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
-                                    }
-                                }
-                                sendHP = m.hp;
-                                std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
-                                for (auto* otherClient : room.clients) {
-                                    if (!otherClient) continue;
-                                    SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                                }
-                            }
-                            else if (room.stageState == 2) {
-                                auto& m = room.myMonsters2[pkt->monsterID];
-                                m.hp -= pkt->attackHp;
-                                if (m.hp < 0) {
-                                    m.hp = 0;
-                                    for (auto* otherClient : room.clients) {
-                                        if (!otherClient) continue;
-                                        SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
-                                    }
-                                }
-                                sendHP = m.hp;
-                                std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
-                                for (auto* otherClient : room.clients) {
-                                    if (!otherClient) continue;
-                                    SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                                }
-                            }
-                            else if (room.stageState == 3) {
-                                auto& m = room.myMonsters3[pkt->monsterID];
-                                m.hp -= pkt->attackHp;
-                                if (m.hp < 0) {
-                                    m.hp = 0;
-                                    for (auto* otherClient : room.clients) {
-                                        if (!otherClient) continue;
-                                        SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
-                                    }
-                                }
-                                sendHP = m.hp;
-                                std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
-                                for (auto* otherClient : room.clients) {
-                                    if (!otherClient) continue;
-                                    SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
-                                }
-                            }
-                        }
-                    }
-                }
-               
-            }
-
-            else if (*packetType == PacketType::MTOP_DAMAGE) {
-
-                
-                MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(pOverlappedEx->buffer);
-                int myHP = 0;
-                {
-                    std::lock_guard<std::mutex> lock(*room.roomMutex);
-                    for (auto* targetClient : room.clients) {
-                        if (!targetClient) continue;
-                        if (targetClient->id == pkt->playerID) {
-                            targetClient->hp -= pkt->attackHp;
-                            if (targetClient->hp < 0) targetClient->hp = 0;
-                            if (targetClient->job == MG_JOB_TYPE) {
-                                if (targetClient->hp > CHARACTER_MG_HP) targetClient->hp = CHARACTER_MG_HP;
-                            }
-                            else if (targetClient->job == DMR_JOB_TYPE) {
-                                if (targetClient->hp > CHARACTER_DMR_HP) targetClient->hp = CHARACTER_DMR_HP;
-                            }
-                            else if (targetClient->job == ENG_JOB_TYPE) {
-                                if (targetClient->hp > CHARACTER_ENG_HP) targetClient->hp = CHARACTER_ENG_HP;
-                            }
-                            myHP = targetClient->hp;
-                            break;
-                        }
-                    }
-                }
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient) continue;
-                    SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, myHP);
-                }
-               
-            }
-            else if (*packetType == PacketType::ENGINEER_INSTALL) {
-
-               
-                EngineerInstallPacket* pkt = reinterpret_cast<EngineerInstallPacket*>(pOverlappedEx->buffer);
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_EngineerInstallPacket(otherClient, pkt->Etype, pkt->ID, pkt->rotY, pkt->posX, pkt->posY, pkt->posZ);
-                }
-            }
-            else if (*packetType == PacketType::ENGINEER_OBJECT) {
-
-                
-                EngineerObjectPacket* pkt = reinterpret_cast<EngineerObjectPacket*>(pOverlappedEx->buffer);
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_EngineerObjectPacket(otherClient, pkt->ID, pkt->hp);
-                }
-            }
-            else if (*packetType == PacketType::CENTER_HP) {
-
-               
-                CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(pOverlappedEx->buffer);
-                {
-                    std::lock_guard<std::mutex> lock(*room.roomMutex);
-                    room.centerHp -= pkt->damage;
-                    if (room.centerHp < 0) room.centerHp = 0;
-                }
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_CenterBuildingPacket(otherClient, room.centerHp);
-                }
-            }
-            else if (*packetType == PacketType::GRENADE) {
-
-               //GrenadePacket* pkt = reinterpret_cast<GrenadePacket*>(pOverlappedEx->buffer);
-               //
-               //// 데미지 패킷을 모든 클라이언트에게 전송
-               //for (stClientInfo* otherClient : clients) {
-               //    if (!otherClient) continue;
-               //    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
-               //        SendData_GrenadePacket(otherClient, pkt->posX, pkt->posY, pkt->posZ, pkt->rotX, pkt->rotY, pkt->rotZ);
-               //    }
-               //}
-               GrenadePacket* pkt = reinterpret_cast<GrenadePacket*>(pOverlappedEx->buffer);
-               for (auto* otherClient : room.clients) {
-                   if (!otherClient || otherClient == client) continue;
-                   SendData_GrenadePacket(otherClient, pkt->posX, pkt->posY, pkt->posZ, pkt->rotX, pkt->rotY, pkt->rotZ);
-               }
-            }
-            else if (*packetType == PacketType::CHOOSE_JOB) {
-
-                ChooseJobPacket* pkt = reinterpret_cast<ChooseJobPacket*>(pOverlappedEx->buffer);
-                //std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
-                client->job = pkt->job;
-                
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    std::cout << "INroomPlayer: " << otherClient->id << std::endl;
-                    SendData_ChooseJobPacket(otherClient, pkt->playerID, pkt->job);
-                }
-            }
+            delete[] buffer;
+            //auto it = rooms.find(client->roomID);
+            //if (it == rooms.end()) {
+            //    continue;
+            //    std::cout << "continue\n";
+            //}
+            //Room& room = it->second;
            
-            else if (*packetType == PacketType::READY) {
-
-                ReadyPacket* pkt = reinterpret_cast<ReadyPacket*>(pOverlappedEx->buffer);
-                //std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
-                client->ready = true;
-
-
-                for (auto* otherClient : room.clients) {
-                    if (!otherClient || otherClient == client) continue;
-                    SendData_ReadyPacket(otherClient, pkt->playerID);
-                }
-                bool allReady = true;
-                for (auto* otherClient : room.clients) {
-                    if (otherClient->ready == false) {
-                        allReady = false;
-                    }
-                }
-                if (allReady) {
-                    //randomthread
-                    for (auto* Client : room.clients) {
-                       
-                        if (Client->job== MG_JOB_TYPE) {
-                            Client->hp = CHARACTER_MG_HP;
-                        }
-                        else if (Client->job== DMR_JOB_TYPE) {
-                            Client->hp = CHARACTER_DMR_HP;
-                        }
-                        else if (Client->job== ENG_JOB_TYPE) {
-                            Client->hp = CHARACTER_ENG_HP;
-                        }
-                    }
-                    std::cout << "all players ready!!!\n";
-                    if (randomTreadFlag1 ) {
-                        randomPositionThread = std::thread([this]() { RandomPositionThread(); });
-                        randomTreadFlag1 = false;
-                    }
-                }
-            }
-
             RegisterRecv(client);  // 다시 수신 대기
             if (pOverlappedEx->cleanup) {
                 pOverlappedEx->cleanup();
@@ -1830,6 +1409,504 @@ void IOCompletionPort::WorkThread() {
             continue;
         }
     }
+}
+int IOCompletionPort::GetPacketSizeByType(PacketType type) {
+    using PT = PacketType;
+
+    if (type == PT::CHAT) return sizeof(ChatPacket_CtoS);
+    if (type == PT::MOVE) return sizeof(MovePacket_CtoS);
+    if (type == PT::VIEW_ANGLE) return sizeof(ViewingAnglePacket_CtoS);
+    if (type == PT::ENTER) return sizeof(EnterRoomPacket);
+    if (type == PT::ANIMATION) return sizeof(AnimationPacket_CtoS);
+    if (type == PT::MTOP_DAMAGE) return sizeof(MtoPDamagePacket);
+    if (type == PT::PTOM_DAMAGE) return sizeof(PtoMDamagePacket);
+    if (type == PT::ENGINEER_INSTALL) return sizeof(EngineerInstallPacket);
+    if (type == PT::ENGINEER_OBJECT) return sizeof(EngineerObjectPacket);
+    if (type == PT::CENTER_HP) return sizeof(CenterBuildingPacket);
+    if (type == PT::GRENADE) return sizeof(GrenadePacket);
+    if (type == PT::PLAYER_ARRIVAL) return sizeof(PlayerArrivalPacket);
+    if (type == PT::CLEAR_COUNT) return sizeof(ClearCountPacket);
+    if (type == PT::CHOOSE_JOB) return sizeof(ChooseJobPacket);
+    if (type == PT::READY) return sizeof(ReadyPacket);
+
+    // ⬇️ 누락된 항목들 추가
+    if (type == PT::NEW_CLIENT) return sizeof(NewClientPacket);
+    if (type == PT::EXISTING_CLIENTS) return sizeof(ExistingClientsDataPacket);
+    if (type == PT::MONSTER_STATE) return sizeof(MonsterStatePacket_CtoS);  // 또는 _StoC?
+    if (type == PT::MONSTER_MOVE) return sizeof(MonsterMovePacket);
+    if (type == PT::RANDOM_POSITION) return sizeof(DefenseRandomPacket);
+
+    return 0; // 알 수 없는 타입이면 0
+}
+void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
+    PacketType* packetType = reinterpret_cast<PacketType*>(buffer);
+
+    // 방 찾기
+    auto it = rooms.find(client->roomID);
+    if (it == rooms.end()) {
+        std::cout << "[ProcessPacket] Invalid roomID\n";
+        return; // ✅ continue 대신 return 권장 (room 없으면 더 이상 처리 의미 없음)
+    }
+    Room& room = it->second;
+
+    if (*packetType == PacketType::MOVE) {
+        MovePacket_CtoS* movePacket = reinterpret_cast<MovePacket_CtoS*>(buffer);
+
+        client->x = movePacket->x;
+        client->y = movePacket->y;
+        client->z = movePacket->z;
+
+        //auto it = rooms.find(client->roomID);
+        //if (it == rooms.end()) break;  // 해당 룸이 없다면 무시
+        //Room& room = it->second;
+        XMFLOAT3 arrivePosition{};
+        if (room.stageState == 1) {
+            //arrivePosition= XMFLOAT3(120.0f, 0.0f, 94.0f );
+            arrivePosition = MAP1_DESTINATION;
+        }
+        else if (room.stageState == 2) {
+            arrivePosition = MAP2_DESTINATION;
+        }
+        else if (room.stageState == 3) {
+            arrivePosition = MAP3_DESTINATION;
+        }
+
+        {
+            std::lock_guard<std::mutex> lock(*room.roomMutex);
+            int arrivedCount = 0;
+
+            for (auto* c : room.clients) {
+                if (!c) continue;
+
+                XMFLOAT3 playerPosition{ c->x, c->y, c->z };
+                float distance = CalcDistance3D(playerPosition, arrivePosition);
+
+                bool prev = c->curr;
+                c->curr = (distance <= 40.0f);
+
+                if (c->curr != prev) {
+                    //SendData_PlayerArrivalPacket(c, c->id, c->curr);
+                    c->prev = c->curr;
+                }
+
+                if (c->curr) {
+                    arrivedCount++;
+                    SendData_ClearCountPacket(c, arrivedCount);
+                }
+            }
+
+            // clearCount 갱신
+            room.clearCount = arrivedCount;
+
+            //auto now = std::chrono::steady_clock::now();
+            //auto time = now - Ltime;
+            //if (time > std::chrono::milliseconds(2000)) {
+            //    for (auto* c : room.clients) {
+            //        if (c) {
+            //            SendData_ClearCountPacket(c, arrivedCount);
+            //            SendData_ClearCountPacket(c, arrivedCount);
+            //            SendData_ClearCountPacket(c, arrivedCount);
+            //            RegisterRecv(client);
+            //            RegisterRecv(client);
+            //            std::cout << "arrivedCount:" << room.clearCount << std::endl;
+            //        }
+            //    }
+            //    Ltime = now;
+            //}
+
+            //여기 room.clearCount가 3이면 다음 스테이지?
+            if (room.clearCount >= MIN_PLAYER_COUNT) {
+                std::cout << "다들어옴!\n";
+                room.defenseState = true;
+                room.stageState++;
+                room.centerHp = CENTER_HP;
+                for (auto* Client : room.clients) {
+
+                    if (Client->job == MG_JOB_TYPE) {
+                        Client->hp = CHARACTER_MG_HP;
+                    }
+                    else if (Client->job == DMR_JOB_TYPE) {
+                        Client->hp = CHARACTER_DMR_HP;
+                    }
+                    else if (Client->job == ENG_JOB_TYPE) {
+                        Client->hp = CHARACTER_ENG_HP;
+                    }
+                    Client->curr = false;
+                    Client->prev = false;
+                }
+                if (randomTreadFlag2) {
+                    randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
+                    randomTreadFlag2 = false;
+                }
+                if (randomTreadFlag2 == false && randomTreadFlag3 == true && room.stageState > 2) {
+                    randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
+                    randomTreadFlag3 = false;
+                }
+                room.clearCount = 0;
+            }
+            // 모든 room 클라이언트에게 clearCount 전송
+           //for (auto* c : room.clients) {
+           //    if (c) SendData_ClearCountPacket(c, arrivedCount);
+           //}
+
+        }
+
+        // 이동 패킷을 같은 방 클라이언트들에게만 전송
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_Move(client, otherClient);
+        }
+    }
+    else if (*packetType == PacketType::VIEW_ANGLE) {
+
+        ViewingAnglePacket_CtoS* pkt = reinterpret_cast<ViewingAnglePacket_CtoS*>(buffer);
+        client->angle_x = pkt->x;
+        client->angle_y = pkt->y;
+        client->angle_z = pkt->z;
+
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_ViewAngle(client, otherClient);
+        }
+
+    }
+    else if (*packetType == PacketType::ANIMATION) {
+        //if (bytesTransferred < sizeof(MovePacket)) {
+        //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+        //    continue;
+        //}
+
+
+        AnimationPacket_CtoS* pkt = reinterpret_cast<AnimationPacket_CtoS*>(buffer);
+        client->animationType = pkt->anymationType;
+
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_Animaion(client, otherClient);
+        }
+    }
+    else if (*packetType == PacketType::MONSTER_STATE) {
+        //if (bytesTransferred < sizeof(MovePacket)) {
+        //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+        //    continue;
+        //}
+
+
+
+        MonsterStatePacket_CtoS* pkt = reinterpret_cast<MonsterStatePacket_CtoS*>(buffer);
+        std::cout << pkt->id << " --  Monstertype:" << pkt->Mtype << " monID:" << pkt->id << ", state:" << pkt->state << std::endl;
+        std::lock_guard<std::mutex> lock(*room.roomMutex);
+        if (room.defenseState) {
+            if (room.stageState == 1) {
+                room.defenseMonsters[pkt->id].state = pkt->state;
+            }
+            else if (room.stageState == 2) {
+                room.defenseMonsters2[pkt->id].state = pkt->state;
+            }
+            else if (room.stageState == 3) {
+                room.defenseMonsters3[pkt->id].state = pkt->state;
+            }
+        }
+        else {
+            if (room.stageState == 1) {
+                room.myMonsters[pkt->id].state = pkt->state;
+            }
+            else if (room.stageState == 2) {
+                room.myMonsters2[pkt->id].state = pkt->state;
+            }
+            else if (room.stageState == 3) {
+                room.myMonsters3[pkt->id].state = pkt->state;
+            }
+        }
+
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_MonsterState(otherClient, pkt->Mtype, pkt->state, pkt->id);
+        }
+    }
+    else if (*packetType == PacketType::MONSTER_MOVE) {
+        //if (bytesTransferred < sizeof(MovePacket)) {
+        //    std::cerr << "[에러] MOVE 패킷 크기 오류: " << bytesTransferred << " bytes" << std::endl;
+        //    continue;
+        //}
+
+
+
+        MonsterMovePacket* pkt = reinterpret_cast<MonsterMovePacket*>(buffer);
+        std::cout << "MonsterMovePacket: " << pkt->playerId << std::endl;
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_MonsterMove(otherClient, pkt->x, pkt->y, pkt->z, pkt->angle_y, pkt->monsterId, pkt->playerId);
+        }
+    }
+    else if (*packetType == PacketType::PTOM_DAMAGE) {
+
+        //std::cout << "[DEBUG] 받은 바이트 수: " << bytesTransferred << std::endl;
+        PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(buffer);
+        int sendHP = 0;
+        {
+            std::lock_guard<std::mutex> lock(*room.roomMutex);
+            if (room.defenseState) {
+                if (room.stageState == 1) {
+                    if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER1) {
+                        auto& m = room.defenseMonsters[pkt->monsterID];
+                        m.hp -= pkt->attackHp;
+                        if (m.hp < 0) {
+                            m.hp = 0;
+                            for (auto* otherClient : room.clients) {
+                                if (!otherClient) continue;
+                                SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
+                            }
+                        }
+                        sendHP = m.hp;
+                        if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; }))
+                            room.defenseState = false;
+                    }
+
+                    std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                    for (auto* otherClient : room.clients) {
+                        if (!otherClient) continue;
+                        SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                    }
+                }
+                else if (room.stageState == 2) {
+                    if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER2) {
+                        auto& m = room.defenseMonsters2[pkt->monsterID];
+                        m.hp -= pkt->attackHp;
+                        if (m.hp < 0) {
+                            m.hp = 0;
+                            for (auto* otherClient : room.clients) {
+                                if (!otherClient) continue;
+                                SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
+                            }
+                        }
+                        sendHP = m.hp;
+                        if (std::all_of(room.defenseMonsters2.begin(), room.defenseMonsters2.end(), [](const MonsterData& m) { return m.hp <= 0; }))
+                            room.defenseState = false;
+                    }
+
+                    std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                    for (auto* otherClient : room.clients) {
+                        if (!otherClient) continue;
+                        SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                    }
+                }
+                else if (room.stageState == 3) {
+                    if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER3) {
+                        auto& m = room.defenseMonsters3[pkt->monsterID];
+                        m.hp -= pkt->attackHp;
+                        if (m.hp < 0) {
+                            m.hp = 0;
+                            for (auto* otherClient : room.clients) {
+                                if (!otherClient) continue;
+                                SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
+                            }
+                        }
+                        sendHP = m.hp;
+                        if (std::all_of(room.defenseMonsters3.begin(), room.defenseMonsters3.end(), [](const MonsterData& m) { return m.hp <= 0; }))
+                            room.defenseState = false;
+                    }
+
+                    std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                    for (auto* otherClient : room.clients) {
+                        if (!otherClient) continue;
+                        SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                    }
+
+                }
+            }
+            else {
+                if (pkt->monsterID <= 1000) {
+                    if (room.stageState == 1) {
+                        auto& m = room.myMonsters[pkt->monsterID];
+                        m.hp -= pkt->attackHp;
+                        if (m.hp < 0) {
+                            m.hp = 0;
+                            for (auto* otherClient : room.clients) {
+                                if (!otherClient) continue;
+                                SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
+                            }
+                        }
+                        sendHP = m.hp;
+                        std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                        for (auto* otherClient : room.clients) {
+                            if (!otherClient) continue;
+                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        }
+                    }
+                    else if (room.stageState == 2) {
+                        auto& m = room.myMonsters2[pkt->monsterID];
+                        m.hp -= pkt->attackHp;
+                        if (m.hp < 0) {
+                            m.hp = 0;
+                            for (auto* otherClient : room.clients) {
+                                if (!otherClient) continue;
+                                SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
+                            }
+                        }
+                        sendHP = m.hp;
+                        std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                        for (auto* otherClient : room.clients) {
+                            if (!otherClient) continue;
+                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        }
+                    }
+                    else if (room.stageState == 3) {
+                        auto& m = room.myMonsters3[pkt->monsterID];
+                        m.hp -= pkt->attackHp;
+                        if (m.hp < 0) {
+                            m.hp = 0;
+                            for (auto* otherClient : room.clients) {
+                                if (!otherClient) continue;
+                                SendData_MonsterState(otherClient, 0, 3, pkt->monsterID);
+                            }
+                        }
+                        sendHP = m.hp;
+                        std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
+                        for (auto* otherClient : room.clients) {
+                            if (!otherClient) continue;
+                            SendData_PtoMDamagePacket(otherClient, pkt->monsterID, sendHP);
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    else if (*packetType == PacketType::MTOP_DAMAGE) {
+
+
+        MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(buffer);
+        int myHP = 0;
+        {
+            std::lock_guard<std::mutex> lock(*room.roomMutex);
+            for (auto* targetClient : room.clients) {
+                if (!targetClient) continue;
+                if (targetClient->id == pkt->playerID) {
+                    targetClient->hp -= pkt->attackHp;
+                    if (targetClient->hp < 0) targetClient->hp = 0;
+                    if (targetClient->job == MG_JOB_TYPE) {
+                        if (targetClient->hp > CHARACTER_MG_HP) targetClient->hp = CHARACTER_MG_HP;
+                    }
+                    else if (targetClient->job == DMR_JOB_TYPE) {
+                        if (targetClient->hp > CHARACTER_DMR_HP) targetClient->hp = CHARACTER_DMR_HP;
+                    }
+                    else if (targetClient->job == ENG_JOB_TYPE) {
+                        if (targetClient->hp > CHARACTER_ENG_HP) targetClient->hp = CHARACTER_ENG_HP;
+                    }
+                    myHP = targetClient->hp;
+                    break;
+                }
+            }
+        }
+        for (auto* otherClient : room.clients) {
+            if (!otherClient) continue;
+            SendData_MtoPDamagePacket(otherClient, pkt->playerID, pkt->monsterID, myHP);
+        }
+
+    }
+    else if (*packetType == PacketType::ENGINEER_INSTALL) {
+
+
+        EngineerInstallPacket* pkt = reinterpret_cast<EngineerInstallPacket*>(buffer);
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_EngineerInstallPacket(otherClient, pkt->Etype, pkt->ID, pkt->rotY, pkt->posX, pkt->posY, pkt->posZ);
+        }
+    }
+    else if (*packetType == PacketType::ENGINEER_OBJECT) {
+
+
+        EngineerObjectPacket* pkt = reinterpret_cast<EngineerObjectPacket*>(buffer);
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_EngineerObjectPacket(otherClient, pkt->ID, pkt->hp);
+        }
+    }
+    else if (*packetType == PacketType::CENTER_HP) {
+
+
+        CenterBuildingPacket* pkt = reinterpret_cast<CenterBuildingPacket*>(buffer);
+        {
+            std::lock_guard<std::mutex> lock(*room.roomMutex);
+            room.centerHp -= pkt->damage;
+            if (room.centerHp < 0) room.centerHp = 0;
+        }
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_CenterBuildingPacket(otherClient, room.centerHp);
+        }
+    }
+    else if (*packetType == PacketType::GRENADE) {
+
+        //GrenadePacket* pkt = reinterpret_cast<GrenadePacket*>(pOverlappedEx->buffer);
+        //
+        //// 데미지 패킷을 모든 클라이언트에게 전송
+        //for (stClientInfo* otherClient : clients) {
+        //    if (!otherClient) continue;
+        //    if (otherClient != client /*&& client->roomID == otherClient->roomID*/) { // 패킷을 보낸 클라이언트에게는 다시 전송하지 않음
+        //        SendData_GrenadePacket(otherClient, pkt->posX, pkt->posY, pkt->posZ, pkt->rotX, pkt->rotY, pkt->rotZ);
+        //    }
+        //}
+        GrenadePacket* pkt = reinterpret_cast<GrenadePacket*>(buffer);
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_GrenadePacket(otherClient, pkt->posX, pkt->posY, pkt->posZ, pkt->rotX, pkt->rotY, pkt->rotZ);
+        }
+    }
+    else if (*packetType == PacketType::CHOOSE_JOB) {
+
+        ChooseJobPacket* pkt = reinterpret_cast<ChooseJobPacket*>(buffer);
+        //std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
+        client->job = pkt->job;
+
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            std::cout << "INroomPlayer: " << otherClient->id << std::endl;
+            SendData_ChooseJobPacket(otherClient, pkt->playerID, pkt->job);
+        }
+    }
+
+    else if (*packetType == PacketType::READY) {
+
+        ReadyPacket* pkt = reinterpret_cast<ReadyPacket*>(buffer);
+        //std::cout << "CHOOSE_JOB--id:" << pkt->playerID << "job:" << pkt->job << std::endl;
+        client->ready = true;
+
+
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_ReadyPacket(otherClient, pkt->playerID);
+        }
+        bool allReady = true;
+        for (auto* otherClient : room.clients) {
+            if (otherClient->ready == false) {
+                allReady = false;
+            }
+        }
+        if (allReady) {
+            //randomthread
+            for (auto* Client : room.clients) {
+
+                if (Client->job == MG_JOB_TYPE) {
+                    Client->hp = CHARACTER_MG_HP;
+                }
+                else if (Client->job == DMR_JOB_TYPE) {
+                    Client->hp = CHARACTER_DMR_HP;
+                }
+                else if (Client->job == ENG_JOB_TYPE) {
+                    Client->hp = CHARACTER_ENG_HP;
+                }
+            }
+            std::cout << "all players ready!!!\n";
+            if (randomTreadFlag1) {
+                randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+                randomTreadFlag1 = false;
+            }
+        }
+    }
+
 }
 
 

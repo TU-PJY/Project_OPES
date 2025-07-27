@@ -65,6 +65,9 @@ struct stClientInfo {
     int hp;
     int roomID;
     std::atomic<bool> alreadyRemoved{ false };
+
+    int prevRemainSize = 0;
+    char prevBuffer[MAX_SOCKBUF] = { 0 };
     stClientInfo() {
         socketClient = INVALID_SOCKET;
         roomID = 0;
@@ -138,6 +141,9 @@ public:
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 
+
+    int GetPacketSizeByType(PacketType type);
+    void ProcessPacket(char* buffer, stClientInfo* client);
 
     bool AddClient(stClientInfo* c); 
     void RemoveClient(stClientInfo* c);
