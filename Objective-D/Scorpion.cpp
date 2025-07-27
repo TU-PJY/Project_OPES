@@ -96,6 +96,8 @@ void Scorpion::updateDetectPlayer(float Delta) {
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 
+	currentTargetID = 0;
+
 	// 현재 아무도 추격 안 하거나 나를 추격 중이면 나를 추적하도록 한다.
 	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
 		if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {

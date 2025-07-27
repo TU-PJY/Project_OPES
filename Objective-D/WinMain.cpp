@@ -77,7 +77,7 @@ struct RecvContext {
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
 constexpr bool skipTitleMode = false;
 
-constexpr bool skipDefenseMode = true;
+constexpr bool skipDefenseMode = false;
 constexpr bool editMode = false;
 
 constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
@@ -181,7 +181,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(context->buffer);
-		std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
+		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
 			Found->InputState(aniPacket->animationType);
@@ -655,6 +655,8 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 			std::cerr << "[클라이언트] 몬스터 이동 패킷 전송 실패\n";
 			context->cleanup();
 		}
+
+		std::cout << "monsterID: " << monsterId << " " << "playerID: " << playerId << std::endl;
 	}
 }
 

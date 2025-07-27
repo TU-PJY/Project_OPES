@@ -76,7 +76,7 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 // HP 체력, SPEED 이동속도(km/h), DAMAGE 데미지, ATTACK 주기(초)
 
 //디팬스 몬스터 수
-constexpr int                  DEFENSE_MONSTER1 = 20;
+constexpr int                  DEFENSE_MONSTER1 = 1;
 constexpr int                  DEFENSE_MONSTER2 = 10;
 constexpr int                  DEFENSE_MONSTER3 = 20;
 
