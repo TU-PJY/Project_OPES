@@ -94,73 +94,150 @@ bool SweptSphereOBB(const BoundingOrientedBox& box, FXMVECTOR start, FXMVECTOR e
 void Grenade::updateMove(float Delta) {
     if (isStopped) return;
 
-    // 1) Gravity
-    velocity.y += -gravity * Delta * 4.0f;
+    if (GLOBAL.mapName.compare("map3") != 0) {
+        // 1) Gravity
+        velocity.y += -gravity * Delta * 4.0f;
 
-    // 2) Compute prev & target positions
-    XMVECTOR prevPos = XMLoadFloat3(&position);
-    XMVECTOR velVec = XMLoadFloat3(&velocity);
-    XMVECTOR moveVec = velVec * Delta;
-    XMVECTOR targetPos = prevPos + moveVec;
+        // 2) Compute prev & target positions
+        XMVECTOR prevPos = XMLoadFloat3(&position);
+        XMVECTOR velVec = XMLoadFloat3(&velocity);
+        XMVECTOR moveVec = velVec * Delta;
+        XMVECTOR targetPos = prevPos + moveVec;
 
-    // 3) Sweep against each OBB
-    for (auto& data : GLOBAL.mapOOBBdata) {
-        const auto& box = data.oobb;
-        float tHit;
-        if (SweptSphereOBB(box, prevPos, targetPos, grenadeBound.sphere.Radius, tHit)
-            && tHit <= 1.0f)
-        {
-            // — Move up to collision time —
-            float hitTime = tHit * Delta;
-            XMVECTOR hitPos = prevPos + velVec * hitTime;
+        // 3) Sweep against each OBB
+        for (auto& data : GLOBAL.mapOOBBdata) {
+            const auto& box = data.oobb;
+            float tHit;
+            if (SweptSphereOBB(box, prevPos, targetPos, grenadeBound.sphere.Radius, tHit)
+                && tHit <= 1.0f)
+            {
+                // — Move up to collision time —
+                float hitTime = tHit * Delta;
+                XMVECTOR hitPos = prevPos + velVec * hitTime;
 
-            // — Compute contact normal —
-            XMVECTOR closestPt = ClosestPointOnOBB(box, hitPos);
-            XMVECTOR normal = XMVector3Normalize(hitPos - closestPt);
+                // — Compute contact normal —
+                XMVECTOR closestPt = ClosestPointOnOBB(box, hitPos);
+                XMVECTOR normal = XMVector3Normalize(hitPos - closestPt);
 
-            // — Reflect velocity —
-            float speed = XMVectorGetX(XMVector3Length(velVec));
-            XMVECTOR reflDir = XMVector3Reflect(XMVector3Normalize(velVec), normal);
-            XMVECTOR newVel = reflDir * speed;
-            XMStoreFloat3(&velocity, newVel);
+                // — Reflect velocity —
+                float speed = XMVectorGetX(XMVector3Length(velVec));
+                XMVECTOR reflDir = XMVector3Reflect(XMVector3Normalize(velVec), normal);
+                XMVECTOR newVel = reflDir * speed;
+                XMStoreFloat3(&velocity, newVel);
 
-            // — Move remainder of frame —
-            float remain = Delta - hitTime;
-            XMVECTOR finalPos = hitPos + newVel * remain;
-            XMStoreFloat3(&position, finalPos);
-            XMStoreFloat3(&grenadeBound.sphere.Center, finalPos);
+                // — Move remainder of frame —
+                float remain = Delta - hitTime;
+                XMVECTOR finalPos = hitPos + newVel * remain;
+                XMStoreFloat3(&position, finalPos);
+                XMStoreFloat3(&grenadeBound.sphere.Center, finalPos);
 
-            goto DO_TERRAIN;
+                goto DO_TERRAIN;
+            }
+        }
+
+        // 4) No OBB hit → full move
+        XMStoreFloat3(&position, targetPos);
+        XMStoreFloat3(&grenadeBound.sphere.Center, targetPos);
+
+    DO_TERRAIN:
+        // 5) Terrain collision (unchanged)
+        if (terrainUtil.CheckCollision(GLOBAL.mapTerrain)) {
+            XMFLOAT3 n3 = terrainUtil.GetNormalAtPoint(GLOBAL.mapTerrain);
+            XMVECTOR normal = XMVector3Normalize(XMLoadFloat3(&n3));
+            if (XMVectorGetY(normal) < 0) normal = -normal;
+
+            XMVECTOR v = XMLoadFloat3(&velocity);
+            XMVECTOR nComp = XMVector3Dot(v, normal) * normal;
+            XMVECTOR tComp = v - nComp;
+
+            XMVECTOR bounce = -nComp * restitution;
+            XMVECTOR slide = tComp * friction;
+            XMVECTOR result = slide + bounce;
+            XMStoreFloat3(&velocity, result);
+
+            float by = fabsf(XMVectorGetY(bounce));
+            if (by < 2.0f) {
+                isStopped = true;
+                velocity = { 0,0,0 };
+            }
+
+            terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.5f);
         }
     }
 
-    // 4) No OBB hit → full move
-    XMStoreFloat3(&position, targetPos);
-    XMStoreFloat3(&grenadeBound.sphere.Center, targetPos);
+    else {
+        // 중력 적용
+        velocity.y += -gravity * Delta * 4.0f;
 
-DO_TERRAIN:
-    // 5) Terrain collision (unchanged)
-    if (terrainUtil.CheckCollision(GLOBAL.mapTerrain)) {
-        XMFLOAT3 n3 = terrainUtil.GetNormalAtPoint(GLOBAL.mapTerrain);
-        XMVECTOR normal = XMVector3Normalize(XMLoadFloat3(&n3));
-        if (XMVectorGetY(normal) < 0) normal = -normal;
+        // 이동 전 위치
+        XMVECTOR prevPos = XMLoadFloat3(&position);
+        XMVECTOR velVec = XMLoadFloat3(&velocity);
+        XMVECTOR moveVec = velVec * Delta;
+        XMVECTOR targetPos = prevPos + moveVec;
+        XMStoreFloat3(&position, targetPos);
+        XMStoreFloat3(&grenadeBound.sphere.Center, targetPos);
 
-        XMVECTOR v = XMLoadFloat3(&velocity);
-        XMVECTOR nComp = XMVector3Dot(v, normal) * normal;
-        XMVECTOR tComp = v - nComp;
+        for (auto& data : GLOBAL.mapOOBBdata) {
+            const auto& box = data.oobb;
+            float tHit;
+            if (SweptSphereOBB(box, prevPos, targetPos, grenadeBound.sphere.Radius, tHit)
+                && tHit <= 1.0f)
+            {
+                // — Move up to collision time —
+                float hitTime = tHit * Delta;
+                XMVECTOR hitPos = prevPos + velVec * hitTime;
 
-        XMVECTOR bounce = -nComp * restitution;
-        XMVECTOR slide = tComp * friction;
-        XMVECTOR result = slide + bounce;
-        XMStoreFloat3(&velocity, result);
+                // — Compute contact normal —
+                XMVECTOR closestPt = ClosestPointOnOBB(box, hitPos);
+                XMVECTOR normal = XMVector3Normalize(hitPos - closestPt);
 
-        float by = fabsf(XMVectorGetY(bounce));
-        if (by < 2.0f) {
-            isStopped = true;
-            velocity = { 0,0,0 };
+                // — Reflect velocity —
+                float speed = XMVectorGetX(XMVector3Length(velVec));
+                XMVECTOR reflDir = XMVector3Reflect(XMVector3Normalize(velVec), normal);
+                XMVECTOR newVel = reflDir * speed;
+                XMStoreFloat3(&velocity, newVel);
+
+                // — Move remainder of frame —
+                float remain = Delta - hitTime;
+                XMVECTOR finalPos = hitPos + newVel * remain;
+                XMStoreFloat3(&position, finalPos);
+                XMStoreFloat3(&grenadeBound.sphere.Center, finalPos);
+
+                goto DO_TERRAIN3;
+            }
         }
 
-        terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.5f);
+        // 4) No OBB hit → full move
+        XMStoreFloat3(&position, targetPos);
+        XMStoreFloat3(&grenadeBound.sphere.Center, targetPos);
+
+    DO_TERRAIN3:
+        // 지면 확인
+        Ray newRay = Math::CalcRayVector(
+            xmfloat3(position.x, position.y + 40.0f, position.z),
+            xmfloat3(position.x, position.y - 40.0f, position.z)
+        );
+        float Distance;
+        xmfloat3 newPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, newRay.Origin, newRay.Direction, Distance);
+
+        if (Distance > 0.0f) {
+            // 충분히 가까운 경우 튕김
+            if (position.y - newPosition.y < 0.05f) {
+                position.y = newPosition.y + 0.05f;
+
+                if (fabsf(velocity.y) < 2.0f) {
+                    isStopped = true;
+                    velocity = { 0,0,0 };
+                }
+                else {
+                    velocity.y = -velocity.y * restitution;
+                    velocity.x *= friction;
+                    velocity.z *= friction;
+                }
+
+                grenadeBound.sphere.Center = position;
+            }
+        }
     }
 }
 
