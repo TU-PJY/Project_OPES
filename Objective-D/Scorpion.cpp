@@ -87,6 +87,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 		return;
 
 	// 일정 간격마다 전송 활성화
+	sendState = false;
 	sendDelay += Delta;
 	if (sendDelay >= destDelay) {
 		sendDelay -= destDelay;
@@ -113,7 +114,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							isBlocked = true;
 
 							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-						//	SendMonstertypePacket(2, currentState, ID);
+							SendMonstertypePacket(2, currentState, ID);
 							
 							break;
 						}
@@ -127,10 +128,10 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							currentState = SCOR_ATTACK;
 							currentTargetID = GLOBAL.myID;
 
-						//	if (sendState) {
+							if (sendState) {
 								SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-								//SendMonstertypePacket(2, currentState, ID);
-							//}
+								SendMonstertypePacket(2, currentState, ID);
+							}
 						}
 
 						// 아니라면 추격 상태로 전환
@@ -139,10 +140,10 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							currentState = SCOR_WALK;
 							currentTargetID = GLOBAL.myID;
 
-							//if (sendState) {
+							if (sendState) {
 								SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-							//	SendMonstertypePacket(2, currentState, ID);
-							//}
+								SendMonstertypePacket(2, currentState, ID);
+							}
 						}
 					}
 				}
@@ -155,10 +156,16 @@ void Scorpion::updateDetectPlayer(float Delta) {
 		}
 	}
 
-	if (sendState) {
+	if (serverState != currentState) {
 		SendMonstertypePacket(2, currentState, ID);
-		sendState = false;
+		serverState = currentState;
 	}
+
+	if (prevTargetID != currentTargetID) {
+		SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+		prevTargetID = currentTargetID;
+	}
+
 }
 
 void Scorpion::updateState() {

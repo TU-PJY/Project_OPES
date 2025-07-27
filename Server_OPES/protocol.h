@@ -81,7 +81,7 @@ constexpr int                  DEFENSE_MONSTER2 = 10;
 constexpr int                  DEFENSE_MONSTER3 = 20;
 
 //start 인원수 
-constexpr int				   MIN_PLAYER_COUNT = 3;          
+constexpr int				   MIN_PLAYER_COUNT = 2;          
 
 // 스테이지 1
 // Plant Monster
