@@ -142,7 +142,7 @@ void Turret::Update(float Delta) {
 		if (!createdByServer) {
 			if(!GLOBAL.useServer)
 				target->GiveDamage(10);
-			SendPtoMDamagePacket( target->GetID(), 5);
+			SendPtoMDamagePacket( target->GetID(), 10);
 			std::cout << "ID: " << target->GetID() << std::endl;
 			std::cout << "HP: " << target->GetHP() << std::endl;
 		}

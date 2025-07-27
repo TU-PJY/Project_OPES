@@ -264,13 +264,9 @@ void Player1st::InputMouse(MouseEvent& Event) {
 					beaconCoolTime = BEACON_INSTALL_COOLTIME;
 					installPtr->SetRenderState(false);
 				}
-			
 			break;
 
 			case 2:
-				break;
-
-			case 3:
 				if (weaponPtr) weaponPtr->pullTrigger();
 				triggerState = true;
 				break;
@@ -288,7 +284,7 @@ void Player1st::InputMouse(MouseEvent& Event) {
 
 		if ((characterType == CHARACTER_MG || characterType == CHARACTER_DMR) && IndicatorPtr->GetCurrentIndex() != 1)
 			break;
-		if (characterType == CHARACTER_ENG && IndicatorPtr->GetCurrentIndex() != 3)
+		if (characterType == CHARACTER_ENG && IndicatorPtr->GetCurrentIndex() != 2)
 			break;
 
 		if (weaponPtr && !weaponPtr->getReloadState()) {

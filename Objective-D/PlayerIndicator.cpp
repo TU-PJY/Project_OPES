@@ -10,7 +10,7 @@ PlayerIndicator::PlayerIndicator(int characterType) {
 	type = characterType;
 
 	if (type == CHARACTER_ENG)
-		currentIndex = 3;
+		currentIndex = 2;
 	else
 		currentIndex = 1;
 
@@ -109,7 +109,7 @@ void PlayerIndicator::Render() {
 			text2.Render(xmfloat2(-1.0 * ASPECT + 0.375, -1.0 + 0.6), 0.1, beaconCoolTimeStr);
 		}
 
-		BeginRender(RENDER_TYPE_2D);
+		/*BeginRender(RENDER_TYPE_2D);
 		Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.625, -1.0 + 0.45);
 		Transform::Scale2D(ScaleMatrix, 0.25, 0.25);
 
@@ -122,7 +122,7 @@ void PlayerIndicator::Render() {
 			}
 		}
 		else
-			Render2D(TEX.UI_barrierIcon, 0.5);
+			Render2D(TEX.UI_barrierIcon, 0.5);*/
 	}
 
 	else {
@@ -150,7 +150,7 @@ void PlayerIndicator::Render() {
 
 	case CHARACTER_ENG:
 		BeginRender(RENDER_TYPE_2D);
-		Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.875, -1.0 + 0.45);
+		Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.625, -1.0 + 0.45);
 		Transform::Scale2D(ScaleMatrix, 0.25, 0.25);
 		Render2D(TEX.UI_shotgunIcon);
 		break;
@@ -185,7 +185,7 @@ void PlayerIndicator::InputBarrierCoolTime(float time) {
 
 void PlayerIndicator::ScrollRight() {
 	currentIndex++;
-	if (type == CHARACTER_ENG && currentIndex > 3)
+	if (type == CHARACTER_ENG && currentIndex > 2)
 		currentIndex = 0;
 
 	else if (type != CHARACTER_ENG && currentIndex > 1)
@@ -196,7 +196,7 @@ void PlayerIndicator::ScrollLeft() {
 	currentIndex--;
 	if (currentIndex < 0) {
 		if (type == CHARACTER_ENG)
-			currentIndex = 3;
+			currentIndex = 2;
 		else
 			currentIndex = 1;
 	}

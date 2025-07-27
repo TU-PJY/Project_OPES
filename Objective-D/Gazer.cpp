@@ -325,7 +325,8 @@ bool Gazer::CheckHit(float& distance) {
 }
 
 xmfloat3 Gazer::GetPosition() {
-	return position;
+	xmfloat3 retval(position.x, position.y + 4.0, position.z);
+	return retval;
 }
 
 void Gazer::GiveDamage(int damage) {

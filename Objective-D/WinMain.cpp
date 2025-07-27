@@ -78,7 +78,7 @@ struct RecvContext {
 constexpr bool skipTitleMode = true;
 
 constexpr bool skipDefenseMode = false;
-constexpr bool editMode = true;
+constexpr bool editMode = false;
 
 constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
