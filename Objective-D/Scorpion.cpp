@@ -83,88 +83,6 @@ void Scorpion::sendCurrentPosition() {
 }
 
 void Scorpion::updateDetectPlayer(float Delta) {
-	//if (currentState == SCOR_DEATH)
-	//	return;
-
-	//// 일정 간격마다 전송 활성화
-	//sendState = false;
-	//sendDelay += Delta;
-	//if (sendDelay >= destDelay) {
-	//	sendDelay -= destDelay;
-	//	sendState = true;
-	//}
-
-	//size_t size = scene.LayerSize(LAYER_PLAYER);
-
-	//// 현재 아무도 추격 안 하거나 나를 추격 중이면 나를 추적하도록 한다.
-	//if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
-	//	for (int i = 0; i < size; i++) {
-	//		if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
-	//			auto playerOOBB = player->GetOOBB();
-	//			if (lookRange.CheckCollision(playerOOBB)) {
-	//				XMFLOAT3 playerPosition = player->GetPosition();
-	//				playerPosition.y += player->GetSize().y * 1.5;
-	//				Ray newRay = Math::CalcRayVector(position, playerPosition);
-
-	//				bool isBlocked{};
-	//				for (auto& B : GLOBAL.mapOOBBdata) {
-	//					if (Math::CheckRayCollision(newRay, B)) {
-	//						currentState = SCOR_IDLE; 
-	//						currentTargetID = 0;
-	//						isBlocked = true;
-
-	//						SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-	//						SendMonstertypePacket(2, currentState, ID);
-	//						
-	//						break;
-	//					}
-	//				}
-
-	//				if (!isBlocked) {
-	//					rotationDest = Math::CalcDegree3D(position, playerPosition);
-
-	//					// 공격 범위에 플레이어 바운드가 닿으면 공격 상태 활성화
-	//					if (attackBound.CheckCollision(playerOOBB)) {
-	//						currentState = SCOR_ATTACK;
-	//						currentTargetID = GLOBAL.myID;
-
-	//						if (sendState) {
-	//							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-	//							SendMonstertypePacket(2, currentState, ID);
-	//						}
-	//					}
-
-	//					// 아니라면 추격 상태로 전환
-	//					else {
-	//						Math::Normalize2DAngleTo360(rotationDest.y);
-	//						currentState = SCOR_WALK;
-	//						currentTargetID = GLOBAL.myID;
-
-	//						if (sendState) {
-	//							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-	//							SendMonstertypePacket(2, currentState, ID);
-	//						}
-	//					}
-	//				}
-	//			}
-
-	//			else {
-	//				currentState = SCOR_IDLE;
-	//				currentTargetID = 0;
-	//			}
-	//		}
-	//	}
-	//}
-
-	//if (serverState != currentState) {
-	//	SendMonstertypePacket(2, currentState, ID);
-	//	serverState = currentState;
-	//}
-
-	//if (prevTargetID != currentTargetID) {
-	//	SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-	//	prevTargetID = currentTargetID;
-	//}
 	if (currentState == SCOR_DEATH)
 		return;
 
@@ -178,67 +96,65 @@ void Scorpion::updateDetectPlayer(float Delta) {
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 
-	int closestTargetID = 0;
-	float closestDistance = FLT_MAX;
-	XMFLOAT3 closestPlayerPosition{};
+	// 현재 아무도 추격 안 하거나 나를 추격 중이면 나를 추적하도록 한다.
+	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
+		for (int i = 0; i < size; i++) {
+			if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
+				auto playerOOBB = player->GetOOBB();
+				if (lookRange.CheckCollision(playerOOBB)) {
+					XMFLOAT3 playerPosition = player->GetPosition();
+					playerPosition.y += player->GetSize().y * 1.5;
+					Ray newRay = Math::CalcRayVector(position, playerPosition);
 
-	// 가장 가까운 플레이어 탐색
-	for (int i = 0; i < size; ++i) {
-		if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
-			auto playerOOBB = player->GetOOBB();
-			if (lookRange.CheckCollision(playerOOBB)) {
-				XMFLOAT3 playerPosition = player->GetPosition();
-				playerPosition.y += player->GetSize().y * 1.5f;
+					bool isBlocked{};
+					for (auto& B : GLOBAL.mapOOBBdata) {
+						if (Math::CheckRayCollision(newRay, B)) {
+							isBlocked = true;
+							break;
+						}
+					}
 
-				Ray rayToPlayer = Math::CalcRayVector(position, playerPosition);
+					if (!isBlocked) {
+						rotationDest = Math::CalcDegree3D(position, playerPosition);
 
-				bool blocked = false;
-				for (auto& obb : GLOBAL.mapOOBBdata) {
-					if (Math::CheckRayCollision(rayToPlayer, obb)) {
-						blocked = true;
-						break;
+						// 공격 범위에 플레이어 바운드가 닿으면 공격 상태 활성화
+						if (attackBound.CheckCollision(playerOOBB)) {
+							currentState = SCOR_ATTACK;
+							currentTargetID = GLOBAL.myID;
+
+							if (sendState) {
+								SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+								SendMonstertypePacket(2, currentState, ID);
+							}
+						}
+
+						// 아니라면 추격 상태로 전환
+						else {
+							Math::Normalize2DAngleTo360(rotationDest.y);
+							currentState = SCOR_WALK;
+							currentTargetID = GLOBAL.myID;
+
+							if (sendState) {
+								SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+								SendMonstertypePacket(2, currentState, ID);
+							}
+						}
+					}
+
+					else {
+						currentState = SCOR_IDLE;
+						currentTargetID = 0;
 					}
 				}
 
-				if (!blocked) {
-					float dist = Math::CalcDistance3D(position, playerPosition);
-					if (dist < closestDistance) {
-						closestDistance = dist;
-						closestTargetID = player->GetID(); // 플레이어 식별 ID 가져오기
-						closestPlayerPosition = playerPosition;
-					}
+				else {
+					currentState = SCOR_IDLE;
+					currentTargetID = 0;
 				}
 			}
 		}
 	}
 
-	if (closestTargetID != 0) {
-		rotationDest = Math::CalcDegree3D(position, closestPlayerPosition);
-		Math::Normalize2DAngleTo360(rotationDest.y);
-
-		// 공격 범위 내면 공격 상태
-		if (auto target = scene.SearchLayer(LAYER_PLAYER, std::to_string(closestTargetID)); target) {
-			if (attackBound.CheckCollision(target->GetOOBB())) {
-				currentState = SCOR_ATTACK;
-			}
-			else {
-				currentState = SCOR_WALK;
-			}
-		}
-
-		currentTargetID = closestTargetID;
-
-		if (sendState) {
-			SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-			SendMonstertypePacket(2, currentState, ID);
-		}
-	}
-	else {
-		currentTargetID = 0;
-		currentState = SCOR_IDLE;
-	}
-
-	// 상태 갱신 시 패킷 전송
 	if (serverState != currentState) {
 		SendMonstertypePacket(2, currentState, ID);
 		serverState = currentState;
@@ -291,7 +207,7 @@ void Scorpion::updateMove(float Delta) {
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
 
 	// 나를 추격하는 상태일때만 MoveWithSlide를 실행한다.
-	if (currentState == SCOR_WALK && currentTargetID == GLOBAL.myID)
+	if (currentState == SCOR_WALK)
 		Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, scorBound, GLOBAL.mapOOBBdata, Delta);
 		
 //	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
