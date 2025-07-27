@@ -399,6 +399,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	}
 	else if (*type == PacketType::PLAYER_DEATH) {
 		PlayerDeathPacket* pkt = reinterpret_cast<PlayerDeathPacket*>(buffer);
+		std::cout << "PLAYER_DEATH-id: " << pkt->playerID << std::endl;
 
 		//PLAYER_DEATH처리!!
 	}
