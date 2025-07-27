@@ -1732,6 +1732,18 @@ void IOCompletionPort::WorkThread() {
                 }
                 if (allReady) {
                     //randomthread
+                    for (auto* Client : room.clients) {
+                       
+                        if (Client->job== MG_JOB_TYPE) {
+                            Client->hp = CHARACTER_MG_HP;
+                        }
+                        else if (Client->job== DMR_JOB_TYPE) {
+                            Client->hp = CHARACTER_DMR_HP;
+                        }
+                        else if (Client->job== ENG_JOB_TYPE) {
+                            Client->hp = CHARACTER_ENG_HP;
+                        }
+                    }
                     std::cout << "all players ready!!!\n";
                     if (randomTreadFlag1 ) {
                         randomPositionThread = std::thread([this]() { RandomPositionThread(); });

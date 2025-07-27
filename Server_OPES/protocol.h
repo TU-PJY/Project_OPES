@@ -17,8 +17,8 @@ constexpr unsigned int         MG_MAGAZINE	   = 100;
 // 지정 사수 소총
 constexpr unsigned int         DMR_DAMAGE	    = 70;
 constexpr float                DMR_RECOIL       = 13.0;
-constexpr float                DMR_RECOIL_BACK   = 0.2f;
-constexpr float                DMR_SHOOT_DELAY   = 0.7f;
+constexpr float                DMR_RECOIL_BACK  = 0.2f;
+constexpr float                DMR_SHOOT_DELAY  = 0.7f;
 constexpr float                DMR_RELOAD_TIME  = 2.0f;
 constexpr unsigned int         DMR_MAGAZINE		= 10;
 
@@ -57,12 +57,15 @@ constexpr int                  CHARACTER_DMR = 1;
 constexpr int                  CHARACTER_ENG = 2;
 
 
+constexpr int				   MG_JOB_TYPE     = 0;
 constexpr unsigned int         CHARACTER_MG_HP = 100; //300; //  임시로 100으로 변경
 constexpr float                CHARACTER_MG_SPEED   = 8.0f;
 
+constexpr int				   DMR_JOB_TYPE     = 1;
 constexpr unsigned int         CHARACTER_DMR_HP = 100; // 125;
 constexpr float                CHARACTER_DMR_SPEED	= 15.0f;
 
+constexpr int				   ENG_JOB_TYPE      = 2;
 constexpr unsigned int         CHARACTER_ENG_HP = 100; // 150;
 constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 
