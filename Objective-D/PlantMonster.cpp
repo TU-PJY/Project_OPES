@@ -46,7 +46,6 @@ void PlantMonster::updateTargetDetect(float Delta) {
 	if (defenseModeState)
 		return;
 
-	sendState = false;
 	sendDelay += Delta;
 	if (sendDelay >= destDelay) {
 		sendDelay -= destDelay;
@@ -74,7 +73,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 							currentTargetID = 0;
 
 							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-							SendMonstertypePacket(1, currentState, ID);
+						//	SendMonstertypePacket(1, currentState, ID);
 
 							isBlocking = true;
 							break;
@@ -90,10 +89,10 @@ void PlantMonster::updateTargetDetect(float Delta) {
 						Math::Normalize2DAngleTo360(destRotation.y);
 						targetPosition = playerPosition;
 
-						if (sendState) {
-							SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-							SendMonstertypePacket(1, currentState, ID);
-						}
+						//if (sendState) {
+						SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
+						//	SendMonstertypePacket(1, currentState, ID);
+						//}
 					}
 				}
 
@@ -111,7 +110,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 			targetPosition = player->GetPosition();
 	}
 
-	if (serverState != currentState) {
+	/*if (serverState != currentState) {
 		SendMonstertypePacket(1, currentState, ID);
 		serverState = currentState;
 	}
@@ -119,6 +118,11 @@ void PlantMonster::updateTargetDetect(float Delta) {
 	if (prevTargetID != currentTargetID) {
 		SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
 		prevTargetID = currentTargetID;
+	}*/
+
+	if (sendState) {
+		SendMonstertypePacket(2, currentState, ID);
+		sendState = false;
 	}
 }
 

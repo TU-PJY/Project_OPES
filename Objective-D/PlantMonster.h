@@ -64,8 +64,9 @@ private:
 	unsigned int prevTargetID{};
 
 	float sendDelay{};
-	float destDelay{1.0 / 30.0};
+	float destDelay{1.0 / 24.0};
 	bool sendState{};
+	int sendOrder{};
 
 public:
 	void updateHitBox(float Delta);
