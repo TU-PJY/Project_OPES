@@ -31,6 +31,7 @@ private:
 	float       animationTime{};
 
 	bool        attackDid{};
+	bool        trackState{};
 
 	int         totalHP{ SCORPION_HP };
 	int         currentHP{ SCORPION_HP };

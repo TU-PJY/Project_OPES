@@ -116,6 +116,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 
 				if (!isBlocked) {
 					foundTarget = true;
+					trackState = true;
 					rotationDest = Math::CalcDegree3D(position, playerPosition);
 
 					if (attackBound.CheckCollision(playerOOBB)) {
@@ -139,13 +140,11 @@ void Scorpion::updateDetectPlayer(float Delta) {
 		}
 	}
 
-	//if (currentTargetID == GLOBAL.myID) {
-	if (!foundTarget) {
+	if (!foundTarget && trackState) {
 		SendMonstertypePacket(2, SCOR_IDLE, ID);
 		currentState = SCOR_IDLE;
-		currentTargetID = 0;
+		trackState = false;
 	}
-	//}
 }
 
 
