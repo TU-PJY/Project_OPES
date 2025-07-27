@@ -1771,7 +1771,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
 
 
         MonsterMovePacket* pkt = reinterpret_cast<MonsterMovePacket*>(buffer);
-        std::cout << "MonsterMovePacket: " << pkt->playerId << std::endl;
+        //std::cout << "MonsterMovePacket: " << pkt->playerId << std::endl;
         for (auto* otherClient : room.clients) {
             if (!otherClient || otherClient == client) continue;
             SendData_MonsterMove(otherClient, pkt->x, pkt->y, pkt->z, pkt->angle_y, pkt->monsterId, pkt->playerId);
@@ -1781,6 +1781,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
 
         //std::cout << "[DEBUG] 받은 바이트 수: " << bytesTransferred << std::endl;
         PtoMDamagePacket* pkt = reinterpret_cast<PtoMDamagePacket*>(buffer);
+        std::cout << "PtoMDamagePacket: " << pkt->attackHp << "->monID: " << pkt->monsterID << std::endl;
         int sendHP = 0;
         {
             std::lock_guard<std::mutex> lock(*room.roomMutex);
