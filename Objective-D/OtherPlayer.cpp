@@ -133,6 +133,18 @@ void OtherPlayer::Update(float Delta) {
 	updateBound();
 	flameRenderTime -= Delta;
 	Clamp::LimitValue(flameRenderTime, 0.0, CLAMP_DIR_LESS);
+
+	footstepTime += Delta;
+	if (footstepTime > footstepInterval) {
+		footstepTime -= Delta;
+	}
+
+	if (currentState == STATE_MOVE || currentState == STATE_MOVE_SHOOT) {
+		if (footstepTime >= footstepInterval) {
+			footstepTime -= footstepInterval;
+			SOUND.footstep3d.Play3D();
+		}
+	}
 }
 
 void OtherPlayer::Render() {

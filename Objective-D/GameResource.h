@@ -280,6 +280,8 @@ typedef struct {
 	QP::Sound shotgunShoot3d;
 	QP::Sound explode;
 	QP::Sound turretShoot;
+	QP::Sound footstep;
+	QP::Sound footstep3d;
 }SoundRecources;
 extern SoundRecources SOUND;
 

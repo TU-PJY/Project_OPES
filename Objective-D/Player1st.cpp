@@ -499,6 +499,18 @@ void Player1st::Update(float Delta) {
 	updateIndicator();
 
 	QP::SoundSystem.SetListenerPosition(playerPosition);
+
+	footstepTime += Delta;
+	if (footstepTime > footstepInterval) {
+		footstepTime -= Delta;
+	}
+
+	if (currentState == STATE_MOVE || currentState == STATE_MOVE_SHOOT) {
+		if (footstepTime >= footstepInterval) {
+			footstepTime -= footstepInterval;
+			SOUND.footstep.Play();
+		}
+	}
 }
 
 void Player1st::Render() {
