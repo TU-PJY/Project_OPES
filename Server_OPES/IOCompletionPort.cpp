@@ -1630,26 +1630,12 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
             // clearCount 갱신
             room.clearCount = arrivedCount;
 
-            //auto now = std::chrono::steady_clock::now();
-            //auto time = now - Ltime;
-            //if (time > std::chrono::milliseconds(2000)) {
-            //    for (auto* c : room.clients) {
-            //        if (c) {
-            //            SendData_ClearCountPacket(c, arrivedCount);
-            //            SendData_ClearCountPacket(c, arrivedCount);
-            //            SendData_ClearCountPacket(c, arrivedCount);
-            //            RegisterRecv(client);
-            //            RegisterRecv(client);
-            //            std::cout << "arrivedCount:" << room.clearCount << std::endl;
-            //        }
-            //    }
-            //    Ltime = now;
-            //}
+           
 
             //여기 room.clearCount가 3이면 다음 스테이지?
 
            
-            if (room.clearCount >= MIN_PLAYER_COUNT) {
+            if (room.clearCount == MIN_PLAYER_COUNT- room.DeathCount) {
 
                 for (auto* Client : room.clients) {
 
@@ -1670,6 +1656,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 room.defenseState = true;
                 room.stageState++;
                 room.centerHp = CENTER_HP;
+                room.DeathCount = 0;
                
                 if (randomTreadFlag2) {
                     randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
@@ -1943,6 +1930,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
             for (auto* client : room.clients) {
                 if (client->hp <= 0) {
                     if (!client) continue;
+                    room.DeathCount++;
                     for (auto* c : room.clients) {
                         if (!c) continue;
                         SendData_PlayerDeathPacket(c, client->id);

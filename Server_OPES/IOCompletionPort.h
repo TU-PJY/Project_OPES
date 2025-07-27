@@ -104,7 +104,9 @@ struct Room {
     bool defenseState = true;
     //bool isCreat = true;
     int stageState = 1;
-  
+    int DeathCount = 0;
+
+
     std::shared_ptr<std::mutex> roomMutex = std::make_shared<std::mutex>();
 
 
