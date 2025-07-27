@@ -2120,13 +2120,39 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
         
     }
     else if (*packetType == PacketType::MASTER_KEY) {
-        MasterKeyPacket* pkt = reinterpret_cast<MasterKeyPacket*>(buffer);
+       //MasterKeyPacket* pkt = reinterpret_cast<MasterKeyPacket*>(buffer);
+       //if (pkt->keyNum == 1) {
+       //    client->x = MAP1_DESTINATION.x;
+       //    client->y = MAP1_DESTINATION.y;
+       //    client->z = MAP1_DESTINATION.z;
+       //    for (auto* otherClient : room.clients) {
+       //        if (!otherClient || otherClient == client) continue;
+       //        SendData_Move(client, otherClient);
+       //    }
+       //}
+       //if (pkt->keyNum == 2) {
+       //    client->x = MAP2_DESTINATION.x;
+       //    client->y = MAP2_DESTINATION.y;
+       //    client->z = MAP2_DESTINATION.z;
+       //    for (auto* otherClient : room.clients) {
+       //        if (!otherClient || otherClient == client) continue;
+       //        SendData_Move(client, otherClient);
+       //    }
+       //}
+       //if (pkt->keyNum == 3) {
+       //    client->x = MAP3_DESTINATION.x;
+       //    client->y = MAP3_DESTINATION.y;
+       //    client->z = MAP3_DESTINATION.z;
+       //    for (auto* otherClient : room.clients) {
+       //        if (!otherClient || otherClient == client) continue;
+       //        SendData_Move(client, otherClient);
+       //    }
+       //}
 
-
-        for (auto* otherClient : room.clients) {
-            if (!otherClient || otherClient == client) continue;
-            SendData_MasterKeytPacket(otherClient, pkt->keyNum);
-        }
+        //for (auto* otherClient : room.clients) {
+        //    if (!otherClient || otherClient == client) continue;
+        //    SendData_MasterKeytPacket(otherClient, pkt->keyNum);
+        //}
     }
 
 }
