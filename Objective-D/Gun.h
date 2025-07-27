@@ -54,7 +54,7 @@ public:
 	void releaseTrigger() override;
 	void InputPosition(XMFLOAT3& position) override;
 	void inputRotation(const XMFLOAT3& rotation) override;
-	void ReloadGun() override;
+	virtual void ReloadGun() override;
 
 	void inputMoveState(bool moveState) override;
 	int getTotalAmmo() override;

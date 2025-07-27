@@ -27,6 +27,7 @@ extern bool DevMode;
 extern bool LoadMap1Resources;
 extern bool LoadMap2Resources;
 extern bool LoadMap3Resources;
+extern bool LoadSoundResources;
 extern bool UIcreateMode;
 
 enum GlobalEnum : unsigned int {
@@ -266,6 +267,10 @@ extern TextureResource TEX;
 
 typedef struct {
 	QP::Sound machinegunShoot;
+	QP::Sound machinegunReload;
+	QP::Sound dmrShoot;
+	QP::Sound dmrReload;
+	QP::Sound explode;
 }SoundRecources;
 extern SoundRecources SOUND;
 
@@ -301,6 +306,7 @@ void InitLineShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device);
 void LoadSystemMesh(DeviceSystem& System);
 void LoadMesh(DeviceSystem& System);
 void LoadTexture(DeviceSystem& System);
+void LoadSound();
 void ClearUploadBuffer();
 
 inline void ImportMesh(DeviceSystem& System, Mesh*& MeshPtr, char* Directory, int Type) {

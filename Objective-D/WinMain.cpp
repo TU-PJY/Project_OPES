@@ -94,6 +94,9 @@ bool LoadMap1Resources = true;
 bool LoadMap2Resources = false;
 bool LoadMap3Resources = false;
 
+// 사운드 리소스를 로드한다.
+bool LoadSoundResources = true;
+
 // 시작 모드
 START_MODE_PTR StartMode = Level1::Start;
 

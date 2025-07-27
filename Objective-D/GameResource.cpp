@@ -309,6 +309,15 @@ void LoadTexture(DeviceSystem& System) {
 }
 /////////////////////////////////////////////////////////////////////////////////
 
+void LoadSound() {
+	SOUND.machinegunShoot.Load("Resources//Sounds//machinegunShoot.wav");
+	SOUND.machinegunReload.Load("Resources//Sounds//machinegunReload.ogg");
+	SOUND.dmrShoot.Load("Resources//Sounds//dmrShoot.wav");
+	SOUND.dmrReload.Load("Resources//Sounds//dmrReload.ogg");
+	SOUND.explode.Load("Resources//Sounds//explode.wav");
+}
+
+
 Object_Shader* ObjectShader;
 Boundbox_Shader* BoundboxShader;
 Image_Shader* ImageShader;
