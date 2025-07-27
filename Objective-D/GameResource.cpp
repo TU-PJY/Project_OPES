@@ -303,6 +303,8 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.UI_selected, L"Resources//Image//ui//selected.png");
 	LoadTexture(TEX.UI_back, L"Resources//Image//ui//back.png");
 	LoadTexture(TEX.UI_lobbyBackground, L"Resources//Image//ui//lobby-background.png");
+
+	LoadTexture(TEX.UI_destMark, L"Resources//Image//ui//destMark.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 

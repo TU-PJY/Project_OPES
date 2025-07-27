@@ -317,6 +317,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ z_Deprecated ]\[ Imp ]">
       <UniqueIdentifier>{754a1ae3-725d-490b-85c3-6a3a3d3262d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Destination Mark ]">
+      <UniqueIdentifier>{2efb1bf9-f92e-48b7-b457-e9ead195c748}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
