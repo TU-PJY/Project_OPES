@@ -158,6 +158,7 @@ public:
     void SendData_BangPacket(stClientInfo* receiver, unsigned int id);
     void SendData_PlayerDeathPacket(stClientInfo* receiver, unsigned int id);
     void SendData_DisconnectPacket(stClientInfo* receiver, unsigned int id);
+    void SendData_MasterKeytPacket(stClientInfo* receiver, int key);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 
