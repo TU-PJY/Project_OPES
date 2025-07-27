@@ -3,24 +3,21 @@
 <!-- type1: imp, type2: gazer -->
 
 <tagName>
-    <monster type="1" x="-180.0" z="0.0"/>
-    <monster type="1" x="-160.0" z="3.0"/>
+    <monster type="2" x="-180.0" z="0.0"/>
     <monster type="2" x="-153.0" z="27.0"/>
-    <monster type="2" x="-177.0" z="27.0"/>
     <monster type="2" x="-210.0" z="27.0"/>
 	
     <monster type="2" x="-103.0" z="184.0"/>
-    <monster type="2" x="-137.0" z="186.0"/>
-    <monster type="1" x="-120.0" z="208.0"/>
-    <monster type="1" x="-88.0" z="218.0"/>
-    <monster type="1" x="-67.0" z="194.0"/>
+
+ 
+    <monster type="2" x="-88.0" z="218.0"/>
+    <monster type="2" x="-67.0" z="194.0"/>
 	
-    <monster type="2" x="127.0" z="207.0"/>
     <monster type="2" x="128.0" z="192.0"/>
-    <monster type="2" x="179.0" z="119.0"/>
+
     <monster type="2" x="106.0" z="147.0"/>
-    <monster type="1" x="164.0" z="163.0"/>
-    <monster type="1" x="200.0" z="180.0"/>
-    <monster type="1" x="164.0" z="163.0"/>
-    <monster type="1" x="150.0" z="125.0"/>
+    
+    <monster type="2" x="200.0" z="180.0"/>
+    <monster type="2" x="164.0" z="163.0"/>
+    <monster type="2" x="150.0" z="125.0"/>
 </tagName>

@@ -13,7 +13,7 @@ private:
 
 	FBX impFBX{ MESH.imp };
 
-	int currentState{ IMP_ATTACK };
+	int currentState{ IMP_IDLE };
 	int prevState{ -1 };
 
 	int totalHP{ GAZER_HP };

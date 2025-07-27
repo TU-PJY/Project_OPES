@@ -4,6 +4,7 @@
 Gazer::Gazer(const xmfloat3& createPosition, unsigned int ID) {
 	position = createPosition;
 	hitBox.SetUpdateFrequency(24);
+	position.y = -1.8;
 }
 
 void Gazer::gz_updateBound() {
@@ -46,10 +47,10 @@ void Gazer::gz_updateAttack() {
 }
 
 void Gazer::gz_updateTerrainCollision() {
-	Ray playerRay = Math::CalcRayVector(xmfloat3(position.x, position.y + 40.0, position.z), xmfloat3(position.x, position.y - 40.0, position.z));
+	/*Ray playerRay = Math::CalcRayVector(xmfloat3(position.x, position.y + 40.0, position.z), xmfloat3(position.x, position.y - 40.0, position.z));
 	float Distance;
 	xmfloat3 newPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, playerRay.Origin, playerRay.Direction, Distance);
-	position.y = newPosition.y - 2.0;
+	position.y = newPosition.y - 2.0;*/
 }
 
 void Gazer::gz_updateState() {
