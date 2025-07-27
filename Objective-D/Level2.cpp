@@ -15,6 +15,8 @@
 
 #include "RoadBlock.h"
 
+void SendFilePacket(int stage);
+
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
 
@@ -82,6 +84,8 @@ void Level2::Start() {
 
 	if (!GLOBAL.skipDefenseMode)
 		scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);
+
+	SendFilePacket(2);
 }
 
 void Level2::Destructor() {

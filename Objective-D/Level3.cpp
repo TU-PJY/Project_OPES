@@ -12,6 +12,8 @@
 #include "OtherPlayerIndicator.h"
 #include "MonsterGenerator.h"
 
+void SendFilePacket(int stage);
+
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
 void Level3::Start() {
@@ -67,6 +69,9 @@ void Level3::Start() {
 
 	if (!GLOBAL.skipDefenseMode)
 		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
+
+
+	SendFilePacket(3);
 }
 
 void Level3::Destructor() {

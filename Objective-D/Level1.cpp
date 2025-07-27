@@ -16,6 +16,8 @@
 #include "OtherPlayer.h"
 #include "OtherPlayerIndicator.h"
 
+void SendFilePacket(int stage);
+
 namespace Level1 { 
 	std::deque<GameObject*> ControlObjectList; 
 }
@@ -86,6 +88,8 @@ void Level1::Start() {
 
 		scene.AddObject(new CrossHair, "crosshair", LAYERUI, true);
 	}
+
+	SendFilePacket(1);
 }
 
 // 다른 모드로 전환 시 맵 오브젝트 바운드 데이터 삭제
