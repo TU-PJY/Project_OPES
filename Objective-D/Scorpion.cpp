@@ -41,7 +41,7 @@ void Scorpion::updateBound(float Delta) {
 	for (int i = 0; i < 3; i++)
 		hitBox[i].UpdateDelta(Delta);
 
-	lookRange.Update(position, 60.0);
+	lookRange.Update(position, 70.0);
 	scorBound.Update(XMFLOAT3(position.x, position.y + 0.5, position.z), 1.0);
 	XMFLOAT3 attackBoundPosition = Math::CalcForwardOffset(position, rotation.y, 4.0, size.y * 0.5);
 	attackBound.Update(attackBoundPosition, 3.0);

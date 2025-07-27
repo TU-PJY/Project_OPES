@@ -1239,6 +1239,7 @@ void IOCompletionPort::WorkThread() {
     ULONG_PTR completionKey;
     OVERLAPPED* overlapped;
     int p = 0;
+    std::chrono::steady_clock::time_point Ltime = std::chrono::steady_clock::now();
     while (isRunning) {
         BOOL result = GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, &completionKey, &overlapped, INFINITE);
         stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
@@ -1401,6 +1402,23 @@ void IOCompletionPort::WorkThread() {
 
                     // clearCount 갱신
                     room.clearCount = arrivedCount;
+
+                    auto now = std::chrono::steady_clock::now();
+                    auto time = now - Ltime;
+                    if (time > std::chrono::milliseconds(2000)) {
+                        for (auto* c : room.clients) {
+                            if (c) {
+                                SendData_ClearCountPacket(c, arrivedCount);
+                                SendData_ClearCountPacket(c, arrivedCount);
+                                SendData_ClearCountPacket(c, arrivedCount);
+                                RegisterRecv(client);
+                                RegisterRecv(client);
+                                std::cout << "arrivedCount:" << room.clearCount << std::endl;
+                            }
+                        }
+                        Ltime = now;
+                    }
+
                     //여기 room.clearCount가 3이면 다음 스테이지?
                     if (room.clearCount >= MIN_PLAYER_COUNT) {
                         std::cout << "다들어옴!\n";
@@ -1432,9 +1450,10 @@ void IOCompletionPort::WorkThread() {
                         room.clearCount = 0;
                     }
                     // 모든 room 클라이언트에게 clearCount 전송
-                    for (auto* c : room.clients) {
-                        if (c) SendData_ClearCountPacket(c, arrivedCount);
-                    }
+                   //for (auto* c : room.clients) {
+                   //    if (c) SendData_ClearCountPacket(c, arrivedCount);
+                   //}
+                    
                 }
 
                 // 이동 패킷을 같은 방 클라이언트들에게만 전송
@@ -1517,8 +1536,9 @@ void IOCompletionPort::WorkThread() {
                 //}
 
               
-
+                
                 MonsterMovePacket* pkt = reinterpret_cast<MonsterMovePacket*>(pOverlappedEx->buffer);
+                std::cout << "MonsterMovePacket: " << pkt->playerId << std::endl;
                 for (auto* otherClient : room.clients) {
                     if (!otherClient || otherClient == client) continue;
                     SendData_MonsterMove(otherClient, pkt->x, pkt->y, pkt->z, pkt->angle_y, pkt->monsterId, pkt->playerId);

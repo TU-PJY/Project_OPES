@@ -181,7 +181,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 
 	else if (*type == PacketType::ANIMATION) {
 		AnimationPacket_StoC* aniPacket = reinterpret_cast<AnimationPacket_StoC*>(context->buffer);
-		std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
+		//std::cout << "[서버] 상태: " << aniPacket->id  << ": " << aniPacket->animationType << std::endl;
 
 		if (auto Found = scene.SearchLayer(LAYER_PLAYER, std::to_string(aniPacket->id)); Found)
 			Found->InputState(aniPacket->animationType);
@@ -203,8 +203,8 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(context->buffer);
 
-		//std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
-		//	<< packet->z << " angle:" << packet->angle_y << std::endl;
+		std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
+			<< packet->z << " angle:" << packet->angle_y << std::endl;
 		XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
 		float recvRotation = packet->angle_y;
 		
@@ -630,6 +630,8 @@ void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, 
 			std::cerr << "[클라이언트] 몬스터 상태 패킷 전송 오류\n";
 			context->cleanup();
 		}
+
+		std::cout << "SEND " << monsterState << std::endl;
 	}
 }
 
@@ -655,6 +657,8 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 			std::cerr << "[클라이언트] 몬스터 이동 패킷 전송 실패\n";
 			context->cleanup();
 		}
+
+		std::cout << "monsterID: " << monsterId << " " << "playerID: " << playerId << std::endl;
 	}
 }
 

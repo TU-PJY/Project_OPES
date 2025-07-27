@@ -26,11 +26,12 @@ private:
 
 	int         currentState{ SCOR_IDLE };
 	int         prevState{ -1 };
-	int         serverState{ SCOR_IDLE };
+	int         serverState{ -1 };
 
 	float       animationTime{};
 
 	bool        attackDid{};
+	bool        trackState{};
 
 	int         totalHP{ SCORPION_HP };
 	int         currentHP{ SCORPION_HP };
@@ -60,7 +61,9 @@ private:
 	float sendDelay{};
 
 	// 30프레인 간격으로 전송
-	float destDelay{ 1.0 / 30.0 };
+	float destDelay{ 1.0 / 24.0 };
+
+	int sendOrder{1};
 
 	// 전송 여부
 	bool sendState{};
