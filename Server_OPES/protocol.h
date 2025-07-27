@@ -83,6 +83,13 @@ constexpr int                  DEFENSE_MONSTER3 = 5;
 //start 인원수 
 constexpr int				   MIN_PLAYER_COUNT = 2;          
 
+//스테이지 넘어갈때 딜레이 시간
+constexpr int                 PASS_STAGE_TIME = 5;
+
+//몬스터 스폰 시간
+constexpr int                 CREAT_MONSTER_TIME = 4;
+
+
 // 스테이지 1
 // Plant Monster
 constexpr unsigned int         PLANT_HP			= 100;
