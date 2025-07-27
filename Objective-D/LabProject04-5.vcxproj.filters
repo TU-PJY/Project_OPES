@@ -299,14 +299,20 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Beacon ]">
       <UniqueIdentifier>{efcd859c-55d9-4aec-b5ca-bab372b5c0ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Engineer Indicator ]">
-      <UniqueIdentifier>{106e74f6-5db4-45cd-8f9a-f51e5e4f41f1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Install Indicator ]">
       <UniqueIdentifier>{55787037-7ac5-49a4-ae5f-ea0018ca5dc8}</UniqueIdentifier>
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Scope ]">
       <UniqueIdentifier>{233eea8c-2cbe-46fd-9867-2c750228bd80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]">
+      <UniqueIdentifier>{49e9bca1-acce-4d21-9f98-89c6c4a3d625}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ Lobby Mode ]">
+      <UniqueIdentifier>{cda3b173-4f05-4e9d-a761-88b4db91e549}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ Title Mode ]">
+      <UniqueIdentifier>{30457528-b1ab-4363-a583-f87264ca0334}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -502,9 +508,6 @@
     <ClInclude Include="HeavyMachineGun.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ HeavyMachineGun ]</Filter>
     </ClInclude>
-    <ClInclude Include="..\Server_OPES\Packet.h">
-      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]</Filter>
-    </ClInclude>
     <ClInclude Include="PlayerIndicator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Player Indicator ]</Filter>
     </ClInclude>
@@ -561,6 +564,16 @@
     </ClInclude>
     <ClInclude Include="DMR.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ DMR ]</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Server_OPES\Packet.h" />
+    <ClInclude Include="SpreadBullet.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Bullet ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Title.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Lobby.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -821,6 +834,21 @@
     </ClCompile>
     <ClCompile Include="DMR.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Weapon 1st ]\[ DMR ]</Filter>
+    </ClCompile>
+    <ClCompile Include="SpreadBullet.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Bullet ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Title.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Lobby.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Lobby Mode ]</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Title Mode ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
