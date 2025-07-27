@@ -13,7 +13,7 @@ private:
 
 	FBX impFBX{ MESH.imp };
 
-	int currentState{ IMP_IDLE };
+	int currentState{ IMP_ATTACK };
 	int prevState{ -1 };
 
 	int totalHP{ GAZER_HP };
@@ -24,6 +24,7 @@ private:
 	xmfloat3 size{ 3.0f, 3.0f, 3.0f };
 
 	BoundSphere frustumBound{};
+	OOBB        attackBound{};
 	OOBB        hitBox{};
 
 	TerrainUtil terrainUtil{};
@@ -31,12 +32,17 @@ private:
 	bool     inFrustum{};
 	bool     fallDown{};
 
+	bool    attackDid{};
+
+	unsigned int currentTargetID{};
+
 public:
 	Imp(const xmfloat3& createPosition, unsigned int ID);
 	void im_updateTerrainCollision();
 	void im_updateBound();
 	void im_updateAnimation(float Delta);
 	void im_updateState();
+	void im_updateAttack();
 	void Update(float Delta) override;
 	void Render() override;
 	OOBB GetOOBB() override;

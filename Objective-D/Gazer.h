@@ -13,7 +13,7 @@ private:
 
 	FBX gazerFBX{ MESH.gazer };
 
-	int currentState{ GAZER_ATTACK };
+	int currentState{ GAZER_IDLE };
 	int prevState{ -1 };
 
 	int totalHP{ GAZER_HP };

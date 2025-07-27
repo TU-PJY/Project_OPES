@@ -38,7 +38,6 @@ void Gazer::gz_updateAttack() {
 					player->GiveDamage(GAZER_DAMAGE);
 				}
 			}
-					std::cout << "gazer attack" << std::endl;
 			attackDid = true;
 		}
 	}

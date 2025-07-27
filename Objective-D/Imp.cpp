@@ -24,10 +24,13 @@ void Imp::im_updateBound() {
 	xmfloat3 boundPosition = xmfloat3(position.x, position.y + size.y, position.z);
 	frustumBound.Update(boundPosition, 10.0);
 	inFrustum = camera.CheckFrustum(frustumBound);
+	xmfloat3 boundPos = xmfloat3(position.x, position.y + size.y, position.z);
+	boundPos = Math::CalcForwardOffset(boundPos, rotation.y, 2.0, 0.0);
+	attackBound.Update(boundPos, xmfloat3(2.0, 2.0, 3.0), rotation);
 }
 
 void Imp::im_updateAnimation(float Delta) {
-	if(currentState == IMP_WALK)
+	if(currentState == IMP_WALK || currentState == IMP_ATTACK)
 		impFBX.UpdateAnimation(Delta, true, !inFrustum);
 	else
 		impFBX.UpdateAnimation(Delta, false, !inFrustum);
@@ -59,12 +62,33 @@ void Imp::im_updateState() {
 	}
 }
 
+void Imp::im_updateAttack() {
+	if (currentState != IMP_ATTACK) {
+		attackDid = false;
+		return;
+	}
+
+	if (impFBX.GetTimeSectionPassed(39.8)) {
+		if (!attackDid) {
+			if (currentTargetID == GLOBAL.myID) {
+				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
+					player->GiveDamage(GAZER_DAMAGE);
+				}
+			}
+			attackDid = true;
+		}
+	}
+	else
+		attackDid = false;
+}
+
 void Imp::Update(float Delta) {
 	im_updateState();
 	im_updateTerrainCollision();
 	im_updateBound();
 	im_updateState();
 	im_updateAnimation(Delta);
+	im_updateAttack();
 }
 
 void Imp::Render() {
@@ -73,15 +97,16 @@ void Imp::Render() {
 
 	BeginRender();
 	Transform::Move(TranslateMatrix, position);
-	if (currentState == IMP_WALK)
-		Transform::Move(TranslateMatrix, -impFBX.GetInplaceDelta());
 	Transform::Rotate(RotateMatrix, rotation);
 	Transform::Scale(ScaleMatrix, size);
+	if (currentState == IMP_WALK || currentState == IMP_ATTACK)
+		Transform::Move(ScaleMatrix, 0.0, 0.0, -impFBX.GetInplaceDelta().z);
 	RenderFBX(impFBX, TEX.imp);
 	hitBox.UpdateAnimated(impFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 3);
 
-	frustumBound.Render();
-	hitBox.Render();
+	//frustumBound.Render();
+	//hitBox.Render();
+	attackBound.Render();
 }
 
 OOBB Imp::GetOOBB() {
