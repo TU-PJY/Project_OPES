@@ -54,7 +54,8 @@ std::mutex roomMapMutex;
 float deltaTime{};
 
 bool randomTreadFlag1 = true;//임시
-
+bool randomTreadFlag2 = true;
+bool randomTreadFlag3 = true;
 extern LPFN_ACCEPTEX lpfnAcceptEx = nullptr; // 전역으로 AcceptEx 포인터
 IOCompletionPort::IOCompletionPort() {}
 
@@ -166,6 +167,13 @@ bool IOCompletionPort::StartServer() {
             loadedData.createPointX = monsterDataScript.LoadDigitData(Category, "x");
             loadedData.createPointZ = monsterDataScript.LoadDigitData(Category, "z");
             loadedData.id = monsterIdCounter++; // 고유 ID 부여
+            if (loadedData.monsterType == PLANT_TYPE) {
+                loadedData.hp = PLANT_HP;
+            }
+            else if (loadedData.monsterType == SCORPION_TYPE) {
+                loadedData.hp = SCORPION_HP;
+            }
+
             monsterData.emplace_back(loadedData);
         };
     monsterDataScript.LoadAllData(LoadMonsterData);
@@ -183,6 +191,12 @@ bool IOCompletionPort::StartServer() {
             loadedData2.createPointX = monsterDataScript2.LoadDigitData(Category, "x");
             loadedData2.createPointZ = monsterDataScript2.LoadDigitData(Category, "z");
             loadedData2.id = monsterIdCounter++; // 고유 ID 부여
+            if (loadedData2.monsterType == TROLL_TYPE) {
+                loadedData2.hp = TROLL_HP;
+            }
+            else if (loadedData2.monsterType == TREANT_TYPE) {
+                loadedData2.hp = TREANT_HP;
+            }
             monsterData2.emplace_back(loadedData2);
         };
     monsterDataScript2.LoadAllData(LoadMonsterData2);
@@ -200,6 +214,12 @@ bool IOCompletionPort::StartServer() {
             loadedData3.createPointX = monsterDataScript3.LoadDigitData(Category, "x");
             loadedData3.createPointZ = monsterDataScript3.LoadDigitData(Category, "z");
             loadedData3.id = monsterIdCounter++; // 고유 ID 부여
+            if (loadedData3.monsterType == IMP_TYPE) {
+                loadedData3.hp = IMP_HP;
+            }
+            else if (loadedData3.monsterType == GAZER_TYPE) {
+                loadedData3.hp = GAZER_HP;
+            }
             monsterData3.emplace_back(loadedData3);
         };
     monsterDataScript3.LoadAllData(LoadMonsterData3);
@@ -1370,8 +1390,14 @@ void IOCompletionPort::WorkThread() {
                         std::cout << "다들어옴!\n";
                         room.defenseState = true;
                         room.stageState++;
-                        randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
-                        randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
+                        if (randomTreadFlag2) {
+                            randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
+                            randomTreadFlag2 = false;
+                        }
+                        if (randomTreadFlag2==false&& randomTreadFlag3==true&& room.stageState>2) {
+                            randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
+                            randomTreadFlag3 = false;
+                        }
                         room.clearCount = 0;
                     }
                     // 모든 room 클라이언트에게 clearCount 전송

@@ -30,7 +30,7 @@ struct MonsterData {
     unsigned int state = 0;
     int hp=100;
     MonsterData() {
-        hp = 100;
+        //hp = 100;
         state = 0;
 
     };
