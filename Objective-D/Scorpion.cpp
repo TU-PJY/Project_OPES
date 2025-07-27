@@ -95,7 +95,6 @@ void Scorpion::updateDetectPlayer(float Delta) {
 	}
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
-
 	bool foundTarget = false;
 
 	if (currentState == SCOR_IDLE) {
@@ -103,10 +102,10 @@ void Scorpion::updateDetectPlayer(float Delta) {
 			auto playerOOBB = player->GetOOBB();
 			if (lookRange.CheckCollision(playerOOBB)) {
 				XMFLOAT3 playerPosition = player->GetPosition();
-				playerPosition.y += player->GetSize().y * 1.5;
+				playerPosition.y += player->GetSize().y * 1.5f;
 				Ray newRay = Math::CalcRayVector(position, playerPosition);
 
-				bool isBlocked{};
+				bool isBlocked = false;
 				for (auto& B : GLOBAL.mapOOBBdata) {
 					if (Math::CheckRayCollision(newRay, B)) {
 						isBlocked = true;
@@ -118,22 +117,15 @@ void Scorpion::updateDetectPlayer(float Delta) {
 					foundTarget = true;
 					trackState = true;
 					rotationDest = Math::CalcDegree3D(position, playerPosition);
+					Math::Normalize2DAngleTo360(rotationDest.y);
 
-					if (attackBound.CheckCollision(playerOOBB)) {
-						Math::Normalize2DAngleTo360(rotationDest.y);
+					if (attackBound.CheckCollision(playerOOBB))
 						currentState = SCOR_ATTACK;
-						currentTargetID = GLOBAL.myID;
-					}
-
-					else {
-						Math::Normalize2DAngleTo360(rotationDest.y);
+					else
 						currentState = SCOR_WALK;
-						currentTargetID = GLOBAL.myID;
-					}
 
 					if (sendState) {
 						SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
-						SendMonstertypePacket(2, currentState, ID);
 					}
 				}
 			}
@@ -141,9 +133,14 @@ void Scorpion::updateDetectPlayer(float Delta) {
 	}
 
 	if (!foundTarget && trackState) {
-		SendMonstertypePacket(2, SCOR_IDLE, ID);
 		currentState = SCOR_IDLE;
 		trackState = false;
+	}
+
+	// 여기에서 상태 전송은 마지막에, 중복 검사 포함해서 처리
+	if (sendState && currentState != serverState) {
+		SendMonstertypePacket(2, currentState, ID);
+		serverState = currentState;
 	}
 }
 

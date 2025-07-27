@@ -26,7 +26,7 @@ private:
 
 	int         currentState{ SCOR_IDLE };
 	int         prevState{ -1 };
-	int         serverState{ SCOR_IDLE };
+	int         serverState{ -1 };
 
 	float       animationTime{};
 
