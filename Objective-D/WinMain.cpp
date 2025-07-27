@@ -390,6 +390,15 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		//	// TODO: ID에 해당하는 게임 객체 생성 또는 초기화
 		//}
 	}
+	else if (*type == PacketType::BANG) {
+		BangPacket* pkt = reinterpret_cast<BangPacket*>(buffer);
+		//뱅처리!!
+	}
+	else if (*type == PacketType::PLAYER_DEATH) {
+		PlayerDeathPacket* pkt = reinterpret_cast<PlayerDeathPacket*>(buffer);
+
+		//PLAYER_DEATH처리!!
+	}
 
 	else {
 		std::cout << "== [ERROR] 알 수 없는 패킷 타입 ==" << std::endl;
@@ -417,6 +426,8 @@ int GetPacketSizeByType(PacketType type) {
 	case PacketType::ENTER: return sizeof(EnterRoomPacket);
 	case PacketType::NEW_CLIENT: return sizeof(NewClientPacket);
 	case PacketType::EXISTING_CLIENTS: return sizeof(ExistingClientsDataPacket);
+	case PacketType::BANG: return sizeof(BangPacket);
+	case PacketType::PLAYER_DEATH: return sizeof(PlayerDeathPacket);
 	default:
 		std::cout << "타입?\n";
 		return 0;
@@ -577,6 +588,54 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 	// 콜백 실행 루프
 	while (NetRunning.load()) {
 		SleepEx(INFINITE, TRUE); // RecvCallback, SendCallback 실행됨
+	}
+}
+//void SendPlayerDeathPacket(unsigned int playerID) {
+//	if (enter_room) {
+//		auto* pkt = new PlayerDeathPacket{ PacketType::PLAYER_DEATH, playerID };
+//
+//		auto* context = new SendContext{};
+//		ZeroMemory(context, sizeof(SendContext));
+//
+//		WSABUF wsaBuf;
+//		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+//		wsaBuf.len = sizeof(PlayerDeathPacket);
+//
+//		context->cleanup = [pkt, context]() {
+//			delete pkt;
+//			delete context;
+//			};
+//
+//		DWORD bytesSent = 0;
+//		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+//		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+//			std::cerr << "[클라이언트] 전송 실패\n";
+//			context->cleanup(); // 실패 시 즉시 해제
+//		}
+//	}
+//}
+void SendBangPacket(unsigned int playerID) {
+	if (enter_room) {
+		auto* pkt = new BangPacket{ PacketType::BANG, playerID};
+
+		auto* context = new SendContext{};
+		ZeroMemory(context, sizeof(SendContext));
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+		wsaBuf.len = sizeof(BangPacket);
+
+		context->cleanup = [pkt, context]() {
+			delete pkt;
+			delete context;
+			};
+
+		DWORD bytesSent = 0;
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+			std::cerr << "[클라이언트] 전송 실패\n";
+			context->cleanup(); // 실패 시 즉시 해제
+		}
 	}
 }
 void SendChooseJobPacket(unsigned int playerID, int job) {
