@@ -74,7 +74,7 @@ struct stClientInfo {
         angle_x=0, angle_y=0, angle_z=0;
         animationType = 0;
         stageState = 1;
-        hp = CHARACTER_MG_HP;
+        hp = 0;
         prev=false;
         curr=false;
         ready = false;
@@ -87,13 +87,13 @@ struct Room {
     int roomID;
     std::vector<stClientInfo*> clients;
     std::vector<MonsterData> myMonsters;
-    std::vector<MonsterData> defenseMonsters{ DEFENSE_MONSTER };
+    std::vector<MonsterData> defenseMonsters{ DEFENSE_MONSTER1};
 
     std::vector<MonsterData> myMonsters2;
-    std::vector<MonsterData> defenseMonsters2{ DEFENSE_MONSTER };
+    std::vector<MonsterData> defenseMonsters2{ DEFENSE_MONSTER2 };
 
     std::vector<MonsterData> myMonsters3;
-    std::vector<MonsterData> defenseMonsters3{ DEFENSE_MONSTER };
+    std::vector<MonsterData> defenseMonsters3{ DEFENSE_MONSTER3 };
 
     int centerHp = CENTER_HP;
     int clearCount = 0;
