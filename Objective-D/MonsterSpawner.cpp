@@ -108,7 +108,7 @@ void MonsterSpawner::Update(float Delta) {
 	if (editMode)
 		return;
 	
-	if (GLOBAL.DefenseEnemyRemained == 0) {
+	if (GLOBAL.Map1DefenseEnemyRemained == 0) {
 		LoadDataAndSpawnMonster();
 		scene.DeleteObject(this);
 	}

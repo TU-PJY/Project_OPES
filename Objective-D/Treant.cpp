@@ -30,9 +30,9 @@ Treant::~Treant() {
 	if (hpInd)
 		scene.DeleteObject(hpInd);
 
-	GLOBAL.DefenseEnemyRemained--;
-	if (GLOBAL.DefenseEnemyRemained == 0)
-		GLOBAL.DefenseState = false;
+	GLOBAL.Map2DefenseEnemyRemained--;
+	if (GLOBAL.Map2DefenseEnemyRemained == 0)
+		GLOBAL.Map2DefenseState = false;
 }
 
 void Treant::updateIndicator() {

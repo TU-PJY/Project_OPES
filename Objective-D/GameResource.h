@@ -44,8 +44,15 @@ struct PlayerLobbyInfo {
 // 프로젝트 전역에서 사용하는 변수들
 typedef struct {
 	// 디펜스 모드에서 사용할 남은 적 수  및 디펜스 모드 상태 여부
-	int DefenseEnemyRemained;
-	bool DefenseState;
+	int Map1DefenseEnemyRemained;
+	bool Map1DefenseState;
+
+	int Map2DefenseEnemyRemained;
+	bool Map2DefenseState;
+
+	int Map3DefenseEnemyRemained;
+	bool Map3DefenseState;
+
 
 	// 카메라 FOV 오프셋
 	float offsetFOV;

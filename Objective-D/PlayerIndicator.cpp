@@ -113,7 +113,7 @@ void PlayerIndicator::Render() {
 		Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.625, -1.0 + 0.45);
 		Transform::Scale2D(ScaleMatrix, 0.25, 0.25);
 
-		if (GLOBAL.DefenseState) {
+		if (GLOBAL.Map1DefenseState) {
 			if(barrierCoolTime == 0)
 				Render2D(TEX.UI_barrierIcon);
 			else {

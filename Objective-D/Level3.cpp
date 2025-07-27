@@ -18,8 +18,8 @@ void Level3::Start() {
 	GLOBAL.mapName = "map3";
 	GLOBAL.mapOOBBdata.clear();
 	GLOBAL.defenseIDList.clear();
-	GLOBAL.DefenseEnemyRemained = 20;
-	GLOBAL.DefenseState = true;
+	GLOBAL.Map3DefenseEnemyRemained = DEFENSE_MONSTER3;
+	GLOBAL.Map3DefenseState = true;
 	GLOBAL.offsetFOV = 0.0;
 
 	FOG_DATA FogData{

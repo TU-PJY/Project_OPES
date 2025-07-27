@@ -46,13 +46,13 @@ void PoisonBall::updateCollision() {
 	for (auto& B : GLOBAL.mapOOBBdata) {
 		if (B.CheckCollision(bs)) {
 			disappearState = true;
-			if (!GLOBAL.DefenseState)
+			if (!GLOBAL.Map1DefenseState)
 				return;
 		}
 	}
 
 	// 디펜스 모드에서는 센터 건물에 대미지 가함
-	if (GLOBAL.DefenseState) {
+	if (GLOBAL.Map1DefenseState) {
 		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding) {
 			if (bs.CheckCollision(centerBuilding->GetOOBB())) {
 				if (!GLOBAL.useServer)

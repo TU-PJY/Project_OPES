@@ -61,15 +61,15 @@ constexpr int                  CHARACTER_ENG = 2;
 
 
 constexpr int				   MG_JOB_TYPE     = 0;
-constexpr unsigned int         CHARACTER_MG_HP = 100; //300; //  임시로 100으로 변경
+constexpr unsigned int         CHARACTER_MG_HP = 300;
 constexpr float                CHARACTER_MG_SPEED   = 8.0f;
 
 constexpr int				   DMR_JOB_TYPE     = 1;
-constexpr unsigned int         CHARACTER_DMR_HP = 100; // 125;
+constexpr unsigned int         CHARACTER_DMR_HP = 200;
 constexpr float                CHARACTER_DMR_SPEED	= 15.0f;
 
 constexpr int				   ENG_JOB_TYPE      = 2;
-constexpr unsigned int         CHARACTER_ENG_HP = 100; // 150;
+constexpr unsigned int         CHARACTER_ENG_HP = 250;
 constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 
 // 몬스터

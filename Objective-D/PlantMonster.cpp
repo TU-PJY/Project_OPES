@@ -280,9 +280,9 @@ PlantMonster::~PlantMonster() {
 		scene.DeleteObject(hpIndicator);
 
 	if (defenseModeState) {
-		GLOBAL.DefenseEnemyRemained--;
-		if (GLOBAL.DefenseEnemyRemained <= 0)
-			GLOBAL.DefenseState = false;
+		GLOBAL.Map1DefenseEnemyRemained--;
+		if (GLOBAL.Map1DefenseEnemyRemained <= 0)
+			GLOBAL.Map1DefenseState = false;
 	}
 
 	count++;

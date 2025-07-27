@@ -39,15 +39,12 @@ Player1st::Player1st(int characterType) {
 		weaponPtr = scene.AddObject(new Shotgun(this), "shotgun", LAYER4);
 		maxSpeed = CHARACTER_ENG_SPEED;
 		totalHP = CHARACTER_ENG_HP;
-
 		installPtr = scene.AddObject(new InstallIndicator, "inst", LAYER5);
-		if (installPtr)
-			installPtr->SetRenderState(false);
-	
+		installPtr->SetRenderState(false);
 		break;
 	}
 
-	currentHP == totalHP;
+	currentHP = totalHP;
 	prevHP = totalHP;
 
 	this->characterType = characterType;
@@ -558,7 +555,7 @@ void Player1st::GiveDamage(int damage) {
 void Player1st::InputHP(int currentHP) {
 	if (currentState == STATE_DEATH) return;
 
-	//this->currentHP = currentHP;
+	this->currentHP = currentHP;
 	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
 	if (IndicatorPtr) 
 		IndicatorPtr->InputHP(totalHP, this->currentHP);
