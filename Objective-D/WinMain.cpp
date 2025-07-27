@@ -75,12 +75,12 @@ struct RecvContext {
 
 // 인게임 모드로 스킵하려면 true
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
-constexpr bool skipTitleMode = true;
+constexpr bool skipTitleMode = false;
 
 constexpr bool skipDefenseMode = true;
 constexpr bool editMode = false;
 
-constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
 
 // 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
@@ -90,12 +90,12 @@ bool DevMode = true;
 // UI 제작 시 사용하는 플래그. true일 시 아래 3개의 플래그가 모두 강제로 false가 된다.
 bool UIcreateMode = false;
 
-bool LoadMap1Resources = false;
+bool LoadMap1Resources = true;
 bool LoadMap2Resources = false;
 bool LoadMap3Resources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode = Level3::Start;
+START_MODE_PTR StartMode = TitleMode::Start;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
