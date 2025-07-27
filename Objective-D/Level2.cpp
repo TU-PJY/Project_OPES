@@ -29,6 +29,7 @@ void Level2::Start() {
 	GLOBAL.Map2DefenseState = true;
 	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.deathCount = 0;
+	GLOBAL.stage = 2;
 
 	FOG_DATA FogData{
 		{0.63, 0.77, 0.98}, // Fog Color

@@ -160,17 +160,14 @@ void ProcessPacketOnClient(char* buffer, int size) {
 				std::lock_guard<std::mutex> lock(PacketMutex);
 				if (GLOBAL.stage == 1) {
 					scene.SwitchMode(Level2::Start);
-					GLOBAL.stage = 2;
 				}
 
 				else if (GLOBAL.stage == 2) {
 					scene.SwitchMode(Level3::Start);
-					GLOBAL.stage = 3;
 				}
 
 				else if (GLOBAL.stage == 3) {
 					scene.SwitchMode(TitleMode::Start);
-					GLOBAL.stage = 1;
 				}
 			}
 		}

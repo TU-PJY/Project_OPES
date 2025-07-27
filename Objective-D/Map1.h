@@ -243,7 +243,7 @@ public:
 			objectStruct.Size.y = MapObjectPositionScript.LoadDigitData(Str, "SizeY");
 			objectStruct.Size.z = MapObjectPositionScript.LoadDigitData(Str, "SizeZ");
 			objectStruct.Rotation = MapObjectPositionScript.LoadDigitData(Str, "Rotation");
-			objectStruct.Index = MapObjectPositionScript.LoadDigitData(Str, "Index");
+			objectStruct.Index = MapObjectPositionScript.LoadDigitDataGLOBAL.stage = 1; (Str, "Index");
 
 			MapObjectPosition.emplace_back(objectStruct);
 		}
