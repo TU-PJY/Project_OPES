@@ -1432,9 +1432,9 @@ void IOCompletionPort::WorkThread() {
                         room.clearCount = 0;
                     }
                     // 모든 room 클라이언트에게 clearCount 전송
-                    for (auto* c : room.clients) {
-                        if (c) SendData_ClearCountPacket(c, arrivedCount);
-                    }
+                   //for (auto* c : room.clients) {
+                   //    if (c) SendData_ClearCountPacket(c, arrivedCount);
+                   //}
                 }
 
                 // 이동 패킷을 같은 방 클라이언트들에게만 전송
