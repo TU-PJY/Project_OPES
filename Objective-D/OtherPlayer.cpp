@@ -9,8 +9,6 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 	ScriptUtil script{};
 	script.Load("Resources//Scripts//weapon//flamePosition.xml");
 
-	
-
 	switch (this->characterType) {
 	case CHARACTER_MG:
 		idleFBX.SelectFBXMesh(MESH.heavy[0]);
@@ -137,7 +135,6 @@ void OtherPlayer::Update(float Delta) {
 	updateBound();
 	flameRenderTime -= Delta;
 	Clamp::LimitValue(flameRenderTime, 0.0, CLAMP_DIR_LESS);
-	shootSound.SetPosition(position);
 }
 
 void OtherPlayer::Render() {
@@ -241,15 +238,6 @@ unsigned int OtherPlayer::GetID() {
 
 void OtherPlayer::addFlameTime(){
 	flameRenderTime = 0.05;
-
-	switch (characterType) {
-	case CHARACTER_MG:
-		SOUND.machinegunShoot.Play3D(); break;
-
-	case CHARACTER_DMR:
-		SOUND.dmrShoot.Play3D(); break;
-
-	case CHARACTER_ENG:
-		SOUND.shotgunShoot.Play3D(); break;
-	}
+	shootSound.SetPosition(position);
+	shootSound.Play3D();
 }

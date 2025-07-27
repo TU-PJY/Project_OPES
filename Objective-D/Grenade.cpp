@@ -300,7 +300,8 @@ void Grenade::Update(float Delta) {
     // 타 클라이언트 유저가 던진 수류탄은 대미지를 주지 않는다.
     explodeTime += Delta;
     if (explodeTime >= 3.0) {
-        SOUND.explode.Play();
+        SOUND.explode.SetPosition(position);
+        SOUND.explode.Play3D();
 
         if (!createFromServer) {
             size_t size = scene.LayerSize(LAYER_MONSTER);

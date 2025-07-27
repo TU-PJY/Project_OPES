@@ -81,7 +81,7 @@ constexpr bool skipDefenseMode = false;
 constexpr bool editMode = false;
 
 constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-constexpr bool localServer = false; //!useServer;
+constexpr bool localServer = true; //!useServer;
 
 // 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
 // DevMode 활성화 시에만 아래 3개의 플래그가 의미가 있음
