@@ -567,7 +567,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
         def.state = 0;
         def.monsterType = PLANT_TYPE;
         def.id = PLANT_HP;
-        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+        XMFLOAT2 rendomPosition = GenPointInDonut(MAP1_RANDOM_MIN_RADIANS, MAP1_RANDOM_MAX_RADIANS, XMFLOAT2(-120.0, -120.0));//----------------------
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters[i] = def;
@@ -578,7 +578,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
         def.state = 0;
         def.monsterType = TREANT_TYPE;
         def.id = TREANT_HP;
-        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+        XMFLOAT2 rendomPosition = GenPointInDonut(MAP2_RANDOM_MIN_RADIANS, MAP2_RANDOM_MAX_RADIANS, XMFLOAT2(-120.0, -120.0));
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters2[i] = def;
@@ -589,7 +589,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
         def.state = 0;
         def.monsterType = IMP_TYPE;
         def.id = IMP_HP;
-        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+        XMFLOAT2 rendomPosition = GenPointInDonut(MAP3_RANDOM_MIN_RADIANS, MAP3_RANDOM_MAX_RADIANS, XMFLOAT2(-120.0, -120.0));
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters3[i] = def;
@@ -1367,13 +1367,14 @@ void IOCompletionPort::WorkThread() {
                //Room& room = it->second;
                 XMFLOAT3 arrivePosition{};
                 if (room.stageState == 1) {
-                    arrivePosition= XMFLOAT3(120.0f, 0.0f, 94.0f );
+                    //arrivePosition= XMFLOAT3(120.0f, 0.0f, 94.0f );
+                    arrivePosition = MAP1_DESTINATION;
                 }
                 else if (room.stageState == 2) {
-                    //arrivePosition = XMFLOAT3(120.0f, 0.0f, 94.0f);->바꿔줘야함
+                    arrivePosition = MAP2_DESTINATION;
                 }
                 else if (room.stageState == 3) {
-                    //arrivePosition = XMFLOAT3(120.0f, 0.0f, 94.0f);->바꿔줘야함
+                    arrivePosition = MAP3_DESTINATION;
                 }
 
                 {
@@ -1670,6 +1671,15 @@ void IOCompletionPort::WorkThread() {
                         if (targetClient->id == pkt->playerID) {
                             targetClient->hp -= pkt->attackHp;
                             if (targetClient->hp < 0) targetClient->hp = 0;
+                            if (targetClient->job == MG_JOB_TYPE) {
+                                if (targetClient->hp > CHARACTER_MG_HP) targetClient->hp = CHARACTER_MG_HP;
+                            }
+                            else if (targetClient->job == DMR_JOB_TYPE) {
+                                if (targetClient->hp > CHARACTER_DMR_HP) targetClient->hp = CHARACTER_DMR_HP;
+                            }
+                            else if (targetClient->job == ENG_JOB_TYPE) {
+                                if (targetClient->hp > CHARACTER_ENG_HP) targetClient->hp = CHARACTER_ENG_HP;
+                            }
                             myHP = targetClient->hp;
                             break;
                         }
