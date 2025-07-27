@@ -86,6 +86,7 @@ private:
 
 	GameObject* scopePtr{};
 
+
 	// 서버용 변수
 	// 30프레임 간격으로 패킷을 전송한다.
 	float             currentPacketSendDelay{};

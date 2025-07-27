@@ -323,6 +323,7 @@ void Grenade::Update(float Delta) {
         }
 
         scene.AddObject(new Explosion(position), "explosion", LAYER3);
+        scene.DeleteObject(this);
     }
     
 }

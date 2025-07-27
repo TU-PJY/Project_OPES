@@ -5,6 +5,13 @@ CrossHair::CrossHair() {
 	crosshair.SetColor(1.0, 0.0, 0.0);
 }
 
+void CrossHair::InputMouse(MouseEvent& Event) {
+	if (Event.Type == WM_RBUTTONDOWN)
+		render_state = false;
+	else if (Event.Type == WM_RBUTTONUP)
+		render_state = true;
+}
+
 // 플레이어 총 발사 시 반동 값 부여
 void CrossHair::InputRecoil(float Value) {
 	recoil += Value;
@@ -27,17 +34,7 @@ void CrossHair::Render() {
 	if (!render_state)
 		return;
 
-	// 크로스헤어 렌더링
-	// 반동 값이 높을 수록 크로스 헤어의 간격은 넓어지게 된다 -> 정확도가 떨어지게 된다
-	//  왼쪽 가로 선
-	crosshair.Draw(-0.1 - recoil, 0.0, -0.03 - recoil, 0.0, 0.01);
-
-	// 오른쪽 가로 선
-	crosshair.Draw(0.03 + recoil, 0.0, 0.1 + recoil, 0.0, 0.01);
-
-	// 아래 세로 선
-	crosshair.Draw(0.0, -0.1 - recoil, 0.0, -0.03 - recoil, 0.01);
-
-	// 위 세로 선
-	crosshair.Draw(0.0, 0.03 + recoil, 0.0, 0.1 + recoil, 0.01);
+	BeginRender(RENDER_TYPE_2D);
+	Transform::Scale2D(ScaleMatrix, 0.1, 0.1);
+	Render2D(TEX.UI_crosshair);
 }

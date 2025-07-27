@@ -259,7 +259,7 @@ typedef struct {
 	Texture* UI_back;
 	Texture* UI_lobbyBackground;
 
-	Texture* UI_destMark;
+	Texture* UI_crosshair;
 }TextureResource;
 extern TextureResource TEX;
 

@@ -549,7 +549,6 @@ void Player1st::GiveDamage(int damage) {
 
 		if (this->currentHP <= 0) {
 			scene.AddObject(new CameraController, "camControll", LAYER1, true);
-			scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
 			scene.DeleteObject(this);
 		}
 	}
