@@ -81,7 +81,7 @@ constexpr bool skipDefenseMode = false;
 constexpr bool editMode = false;
 
 constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
-constexpr bool localServer = true; //!useServer;
+constexpr bool localServer = false; //!useServer;
 
 // 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
 // DevMode 활성화 시에만 아래 3개의 플래그가 의미가 있음
@@ -626,6 +626,30 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 //		}
 //	}
 //}
+void SendFilePacket(int stage) {
+	if (enter_room) {
+		auto* pkt = new FilePacket{ PacketType::FILE_LOAD,  stage };
+
+		auto* context = new SendContext{};
+		ZeroMemory(context, sizeof(SendContext));
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+		wsaBuf.len = sizeof(FilePacket);
+
+		context->cleanup = [pkt, context]() {
+			delete pkt;
+			delete context;
+			};
+
+		DWORD bytesSent = 0;
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+			std::cerr << "[클라이언트] 전송 실패\n";
+			context->cleanup(); // 실패 시 즉시 해제
+		}
+	}
+}
 void SendBangPacket(unsigned int playerID) {
 	if (enter_room) {
 		auto* pkt = new BangPacket{ PacketType::BANG, playerID};

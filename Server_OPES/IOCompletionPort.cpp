@@ -1580,6 +1580,7 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     if (type == PT::BANG) return sizeof(BangPacket);
     if (type == PT::PLAYER_DEATH) return sizeof(PlayerDeathPacket);
     if (type == PT::DISCONNECT) return sizeof(DisconnectPacket);
+    if (type == PT::FILE_LOAD) return sizeof(FilePacket);
     return 0; // 알 수 없는 타입이면 0
 }
 void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
@@ -1670,14 +1671,14 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 room.centerHp = CENTER_HP;
                 room.DeathCount = 0;
                
-                if (randomTreadFlag2) {
-                    randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
-                    randomTreadFlag2 = false;
-                }
-                if (randomTreadFlag2 == false && randomTreadFlag3 == true && room.stageState > 2) {
-                    randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
-                    randomTreadFlag3 = false;
-                }
+                //if (randomTreadFlag2) {
+                //    randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
+                //    randomTreadFlag2 = false;
+                //}
+                //if (randomTreadFlag2 == false && randomTreadFlag3 == true && room.stageState > 2) {
+                //    randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
+                //    randomTreadFlag3 = false;
+                //}
                 room.clearCount = 0;
             }
             // 모든 room 클라이언트에게 clearCount 전송
@@ -2052,10 +2053,6 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 }
             }
             std::cout << "all players ready!!!\n";
-            if (randomTreadFlag1) {
-                randomPositionThread = std::thread([this]() { RandomPositionThread(); });
-                randomTreadFlag1 = false;
-            }
         }
     }
     else if (*packetType == PacketType::BANG) {
@@ -2068,6 +2065,31 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
             SendData_BangPacket(otherClient, pkt->playerID);
         }
 
+    }
+    else if (*packetType == PacketType::FILE_LOAD) {
+
+        FilePacket* pkt = reinterpret_cast<FilePacket*>(buffer);
+        std::cout << "FILE_LOAD--stage:"<< pkt->stage << std::endl;
+
+        if (pkt->stage == 1) {
+            if (randomTreadFlag1) {
+                randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+                randomTreadFlag1 = false;
+            }
+        }
+        else if (pkt->stage == 2) {
+            if (randomTreadFlag2) {
+                randomPositionThread2= std::thread([this]() { RandomPositionThread2(); });
+                randomTreadFlag2 = false;
+            }
+        }
+        else if (pkt->stage == 3) {
+            if (randomTreadFlag3) {
+                randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
+                randomTreadFlag3 = false;
+            }
+        }
+        
     }
    
 
