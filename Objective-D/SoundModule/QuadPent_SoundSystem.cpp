@@ -21,7 +21,7 @@ void QP::QuadPent_SoundSystem::Init() {
 	if (Volume == 0.0f)
 		MasterGroup->setVolume(1.0f);
 
-	System->set3DSettings(1.0, 1.0, 2.0);
+	System->set3DSettings(1.0, 1.0, 1.0);
 
 	InitState = true;
 }
@@ -34,7 +34,10 @@ void QP::QuadPent_SoundSystem::SetListenerPosition(const xmfloat3& Position) {
 	ListenerPosition.x = Position.x;
 	ListenerPosition.y = Position.y;
 	ListenerPosition.z = Position.z;
-	System->set3DListenerAttributes(0, &ListenerPosition, 0, 0, 0);
+	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
+	FMOD_VECTOR forward = { 0.0f, 0.0f, 1.0f };
+	FMOD_VECTOR up = { 0.0f, 1.0f, 0.0f };
+	System->set3DListenerAttributes(0, &ListenerPosition, &vel, &forward, &up);
 }
 
 void QP::QuadPent_SoundSystem::Update() {
