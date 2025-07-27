@@ -90,6 +90,8 @@ typedef struct {
 
 	int deathCount;
 
+	int stage;
+
 	// 로비에서 준비 여부
 	bool imReady;
 
