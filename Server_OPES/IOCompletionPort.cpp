@@ -1517,8 +1517,9 @@ void IOCompletionPort::WorkThread() {
                 //}
 
               
-
+                
                 MonsterMovePacket* pkt = reinterpret_cast<MonsterMovePacket*>(pOverlappedEx->buffer);
+                std::cout << "MonsterMovePacket: " << pkt->playerId << std::endl;
                 for (auto* otherClient : room.clients) {
                     if (!otherClient || otherClient == client) continue;
                     SendData_MonsterMove(otherClient, pkt->x, pkt->y, pkt->z, pkt->angle_y, pkt->monsterId, pkt->playerId);
