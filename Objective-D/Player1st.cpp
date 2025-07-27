@@ -497,6 +497,8 @@ void Player1st::Update(float Delta) {
 	updateBound();
 	sendPacket(Delta);
 	updateIndicator();
+
+	QP::SoundSystem.SetListenerPosition(playerPosition);
 }
 
 void Player1st::Render() {

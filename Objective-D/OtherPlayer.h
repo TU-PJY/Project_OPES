@@ -11,6 +11,8 @@ private:
 	FBX shootFBX{};
 	FBX deathFBX{};
 
+	QP::Sound shootSound{};
+
 	XMFLOAT3 position{ -140.0, -1.483, -130.0 };
 	XMFLOAT3 positionDest{ -140.0, -1.483, -130.0 };
 	XMFLOAT3 rotation{};

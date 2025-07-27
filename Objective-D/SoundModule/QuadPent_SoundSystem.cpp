@@ -30,10 +30,10 @@ void QP::QuadPent_SoundSystem::SetSurrondValue(float DoplerScale, float Distance
 	System->set3DSettings(DoplerScale, DistanceFactor, RolloffScale);
 }
 
-void QP::QuadPent_SoundSystem::SetListenerPosition(const xmfloat2& Position) {
+void QP::QuadPent_SoundSystem::SetListenerPosition(const xmfloat3& Position) {
 	ListenerPosition.x = Position.x;
 	ListenerPosition.y = Position.y;
-	ListenerPosition.z = 0.0f;
+	ListenerPosition.z = Position.z;
 	System->set3DListenerAttributes(0, &ListenerPosition, 0, 0, 0);
 }
 

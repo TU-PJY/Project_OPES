@@ -31,11 +31,9 @@ void QP::QuadPent_SoundAttribute::SetDistance(float Min, float Max) {
 	ChannelGroup->set3DMinMaxDistance(Min, Max);
 }
 
-void QP::QuadPent_SoundAttribute::SetPosition(const xmfloat2& Position, float DifferenceFactor) {
-	float Input = DifferenceFactor;
-
+void QP::QuadPent_SoundAttribute::SetPosition(const xmfloat3& Position) {
 	SoundPosition.x = Position.x;
 	SoundPosition.y = Position.y;
-	SoundPosition.z = Input;
+	SoundPosition.z = Position.z;
 	ChannelGroup->set3DAttributes(&SoundPosition, 0);
 }

@@ -6,6 +6,7 @@
 
 using namespace DirectX;
 using xmfloat2 = XMFLOAT2;
+using xmfloat3 = XMFLOAT3;
 
 namespace QP {
 	class QuadPent_SoundData;
@@ -27,7 +28,7 @@ namespace QP {
 	public:
 		void Init();
 		void SetSurrondValue(float DoplerScale, float DistanceFactor, float RolloffScale);
-		void SetListenerPosition(const xmfloat2& Position);
+		void SetListenerPosition(const xmfloat3& Position);
 		void Update();
 		void StopAllSounds();
 	};
@@ -61,7 +62,7 @@ namespace QP {
 		void Stop();
 
 		void SetDistance(float Min, float Max);
-		void SetPosition(const xmfloat2& Position, float DifferenceFactor=1.0f);
+		void SetPosition(const xmfloat3& Position);
 	};
 
 	class Sound : public QuadPent_SoundAttribute {
