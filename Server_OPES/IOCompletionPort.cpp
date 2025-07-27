@@ -1491,7 +1491,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
 
                 if (c->curr) {
                     arrivedCount++;
-                    SendData_ClearCountPacket(c, arrivedCount);
+                    //SendData_ClearCountPacket(c, arrivedCount);
                 }
             }
 
@@ -1515,11 +1515,10 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
             //}
 
             //여기 room.clearCount가 3이면 다음 스테이지?
+
+           
             if (room.clearCount >= MIN_PLAYER_COUNT) {
-                std::cout << "다들어옴!\n";
-                room.defenseState = true;
-                room.stageState++;
-                room.centerHp = CENTER_HP;
+
                 for (auto* Client : room.clients) {
 
                     if (Client->job == MG_JOB_TYPE) {
@@ -1533,7 +1532,13 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     }
                     Client->curr = false;
                     Client->prev = false;
+                    SendData_ClearCountPacket(Client, arrivedCount);
                 }
+                std::cout << "다들어옴!\n";
+                room.defenseState = true;
+                room.stageState++;
+                room.centerHp = CENTER_HP;
+               
                 if (randomTreadFlag2) {
                     randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
                     randomTreadFlag2 = false;
