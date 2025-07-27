@@ -13,7 +13,7 @@ private:
 
 	FBX gazerFBX{ MESH.gazer };
 
-	int currentState{ GAZER_IDLE };
+	int currentState{ GAZER_ATTACK };
 	int prevState{ -1 };
 
 	int totalHP{ GAZER_HP };
@@ -25,15 +25,21 @@ private:
 
 	BoundSphere frustumBound{};
 	OOBB        hitBox{};
+	OOBB        attackBound{};
 
 	TerrainUtil terrainUtil{};
 
 	bool     inFrustum{};
 
+	bool attackDid{};
+
+	unsigned int currentTargetID{};
+
 public:
 	Gazer(const xmfloat3& createPosition, unsigned int ID);
 	void gz_updateBound();
 	void gz_updateAnimation(float Delta);
+	void gz_updateAttack();
 	void gz_updateTerrainCollision();
 	void gz_updateState();
 	void Update(float Delta) override;

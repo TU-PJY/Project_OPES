@@ -121,6 +121,8 @@ XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other, float& Distanc
 }
 
 XMFLOAT3 TerrainUtil::CheckCollisionRay(const TerrainUtil& Other, XMVECTOR& Origin, XMVECTOR& Direction, float& Distance) {
+	if (!Other.TerrainMesh)
+		return xmfloat3(0.0, 0.0, 0.0);
 	XMFLOAT3 ReturnValue{};
 	Other.TerrainMesh->PickTerrainFromRay(Origin, Direction, ReturnValue, Distance);
 	return ReturnValue;

@@ -10,6 +10,10 @@ void Gazer::gz_updateBound() {
 	xmfloat3 boundPosition = xmfloat3(position.x, position.y + size.y * 2.0, position.z);
 	frustumBound.Update(boundPosition, 10.0);
 	inFrustum = camera.CheckFrustum(frustumBound);
+
+	xmfloat3 boundPos = xmfloat3(position.x, position.y + size.y, position.z);
+	boundPos = Math::CalcForwardOffset(boundPos, rotation.y, 6.0, 0.0);
+	attackBound.Update(boundPos, xmfloat3(2.0, 2.0, 4.0), rotation);
 }
 
 void Gazer::gz_updateAnimation(float Delta) {
@@ -19,6 +23,27 @@ void Gazer::gz_updateAnimation(float Delta) {
 		gazerFBX.UpdateAnimation(Delta, false, !inFrustum);
 
 	hitBox.UpdateDelta(Delta);
+}
+
+void Gazer::gz_updateAttack() {
+	if (currentState != GAZER_ATTACK) {
+		attackDid = false;
+		return;
+	}
+
+	if (gazerFBX.GetTimeSectionPassed(63.6)) {
+		if (!attackDid) {
+			if (currentTargetID == GLOBAL.myID) {
+				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
+					player->GiveDamage(GAZER_DAMAGE);
+				}
+			}
+					std::cout << "gazer attack" << std::endl;
+			attackDid = true;
+		}
+	}
+	else
+		attackDid = false;
 }
 
 void Gazer::gz_updateTerrainCollision() {
@@ -58,6 +83,7 @@ void Gazer::Update(float Delta) {
 	gz_updateBound();
 	gz_updateState();
 	gz_updateAnimation(Delta);
+	gz_updateAttack();
 }
 
 void Gazer::Render() {
@@ -73,8 +99,9 @@ void Gazer::Render() {
 	RenderFBX(gazerFBX, TEX.gazer);
 	hitBox.UpdateAnimated(gazerFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 4);
 
-	frustumBound.Render();
-	hitBox.Render();
+	//frustumBound.Render();
+	//hitBox.Render();
+	attackBound.Render();
 }
 
 OOBB Gazer::GetOOBB() {
