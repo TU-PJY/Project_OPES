@@ -10,6 +10,7 @@ private:
 
 public:
 	CrossHair();
+	void InputMouse(MouseEvent& Event) override;
 	void InputRecoil(float Value);
 	void Update(float Delta);
 	void EnableRender();

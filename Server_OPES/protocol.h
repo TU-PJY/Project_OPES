@@ -137,8 +137,8 @@ constexpr float                MAP2_RANDOM_MAX_RADIANS = 70.0;
 constexpr XMFLOAT3             MAP3_DESTINATION = XMFLOAT3(275.0, 0.0, 185.0);
 
 // 스테이지 3 랜덤 생성 위치
-constexpr float                MAP3_RANDOM_MIN_RADIANS = 30.0;
-constexpr float                MAP3_RANDOM_MAX_RADIANS = 60.0;
+constexpr float                MAP3_RANDOM_MIN_RADIANS = 150.0;
+constexpr float                MAP3_RANDOM_MAX_RADIANS = 180.0;
 
 // 보너스 & 페널티
 // 공통 보너스

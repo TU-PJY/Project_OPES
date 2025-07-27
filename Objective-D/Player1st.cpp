@@ -11,6 +11,8 @@
 #include "Beacon.h"
 #include "InstallIndicator.h"
 #include "Scope.h"
+#include "CameraController.h"
+#include "SpecterUI.h"
 
 #include "Grenade.h"
 
@@ -544,6 +546,11 @@ void Player1st::GiveDamage(int damage) {
 			currentHP = 0;
 
 		if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
+
+		if (this->currentHP <= 0) {
+			scene.AddObject(new CameraController, "camControll", LAYER1, true);
+			scene.DeleteObject(this);
+		}
 	}
 
 	// 체력이 0이 되면 상태를 죽음으로 변경한다.
@@ -567,6 +574,12 @@ void Player1st::InputHP(int currentHP) {
 
 	// 인디케이터 업데이트
 	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
+
+	if (this->currentHP <= 0) {
+		scene.AddObject(new CameraController, "camControll", LAYER1, true);
+		scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
+		scene.DeleteObject(this);
+	}
 	//std::cout << "PLAYER HP: " << this->currentHP << std::endl;
 }
 

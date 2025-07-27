@@ -83,6 +83,8 @@ void Level1::Start() {
 
 		if(!GLOBAL.skipDefenseMode)
 			scene.AddObject(new DefenseIndicator, "map1DefenseIndicator", LAYERUI);
+
+		scene.AddObject(new CrossHair, "crosshair", LAYERUI, true);
 	}
 }
 
