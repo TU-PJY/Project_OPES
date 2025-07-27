@@ -19,6 +19,7 @@
 void SendMovePacket(float x, float y, float z);
 void SendViewingAnglePacket(float x, float y, float z);
 void SendAnimaionPacket(unsigned short playerState);
+void SendMasterKeyPacket(int key);
 void SendMtoPDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
 
 Player1st::Player1st(int characterType) {
@@ -339,6 +340,21 @@ void Player1st::InputKey(KeyEvent& Event) {
 						scopePtr->SetRenderState(false);
 				}
 			}
+			break;
+
+		case '1':
+			//SendMasterKeyPacket(1);
+			playerPosition = MAP1_DESTINATION;
+			break;
+
+		case '2':
+			//SendMasterKeyPacket(2);
+			playerPosition = MAP2_DESTINATION;
+			break;
+
+		case '3':
+			//SendMasterKeyPacket(3);
+			playerPosition = MAP3_DESTINATION;
 			break;
 
 		break;
