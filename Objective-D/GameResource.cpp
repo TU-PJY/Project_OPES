@@ -311,11 +311,14 @@ void LoadTexture(DeviceSystem& System) {
 
 void LoadSound() {
 	SOUND.machinegunShoot.Load("Resources//Sounds//machinegunShoot.wav");
-	SOUND.machinegunReload.Load("Resources//Sounds//machinegunReload.ogg");
 	SOUND.dmrShoot.Load("Resources//Sounds//dmrShoot.mp3");
-	SOUND.dmrReload.Load("Resources//Sounds//dmrReload.ogg");
 	SOUND.shotgunShoot.Load("Resources//Sounds//shotgunShoot.mp3");
-	SOUND.explode.Load("Resources//Sounds//explode.wav", FMOD_3D);
+	SOUND.machinegunReload.Load("Resources//Sounds//machinegunReload.ogg");
+	SOUND.dmrReload.Load("Resources//Sounds//dmrReload.ogg");
+	SOUND.explode.Load("Resources//Sounds//explode.wav", FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	SOUND.machinegunShoot3d.Load("Resources//Sounds//machinegunShoot.wav", FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	SOUND.dmrShoot3d.Load("Resources//Sounds//dmrShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	SOUND.shotgunShoot3d.Load("Resources//Sounds//shotgunShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 }
 
 

@@ -266,11 +266,14 @@ typedef struct {
 extern TextureResource TEX;
 
 typedef struct {
-	QP::Sound machinegunShoot;
-	QP::Sound machinegunReload;
 	QP::Sound dmrShoot;
-	QP::Sound dmrReload;
+	QP::Sound machinegunShoot;
 	QP::Sound shotgunShoot;
+	QP::Sound machinegunReload;
+	QP::Sound dmrReload;
+	QP::Sound dmrShoot3d;
+	QP::Sound machinegunShoot3d;
+	QP::Sound shotgunShoot3d;
 	QP::Sound explode;
 }SoundRecources;
 extern SoundRecources SOUND;
