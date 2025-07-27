@@ -52,7 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>true</EnableUnitySupport>
+    <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -83,8 +83,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>FBXSDK\include;JSON;$(IncludePath)</IncludePath>
-    <LibraryPath>FBXSDK\lib\x64\release;$(LibraryPath)</LibraryPath>
+    <IncludePath>FBXSDK\include;JSON;FMOD\api\core\inc;$(IncludePath)</IncludePath>
+    <LibraryPath>FBXSDK\lib\x64\release;FMOD\api\core\lib\x64;$(LibraryPath)</LibraryPath>
     <TargetName>OPES</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -151,7 +151,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalDependencies>libfbxsdk.lib;libxml2.lib;
 zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalOptions>libfbxsdk.lib %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>libfbxsdk.lib fmod_vc.lib %(AdditionalOptions)</AdditionalOptions>
       <EntryPointSymbol>wWinMainCRTStartup</EntryPointSymbol>
     </Link>
     <Manifest>
@@ -229,6 +229,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="Shotgun.h" />
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Scorpion.h" />
+    <ClInclude Include="SoundModule\QuadPent_Sound.h" />
     <ClInclude Include="SpecterUI.h" />
     <ClInclude Include="SpreadBullet.h" />
     <ClInclude Include="StartMode.h" />
@@ -316,6 +317,10 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Shotgun.cpp" />
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="Scorpion.cpp" />
+    <ClCompile Include="SoundModule\QuadPent_Sound.cpp" />
+    <ClCompile Include="SoundModule\QuadPent_SoundAttribute.cpp" />
+    <ClCompile Include="SoundModule\QuadPent_SoundData.cpp" />
+    <ClCompile Include="SoundModule\QuadPent_SoundSystem.cpp" />
     <ClCompile Include="SpecterUI.cpp" />
     <ClCompile Include="SpreadBullet.cpp" />
     <ClCompile Include="StartMode.cpp" />

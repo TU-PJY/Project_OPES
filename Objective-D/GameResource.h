@@ -8,6 +8,7 @@
 #include "Config.h"
 #include "CollisionUtil.h"
 #include "TerrainUtil.h"
+#include "SoundModule//QuadPent_Sound.h"
 
 struct ObjectStruct {
 	XMFLOAT3 Position;
@@ -262,6 +263,11 @@ typedef struct {
 	Texture* UI_crosshair;
 }TextureResource;
 extern TextureResource TEX;
+
+typedef struct {
+	QP::Sound machinegunShoot;
+}SoundRecources;
+extern SoundRecources SOUND;
 
 /////////////////////////////////////////////////////////////////////////////////
 

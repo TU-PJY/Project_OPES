@@ -191,9 +191,6 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]">
       <UniqueIdentifier>{147e2871-02f2-4377-bd27-477c2e36fc0c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ 0_Mode Packs ]">
-      <UniqueIdentifier>{82e1b461-5d00-4430-aea1-ac6ac2a9bd4b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Monster Generator ]">
       <UniqueIdentifier>{f2a4007c-e5e3-4674-8a6c-e20c4d8d538d}</UniqueIdentifier>
     </Filter>
@@ -322,6 +319,12 @@
     </Filter>
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Spector UI ]">
       <UniqueIdentifier>{e7e9444b-870d-468b-8daf-aad0b0064f1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ 0_Mode Packs ]">
+      <UniqueIdentifier>{82e1b461-5d00-4430-aea1-ac6ac2a9bd4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ Sound ]">
+      <UniqueIdentifier>{6310cfcb-02dd-498a-badd-13b089123ca9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -586,6 +589,9 @@
     </ClInclude>
     <ClInclude Include="SpecterUI.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Spector UI ]</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundModule\QuadPent_Sound.h">
+      <Filter>[ Sound ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -864,6 +870,18 @@
     </ClCompile>
     <ClCompile Include="SpecterUI.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Spector UI ]</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundModule\QuadPent_Sound.cpp">
+      <Filter>[ Sound ]</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundModule\QuadPent_SoundAttribute.cpp">
+      <Filter>[ Sound ]</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundModule\QuadPent_SoundData.cpp">
+      <Filter>[ Sound ]</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundModule\QuadPent_SoundSystem.cpp">
+      <Filter>[ Sound ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
