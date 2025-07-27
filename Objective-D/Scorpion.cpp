@@ -96,7 +96,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 
-	currentTargetID = 0;
+	bool foundTarget = false;
 
 	// 현재 아무도 추격 안 하거나 나를 추격 중이면 나를 추적하도록 한다.
 	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
@@ -116,6 +116,8 @@ void Scorpion::updateDetectPlayer(float Delta) {
 				}
 
 				if (!isBlocked) {
+					foundTarget = true;
+
 					rotationDest = Math::CalcDegree3D(position, playerPosition);
 
 					// 공격 범위에 플레이어 바운드가 닿으면 공격 상태 활성화
@@ -142,17 +144,13 @@ void Scorpion::updateDetectPlayer(float Delta) {
 					}
 				}
 
-				else {
-					currentState = SCOR_IDLE;
-					currentTargetID = 0;
-				}
-			}
-
-			else {
-				currentState = SCOR_IDLE;
-				currentTargetID = 0;
 			}
 		}
+	}
+
+	if (!foundTarget) {
+		currentTargetID = 0;
+		currentState = SCOR_IDLE;
 	}
 
 	if (serverState != currentState) {
