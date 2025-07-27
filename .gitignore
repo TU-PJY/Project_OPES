@@ -405,3 +405,4 @@ FodyWeavers.xsd
 !Objective-D/Resources/**
 !Script Tool/**
 !Objective-D/FBXSDK/**
+!Objective-D/FMOD/**
