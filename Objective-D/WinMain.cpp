@@ -432,6 +432,13 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 		//어떤 클라가 접속이 끊겼나 처리!!
 	}
+	else if (*type == PacketType::MASTER_KEY) {
+		MasterKeyPacket* pkt = reinterpret_cast<MasterKeyPacket*>(buffer);
+		std::cout << "MASTER_KEY--: " << pkt->keyNum << std::endl;
+
+
+		//MASTER_KEY 처리!!
+	}
 	else {
 		std::cout << "== [ERROR] 알 수 없는 패킷 타입 ==" << std::endl;
 	}
@@ -461,6 +468,7 @@ int GetPacketSizeByType(PacketType type) {
 	case PacketType::BANG: return sizeof(BangPacket);
 	case PacketType::PLAYER_DEATH: return sizeof(PlayerDeathPacket);
 	case PacketType::DISCONNECT: return sizeof(DisconnectPacket);
+	case PacketType::MASTER_KEY: return sizeof(MasterKeyPacket);
 	default:
 		std::cout << "타입?\n";
 		return 0;
@@ -645,6 +653,30 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 //		}
 //	}
 //}
+void SendMasterKeyPacket(int key) {
+	if (enter_room) {
+		auto* pkt = new MasterKeyPacket{ PacketType::MASTER_KEY,  key };
+
+		auto* context = new SendContext{};
+		ZeroMemory(context, sizeof(SendContext));
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+		wsaBuf.len = sizeof(MasterKeyPacket);
+
+		context->cleanup = [pkt, context]() {
+			delete pkt;
+			delete context;
+			};
+
+		DWORD bytesSent = 0;
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+			std::cerr << "[클라이언트] 전송 실패\n";
+			context->cleanup(); // 실패 시 즉시 해제
+		}
+	}
+}
 void SendFilePacket(int stage) {
 	if (enter_room) {
 		auto* pkt = new FilePacket{ PacketType::FILE_LOAD,  stage };

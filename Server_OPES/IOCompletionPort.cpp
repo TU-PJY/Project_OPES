@@ -1358,6 +1358,31 @@ void IOCompletionPort::SendData_DisconnectPacket(stClientInfo* receiver, unsigne
         delete sendOver;
     }
 }
+void IOCompletionPort::SendData_MasterKeytPacket(stClientInfo* receiver, int key) {
+    MasterKeyPacket* pkt = new MasterKeyPacket{};
+    pkt->type = PacketType::MASTER_KEY;
+    pkt->keyNum = key;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(MasterKeyPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        PostRemove(receiver);
+        //std::cout << "DISCONNECT패킷전송오류!" << std::endl;
+        delete pkt;
+        delete sendOver;
+    }
+}
 float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
     XMVECTOR VecA = XMLoadFloat3(&A);
     XMVECTOR VecB = XMLoadFloat3(&B);
@@ -1581,6 +1606,7 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     if (type == PT::PLAYER_DEATH) return sizeof(PlayerDeathPacket);
     if (type == PT::DISCONNECT) return sizeof(DisconnectPacket);
     if (type == PT::FILE_LOAD) return sizeof(FilePacket);
+    if (type == PT::MASTER_KEY) return sizeof(MasterKeyPacket);
     return 0; // 알 수 없는 타입이면 0
 }
 void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
@@ -2093,7 +2119,15 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
         }
         
     }
-   
+    else if (*packetType == PacketType::MASTER_KEY) {
+        MasterKeyPacket* pkt = reinterpret_cast<MasterKeyPacket*>(buffer);
+
+
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_MasterKeytPacket(otherClient, pkt->keyNum);
+        }
+    }
 
 }
 
