@@ -147,6 +147,7 @@ public:
     void SendData_ChooseJobPacket(stClientInfo* receiver, unsigned int playerID, int job);
     void SendData_ReadyPacket(stClientInfo* receiver, unsigned int id);
     void SendData_BangPacket(stClientInfo* receiver, unsigned int id);
+    void SendData_PlayerDeathPacket(stClientInfo* receiver, unsigned int id);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 

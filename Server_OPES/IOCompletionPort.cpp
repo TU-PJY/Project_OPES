@@ -1321,7 +1321,32 @@ void IOCompletionPort::SendData_BangPacket(stClientInfo* receiver, unsigned int 
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
     sendOver->operation = IOOperation::SEND;
     sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
-    sendOver->wsaBuf.len = sizeof(ReadyPacket);
+    sendOver->wsaBuf.len = sizeof(BangPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_PlayerDeathPacket(stClientInfo* receiver, unsigned int id) {
+    PlayerDeathPacket* pkt = new PlayerDeathPacket{};
+    pkt->type = PacketType::PLAYER_DEATH;
+    pkt->playerID = id;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(PlayerDeathPacket);
     sendOver->cleanup = [pkt, sendOver]() {
         delete pkt;
         delete sendOver;
@@ -1541,6 +1566,7 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     if (type == PT::MONSTER_MOVE) return sizeof(MonsterMovePacket);
     if (type == PT::RANDOM_POSITION) return sizeof(DefenseRandomPacket);
     if (type == PT::BANG) return sizeof(BangPacket);
+    if (type == PT::PLAYER_DEATH) return sizeof(PlayerDeathPacket);
 
     return 0; // 알 수 없는 타입이면 0
 }
@@ -1896,7 +1922,10 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 if (!targetClient) continue;
                 if (targetClient->id == pkt->playerID) {
                     targetClient->hp -= pkt->attackHp;
-                    if (targetClient->hp < 0) targetClient->hp = 0;
+                    if (targetClient->hp < 0) { 
+                        targetClient->hp = 0; 
+                        //SendData_PlayerDeathPacket(targetClient, targetClient);
+                    }
                     if (targetClient->job == MG_JOB_TYPE) {
                         if (targetClient->hp > CHARACTER_MG_HP) targetClient->hp = CHARACTER_MG_HP;
                     }
@@ -1909,7 +1938,18 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     myHP = targetClient->hp;
                     break;
                 }
+
             }
+            for (auto* client : room.clients) {
+                if (client->hp <= 0) {
+                    if (!client) continue;
+                    for (auto* c : room.clients) {
+                        if (!c) continue;
+                        SendData_PlayerDeathPacket(c, client->id);
+                    }
+                }
+            }
+            
         }
         for (auto* otherClient : room.clients) {
             if (!otherClient) continue;
@@ -2022,16 +2062,13 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
         BangPacket* pkt = reinterpret_cast<BangPacket*>(buffer);
         std::cout << "BANG--id:" << pkt->playerID << std::endl;
         
-
-
         for (auto* otherClient : room.clients) {
             if (!otherClient || otherClient == client) continue;
             SendData_BangPacket(otherClient, pkt->playerID);
         }
 
-
-
     }
+   
 
 }
 
