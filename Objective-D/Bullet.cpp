@@ -48,8 +48,10 @@ void Bullet::updateCollision() {
 		//std::cout << "=========== NOT NULLPTR ==============" << std::endl;
 		if(!GLOBAL.useServer)
 			ptr->GiveDamage(bulletDamage);
-		unsigned int ID = ptr->GetID();
-		SendPtoMDamagePacket(ID, bulletDamage);
+		else {
+			unsigned int ID = ptr->GetID();
+			SendPtoMDamagePacket(ID, bulletDamage);
+		}
 		//std::cout << "SEND ID: "  << ID << std::endl;
 	}
 	//else

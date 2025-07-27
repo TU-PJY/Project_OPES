@@ -97,6 +97,7 @@ public:
 	virtual void ReloadGun() {}
 	virtual bool getZoomState() { return{}; }
 	virtual bool getReloadState(){ return {}; }
+	virtual void GiveKnockback(float rotation, float power) {}
 
 	// 크로스헤어 렌더링 활성화/비활성화
 	virtual void EnableRender() {}

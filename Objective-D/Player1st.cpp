@@ -385,6 +385,9 @@ void Player1st::updateMove(float Delta) {
 	else
 		strafeSpeed = std::lerp(strafeSpeed, 0.0, speedAcc * Delta);
 
+	Math::MoveForward(playerPosition, knockbackRotation, knockbackPower * Delta);
+	knockbackPower = std::lerp(knockbackPower, 0.0, 5.0 * Delta);
+
 	// 맵 바운드와 충돌을 체크하면서 이동
 	Math::MoveWithSlide(playerPosition, currentRotation.y, forwardSpeed, strafeSpeed, playerSphere, GLOBAL.mapOOBBdata, Delta);
 
@@ -573,4 +576,9 @@ void Player1st::InputHP(int currentHP) {
 
 unsigned int Player1st::GetID() {
 	return GLOBAL.myID;
+}
+
+void Player1st::GiveKnockback(float rotation, float power) {
+	knockbackRotation = rotation;
+	knockbackPower = power;
 }

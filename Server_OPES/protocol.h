@@ -10,7 +10,7 @@ constexpr int                  CENTER_HP		= 500;
 constexpr float                FLAME_RENDER_TIME = 0.03f;
 
 // 기관총
-constexpr unsigned int         MG_DAMAGE	   = 10;
+constexpr unsigned int         MG_DAMAGE	   = 15;
 constexpr float                MG_RECOIL       = 2.5f;
 constexpr float				   MG_RECOIL_BACK  = 0.1;
 constexpr float                MG_SHOOT_DELAY  = 0.1f;
@@ -62,15 +62,15 @@ constexpr int                  CHARACTER_ENG = 2;
 
 constexpr int				   MG_JOB_TYPE     = 0;
 constexpr unsigned int         CHARACTER_MG_HP = 300;
-constexpr float                CHARACTER_MG_SPEED   = 8.0f;
+constexpr float                CHARACTER_MG_SPEED   = 11.0f;
 
 constexpr int				   DMR_JOB_TYPE     = 1;
 constexpr unsigned int         CHARACTER_DMR_HP = 200;
-constexpr float                CHARACTER_DMR_SPEED	= 15.0f;
+constexpr float                CHARACTER_DMR_SPEED	= 11.0f;
 
 constexpr int				   ENG_JOB_TYPE      = 2;
 constexpr unsigned int         CHARACTER_ENG_HP = 250;
-constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
+constexpr float                CHARACTER_ENG_SPEED	= 11.0f;
 
 // 몬스터
 // HP 체력, SPEED 이동속도(km/h), DAMAGE 데미지, ATTACK 주기(초)
@@ -107,12 +107,15 @@ constexpr int                  TREANT_TYPE = 2;
 
 // 스테이지 3
 // imp
+/* DEPRECATED */
 constexpr unsigned int         IMP_HP           = 150;
 constexpr unsigned int         IMP_DAMAGE       = 15;
 constexpr int                  IMP_TYPE          = 1;
+/* DEPRECATED */
+
 
 // gazer
-constexpr unsigned int         GAZER_HP         = 200;
+constexpr unsigned int         GAZER_HP         = 450;
 constexpr unsigned int         GAZER_DAMAGE     = 30;
 constexpr int                  GAZER_TYPE       = 2;
 
