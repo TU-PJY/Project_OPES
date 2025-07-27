@@ -17,14 +17,6 @@ unsigned int enter_player_id;
 
 DeviceSystem LoadSystem;
 
-// 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
-// DevMode 활성화 시에만 아래 3개의 플래그가 의미가 있음
-bool DevMode = true;
-
-bool LoadMap1Resources = true;
-bool LoadMap2Resources = true;
-bool LoadMap3Resources = true;
-bool UIcreateMode = false;
 
 // 매쉬를 여기서 로드한다.
 void LoadMesh(DeviceSystem& System) {

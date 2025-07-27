@@ -21,6 +21,13 @@ extern unsigned int enter_player_id;
 
 extern DeviceSystem LoadSystem;
 
+extern bool DevMode;
+
+extern bool LoadMap1Resources;
+extern bool LoadMap2Resources;
+extern bool LoadMap3Resources;
+extern bool UIcreateMode;
+
 enum GlobalEnum : unsigned int {
 	// 엔지니어 설치물 타입
 	CONSTRUCT_TURRET,
