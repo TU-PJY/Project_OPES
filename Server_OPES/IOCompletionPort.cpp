@@ -348,7 +348,7 @@ void IOCompletionPort::RandomPositionThread() {
                 if (room.defenseStartTime == steady_clock::time_point::min()) {
                     room.defenseStartTime = now + seconds(3);
                     room.lastMonsterSendTime = room.defenseStartTime;
-                    std::cout << "[Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
+                    std::cout << "[1s-Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
                 }
 
                 if (now < room.defenseStartTime)
@@ -361,7 +361,7 @@ void IOCompletionPort::RandomPositionThread() {
 
                 if (monsterId >= DEFENSE_MONSTER1) {
                     room.monsterRandomSent = true;
-                    std::cout << "[Room " << roomID << "] 모든 몬스터 전송 완료\n";
+                    std::cout << "[1s-Room " << roomID << "] 모든 몬스터 전송 완료\n";
                     continue;
                 }
 
@@ -388,7 +388,7 @@ void IOCompletionPort::RandomPositionThread() {
                         delete sendOver;
                         };
 
-                    std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
+                    std::cout << "[1s-Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
 
                     int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
                         &sendOver->overlapped, NULL);
@@ -426,7 +426,7 @@ void IOCompletionPort::RandomPositionThread2() {
                 if (room.defenseStartTime == steady_clock::time_point::min()) {
                     room.defenseStartTime = now + seconds(3);
                     room.lastMonsterSendTime = room.defenseStartTime;
-                    std::cout << "[Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
+                    std::cout << "[2s-Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
                 }
 
                 if (now < room.defenseStartTime)
@@ -439,7 +439,7 @@ void IOCompletionPort::RandomPositionThread2() {
 
                 if (monsterId >= DEFENSE_MONSTER1) {
                     room.monsterRandomSent = true;
-                    std::cout << "[Room " << roomID << "] 모든 몬스터 전송 완료\n";
+                    std::cout << "[2s-Room " << roomID << "] 모든 몬스터 전송 완료\n";
                     continue;
                 }
 
@@ -466,7 +466,7 @@ void IOCompletionPort::RandomPositionThread2() {
                         delete sendOver;
                         };
 
-                    std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
+                    std::cout << "[2s-Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
 
                     int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
                         &sendOver->overlapped, NULL);
@@ -504,7 +504,7 @@ void IOCompletionPort::RandomPositionThread3() {
                 if (room.defenseStartTime == steady_clock::time_point::min()) {
                     room.defenseStartTime = now + seconds(3);
                     room.lastMonsterSendTime = room.defenseStartTime;
-                    std::cout << "[Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
+                    std::cout << "[3s-Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
                 }
 
                 if (now < room.defenseStartTime)
@@ -517,7 +517,7 @@ void IOCompletionPort::RandomPositionThread3() {
 
                 if (monsterId >= DEFENSE_MONSTER1) {
                     room.monsterRandomSent = true;
-                    std::cout << "[Room " << roomID << "] 모든 몬스터 전송 완료\n";
+                    std::cout << "[3s-Room " << roomID << "] 모든 몬스터 전송 완료\n";
                     continue;
                 }
 
@@ -544,7 +544,7 @@ void IOCompletionPort::RandomPositionThread3() {
                         delete sendOver;
                         };
 
-                    std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
+                    std::cout << "[3s-Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
 
                     int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
                         &sendOver->overlapped, NULL);
@@ -776,25 +776,47 @@ void IOCompletionPort::RemoveClient(stClientInfo* c)
 {
     if (!c) return;
 
-    // ① 이미 제거 처리했다면 아무 것도 하지 않는다
+    //  이미 제거된 클라이언트는 다시 처리하지 않음
     if (c->alreadyRemoved.exchange(true))
         return;
 
-    // ② 소켓이 열려 있으면 지금 닫는다
+    // ②소켓 닫기
     if (c->socketClient != INVALID_SOCKET) {
         shutdown(c->socketClient, SD_BOTH);
         closesocket(c->socketClient);
         c->socketClient = INVALID_SOCKET;
     }
 
+    //  전체 클라이언트 목록에서 제거
     for (auto& slot : clients)
         if (slot == c) { slot = nullptr; --clientCount; break; }
-    std::cout<<"clientCount: " << clientCount << std::endl;
-    waitingClients.erase(
-        std::remove(waitingClients.begin(), waitingClients.end(), c),
-        waitingClients.end());
+
+    std::cout << "clientCount: " << clientCount << std::endl;
+
+    //  웨이팅룸에서 제거 
+    {
+        std::lock_guard<std::mutex> lock(waitMutex);
+        waitingClients.erase(
+            std::remove(waitingClients.begin(), waitingClients.end(), c),
+            waitingClients.end());
+    }
+
+    //  방(Room)의 clients 목록에서도 제거 
+    {
+        std::lock_guard<std::mutex> lock(roomMapMutex);
+        auto it = rooms.find(c->roomID);
+        if (it != rooms.end()) {
+            Room& room = it->second;
+            room.clients.erase(
+                std::remove(room.clients.begin(), room.clients.end(), c),
+                room.clients.end());
+        }
+    }
+
+    // ⑥ 최종 메모리 해제
     delete c;
 }
+
 
 
 void IOCompletionPort::SendData_Move(stClientInfo* sender, stClientInfo* receiver) {

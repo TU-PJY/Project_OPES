@@ -403,7 +403,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	else {
 		std::cout << "== [ERROR] 알 수 없는 패킷 타입 ==" << std::endl;
 	}
-	std::cout << "process\n";
+	//std::cout << "process\n";
 }
 int GetPacketSizeByType(PacketType type) {
 	switch (type) {
@@ -493,7 +493,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		isRunning = false;
 		newContext->cleanup();
 	}
-	std::cout << "WSARecv" << std::endl;
+	//std::cout << "WSARecv" << std::endl;
 }
 
 // 데이터 전송 콜백 함수
