@@ -32,6 +32,16 @@ private:
 
 	unsigned int ID{};
 
+	float flameRenderTime{};
+
+	float flameIdleForward{};
+	float flameIdleStrafe{};
+	float flameIdleHeight{};
+
+	float flameMoveForward{};
+	float flameMoveStrafe{};
+	float flameMoveHeight{};
+
 public:
 	OtherPlayer(int characterType, unsigned int ID);
 	void updateState();

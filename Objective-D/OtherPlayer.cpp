@@ -1,10 +1,13 @@
 #include "OtherPlayer.h"
 #include "CameraUtil.h"
 #include "ClampUtil.h"
+#include "ScriptUtil.h"
 
 // 캐릭터 타입에 따라 다른 fbx를 초기화 한다.
 OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 	this->characterType = characterType;
+	ScriptUtil script{};
+	script.Load("Resources//Scripts//weapon//flamePosition.xml");
 
 	switch (this->characterType) {
 	case CHARACTER_MG:
@@ -15,8 +18,17 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 
 		totalHP = CHARACTER_MG_HP;
 		currentHP = CHARACTER_MG_HP;
+
+		flameIdleForward = script.LoadDigitData("heavyIdle", "forward");
+		flameIdleStrafe = script.LoadDigitData("heavyIdle", "strafe");
+		flameIdleHeight = script.LoadDigitData("heavyIdle", "height");
+
+		flameMoveForward = script.LoadDigitData("heavyMove", "forward");
+		flameMoveStrafe = script.LoadDigitData("heavyMove", "strafe");
+		flameMoveHeight = script.LoadDigitData("heavyMove", "height");
 		break;
 
+		// 소음기가 장착된 총이므로 불꽃을 렌더링하지 않는다.
 	case CHARACTER_DMR:
 		idleFBX.SelectFBXMesh(MESH.marksman[0]);
 		moveFBX.SelectFBXMesh(MESH.marksman[1]);
@@ -36,6 +48,14 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 
 		totalHP = CHARACTER_ENG_HP;
 		currentHP = CHARACTER_ENG_HP;
+
+		flameIdleForward = script.LoadDigitData("engineerIdle", "forward");
+		flameIdleStrafe = script.LoadDigitData("engineerIdle", "strafe");
+		flameIdleHeight = script.LoadDigitData("engineerIdle", "height");
+
+		flameMoveForward = script.LoadDigitData("engineerMove", "forward");
+		flameMoveStrafe = script.LoadDigitData("engineerMove", "strafe");
+		flameMoveHeight = script.LoadDigitData("engineerMove", "height");
 		break;
 	}
 
@@ -130,6 +150,19 @@ void OtherPlayer::Render() {
 	case STATE_DEATH:
 		RenderFBX(deathFBX, TEX.scifi);
 		break;
+	}
+
+	if (characterType != CHARACTER_DMR) {
+		if (flameRenderTime > 0.0) {
+			xmfloat3 renderPos = Math::CalcForwardOffset(position, rotation.y, flameIdleForward, flameIdleHeight);
+			renderPos = Math::CalcStrafeOffset(renderPos, rotation.y, flameIdleStrafe, 0.0);
+			BeginRender();
+			SetLightUse(DISABLE_LIGHT);
+			Transform::Move(TranslateMatrix, renderPos);
+			Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
+			Render3D(MESH.gun_flame, TEX.gun_flame);
+			Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
+		}
 	}
 
 	renderState = currentState;

@@ -426,6 +426,25 @@ XMFLOAT3 Math::CalcForwardOffset(const XMFLOAT3& Position, float DegreesY, float
 	return Result;
 }
 
+XMFLOAT3 Math::CalcStrafeOffset(const XMFLOAT3& Position, float DegreesY, float StrafeDistance, float HeightOffset) {
+	float radians = XMConvertToRadians(DegreesY);
+
+    // 전방 벡터
+    float forwardX = sinf(radians);
+    float forwardZ = cosf(radians);
+
+    // 전방에 수직인 오른쪽 벡터 (Strafe)
+    float rightX = forwardZ;
+    float rightZ = -forwardX;
+
+    XMFLOAT3 Result{};
+    Result.x = Position.x + rightX * StrafeDistance;
+    Result.y = Position.y + HeightOffset;
+    Result.z = Position.z + rightZ * StrafeDistance;
+
+    return Result;
+}
+
 void Math::GenRandomSpreadingRaysFromCenter(std::vector<std::pair<XMVECTOR, XMVECTOR>>& rays, int rayCount, float maxAngleDegrees){
 	rays.clear();
 

@@ -67,6 +67,12 @@ typedef struct{
 	float    Distance;
 }Ray;
 
+typedef struct {
+	float forward;
+	float strafe;
+	float height;
+}FlameOffset;
+
 // 플레이어 상태 열거형
 enum PlayerState {
 	STATE_IDLE,

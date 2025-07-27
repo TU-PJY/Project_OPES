@@ -90,8 +90,8 @@ bool DevMode = true;
 // UI 제작 시 사용하는 플래그. true일 시 아래 3개의 플래그가 모두 강제로 false가 된다.
 bool UIcreateMode = false;
 
-bool LoadMap1Resources = true;
-bool LoadMap2Resources = true;
+bool LoadMap1Resources = false;
+bool LoadMap2Resources = false;
 bool LoadMap3Resources = false;
 
 // 시작 모드
@@ -1217,9 +1217,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lPara
 		scene.InputMouseMotionMessage(hWnd);
 		break;
 
-	case WM_ACTIVATE:
+	/*case WM_ACTIVATE:
 		framework.WindowsMessageFunc(hWnd, nMessageID, wParam, lParam);
-		break;
+		break;*/
 
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);

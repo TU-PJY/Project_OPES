@@ -77,7 +77,7 @@ public:
 		if (MoveFast)
 			MulSpeed = 3.0;
 		else
-			MulSpeed = 1.0;
+			MulSpeed = 0.3;
 
 
 		// 상하 회전반경 제한
