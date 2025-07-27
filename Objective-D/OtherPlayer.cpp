@@ -26,6 +26,7 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 		flameMovex = script.LoadDigitData("heavyMove", "x");
 		flameMovey = script.LoadDigitData("heavyMove", "y");
 		flameMovez = script.LoadDigitData("heavyMove", "z");
+		break;
 
 		// 소음기가 장착된 총이므로 불꽃을 렌더링하지 않는다.
 	case CHARACTER_DMR:

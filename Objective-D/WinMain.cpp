@@ -406,6 +406,9 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 		GLOBAL.deathCount++;
 
+		if (auto player = scene.SearchLayer(LAYER_PLAYER, std::to_string(pkt->playerID)); player)
+			player->InputState(STATE_DEATH);
+
 		//PLAYER_DEATH처리!!
 	}
 	else if (*type == PacketType::DISCONNECT) {

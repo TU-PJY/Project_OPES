@@ -319,6 +319,7 @@ void LoadSound() {
 	SOUND.machinegunShoot3d.Load("Resources//Sounds//machinegunShoot.wav", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.dmrShoot3d.Load("Resources//Sounds//dmrShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.shotgunShoot3d.Load("Resources//Sounds//shotgunShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	SOUND.turretShoot.Load("Resources//Sounds//turretShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 }
 
 
