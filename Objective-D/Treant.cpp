@@ -6,6 +6,7 @@
 
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
+void SendCenterBuildingPacket(int hp);
 
 Treant::Treant(const xmfloat3& createPosition, unsigned int ID, bool defenseModeState) {
 	position = createPosition;
@@ -17,6 +18,12 @@ Treant::Treant(const xmfloat3& createPosition, unsigned int ID, bool defenseMode
 
 	hpInd = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER3);
 	if (hpInd) hpInd->SetSize(1.5);
+
+	// 디펜스 모드 지정 시 땅에서 나옴
+	if (this->defenseMoveState) {
+		currentState = TREANT_IDLE;
+		heightOffset = -10.0;
+	}
 }
 
 Treant::~Treant() {
@@ -26,7 +33,8 @@ Treant::~Treant() {
 
 void Treant::updateIndicator() {
 	if (hpInd) {
-		hpInd->InputPosition(position, 8.0);
+		xmfloat3 pos = xmfloat3(position.x, position.y + heightOffset, position.z);
+		hpInd->InputPosition(pos, 8.0);
 		hpInd->InputHP(totalHP, currentHP);
 	}
 }
@@ -41,6 +49,16 @@ void Treant::updateState() {
 void Treant::updateAnimation(float Delta) {
 	treantFBX[currentState].UpdateAnimation(Delta, false, !inFrustum);
 	treantOOBB.UpdateDelta(Delta);
+}
+
+void Treant::liftFromGround(float Delta) {
+	if (!behaviorState) {
+		heightOffset += Delta * 10.0;
+		if (heightOffset >= 0.0) {
+			Clamp::LimitValue(heightOffset, 0.0, CLAMP_DIR_GREATER);
+			behaviorState = true;
+		}
+	}
 }
 
 void Treant::updateTerrainCollision() {
@@ -61,6 +79,21 @@ void Treant::updateBound() {
 
 void Treant::detectPlayer(float Delta) {
 	if (currentState == TREANT_DEATH)
+		return;
+
+	if (behaviorState) {
+		if (auto center = scene.SearchLayer(LAYER1, "center_building"); center) {
+			rotationDest = Math::CalcDegree3D(position, center->GetPosition());
+			if (attackBound.CheckCollision(center->GetOOBB())) {
+				currentState = TREANT_ATTACK;
+			}
+			else
+				currentState = TREANT_MOVE;
+		}
+	}
+
+	// 디펜스용 스폰 시 감지 안 함
+	if (defenseMoveState)
 		return;
 
 	// 일정 간격마다 전송 활성화
@@ -167,10 +200,19 @@ void Treant::updateAttack() {
 
 	if (treantFBX[TREANT_ATTACK].GetTimeSectionPassed(1.0)) {
 		if (!attackDid) {
-			if (currentTargetID == GLOBAL.myID) {
-				if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
-					player->GiveDamage(TREANT_DAMAGE);
-					std::cout << "treant attack" << std::endl;
+			if (!defenseMoveState) {
+				if (currentTargetID == GLOBAL.myID) {
+					if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
+						player->GiveDamage(TREANT_DAMAGE);
+						std::cout << "treant attack" << std::endl;
+					}
+				}
+			}
+			else {
+				if (auto center = scene.SearchLayer(LAYER1, "center_building"); center) {
+					if(!GLOBAL.useServer)
+						center->GiveDamage(15);
+					SendCenterBuildingPacket(15);
 				}
 			}
 			attackDid = true;
@@ -192,6 +234,7 @@ void Treant::Update(float Delta) {
 	detectPlayer(Delta);
 	updateMove(Delta);
 	updateTerrainCollision();
+	liftFromGround(Delta);
 	updateIndicator();
 	updateBound();
 	updateState();
@@ -205,7 +248,7 @@ void Treant::Render() {
 		return;
 
 	BeginRender();
-	Transform::Move(TranslateMatrix, position);
+	Transform::Move(TranslateMatrix, position.x, position.y + heightOffset, position.z);
 	Transform::Rotate(RotateMatrix, rotation);
 	Transform::Scale(ScaleMatrix, size);
 	RenderFBX(treantFBX[renderState], TEX.treant);
