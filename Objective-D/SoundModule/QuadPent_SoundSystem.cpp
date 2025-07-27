@@ -22,7 +22,7 @@ void QP::QuadPent_SoundSystem::Init() {
 	if (Volume == 0.0f)
 		MasterGroup->setVolume(1.0f);
 
-	System->set3DSettings(1.0, 1.0, 1.0);
+	System->set3DSettings(1.0, 1.0, 0.7);
 
 	InitState = true;
 }
