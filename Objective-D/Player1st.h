@@ -97,7 +97,7 @@ private:
 	float knockbackPower{};
 
 	float footstepTime{};
-	float footstepInterval{ 0.5 };
+	float footstepInterval{ 0.4 };
 
 public:
 	Player1st(int characterType);

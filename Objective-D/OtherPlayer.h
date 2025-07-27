@@ -45,7 +45,7 @@ private:
 	float flameMovez{};
 
 	float footstepTime{};
-	float footstepInterval{ 0.5 };
+	float footstepInterval{ 0.4 };
 
 public:
 	OtherPlayer(int characterType, unsigned int ID);

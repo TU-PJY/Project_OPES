@@ -21,6 +21,7 @@
 #include "Beacon.h"
 #include "Treant.h"
 #include "PlantMonster.h"
+#include "Gazer.h"
 
 #include <locale>
 
@@ -276,6 +277,9 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 			else if (GLOBAL.mapName.compare("map2") == 0)
 				scene.AddObject(new Treant(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
+
+			else if (GLOBAL.mapName.compare("map3") == 0)
+				scene.AddObject(new Gazer(createPosition, packet->monsterID, true), std::to_string(packet->monsterID), LAYER_MONSTER);
 		}
 
 		//처리부분
