@@ -331,7 +331,7 @@ void IOCompletionPort::RandomPositionThread() {
 }
 void IOCompletionPort::RandomPositionThread2() {
     using namespace std::chrono;
-
+    std::cout << "RandomPositionThread2시작\n";
     const seconds sendInterval(CREAT_MONSTER_TIME);  // 몬스터 1마리당 간격
 
     while (isRunning) {
@@ -409,7 +409,7 @@ void IOCompletionPort::RandomPositionThread2() {
 }
 void IOCompletionPort::RandomPositionThread3() {
     using namespace std::chrono;
-
+    std::cout << "RandomPositionThread3시작\n";
     const seconds sendInterval(CREAT_MONSTER_TIME);  // 몬스터 1마리당 간격
 
     while (isRunning) {
@@ -1670,7 +1670,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 room.stageState++;
                 room.centerHp = CENTER_HP;
                 room.DeathCount = 0;
-               
+                room.monsterRandomSent = false;
                 //if (randomTreadFlag2) {
                 //    randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
                 //    randomTreadFlag2 = false;
