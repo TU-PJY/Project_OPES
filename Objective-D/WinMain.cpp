@@ -402,11 +402,17 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 		//PLAYER_DEATH처리!!
 	}
+	else if (*type == PacketType::DISCONNECT) {
+		DisconnectPacket* pkt = reinterpret_cast<DisconnectPacket*>(buffer);
+		std::cout << "DISCONNECT-id: " << pkt->playerID << std::endl;
 
+
+		//어떤 클라가 접속이 끊겼나 처리!!
+	}
 	else {
 		std::cout << "== [ERROR] 알 수 없는 패킷 타입 ==" << std::endl;
 	}
-	std::cout << "process\n";
+	//std::cout << "process\n";
 }
 int GetPacketSizeByType(PacketType type) {
 	switch (type) {
@@ -431,6 +437,7 @@ int GetPacketSizeByType(PacketType type) {
 	case PacketType::EXISTING_CLIENTS: return sizeof(ExistingClientsDataPacket);
 	case PacketType::BANG: return sizeof(BangPacket);
 	case PacketType::PLAYER_DEATH: return sizeof(PlayerDeathPacket);
+	case PacketType::DISCONNECT: return sizeof(DisconnectPacket);
 	default:
 		std::cout << "타입?\n";
 		return 0;
@@ -496,7 +503,7 @@ void CALLBACK RecvCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		isRunning = false;
 		newContext->cleanup();
 	}
-	std::cout << "WSARecv" << std::endl;
+	//std::cout << "WSARecv" << std::endl;
 }
 
 // 데이터 전송 콜백 함수
@@ -524,7 +531,7 @@ void CALLBACK SendCallback(DWORD err, DWORD num_bytes, LPWSAOVERLAPPED p_over, D
 		//	newRecv->cleanup();
 		//	isRunning = false;
 		//}
-	std::cout << "send!!!" << std::endl;
+	//std::cout << "send!!!" << std::endl;
 }
 
 void NetworkThread(bool localServer, const wchar_t* cmdLine)
