@@ -29,6 +29,10 @@ Treant::Treant(const xmfloat3& createPosition, unsigned int ID, bool defenseMode
 Treant::~Treant() {
 	if (hpInd)
 		scene.DeleteObject(hpInd);
+
+	GLOBAL.DefenseEnemyRemained--;
+	if (GLOBAL.DefenseEnemyRemained == 0)
+		GLOBAL.DefenseState = false;
 }
 
 void Treant::updateIndicator() {
@@ -239,8 +243,8 @@ void Treant::Update(float Delta) {
 	updateBound();
 	updateState();
 	updateAttack();
-	updateDeath();
 	updateAnimation(Delta);
+	updateDeath();
 }
 
 void Treant::Render() {

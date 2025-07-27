@@ -71,7 +71,7 @@ void Troll::updateBound() {
 	xmfloat3 boundPosition = xmfloat3(position.x, position.y + size.y, position.z);
 	frustumBound.Update(boundPosition, 12.0);
 	inFrustum = camera.CheckFrustum(frustumBound);
-	lookRange.Update(boundPosition, 60.0);
+	lookRange.Update(boundPosition, 80.0);
 	trollBound.Update(XMFLOAT3(position.x, position.y + 0.5, position.z), 2.0);
 
 	XMFLOAT3 attackBoundPosition = Math::CalcForwardOffset(position, rotation.y, 3.0, size.y * 0.5);
@@ -228,7 +228,7 @@ void Troll::Render() {
 	Transform::Rotate(RotateMatrix, rotation);
 	Transform::Scale(ScaleMatrix, size);
 	if (currentState == TROLL_MOVE)
-		Transform::Move(ScaleMatrix, -trollFBX.GetInplaceDelta());
+		Transform::Move(ScaleMatrix, 0.0, 0.0, -trollFBX.GetInplaceDelta().z);
 	RenderFBX(trollFBX, TEX.troll);
 	trollOOBB.UpdateAnimated(trollFBX, TranslateMatrix, RotateMatrix, ScaleMatrix, 3);
 

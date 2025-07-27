@@ -23,7 +23,7 @@ constexpr float                DMR_RELOAD_TIME  = 2.0f;
 constexpr unsigned int         DMR_MAGAZINE		= 10;
 
 // 샷건
-constexpr unsigned int         SG_DAMAGE		= 20;
+constexpr unsigned int         SG_DAMAGE		= 10;
 constexpr float                SG_RECOIL        = 12.0f;
 constexpr float                SG_RECOIL_BACK   = 0.2f;
 constexpr unsigned int         SG_FRAG			= 12;    // FRAG 파편, PIECE 조각, BUCK 산탄, PELLET 펠릿 용어 아직 못정함.
@@ -73,7 +73,7 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 constexpr int                  DEFENSE_MONSTER = 20;
 
 //start 인원수 
-constexpr int				  MIN_PLAYER_COUNT = 2;          
+constexpr int				   MIN_PLAYER_COUNT = 2;          
 
 // 스테이지 1
 // Plant Monster

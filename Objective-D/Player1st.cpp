@@ -526,9 +526,15 @@ void Player1st::GiveHeal(int healHP) {
 	if (currentState == STATE_DEATH)
 		return;
 
-	currentHP += healHP;
-	Clamp::LimitValue(currentHP, totalHP, CLAMP_DIR_GREATER);
-	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
+	if (!GLOBAL.useServer) {
+		currentHP += healHP;
+		Clamp::LimitValue(currentHP, totalHP, CLAMP_DIR_GREATER);
+		if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
+	}
+	else {
+		//음수를 보내 회복
+		SendMtoPDamagePacket(GLOBAL.myID, 0, -5);
+	}
 }
 
 void Player1st::GiveDamage(int damage) {

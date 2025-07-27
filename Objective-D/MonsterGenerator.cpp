@@ -27,7 +27,7 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 	if (currentTime >= destGenerateTime) {
 		currentTime -= destGenerateTime;
 		XMFLOAT3 randomPosition{};
-		XMFLOAT2 RandomXZ = Random.GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+		XMFLOAT2 RandomXZ = Random.GenPointInDonut(40.0, 70.0, XMFLOAT2(-120.0, -120.0));
 
 		// 위치 랜덤
 		randomPosition.x = RandomXZ.x;
@@ -40,6 +40,7 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 
 		if (GLOBAL.mapName.compare("map2") == 0) {
 			scene.AddObject(new Treant(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
+			std::cout << currentGenerateCount << "번째 생성" << std::endl;
 		}
 
 		currentGenerateCount++;

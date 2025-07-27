@@ -23,7 +23,7 @@ void Level2::Start() {
 	GLOBAL.mapName = "map2";
 	GLOBAL.mapOOBBdata.clear();
 	GLOBAL.defenseIDList.clear();
-	GLOBAL.DefenseEnemyRemained = 20;
+	GLOBAL.DefenseEnemyRemained = 10;
 	GLOBAL.DefenseState = true;
 	GLOBAL.offsetFOV = 0.0;
 
@@ -55,11 +55,10 @@ void Level2::Start() {
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else
-		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(2), "player", LAYER_PLAYER, true);
 
 	if (!GLOBAL.skipDefenseMode) {
-		std::cout << GLOBAL.skipDefenseMode << std::endl;
-		scene.AddObject(new RoadBlock(XMFLOAT3(-91.0, 5.0, -93.0), 20.0, 10), "roadBlock", LAYER1);
+		scene.AddObject(new RoadBlock(XMFLOAT3(-45.0, 1.0, -116.0), 90.0, 10), "roadBlock", LAYER1);
 
 		// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
 		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
