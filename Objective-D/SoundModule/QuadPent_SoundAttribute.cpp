@@ -12,7 +12,7 @@ void QP::QuadPent_SoundAttribute::Play(float Time) {
 void QP::QuadPent_SoundAttribute::Play3D(float Time) {
 	SoundSystem.System->playSound(Data, ChannelGroup, false, &Channel);
 	Channel->set3DAttributes(&SoundPosition, 0);
-	Channel->set3DMinMaxDistance(1.0f, 100.0f);
+	Channel->set3DMinMaxDistance(1.0f, 30.0f);
 }
 
 void QP::QuadPent_SoundAttribute::Stop() {

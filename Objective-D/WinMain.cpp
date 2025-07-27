@@ -91,8 +91,8 @@ bool DevMode = true;
 bool UIcreateMode = false;
 
 bool LoadMap1Resources = true;
-bool LoadMap2Resources = false;
-bool LoadMap3Resources = false;
+bool LoadMap2Resources = true;
+bool LoadMap3Resources = true;
 
 // 사운드 리소스를 로드한다.
 bool LoadSoundResources = true;
