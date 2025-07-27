@@ -1,4 +1,5 @@
 #include "QuadPent_Sound.h"
+#include "..//CameraUtil.h"
 
 QP::QuadPent_SoundSystem QP::SoundSystem;
 
@@ -31,13 +32,34 @@ void QP::QuadPent_SoundSystem::SetSurrondValue(float DoplerScale, float Distance
 }
 
 void QP::QuadPent_SoundSystem::SetListenerPosition(const xmfloat3& Position) {
-	ListenerPosition.x = Position.x;
-	ListenerPosition.y = Position.y;
-	ListenerPosition.z = Position.z;
-	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f };
-	FMOD_VECTOR forward = { 0.0f, 0.0f, 1.0f };
-	FMOD_VECTOR up = { 0.0f, 1.0f, 0.0f };
-	System->set3DListenerAttributes(0, &ListenerPosition, &vel, &forward, &up);
+	XMFLOAT4X4 viewMatrix = camera.GetViewMatrix();
+	XMMATRIX viewMat = XMLoadFloat4x4(&viewMatrix);
+
+	// 2. ViewMatrix의 z축은 "리스너가 바라보는 방향" (forward)
+	XMVECTOR forwardVec = XMVector3Normalize(viewMat.r[2]); // z-axis
+	XMVECTOR upVec = XMVector3Normalize(viewMat.r[1]);       // y-axis
+
+	// 3. XMVECTOR → FMOD_VECTOR로 변환
+	FMOD_VECTOR forward = {
+		XMVectorGetX(forwardVec),
+		XMVectorGetY(forwardVec),
+		XMVectorGetZ(forwardVec)
+	};
+
+	FMOD_VECTOR up = {
+		XMVectorGetX(upVec),
+		XMVectorGetY(upVec),
+		XMVectorGetZ(upVec)
+	};
+
+	xmfloat3 camPos = camera.GetPosition();
+
+	// 4. 리스너 위치도 필요
+	FMOD_VECTOR listenerPos = { camPos.x, camPos.y, camPos.z }; // XMFLOAT3에서 추출
+	FMOD_VECTOR vel = { 0.0f, 0.0f, 0.0f }; // 정지 중일 경우
+
+	// 5. 설정
+	System->set3DListenerAttributes(0, &listenerPos, &vel, &forward, &up);
 }
 
 void QP::QuadPent_SoundSystem::Update() {
