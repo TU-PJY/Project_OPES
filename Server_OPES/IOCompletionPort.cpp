@@ -1235,11 +1235,13 @@ float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
     return XMVectorGetX(Length);
 }
 void IOCompletionPort::WorkThread() {
+    using namespace std::chrono;
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
     OVERLAPPED* overlapped;
     int p = 0;
     while (isRunning) {
+        auto now = steady_clock::now();
         BOOL result = GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, &completionKey, &overlapped, INFINITE);
         stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
         if (pOverlappedEx->operation == IOOperation::ACCEPT) {
@@ -1435,6 +1437,14 @@ void IOCompletionPort::WorkThread() {
                    //for (auto* c : room.clients) {
                    //    if (c) SendData_ClearCountPacket(c, arrivedCount);
                    //}
+                    auto end = steady_clock::now();
+                    auto time = now - end;
+                    if (time > milliseconds(2000)) {
+                        for (auto* c : room.clients) {
+                               if (c) SendData_ClearCountPacket(c, arrivedCount);
+                        }
+                        now = steady_clock::now();
+                    }
                 }
 
                 // 이동 패킷을 같은 방 클라이언트들에게만 전송

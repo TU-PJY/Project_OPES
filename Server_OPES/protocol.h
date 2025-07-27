@@ -76,12 +76,12 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 // HP 체력, SPEED 이동속도(km/h), DAMAGE 데미지, ATTACK 주기(초)
 
 //디팬스 몬스터 수
-constexpr int                  DEFENSE_MONSTER1 = 1;
-constexpr int                  DEFENSE_MONSTER2 = 10;
-constexpr int                  DEFENSE_MONSTER3 = 20;
+constexpr int                  DEFENSE_MONSTER1 = 5;
+constexpr int                  DEFENSE_MONSTER2 = 5;
+constexpr int                  DEFENSE_MONSTER3 = 5;
 
 //start 인원수 
-constexpr int				   MIN_PLAYER_COUNT = 2;          
+constexpr int				   MIN_PLAYER_COUNT = 3;          
 
 // 스테이지 1
 // Plant Monster
