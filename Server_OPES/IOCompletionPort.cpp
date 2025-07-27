@@ -745,7 +745,7 @@ void IOCompletionPort::PostRemove(stClientInfo* client) {
 
     DelayedRemoveEntry entry;
     entry.client = client;
-    entry.timeScheduled = std::chrono::steady_clock::now() + std::chrono::milliseconds(1000); // 100ms 후 제거
+    entry.timeScheduled = std::chrono::steady_clock::now() + std::chrono::milliseconds(100); // 100ms 후 제거
 
     std::lock_guard<std::mutex> lock(removeQueueMutex);
     removeQueue.push_back(entry);
@@ -1478,7 +1478,7 @@ void IOCompletionPort::WorkThread() {
             Room& room = it->second;
             for (auto* otherClient : room.clients) {
                 if (!otherClient || otherClient == client) continue;
-                SendData_DisconnectPacket(client, otherClient->id);
+                SendData_DisconnectPacket(otherClient, client->id);
             }
             PostRemove(client);
             ProcessDelayedRemoves();
