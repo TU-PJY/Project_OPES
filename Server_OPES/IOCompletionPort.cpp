@@ -251,84 +251,6 @@ XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& C
 }
 
 
-//void IOCompletionPort::RandomPositionThread() {
-//    using namespace std::chrono;
-//
-//    std::unordered_map<int, time_point<steady_clock>> monsterStartTimes;
-//    const seconds monsterInterval(4);
-//    const seconds sendInterval(1); // 전송 주기
-//
-//    while (isRunning) {
-//        auto now = steady_clock::now();
-//
-//        {
-//            std::lock_guard<std::mutex> lock(roomMapMutex);
-//
-//            for (auto& [roomID, room] : rooms) {
-//                if (!room.defenseState||room.stageState!=1)
-//                    continue;
-//
-//                for (int monsterId = 0; monsterId < DEFENSE_MONSTER1; ++monsterId) {
-//                    // 시작 시간 설정 (처음 한 번만)
-//                    if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
-//                        monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
-//                        continue;
-//                    }
-//
-//                    // 아직 시작 안 됨
-//                    if (now < monsterStartTimes[monsterId])
-//                        continue;
-//
-//                    // 이 몬스터가 마지막으로 전송된 시간 저장
-//                    static std::unordered_map<int, time_point<steady_clock>> lastSentTime;
-//
-//                    if (lastSentTime.find(monsterId) == lastSentTime.end()) {
-//                        lastSentTime[monsterId] = now - sendInterval;
-//                    }
-//
-//                    if (now - lastSentTime[monsterId] >= sendInterval) {
-//                        lastSentTime[monsterId] = now;
-//
-//                        float x = room.defenseMonsters[monsterId].createPointX;
-//                        float z = room.defenseMonsters[monsterId].createPointZ;
-//
-//                        for (auto* client : room.clients) {
-//                            if (!client || client->alreadyRemoved || client->socketClient == INVALID_SOCKET)
-//                                continue;
-//
-//                            DefenseRandomPacket* packet = new DefenseRandomPacket{};
-//                            packet->type = PacketType::RANDOM_POSITION;
-//                            packet->monsterID = monsterId;
-//                            packet->x = x;
-//                            packet->z = z;
-//
-//                            stOverlappedEx* sendOver = new stOverlappedEx{};
-//                            ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
-//                            sendOver->operation = IOOperation::SEND;
-//                            sendOver->wsaBuf.buf = reinterpret_cast<char*>(packet);
-//                            sendOver->wsaBuf.len = sizeof(DefenseRandomPacket);
-//                            sendOver->cleanup = [packet, sendOver]() {
-//                                delete packet;
-//                                delete sendOver;
-//                                };
-//
-//                            std::cout << "[Room " << roomID << "] 몬스터 " << monsterId << " 위치 전송\n";
-//
-//                            int ret = WSASend(client->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
-//                                &sendOver->overlapped, NULL);
-//                            if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-//                                std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
-//                                RemoveClient(client);
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//
-//        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // CPU 낭비 방지
-//    }
-//}
 void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
 
@@ -394,7 +316,7 @@ void IOCompletionPort::RandomPositionThread() {
                         &sendOver->overlapped, NULL);
                     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
                         std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
-                        RemoveClient(client);
+                        PostRemove(client);
                     }
                 }
 
@@ -472,7 +394,7 @@ void IOCompletionPort::RandomPositionThread2() {
                         &sendOver->overlapped, NULL);
                     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
                         std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
-                        RemoveClient(client);
+                        PostRemove(client);
                     }
                 }
 
@@ -550,7 +472,7 @@ void IOCompletionPort::RandomPositionThread3() {
                         &sendOver->overlapped, NULL);
                     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
                         std::cerr << "[에러] 랜덤 위치 전송 실패: " << WSAGetLastError() << std::endl;
-                        RemoveClient(client);
+                        PostRemove(client);
                     }
                 }
 
@@ -601,7 +523,7 @@ void IOCompletionPort::SendData_MonsterMoveToAllClients(const MonsterData& m) {
 
             if (!client->alreadyRemoved) {
                 closesocket(client->socketClient);
-                RemoveClient(client);
+                PostRemove(client);
             }
 
             // cleanup 람다 등록했으므로 delete 중복 금지
@@ -717,7 +639,7 @@ void IOCompletionPort::SendData_EnterRoom(stClientInfo* receiver) {
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         std::cout << "ERROR-SendData_EnterRoom to ID: " << receiver->id << " / room: " << receiver->roomID << std::endl;
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete packet;
         delete sendOver;
     }
@@ -759,7 +681,7 @@ void IOCompletionPort::RegisterRecv(stClientInfo* client) {
     if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         std::cerr << "[에러] WSARecv 실패: " << WSAGetLastError() << std::endl;
         closesocket(client->socketClient);
-        RemoveClient(client);
+        PostRemove(client);
         recvOver->cleanup();  // 실패 시 즉시 해제
     }
 }
@@ -817,8 +739,34 @@ void IOCompletionPort::RemoveClient(stClientInfo* c)
     delete c;
 }
 
+void IOCompletionPort::PostRemove(stClientInfo* client) {
+    if (!client || client->alreadyRemoved.exchange(true))
+        return;
 
+    DelayedRemoveEntry entry;
+    entry.client = client;
+    entry.timeScheduled = std::chrono::steady_clock::now() + std::chrono::milliseconds(1000); // 100ms 후 제거
 
+    std::lock_guard<std::mutex> lock(removeQueueMutex);
+    removeQueue.push_back(entry);
+}
+void IOCompletionPort::ProcessDelayedRemoves() {
+    auto now = std::chrono::steady_clock::now();
+
+    std::lock_guard<std::mutex> lock(removeQueueMutex);
+    auto it = removeQueue.begin();
+
+    while (it != removeQueue.end()) {
+        if (now >= it->timeScheduled) {
+            std::cout << "[딜레이 제거] 클라이언트 ID: " << it->client->id << " 제거 실행\n";
+            RemoveClient(it->client);
+            it = removeQueue.erase(it);
+        }
+        else {
+            ++it;
+        }
+    }
+}
 void IOCompletionPort::SendData_Move(stClientInfo* sender, stClientInfo* receiver) {
     MovePacket_StoC* packet = new MovePacket_StoC{};
     packet->type = PacketType::MOVE;
@@ -844,7 +792,7 @@ void IOCompletionPort::SendData_Move(stClientInfo* sender, stClientInfo* receive
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         std::cerr << "[에러] WSASend 실패(MOVE): " << WSAGetLastError() << std::endl;
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete packet;
         delete sendOver;
     }
@@ -874,7 +822,7 @@ void IOCompletionPort::SendData_ViewAngle(stClientInfo* sender, stClientInfo* re
         };
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete packet;
         delete sendOver;
     }
@@ -901,7 +849,7 @@ void IOCompletionPort::SendData_Animaion(stClientInfo* sender, stClientInfo* rec
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete packet;
         delete sendOver;
     }
@@ -930,7 +878,7 @@ void IOCompletionPort::SendData(stClientInfo* sender, stClientInfo* receiver, co
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete packet;
         delete sendOver;
     }
@@ -971,7 +919,7 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
         if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
             std::cerr << "[SendExistingClientsToNewClient] WSASend 실패: ID " << client->id << "\n";
             closesocket(receiver->socketClient);
-            RemoveClient(receiver);
+            PostRemove(receiver);
             delete pkt;
             delete sendOver;
         }
@@ -1002,7 +950,7 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
 
         if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
             closesocket(clients[i]->socketClient);
-            RemoveClient(clients[i]);
+            PostRemove(clients[i]);
             delete pkt;
             delete sendOver;
         }
@@ -1030,7 +978,7 @@ void IOCompletionPort::SendData_MonsterState(stClientInfo* receiver,unsigned int
 
         if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
             closesocket(receiver->socketClient);
-            RemoveClient(receiver);
+            PostRemove(receiver);
             delete pkt;
             delete sendOver;
         }
@@ -1060,7 +1008,7 @@ void IOCompletionPort::SendData_MonsterMove(stClientInfo* receiver,float x, floa
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1088,7 +1036,7 @@ void IOCompletionPort::SendData_MtoPDamagePacket(stClientInfo* receiver, unsigne
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1115,7 +1063,7 @@ void IOCompletionPort::SendData_PtoMDamagePacket(stClientInfo* receiver,unsigned
         NULL);
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1145,7 +1093,7 @@ void IOCompletionPort::SendData_EngineerInstallPacket(stClientInfo* receiver, in
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1171,7 +1119,7 @@ void IOCompletionPort::SendData_EngineerObjectPacket(stClientInfo* receiver, uns
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1196,7 +1144,7 @@ void IOCompletionPort::SendData_CenterBuildingPacket(stClientInfo* receiver, int
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1226,7 +1174,7 @@ void IOCompletionPort::SendData_GrenadePacket(stClientInfo* receiver, float posX
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1252,7 +1200,7 @@ void IOCompletionPort::SendData_PlayerArrivalPacket(stClientInfo* receiver, unsi
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1277,7 +1225,7 @@ void IOCompletionPort::SendData_ClearCountPacket(stClientInfo* receiver, int Pla
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1303,7 +1251,7 @@ void IOCompletionPort::SendData_ChooseJobPacket(stClientInfo* receiver, unsigned
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1329,7 +1277,7 @@ void IOCompletionPort::SendData_ReadyPacket(stClientInfo* receiver,unsigned int 
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1354,7 +1302,7 @@ void IOCompletionPort::SendData_BangPacket(stClientInfo* receiver, unsigned int 
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1379,7 +1327,7 @@ void IOCompletionPort::SendData_PlayerDeathPacket(stClientInfo* receiver, unsign
 
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
         delete pkt;
         delete sendOver;
     }
@@ -1401,10 +1349,11 @@ void IOCompletionPort::SendData_DisconnectPacket(stClientInfo* receiver, unsigne
     int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
         &sendOver->overlapped,
         NULL);
-
+    std::cout << "DISCONNECTpkt!!- "<< pkt->playerID << std::endl;
     if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
         closesocket(receiver->socketClient);
-        RemoveClient(receiver);
+        PostRemove(receiver);
+        std::cout << "DISCONNECT패킷전송오류!" << std::endl;
         delete pkt;
         delete sendOver;
     }
@@ -1491,6 +1440,7 @@ void IOCompletionPort::WorkThread() {
             // 다음 AcceptEx 등록
             PostAccept();
             delete pOverlappedEx;
+            ProcessDelayedRemoves();
             continue;
         }
         
@@ -1530,7 +1480,9 @@ void IOCompletionPort::WorkThread() {
                 if (!otherClient || otherClient == client) continue;
                 SendData_DisconnectPacket(client, otherClient->id);
             }
-            RemoveClient(client);              // client와 함께 overlapped 메모리도 해제됨
+            PostRemove(client);
+            ProcessDelayedRemoves();
+            //RemoveClient(client);              // client와 함께 overlapped 메모리도 해제됨
             // !! 여기서 pOverlappedEx 는 client 내부 메모리 → 더 이상 delete 금지 !!
             continue;
         }
@@ -1594,8 +1546,10 @@ void IOCompletionPort::WorkThread() {
             else {
                 delete pOverlappedEx;
             }
+            ProcessDelayedRemoves();
             continue;
         }
+        ProcessDelayedRemoves();
     }
 }
 int IOCompletionPort::GetPacketSizeByType(PacketType type) {
@@ -1992,6 +1946,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     for (auto* c : room.clients) {
                         if (!c) continue;
                         SendData_PlayerDeathPacket(c, client->id);
+                        std::cout << "데스패킷전송\n";
                     }
                 }
             }

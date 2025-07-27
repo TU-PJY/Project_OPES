@@ -116,6 +116,13 @@ struct Room {
     std::chrono::steady_clock::time_point lastMonsterSendTime = std::chrono::steady_clock::time_point::min();
 };
 
+struct DelayedRemoveEntry {
+    stClientInfo* client;
+    std::chrono::steady_clock::time_point timeScheduled;
+};
+
+
+
 class IOCompletionPort {
 public:
     IOCompletionPort();
@@ -161,6 +168,9 @@ public:
     bool AddClient(stClientInfo* c); 
     void RemoveClient(stClientInfo* c);
 
+    void PostRemove(stClientInfo* client);
+    void ProcessDelayedRemoves();
+
 private:
     
     
@@ -185,6 +195,9 @@ private:
     int nextRoomID = 0;
     std::mutex waitMutex;
     std::mutex roomMutex;
+
+    std::mutex removeQueueMutex;
+    std::vector<DelayedRemoveEntry> removeQueue;
 
     void WorkThread();
     void PostAccept();
