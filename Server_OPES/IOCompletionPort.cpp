@@ -1405,6 +1405,21 @@ void IOCompletionPort::WorkThread() {
                         std::cout << "다들어옴!\n";
                         room.defenseState = true;
                         room.stageState++;
+                        room.centerHp = CENTER_HP;
+                        for (auto* Client : room.clients) {
+
+                            if (Client->job == MG_JOB_TYPE) {
+                                Client->hp = CHARACTER_MG_HP;
+                            }
+                            else if (Client->job == DMR_JOB_TYPE) {
+                                Client->hp = CHARACTER_DMR_HP;
+                            }
+                            else if (Client->job == ENG_JOB_TYPE) {
+                                Client->hp = CHARACTER_ENG_HP;
+                            }
+                            Client->curr = false;
+                            Client->prev = false;
+                        }
                         if (randomTreadFlag2) {
                             randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
                             randomTreadFlag2 = false;

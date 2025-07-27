@@ -98,7 +98,7 @@ struct Room {
     int centerHp = CENTER_HP;
     int clearCount = 0;
     bool defenseState = true;
-    bool isCreat = true;
+    //bool isCreat = true;
     int stageState = 1;
     std::shared_ptr<std::mutex> roomMutex = std::make_shared<std::mutex>();
 };
