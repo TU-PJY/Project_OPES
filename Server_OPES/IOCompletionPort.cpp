@@ -268,7 +268,7 @@ void IOCompletionPort::RandomPositionThread() {
                 if (!room.defenseState||room.stageState!=1)
                     continue;
 
-                for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
+                for (int monsterId = 0; monsterId < DEFENSE_MONSTER1; ++monsterId) {
                     // 시작 시간 설정 (처음 한 번만)
                     if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
                         monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
@@ -346,7 +346,7 @@ void IOCompletionPort::RandomPositionThread2() {
                 if (!room.defenseState||room.stageState != 2)
                     continue;
 
-                for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
+                for (int monsterId = 0; monsterId < DEFENSE_MONSTER2; ++monsterId) {
                     // 시작 시간 설정 (처음 한 번만)
                     if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
                         monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
@@ -424,7 +424,7 @@ void IOCompletionPort::RandomPositionThread3() {
                 if (!room.defenseState || room.stageState != 3)
                     continue;
 
-                for (int monsterId = 0; monsterId < DEFENSE_MONSTER; ++monsterId) {
+                for (int monsterId = 0; monsterId < DEFENSE_MONSTER3; ++monsterId) {
                     // 시작 시간 설정 (처음 한 번만)
                     if (monsterStartTimes.find(monsterId) == monsterStartTimes.end()) {
                         monsterStartTimes[monsterId] = now + monsterInterval * monsterId;
@@ -561,25 +561,40 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     //    std::cout << "HP: " << room.monsters[0].hp << std::endl;
     //}
 
-    for (int i = 0; i < DEFENSE_MONSTER; ++i) {
+    for (int i = 0; i < DEFENSE_MONSTER1; ++i) {
         MonsterData def;
         def.id = i;
-        def.hp = 100;
         def.state = 0;
+        def.monsterType = PLANT_TYPE;
+        def.id = PLANT_HP;
         XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters[i] = def;
-        rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+    }
+    for (int i = 0; i < DEFENSE_MONSTER2; ++i) {
+        MonsterData def;
+        def.id = i;
+        def.state = 0;
+        def.monsterType = TREANT_TYPE;
+        def.id = TREANT_HP;
+        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters2[i] = def;
-        rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+    }
+    for (int i = 0; i < DEFENSE_MONSTER3; ++i) {
+        MonsterData def;
+        def.id = i;
+        def.state = 0;
+        def.monsterType = IMP_TYPE;
+        def.id = IMP_HP;
+        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters3[i] = def;
-
     }
+
     for (auto* client : members) {
         client->roomID = newRoom.roomID;
         // 방 입장 메시지 전송
@@ -1502,7 +1517,7 @@ void IOCompletionPort::WorkThread() {
                     std::lock_guard<std::mutex> lock(*room.roomMutex);
                     if (room.defenseState) {
                         if (room.stageState == 1) {
-                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER) {
+                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER1) {
                                 auto& m = room.defenseMonsters[pkt->monsterID];
                                 m.hp -= pkt->attackHp;
                                 if (m.hp < 0) {
@@ -1524,7 +1539,7 @@ void IOCompletionPort::WorkThread() {
                             }
                         }
                         else if (room.stageState == 2) {
-                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER) {
+                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER2) {
                                 auto& m = room.defenseMonsters2[pkt->monsterID];
                                 m.hp -= pkt->attackHp;
                                 if (m.hp < 0) {
@@ -1546,7 +1561,7 @@ void IOCompletionPort::WorkThread() {
                             }
                         }
                         else if (room.stageState == 3) {
-                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER) {
+                            if (0 <= pkt->monsterID && pkt->monsterID < DEFENSE_MONSTER3) {
                                 auto& m = room.defenseMonsters3[pkt->monsterID];
                                 m.hp -= pkt->attackHp;
                                 if (m.hp < 0) {

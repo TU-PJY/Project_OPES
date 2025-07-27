@@ -73,7 +73,9 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 // HP 체력, SPEED 이동속도(km/h), DAMAGE 데미지, ATTACK 주기(초)
 
 //디팬스 몬스터 수
-constexpr int                  DEFENSE_MONSTER = 20;
+constexpr int                  DEFENSE_MONSTER1 = 20;
+constexpr int                  DEFENSE_MONSTER2 = 10;
+constexpr int                  DEFENSE_MONSTER3 = 20;
 
 //start 인원수 
 constexpr int				  MIN_PLAYER_COUNT = 2;          
@@ -101,12 +103,12 @@ constexpr unsigned int         TREANT_DAMAGE = 60;
 constexpr int                  TREANT_TYPE = 2;
 
 // 스테이지 3
-// gazer
+// imp
 constexpr unsigned int         IMP_HP           = 150;
 constexpr unsigned int         IMP_DAMAGE       = 15;
 constexpr int                  IMP_TYPE          = 1;
 
-// imp
+// gazer
 constexpr unsigned int         GAZER_HP         = 200;
 constexpr unsigned int         GAZER_DAMAGE     = 30;
 constexpr int                  GAZER_TYPE       = 2;
