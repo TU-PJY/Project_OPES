@@ -150,6 +150,7 @@ public:
     void SendData_ReadyPacket(stClientInfo* receiver, unsigned int id);
     void SendData_BangPacket(stClientInfo* receiver, unsigned int id);
     void SendData_PlayerDeathPacket(stClientInfo* receiver, unsigned int id);
+    void SendData_DisconnectPacket(stClientInfo* receiver, unsigned int id);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 

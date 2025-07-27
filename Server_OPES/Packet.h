@@ -26,6 +26,7 @@ enum class PacketType:unsigned int {
     READY,
     BANG,
     PLAYER_DEATH,
+    DISCONNECT,
 };
 
 constexpr int MONSTER_TYPE1 = 1;//²É
@@ -218,6 +219,10 @@ struct BangPacket {
     unsigned int playerID;
 };
 struct PlayerDeathPacket {
+    PacketType type;
+    unsigned int playerID;
+};
+struct DisconnectPacket {
     PacketType type;
     unsigned int playerID;
 };

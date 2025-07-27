@@ -1384,6 +1384,31 @@ void IOCompletionPort::SendData_PlayerDeathPacket(stClientInfo* receiver, unsign
         delete sendOver;
     }
 }
+void IOCompletionPort::SendData_DisconnectPacket(stClientInfo* receiver, unsigned int id) {
+    DisconnectPacket* pkt = new DisconnectPacket{};
+    pkt->type = PacketType::DISCONNECT;
+    pkt->playerID = id;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(DisconnectPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        RemoveClient(receiver);
+        delete pkt;
+        delete sendOver;
+    }
+}
 float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
     XMVECTOR VecA = XMLoadFloat3(&A);
     XMVECTOR VecB = XMLoadFloat3(&B);
@@ -1492,8 +1517,19 @@ void IOCompletionPort::WorkThread() {
             }
 
             std::cerr << "[연결 종료] 클라이언트 ID "
-                << client->id << " 접속 해제!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
-
+                << client->id << " 접속 해제!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+            //Remove--
+             // 방 찾기
+            auto it = rooms.find(client->roomID);
+            if (it == rooms.end()) {
+                std::cout << "[ProcessPacket] Invalid roomID\n";
+                return; // ✅ continue 대신 return 권장 (room 없으면 더 이상 처리 의미 없음)
+            }
+            Room& room = it->second;
+            for (auto* otherClient : room.clients) {
+                if (!otherClient || otherClient == client) continue;
+                SendData_DisconnectPacket(client, otherClient->id);
+            }
             RemoveClient(client);              // client와 함께 overlapped 메모리도 해제됨
             // !! 여기서 pOverlappedEx 는 client 내부 메모리 → 더 이상 delete 금지 !!
             continue;
