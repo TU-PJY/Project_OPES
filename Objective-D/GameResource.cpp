@@ -8,6 +8,7 @@ MeshResource MESH;
 TextureResource TEX;
 SystemResource SYSRES;
 GlobalValue GLOBAL;
+SoundRecources SOUND;
 
 // 전역 카메라 fov 값 오프셋
 float globalFovOffset;
