@@ -24,6 +24,8 @@ private:
 
 	TerrainUtil terrainUT{};
 
+	std::vector<OOBB> wallFrustumOOBB{};
+
 	bool RenderOOBB{};
 
 public:
@@ -108,14 +110,19 @@ public:
 			}
 		}
 
-		// ¸Ê ¸è ·»´õ¸µ
-		for (auto& P : WallObjectPosition) {
-			BeginRender();
-			SetColor(0.0, 0.0, 0.0);
-			Transform::Move(TranslateMatrix, P.Position.x, P.Position.y - 5.0, P.Position.z);
-			Transform::Scale(ScaleMatrix, P.Size);
-			Transform::Rotate(RotateMatrix, 0.0, P.Rotation, 0.0);
-			Render3D(MESH.RockMesh, TEX.Palette1);
+		// ¸Ê º® ·»´õ¸µ
+		size_t size = WallObjectPosition.size();
+		for (int i = 0; i < size; i++) {
+			if (camera.CheckFrustum(wallFrustumOOBB[i])) {
+				BeginRender();
+				SetColor(0.0, 0.0, 0.0);
+				Transform::Move(TranslateMatrix, WallObjectPosition[i].Position.x, WallObjectPosition[i].Position.y - 5.0, WallObjectPosition[i].Position.z);
+				Transform::Scale(ScaleMatrix, WallObjectPosition[i].Size);
+				Transform::Rotate(RotateMatrix, 0.0, WallObjectPosition[i].Rotation, 0.0);
+				Render3D(MESH.RockMesh, TEX.Palette1);
+
+				//wallFrustumOOBB[i].Render();
+			}
 		}
 
 		// ¸Ê ¿ÀºêÁ§Æ® ·»´õ¸µ
@@ -163,12 +170,13 @@ public:
 			}
 		}
 
-		// oobb ·»´õ¸µ
-		for (auto& O : OOBBVec)
-			O.Render();
+		//// oobb ·»´õ¸µ
+		//for (auto& O : OOBBVec)
+			//O.Render();
 	}
 
 	void Load() {
+		wallFrustumOOBB.clear();
 		WallObjectPosition.clear();
 		WallPositionScript.Release();
 		WallPositionScript.Load("Resources//Scripts//map1//map1-wall-rock.xml");
@@ -187,6 +195,16 @@ public:
 			objectStruct.Rotation = WallPositionScript.LoadDigitData(Str, "Rotation");
 
 			WallObjectPosition.emplace_back(objectStruct);
+
+			Transform::Identity(TranslateMatrix);
+			Transform::Identity(ScaleMatrix);
+			Transform::Identity(RotateMatrix);
+			Transform::Move(TranslateMatrix, objectStruct.Position.x, objectStruct.Position.y - 5.0, objectStruct.Position.z);
+			Transform::Scale(ScaleMatrix, objectStruct.Size);
+			Transform::Rotate(RotateMatrix, 0.0, objectStruct.Rotation, 0.0);
+			OOBB oobb{};
+			oobb.Update(MESH.RockMesh, TranslateMatrix, ScaleMatrix, RotateMatrix, true);
+			wallFrustumOOBB.emplace_back(oobb);
 		}
 
 		LakeObjectPosition.clear();

@@ -88,7 +88,7 @@ void Gazer::gz_updateAttack() {
 					if (!GLOBAL.useServer)
 						center->GiveDamage(10);
 					else
-						SendCenterBuildingPacket(10 / GLOBAL.playerList.size());
+						SendCenterBuildingPacket(10);
 				}
 			}
 			attackDid = true;
