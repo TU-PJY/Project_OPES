@@ -254,7 +254,7 @@ XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& C
 void IOCompletionPort::RandomPositionThread() {
     using namespace std::chrono;
 
-    const seconds sendInterval(4);  // 몬스터 1마리당 간격
+    const seconds sendInterval(CREAT_MONSTER_TIME);  // 몬스터 1마리당 간격
 
     while (isRunning) {
         auto now = steady_clock::now();
@@ -268,7 +268,7 @@ void IOCompletionPort::RandomPositionThread() {
 
                 // 3초 지연 시작 설정 (딱 한 번만)
                 if (room.defenseStartTime == steady_clock::time_point::min()) {
-                    room.defenseStartTime = now + seconds(3);
+                    room.defenseStartTime = now + seconds(PASS_STAGE_TIME);
                     room.lastMonsterSendTime = room.defenseStartTime;
                     std::cout << "[1s-Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
                 }
@@ -332,7 +332,7 @@ void IOCompletionPort::RandomPositionThread() {
 void IOCompletionPort::RandomPositionThread2() {
     using namespace std::chrono;
 
-    const seconds sendInterval(4);  // 몬스터 1마리당 간격
+    const seconds sendInterval(CREAT_MONSTER_TIME);  // 몬스터 1마리당 간격
 
     while (isRunning) {
         auto now = steady_clock::now();
@@ -346,7 +346,7 @@ void IOCompletionPort::RandomPositionThread2() {
 
                 // 3초 지연 시작 설정 (딱 한 번만)
                 if (room.defenseStartTime == steady_clock::time_point::min()) {
-                    room.defenseStartTime = now + seconds(3);
+                    room.defenseStartTime = now + seconds(PASS_STAGE_TIME);
                     room.lastMonsterSendTime = room.defenseStartTime;
                     std::cout << "[2s-Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
                 }
@@ -410,7 +410,7 @@ void IOCompletionPort::RandomPositionThread2() {
 void IOCompletionPort::RandomPositionThread3() {
     using namespace std::chrono;
 
-    const seconds sendInterval(4);  // 몬스터 1마리당 간격
+    const seconds sendInterval(CREAT_MONSTER_TIME);  // 몬스터 1마리당 간격
 
     while (isRunning) {
         auto now = steady_clock::now();
@@ -424,7 +424,7 @@ void IOCompletionPort::RandomPositionThread3() {
 
                 // 3초 지연 시작 설정 (딱 한 번만)
                 if (room.defenseStartTime == steady_clock::time_point::min()) {
-                    room.defenseStartTime = now + seconds(3);
+                    room.defenseStartTime = now + seconds(PASS_STAGE_TIME);
                     room.lastMonsterSendTime = room.defenseStartTime;
                     std::cout << "[3s-Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
                 }
@@ -1579,7 +1579,7 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     if (type == PT::RANDOM_POSITION) return sizeof(DefenseRandomPacket);
     if (type == PT::BANG) return sizeof(BangPacket);
     if (type == PT::PLAYER_DEATH) return sizeof(PlayerDeathPacket);
-
+    if (type == PT::DISCONNECT) return sizeof(DisconnectPacket);
     return 0; // 알 수 없는 타입이면 0
 }
 void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
