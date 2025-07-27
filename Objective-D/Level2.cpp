@@ -73,6 +73,7 @@ void Level2::Start() {
 		GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
 
 		for (auto& p : GLOBAL.playerList) {
+			std::cout << "currentCharacterType: " << p.second.characterType << std::endl;
 			scene.AddObject(new OtherPlayer(p.second.characterType, p.first), std::to_string(p.first), LAYER_PLAYER);
 			if (GLOBAL.otherIndicator)
 				static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(p.first, p.second.characterType, std::to_string(p.first));

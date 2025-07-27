@@ -126,12 +126,12 @@ bool IsNewPlayer(unsigned int ID) {
 			PlayerLobbyInfo newInfo{};
 			GLOBAL.playerList.emplace(ID, newInfo);
 
-			if (skipTitleMode) {
+		/*	if (skipTitleMode) {
 				scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
 				if (!GLOBAL.otherIndicator)
 					GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
 				static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
-			}
+			}*/
 
 			return true;
 		}
