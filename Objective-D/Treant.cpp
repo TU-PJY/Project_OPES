@@ -188,8 +188,15 @@ void Treant::updateMove(float Delta) {
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
 
 	// 나를 추격하는 상태일때만 MoveWithSlide를 실행한다.
-	if (currentState == TREANT_MOVE && currentTargetID == GLOBAL.myID)
-		Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, treantBound, GLOBAL.mapOOBBdata, Delta);
+	if (!defenseMoveState) {
+		if (currentState == TREANT_MOVE && currentTargetID == GLOBAL.myID)
+			Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, treantBound, GLOBAL.mapOOBBdata, Delta);
+	}
+
+	else {
+		if (currentState == TREANT_MOVE)
+			Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, treantBound, GLOBAL.mapOOBBdata, Delta);
+	}
 
 	//	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
 	position.x = std::lerp(position.x, positionDest.x, 10.0 * Delta);

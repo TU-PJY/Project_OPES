@@ -117,7 +117,7 @@ constexpr unsigned int         GAZER_DAMAGE     = 30;
 constexpr int                  GAZER_TYPE       = 2;
 
 // 스테이지 1 도착 지점 위치
-constexpr XMFLOAT3             MAP1_DESTINATION = XMFLOAT3(-120.0, 0.0, 94.0);
+constexpr XMFLOAT3             MAP1_DESTINATION = XMFLOAT3(120.0, 0.0, 94.0);
 
 // 스테이지1 랜덤 생성 범위
 constexpr float                MAP1_RANDOM_MIN_RADIANS = 30.0;

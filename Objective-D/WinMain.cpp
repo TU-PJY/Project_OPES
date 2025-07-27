@@ -76,7 +76,7 @@ constexpr bool skipTitleMode = false;
 constexpr bool skipDefenseMode = false;
 constexpr bool editMode = false;
 
-constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
 
 std::unordered_set<unsigned int> ID_List;
