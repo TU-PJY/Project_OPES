@@ -155,7 +155,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 		// 현재 접속한 사람이 모두 도착 지점에 들어가면 다음 스테이지로 넘어간다.
 		// 자신의 아이디는 ID_List에 없기 때문에 1을 더한 값으로 비교한다.
-		if (Packet->PlayerCount >= ID_List.size() + 1) {
+		if (Packet->PlayerCount >= (ID_List.size() + 1)  - GLOBAL.deathCount) {
 			{
 				std::lock_guard<std::mutex> lock(PacketMutex);
 				scene.SwitchMode(Level2::Start);
@@ -403,6 +403,8 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	else if (*type == PacketType::PLAYER_DEATH) {
 		PlayerDeathPacket* pkt = reinterpret_cast<PlayerDeathPacket*>(buffer);
 		std::cout << "PLAYER_DEATH-id: " << pkt->playerID << std::endl;
+
+		GLOBAL.deathCount++;
 
 		//PLAYER_DEATH처리!!
 	}

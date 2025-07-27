@@ -88,6 +88,8 @@ typedef struct {
 	std::string enterIP;
 	std::wstring enterIPw;
 
+	int deathCount;
+
 	// 로비에서 준비 여부
 	bool imReady;
 

@@ -24,6 +24,7 @@ void Level3::Start() {
 	GLOBAL.Map3DefenseEnemyRemained = DEFENSE_MONSTER3;
 	GLOBAL.Map3DefenseState = true;
 	GLOBAL.offsetFOV = 0.0;
+	GLOBAL.deathCount = 0;
 
 	FOG_DATA FogData{
 		{0.68, 0.28, 0.1}, // Fog Color

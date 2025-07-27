@@ -95,6 +95,10 @@ void OtherPlayer::updateAnimation(float Delta) {
 	case STATE_MOVE: case STATE_MOVE_SHOOT:
 		moveFBX.UpdateAnimation(Delta, false, !inFrustum);
 		break;
+
+	case STATE_DEATH:
+		deathFBX.UpdateAnimation(Delta, false, !inFrustum);
+		break;
 	}
 }
 
