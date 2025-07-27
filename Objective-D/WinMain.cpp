@@ -630,6 +630,8 @@ void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, 
 			std::cerr << "[클라이언트] 몬스터 상태 패킷 전송 오류\n";
 			context->cleanup();
 		}
+
+		std::cout << "SEND " << monsterState << std::endl;
 	}
 }
 

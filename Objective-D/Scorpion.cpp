@@ -98,7 +98,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 
 	bool foundTarget = false;
 
-	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
+	if (currentState == SCOR_IDLE) {
 		if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
 			auto playerOOBB = player->GetOOBB();
 			if (lookRange.CheckCollision(playerOOBB)) {
@@ -139,20 +139,13 @@ void Scorpion::updateDetectPlayer(float Delta) {
 		}
 	}
 
-	if (currentTargetID == GLOBAL.myID) {
-		//std::cout << "CHANGED===" << std::endl;
-		if (!foundTarget) {
-		//	for (int i = 0; i < 3; i++) {
-			SendMonstertypePacket(2, SCOR_IDLE, ID);
-				//SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, 0);
-			//}
-
-			currentState = SCOR_IDLE;
-			currentTargetID = 0;
-
-			//std::cout << "SENDED===" << std::endl;
-		}
+	//if (currentTargetID == GLOBAL.myID) {
+	if (!foundTarget) {
+		SendMonstertypePacket(2, SCOR_IDLE, ID);
+		currentState = SCOR_IDLE;
+		currentTargetID = 0;
 	}
+	//}
 }
 
 
