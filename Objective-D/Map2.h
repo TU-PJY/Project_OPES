@@ -20,6 +20,8 @@ private:
 
 	TerrainUtil terrain{};
 
+	std::vector<OOBB> wallFrustumOOBB{};
+
 	bool RenderOOBB{};
 
 public:
@@ -78,14 +80,26 @@ public:
 		//SetColor(0.8, 0.8, 0.8);
 		Render3D(MESH.TerrainMesh1, TEX.Map2TerrainTex);
 
-		for (auto& Wall : WallVec) {
+		size_t size = WallVec.size();
+		for (int i = 0; i < size; i++) {
+			if (camera.CheckFrustum(wallFrustumOOBB[i])) {
+				BeginRender();
+				SetColor(0.2, 0.2, 0.2);
+				Transform::Move(TranslateMatrix, WallVec[i].Position.x, WallVec[i].Position.y - 4.0, WallVec[i].Position.z);
+				Transform::Scale(ScaleMatrix, WallVec[i].Size);
+				Transform::Rotate(RotateMatrix, -90.0, 0.0, WallVec[i].Rotation);
+				Render3D(MESH.WinterWall, TEX.Map2Palette);
+			}
+		}
+
+		/*for (auto& Wall : WallVec) {
 			BeginRender();
 			SetColor(0.2, 0.2, 0.2);
 			Transform::Move(TranslateMatrix, Wall.Position.x, Wall.Position.y - 4.0, Wall.Position.z);
 			Transform::Scale(ScaleMatrix, Wall.Size);
 			Transform::Rotate(RotateMatrix, -90.0, 0.0, Wall.Rotation);
 			Render3D(MESH.WinterWall, TEX.Map2Palette);
-		}
+		}*/
 
 		for (auto& Object : ObjectVec) {
 			BeginRender();
@@ -112,6 +126,7 @@ public:
 	}
 
 	void Load() {
+		wallFrustumOOBB.clear();
 		WallVec.clear();
 		WallPositionScript.Release();
 		WallPositionScript.Load("Resources//Scripts//map2//map2-wall-rock.xml");
@@ -128,6 +143,16 @@ public:
 			Obj.Rotation = WallPositionScript.LoadDigitData(Category, "Rotation");
 
 			WallVec.emplace_back(Obj);
+
+			Transform::Identity(TranslateMatrix);
+			Transform::Identity(ScaleMatrix);
+			Transform::Identity(RotateMatrix);
+			Transform::Move(TranslateMatrix, Obj.Position.x, Obj.Position.y - 4.0, Obj.Position.z);
+			Transform::Scale(ScaleMatrix, Obj.Size);
+			Transform::Rotate(RotateMatrix, -90.0, 0.0, Obj.Rotation);
+			OOBB oobb{};
+			oobb.Update(MESH.WinterWall, TranslateMatrix, RotateMatrix, ScaleMatrix, true);
+			wallFrustumOOBB.emplace_back(oobb);
 		};
 
 		WallPositionScript.LoadAllData(LoadWallData);

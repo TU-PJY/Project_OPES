@@ -23,6 +23,8 @@ private:
 	float    gravity{ 9.8f };
 	bool     isStopped{ false };
 
+	float acc{};
+
 	TerrainUtil terrainUtil{};
 
 	BoundSphere grenadeBound{};
@@ -32,6 +34,8 @@ private:
 
 	bool       createFromServer{};
 	bool       exploded{};
+
+
 //	std::map<unsigned int, int> damageList{};
 
 public:

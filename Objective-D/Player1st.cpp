@@ -264,13 +264,9 @@ void Player1st::InputMouse(MouseEvent& Event) {
 					beaconCoolTime = BEACON_INSTALL_COOLTIME;
 					installPtr->SetRenderState(false);
 				}
-			
 			break;
 
 			case 2:
-				break;
-
-			case 3:
 				if (weaponPtr) weaponPtr->pullTrigger();
 				triggerState = true;
 				break;
@@ -288,7 +284,7 @@ void Player1st::InputMouse(MouseEvent& Event) {
 
 		if ((characterType == CHARACTER_MG || characterType == CHARACTER_DMR) && IndicatorPtr->GetCurrentIndex() != 1)
 			break;
-		if (characterType == CHARACTER_ENG && IndicatorPtr->GetCurrentIndex() != 3)
+		if (characterType == CHARACTER_ENG && IndicatorPtr->GetCurrentIndex() != 2)
 			break;
 
 		if (weaponPtr && !weaponPtr->getReloadState()) {
@@ -384,6 +380,9 @@ void Player1st::updateMove(float Delta) {
 		strafeSpeed = std::lerp(strafeSpeed, -currentSpeed, speedAcc * Delta);
 	else
 		strafeSpeed = std::lerp(strafeSpeed, 0.0, speedAcc * Delta);
+
+	Math::MoveForward(playerPosition, knockbackRotation, knockbackPower * Delta);
+	knockbackPower = std::lerp(knockbackPower, 0.0, 5.0 * Delta);
 
 	// 맵 바운드와 충돌을 체크하면서 이동
 	Math::MoveWithSlide(playerPosition, currentRotation.y, forwardSpeed, strafeSpeed, playerSphere, GLOBAL.mapOOBBdata, Delta);
@@ -573,4 +572,9 @@ void Player1st::InputHP(int currentHP) {
 
 unsigned int Player1st::GetID() {
 	return GLOBAL.myID;
+}
+
+void Player1st::GiveKnockback(float rotation, float power) {
+	knockbackRotation = rotation;
+	knockbackPower = power;
 }

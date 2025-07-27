@@ -4,7 +4,7 @@
 class DefenseModeMonsterGenerator : public GameObject {
 private:
 	float       currentTime{};
-	float       destGenerateTime{ 2.0 };
+	float       destGenerateTime{ 1.0 };
 	int         currentGenerateCount{};
 	int         maxGenerateCount{20};
 	unsigned int currentID{};

@@ -92,6 +92,9 @@ private:
 	float             packetSendDelay{ 1.0 / 60.0 };
 	int               sendOrder{1};
 
+	float knockbackRotation{};
+	float knockbackPower{};
+
 public:
 	Player1st(int characterType);
 	~Player1st();
@@ -119,4 +122,5 @@ public:
 	void GiveDamage(int damage) override;
 	void InputHP(int currentHP) override;
 	unsigned int GetID() override;
+	void GiveKnockback(float rotation, float power) override;
 };

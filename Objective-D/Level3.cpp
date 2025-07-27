@@ -10,6 +10,7 @@
 #include "MonsterSpawner.h"
 #include "OtherPlayer.h"
 #include "OtherPlayerIndicator.h"
+#include "MonsterGenerator.h"
 
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
@@ -47,7 +48,7 @@ void Level3::Start() {
 		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
 	}
 	else
-		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(2), "player", LAYER_PLAYER, true);
 
 	if (!GLOBAL.skipTitleMode) {
 		GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
@@ -63,6 +64,9 @@ void Level3::Start() {
 		scene.AddObject(new MonsterSpawner(true), "monsterSpawner", LAYER1, true);
 	else
 		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpawner", LAYER1, GLOBAL.editMode);
+
+	if (!GLOBAL.skipDefenseMode)
+		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 }
 
 void Level3::Destructor() {

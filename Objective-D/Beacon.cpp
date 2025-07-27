@@ -9,9 +9,9 @@ void SendEngineerInstallPacket(int type, unsigned int ID, float rotY, float posX
 Beacon::Beacon(const xmfloat3& createPosition, float rotation, bool createFromServer) {
 	position = createPosition;
 	this->rotation.y = rotation;
-	TerrainUtil terrainUtil{};
+	/*TerrainUtil terrainUtil{};
 	terrainUtil.InputPosition(position);
-	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);*/
 	frustumBound.Update(position, xmfloat3(1.0, 1.5, 1.0), this->rotation);
 
 	hpInd = scene.AddObject(new HP_Indicator, "hpInd", LAYER3);

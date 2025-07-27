@@ -10,7 +10,7 @@ SpreadBullet::SpreadBullet(int damage) {
 }
 
 void SpreadBullet::Update(float Delta) {
-	Math::GenRandomSpreadingRaysFromCenter(rays, SG_FRAG, 3.0);
+	Math::GenRandomSpreadingRaysFromCenter(rays, SG_FRAG, 10.0);
 
 	size_t size = scene.LayerSize(LAYER_MONSTER);
 	float distance;
@@ -50,16 +50,16 @@ void SpreadBullet::Update(float Delta) {
 			damageList[target] += damage;
 	}
 
-	/*for (auto& d : damageList) {
+	for (auto& d : damageList) {
 		if (d.first) {
 			if (!GLOBAL.useServer)
 				d.first->GiveDamage(d.second);
 			else
 				SendPtoMDamagePacket(d.first->GetID(), d.second);
 		}
-	}*/
+	}
 
-	if (!damageList.empty()) {
+	/*if (!damageList.empty()) {
 		auto It = damageList.begin();
 		if (It->first) {
 			if (!GLOBAL.useServer)
@@ -70,6 +70,6 @@ void SpreadBullet::Update(float Delta) {
 		damageList.erase(It);
 	}
 
-	if(damageList.empty())
+	if(damageList.empty())*/
 		scene.DeleteObject(this);
 }
