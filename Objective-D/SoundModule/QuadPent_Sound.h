@@ -56,7 +56,7 @@ namespace QP {
 	public:
 		unsigned int TotalPlayTime();
 		void Play(float Time = 0.0);
-		void PlayOnce(bool& BoolValue, float Time = 0.0);
+		void Play3D(float Time = 0.0);
 		void Pause();
 		void Resume();
 		void Stop();

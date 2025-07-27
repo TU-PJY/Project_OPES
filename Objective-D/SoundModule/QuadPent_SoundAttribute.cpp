@@ -6,13 +6,12 @@ unsigned int QP::QuadPent_SoundAttribute::TotalPlayTime() {
 
 void QP::QuadPent_SoundAttribute::Play(float Time) {
 	SoundSystem.System->playSound(Data, ChannelGroup, false, &Channel);
+	
 }
 
-void QP::QuadPent_SoundAttribute::PlayOnce(bool& BoolValue, float Time) {
-	if (!BoolValue) {
-		SoundSystem.System->playSound(Data, ChannelGroup, false, &Channel);
-		BoolValue = true;
-	}
+void QP::QuadPent_SoundAttribute::Play3D(float Time) {
+	SoundSystem.System->playSound(Data, ChannelGroup, false, &Channel);
+	Channel->set3DAttributes(&SoundPosition, 0);
 }
 
 void QP::QuadPent_SoundAttribute::Stop() {
@@ -35,5 +34,4 @@ void QP::QuadPent_SoundAttribute::SetPosition(const xmfloat3& Position) {
 	SoundPosition.x = Position.x;
 	SoundPosition.y = Position.y;
 	SoundPosition.z = Position.z;
-	ChannelGroup->set3DAttributes(&SoundPosition, 0);
 }

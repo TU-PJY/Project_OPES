@@ -29,7 +29,7 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 		flameMovey = script.LoadDigitData("heavyMove", "y");
 		flameMovez = script.LoadDigitData("heavyMove", "z");
 
-		shootSound.Load("Resources//Sounds//machingunShoot.wav");
+		shootSound.Load("Resources//Sounds//machingunShoot.wav", FMOD_3D);
 		break;
 
 		// 소음기가 장착된 총이므로 불꽃을 렌더링하지 않는다.
@@ -43,7 +43,7 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 		totalHP = CHARACTER_DMR_HP;
 		currentHP = CHARACTER_DMR_HP;
 
-		shootSound.Load("Resources//Sounds//dmrShoot.mp3");
+		shootSound.Load("Resources//Sounds//dmrShoot.mp3", FMOD_3D);
 		break;
 
 	case CHARACTER_ENG:
@@ -63,7 +63,7 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 		flameMovey = script.LoadDigitData("engineerMove", "y");
 		flameMovez = script.LoadDigitData("engineerMove", "z");
 
-		shootSound.Load("Resources//Sounds//shotgunShoot.mp3");
+		shootSound.Load("Resources//Sounds//shotgunShoot.mp3", FMOD_3D);
 		break;
 	}
 
@@ -244,12 +244,12 @@ void OtherPlayer::addFlameTime(){
 
 	switch (characterType) {
 	case CHARACTER_MG:
-		SOUND.machinegunShoot.Play(); break;
+		SOUND.machinegunShoot.Play3D(); break;
 
 	case CHARACTER_DMR:
-		SOUND.dmrShoot.Play(); break;
+		SOUND.dmrShoot.Play3D(); break;
 
 	case CHARACTER_ENG:
-		SOUND.shotgunShoot.Play(); break;
+		SOUND.shotgunShoot.Play3D(); break;
 	}
 }
