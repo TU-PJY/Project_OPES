@@ -1235,13 +1235,12 @@ float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
     return XMVectorGetX(Length);
 }
 void IOCompletionPort::WorkThread() {
-    using namespace std::chrono;
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
     OVERLAPPED* overlapped;
     int p = 0;
+    std::chrono::steady_clock::time_point Ltime = std::chrono::steady_clock::now();
     while (isRunning) {
-        auto now = steady_clock::now();
         BOOL result = GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, &completionKey, &overlapped, INFINITE);
         stOverlappedEx* pOverlappedEx = reinterpret_cast<stOverlappedEx*>(overlapped);
         if (pOverlappedEx->operation == IOOperation::ACCEPT) {
@@ -1403,6 +1402,23 @@ void IOCompletionPort::WorkThread() {
 
                     // clearCount 갱신
                     room.clearCount = arrivedCount;
+
+                    auto now = std::chrono::steady_clock::now();
+                    auto time = now - Ltime;
+                    if (time > std::chrono::milliseconds(2000)) {
+                        for (auto* c : room.clients) {
+                            if (c) {
+                                SendData_ClearCountPacket(c, arrivedCount);
+                                SendData_ClearCountPacket(c, arrivedCount);
+                                SendData_ClearCountPacket(c, arrivedCount);
+                                RegisterRecv(client);
+                                RegisterRecv(client);
+                                std::cout << "arrivedCount:" << room.clearCount << std::endl;
+                            }
+                        }
+                        Ltime = now;
+                    }
+
                     //여기 room.clearCount가 3이면 다음 스테이지?
                     if (room.clearCount >= MIN_PLAYER_COUNT) {
                         std::cout << "다들어옴!\n";
@@ -1437,14 +1453,7 @@ void IOCompletionPort::WorkThread() {
                    //for (auto* c : room.clients) {
                    //    if (c) SendData_ClearCountPacket(c, arrivedCount);
                    //}
-                    auto end = steady_clock::now();
-                    auto time = now - end;
-                    if (time > milliseconds(2000)) {
-                        for (auto* c : room.clients) {
-                               if (c) SendData_ClearCountPacket(c, arrivedCount);
-                        }
-                        now = steady_clock::now();
-                    }
+                    
                 }
 
                 // 이동 패킷을 같은 방 클라이언트들에게만 전송
