@@ -567,7 +567,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
         def.state = 0;
         def.monsterType = PLANT_TYPE;
         def.id = PLANT_HP;
-        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));//----------------------
+        XMFLOAT2 rendomPosition = GenPointInDonut(MAP1_RANDOM_MIN_RADIANS, MAP1_RANDOM_MAX_RADIANS, XMFLOAT2(-120.0, -120.0));//----------------------
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters[i] = def;
@@ -578,7 +578,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
         def.state = 0;
         def.monsterType = TREANT_TYPE;
         def.id = TREANT_HP;
-        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+        XMFLOAT2 rendomPosition = GenPointInDonut(MAP2_RANDOM_MIN_RADIANS, MAP2_RANDOM_MAX_RADIANS, XMFLOAT2(-120.0, -120.0));
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters2[i] = def;
@@ -589,7 +589,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
         def.state = 0;
         def.monsterType = IMP_TYPE;
         def.id = IMP_HP;
-        XMFLOAT2 rendomPosition = GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
+        XMFLOAT2 rendomPosition = GenPointInDonut(MAP3_RANDOM_MIN_RADIANS, MAP3_RANDOM_MAX_RADIANS, XMFLOAT2(-120.0, -120.0));
         def.createPointX = rendomPosition.x;
         def.createPointZ = rendomPosition.y;
         newRoom.defenseMonsters3[i] = def;
