@@ -23,6 +23,16 @@ void DMR::Render() {
 	Render3D(MESH.dmr, TEX.scifi);
 }
 
+void DMR::ReloadGun() {
+	if (currentAmmo == totalAmmo || reloadState)
+		return;
+
+	reloadState = true;
+	zoomState = false;
+
+	SOUND.dmrReload.Play();
+}
+
 void DMR::updateFire(float Delta) {
 	if (currentFireDelayTime > 0.0)
 		currentFireDelayTime -= Delta;
@@ -30,6 +40,8 @@ void DMR::updateFire(float Delta) {
 		fireEnableState = true;
 
 	if (fireEnableState && triggerState && currentAmmo > 0 && !reloadState) {
+		SOUND.dmrShoot.Play();
+
 		recoilOffset -= recoilBack;
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;

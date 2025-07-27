@@ -5,6 +5,7 @@
 #include "StartMode.h"
 #include "CBVUtil.h"
 #include "MeshUtil.h"
+#include "SoundModule//QuadPent_Sound.h"
 
 void Framework::Init() {
 	SetBackgroundColor(0.5, 0.5, 0.5);
@@ -31,6 +32,8 @@ void Framework::Init() {
 	LoadSystemMesh(System);
 	LoadMesh(System);
 	LoadTexture(System);
+	QP::SoundSystem.Init();
+	LoadSound();
 
 	if (AnimationDataExtractMode) {
 		std::cout << "\nAnimation Data Extraction Completed.\n";
@@ -124,6 +127,8 @@ void Framework::Update() {
 
 	// 오브젝트 렌더링
 	scene.Render();
+
+	QP::SoundSystem.Update();
 
 
 #ifdef _WITH_PLAYER_TOP

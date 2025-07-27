@@ -36,6 +36,16 @@ void Shotgun::Render() {
 	}
 }
 
+void Shotgun::ReloadGun() {
+	if (currentAmmo == totalAmmo || reloadState)
+		return;
+
+	reloadState = true;
+	zoomState = false;
+
+	SOUND.machinegunReload.Play();
+}
+
 void Shotgun::updateFire(float Delta) {
 	if (currentFireDelayTime > 0.0)
 		currentFireDelayTime -= Delta;
@@ -43,6 +53,8 @@ void Shotgun::updateFire(float Delta) {
 		fireEnableState = true;
 
 	if (fireEnableState && triggerState && currentAmmo > 0 && !reloadState) {
+		SOUND.shotgunShoot.Play();
+
 		recoilOffset -= recoilBack;
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;

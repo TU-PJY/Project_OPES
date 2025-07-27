@@ -68,7 +68,7 @@ void Level1::Start() {
 			scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 		}
 
-		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
+		scene.AddObject(new Player1st(2), "player", LAYER_PLAYER, true);
 
 	
 		if (!GLOBAL.skipTitleMode) {
