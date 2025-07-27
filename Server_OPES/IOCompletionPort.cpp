@@ -1478,7 +1478,7 @@ void IOCompletionPort::WorkThread() {
             Room& room = it->second;
             for (auto* otherClient : room.clients) {
                 if (!otherClient || otherClient == client) continue;
-                SendData_DisconnectPacket(client, otherClient->id);
+                SendData_DisconnectPacket(otherClient, client->id);
             }
             PostRemove(client);
             ProcessDelayedRemoves();
