@@ -139,13 +139,6 @@ void Scorpion::updateDetectPlayer(float Delta) {
 		}
 	}
 
-	if (!foundTarget) {
-		if (currentTargetID == GLOBAL.myID) {
-			currentState = SCOR_IDLE;
-			currentTargetID = 0;
-		}
-	}
-
 	if (currentTargetID == GLOBAL.myID) {
 		if (serverState != currentState) {
 			SendMonstertypePacket(2, currentState, ID);
@@ -155,6 +148,13 @@ void Scorpion::updateDetectPlayer(float Delta) {
 		if (prevTargetID != currentTargetID) {
 			SendMonsterMovePacket(position.x, position.y, position.z, rotation.y, ID, currentTargetID);
 			prevTargetID = currentTargetID;
+		}
+	}
+
+	if (!foundTarget) {
+		if (currentTargetID == GLOBAL.myID) {
+			currentState = SCOR_IDLE;
+			currentTargetID = 0;
 		}
 	}
 }
