@@ -1,5 +1,6 @@
 #include "MonsterGenerator.h"
 #include "RandomUtil.h"
+#include "Treant.h"
 #include "PlantMonster.h"
 
 
@@ -35,6 +36,10 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 		if (GLOBAL.mapName.compare("map1") == 0) {
 			scene.AddObject(new PlantMonster(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
 			std::cout << currentGenerateCount << "번째 생성" << std::endl;
+		}
+
+		if (GLOBAL.mapName.compare("map2") == 0) {
+			scene.AddObject(new Treant(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
 		}
 
 		currentGenerateCount++;

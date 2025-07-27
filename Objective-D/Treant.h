@@ -22,6 +22,7 @@ private:
 
 	xmfloat3 position{};
 	xmfloat3 positionDest{};
+	float heightOffset{};
 	xmfloat3 rotation{};
 	xmfloat3 rotationDest{};
 	xmfloat3 size{ 3.0f, 3.0f, 3.0f };
@@ -30,6 +31,7 @@ private:
 	int currentHP{ TREANT_HP };
 
 	bool defenseMoveState{};
+	bool behaviorState{};
 
 	TerrainUtil terrainUtil{};
 
@@ -61,6 +63,7 @@ public:
 	void updateIndicator();
 	void updateState();
 	void updateAnimation(float Delta);
+	void liftFromGround(float Delta);
 	void updateMove(float Delta);
 	void detectPlayer(float Delta);
 	void updateTerrainCollision();
