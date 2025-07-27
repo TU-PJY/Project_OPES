@@ -96,6 +96,9 @@ private:
 	float knockbackRotation{};
 	float knockbackPower{};
 
+	float footstepTime{};
+	float footstepInterval{ 0.5 };
+
 public:
 	Player1st(int characterType);
 	~Player1st();

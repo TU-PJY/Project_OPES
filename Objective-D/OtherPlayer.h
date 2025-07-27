@@ -44,6 +44,9 @@ private:
 	float flameMovey{};
 	float flameMovez{};
 
+	float footstepTime{};
+	float footstepInterval{ 0.5 };
+
 public:
 	OtherPlayer(int characterType, unsigned int ID);
 	void updateState();
