@@ -17,8 +17,8 @@ constexpr unsigned int         MG_MAGAZINE	   = 100;
 // 지정 사수 소총
 constexpr unsigned int         DMR_DAMAGE	    = 70;
 constexpr float                DMR_RECOIL       = 13.0;
-constexpr float                DMR_RECOIL_BACK   = 0.2f;
-constexpr float                DMR_SHOOT_DELAY   = 0.7f;
+constexpr float                DMR_RECOIL_BACK  = 0.2f;
+constexpr float                DMR_SHOOT_DELAY  = 0.7f;
 constexpr float                DMR_RELOAD_TIME  = 2.0f;
 constexpr unsigned int         DMR_MAGAZINE		= 10;
 
@@ -57,12 +57,15 @@ constexpr int                  CHARACTER_DMR = 1;
 constexpr int                  CHARACTER_ENG = 2;
 
 
+constexpr int				   MG_JOB_TYPE     = 0;
 constexpr unsigned int         CHARACTER_MG_HP = 100; //300; //  임시로 100으로 변경
 constexpr float                CHARACTER_MG_SPEED   = 8.0f;
 
+constexpr int				   DMR_JOB_TYPE     = 1;
 constexpr unsigned int         CHARACTER_DMR_HP = 100; // 125;
 constexpr float                CHARACTER_DMR_SPEED	= 15.0f;
 
+constexpr int				   ENG_JOB_TYPE      = 2;
 constexpr unsigned int         CHARACTER_ENG_HP = 100; // 150;
 constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 
@@ -70,7 +73,9 @@ constexpr float                CHARACTER_ENG_SPEED	= 10.0f;
 // HP 체력, SPEED 이동속도(km/h), DAMAGE 데미지, ATTACK 주기(초)
 
 //디팬스 몬스터 수
-constexpr int                  DEFENSE_MONSTER = 20;
+constexpr int                  DEFENSE_MONSTER1 = 20;
+constexpr int                  DEFENSE_MONSTER2 = 10;
+constexpr int                  DEFENSE_MONSTER3 = 20;
 
 //start 인원수 
 constexpr int				   MIN_PLAYER_COUNT = 2;          
@@ -98,12 +103,12 @@ constexpr unsigned int         TREANT_DAMAGE = 60;
 constexpr int                  TREANT_TYPE = 2;
 
 // 스테이지 3
-// gazer
+// imp
 constexpr unsigned int         IMP_HP           = 150;
 constexpr unsigned int         IMP_DAMAGE       = 15;
 constexpr int                  IMP_TYPE          = 1;
 
-// imp
+// gazer
 constexpr unsigned int         GAZER_HP         = 200;
 constexpr unsigned int         GAZER_DAMAGE     = 30;
 constexpr int                  GAZER_TYPE       = 2;
@@ -112,39 +117,41 @@ constexpr int                  GAZER_TYPE       = 2;
 // 보너스 & 페널티
 // 공통 보너스
 constexpr float BONUS_RPM = 1.2f;				// 무기 과열 제거 (Weapon Cooling), 무기 연사속도 +20%
-constexpr float BONUS_RELOAD = 0.7f;			// 빠른 장전 훈련 (Quick Reload Training), 장전 속도 30% 감소
+constexpr float BONUS_RELOAD = 0.55f;			// 빠른 장전 훈련 (Quick Reload Training), 장전 속도 30% 감소
 constexpr float BONUS_MOVE_SPEED = 1.15f;		// 아드레날린 러시 (Adrenaline Rush), 이동속도 +15%
-constexpr int   BONUS_GRENADE = 2;				// 전술 확장 벨트 (Tactical Extended Pocket), 수류탄 +2
+constexpr int   BONUS_GRENADE = 1;				// 전술 확장 벨트 (Tactical Extended Pocket), 수류탄 +1
 
 // 기관총병 보너스
-constexpr float BONUS_RECOIL_LMG = 0.5f;		// 반동 제어 숙련 (Recoil Mastery), 반동 -50%
-constexpr float BONUS_HP_LMG = 1.33f;			// 굳은 의지 (Strong Will), 체력 +33%
+constexpr float BONUS_RECOIL_LMG = 0.6f;		// 반동 제어 숙련 (Recoil Mastery), 반동 -50%
+constexpr float BONUS_HP_LMG = 1.3f;			// 굳은 의지 (Strong Will), 체력 +33%
 
-// 저격병 보너스
-constexpr float BONUS_ADS_DAMAGE_DMR = 1.2f;    // 정조준 조준경 (ADS Scope Enhancement), 정조준 데미지 +20%
-constexpr float BONUS_ADS_SPEED_DMR = 1.5f;		// 민첩한 조작 (Agile Handling), 정조준 전환 속도 +50%
+// 저격병 보너스 - 지향/정조준의 차이가 없어 삭제
+//constexpr float BONUS_ADS_DAMAGE_DMR = 1.2f;    // 정조준 조준경 (ADS Scope Enhancement), 정조준 데미지 +20%
+//constexpr float BONUS_ADS_SPEED_DMR = 1.5f;		// 민첩한 조작 (Agile Handling), 정조준 전환 속도 +50%
 
 // 엔지니어 보너스
-constexpr float BONUS_STRUCTURE_HP_ENG = 1.5f;  // 적응형 구조 (Adaption Structure), 설치 구조물 체력 +50%
+constexpr float BONUS_STRUCTURE_DUR_ENG = 1.5f;  // 적응형 구조 (Adaption Structure), 설치 구조물 지속시간 +50% 
+//BONUS_STRUCTURE_HP_ENG -> BONUS_STRUCTURE_DUR_ENG HP -> DUR로 변경
 constexpr int   BONUS_PELLET_SG = 3;			// 집탄 모듈 확장 (Expanded Pellet Module), 산탄 수 +3
 
 
 // 공통 페널티
 constexpr float PENALTY_RPM = 0.85f;			// 무기 과열 (Weapon Overheating), 무기 연사속도 -15%
-constexpr float PENALTY_RELOAD = 1.3f;			// 급한 장전 (Interrupted Reload), 장전 속도 +30%
+constexpr float PENALTY_RELOAD = 1.2f;			// 급한 장전 (Interrupted Reload), 장전 속도 +30%
 constexpr float PENALTY_MOVE_SPEED = 0.85f;		// 피로 누적 (Fatigue Accumulation), 이동속도 -15%
-constexpr int   PENALTY_GRENADE = -2;			// 탄띠 손상 (Damaged Utility Belt), 수류탄 -2
+constexpr int   PENALTY_GRENADE = -1;			// 탄띠 손상 (Damaged Utility Belt), 수류탄 -2
 
 // 기관총병 페널티
 constexpr float PENALTY_RECOIL_LMG = 1.25f;		// 연사 불안정 (Spray Instability), 반동 +25%
 
-// 저격병 페널티
-constexpr float PENALTY_RECOIL_DMR = 1.2f;		// 정조준 불안정 (ADS Instability), 반동 +20%
-constexpr float PENALTY_ADS_RPM_DMR = 0.9f;		// 정조준 불안정 (ADS Instability), 정조준 연사속도 -10%
-constexpr float PENALTY_HIP_RPM_DMR = 0.75f;	// 빠른 지향의 대가 (Hipfire Penalty), 지향사격 연사속도 -25%
+// 저격병 페널티 - 지향/정조준의 차이가 없어져 삭제함.
+//constexpr float PENALTY_RECOIL_DMR = 1.2f;		// 정조준 불안정 (ADS Instability), 반동 +20%
+//constexpr float PENALTY_ADS_RPM_DMR = 0.9f;		// 정조준 불안정 (ADS Instability), 정조준 연사속도 -10%
+//constexpr float PENALTY_HIP_RPM_DMR = 0.75f;	// 빠른 지향의 대가 (Hipfire Penalty), 지향사격 연사속도 -25%
 
 // 엔지니어 페널티
-constexpr float PENALTY_STRUCTURE_HP_ENG = 0.7f;// 불안정한 설계 (Flawed Structure), 설치 구조물 체력 -30%
+constexpr float PENALTY_STRUCTURE_DUR_ENG = 0.7f;// 불안정한 설계 (Flawed Structure), 설치 구조물 지속시간 -30%
+//PENALTY_STRUCTURE_HP_ENG -> PENALTY_STRUCTURE_DUR_ENG
 constexpr float PENALTY_PELLET_DAMAGE_SG = 0.8f;// 불량 탄약 (Faulty Ammo), 샷건 펠릿당 데미지 -20%
 
 /*
