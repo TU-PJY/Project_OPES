@@ -99,10 +99,14 @@ void Gazer::gz_updateAttack() {
 }
 
 void Gazer::gz_updateTerrainCollision() {
-	//Ray playerRay = Math::CalcRayVector(xmfloat3(position.x, position.y + 40.0, position.z), xmfloat3(position.x, position.y - 40.0, position.z));
-	//float Distance;
-	//xmfloat3 newPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, playerRay.Origin, playerRay.Direction, Distance);
-	//position.y = newPosition.y - 2.0;
+	if (currentState != GAZER_DEATH)
+		return;
+
+	Ray playerRay = Math::CalcRayVector(xmfloat3(position.x, position.y + 40.0, position.z), xmfloat3(position.x, position.y - 40.0, position.z));
+	float Distance;
+	xmfloat3 newPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, playerRay.Origin, playerRay.Direction, Distance);
+	if (newPosition.x == 0.0 && newPosition.y == 0.0 && newPosition.z == 0.0 || newPosition.y <= -5.0)
+		fallDown = true;
 }
 
 void Gazer::gz_updateState() {
@@ -247,6 +251,13 @@ void Gazer::gz_updateMove(float Delta) {
 	//	Math::LerpXMFLOAT3(position, positionDest, 10.0, Delta);
 	position.x = std::lerp(position.x, positionDest.x, 10.0 * Delta);
 	position.z = std::lerp(position.z, positionDest.z, 10.0 * Delta);
+
+	if (fallDown) {
+		if (fallDown) {
+			fallAcc += Delta * 0.5;
+			heightOffset -= fallAcc;
+		}
+	}
 }
 
 void Gazer::gz_updateDeath() {
@@ -278,7 +289,7 @@ void Gazer::Render() {
 		return;
 
 	BeginRender();
-	Transform::Move(TranslateMatrix, position);
+	Transform::Move(TranslateMatrix, position.x, position.y + heightOffset, position.z);
 	Transform::Rotate(RotateMatrix, rotation);
 	Transform::Scale(ScaleMatrix, size);
 	if(currentState == GAZER_WALK)

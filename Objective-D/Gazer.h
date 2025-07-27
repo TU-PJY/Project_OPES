@@ -22,6 +22,7 @@ private:
 
 	xmfloat3 position{};
 	xmfloat3 positionDest{};
+	float heightOffset{};
 	xmfloat3 rotation{};
 	xmfloat3 rotationDest{};
 	xmfloat3 size{ 3.0f, 3.0f, 3.0f };
@@ -41,6 +42,9 @@ private:
 	unsigned int currentTargetID{};
 	unsigned int prevTargetID{};
 	unsigned int ID{};
+
+	bool fallDown{};
+	float fallAcc{};
 
 	int serverState{};
 
