@@ -26,7 +26,7 @@ constexpr float                DMR_RELOAD_TIME  = 2.0f;
 constexpr unsigned int         DMR_MAGAZINE		= 10;
 
 // ¼¦°Ç
-constexpr unsigned int         SG_DAMAGE		= 20;
+constexpr unsigned int         SG_DAMAGE		= 12;
 constexpr float                SG_RECOIL        = 12.0f;
 constexpr float                SG_RECOIL_BACK   = 0.2f;
 constexpr unsigned int         SG_FRAG			= 12;    // FRAG ÆÄÆí, PIECE Á¶°¢, BUCK »êÅº, PELLET Æç¸´ ¿ë¾î ¾ÆÁ÷ ¸øÁ¤ÇÔ.

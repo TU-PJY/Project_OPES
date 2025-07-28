@@ -12,7 +12,7 @@
 #include "OtherPlayerIndicator.h"
 #include "Map1DefenseIndicator.h"
 #include "MonsterGenerator.h"
-
+#include "CrossHair.h"
 #include "RoadBlock.h"
 
 void SendFilePacket(int stage);
@@ -88,6 +88,8 @@ void Level2::Start() {
 
 	if (!GLOBAL.skipDefenseMode)
 		scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);
+
+	scene.AddObject(new CrossHair, "crosshair", LAYERUI, true);
 
 	SendFilePacket(2);
 }

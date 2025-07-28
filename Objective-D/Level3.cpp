@@ -12,6 +12,7 @@
 #include "OtherPlayerIndicator.h"
 #include "MonsterGenerator.h"
 #include "RoadBlock.h"
+#include "CrossHair.h"
 
 void SendFilePacket(int stage);
 
@@ -78,6 +79,7 @@ void Level3::Start() {
 		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 	}
 
+	scene.AddObject(new CrossHair, "crosshair", LAYERUI, true);
 
 	SendFilePacket(3);
 }

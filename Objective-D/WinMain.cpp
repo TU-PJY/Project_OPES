@@ -99,7 +99,7 @@ bool LoadMap3Resources = true;
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode = Level3::Start;
+START_MODE_PTR StartMode = Level1::Start;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
