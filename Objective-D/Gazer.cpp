@@ -319,6 +319,7 @@ bool Gazer::CheckHit(BoundSphere& sphere) {
 bool Gazer::CheckHit(float& distance) {
 	if (currentState == GAZER_DEATH)
 		return false;
+
 	if(PickingUtil::PickByViewportOOBB(xmfloat2(0.0, 0.0), distance, hitBox))
 		return true;
 	return false;
@@ -373,4 +374,9 @@ bool Gazer::CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) {
 	if (hitBox.oobb.Intersects(start, direction, distance))
 		return true;
 	return false;
+}
+
+unsigned int Gazer::GetID()
+{
+	return ID;
 }

@@ -81,5 +81,6 @@ public:
 	void InputHP(int hp) override;
 	bool GetDeathState() override;
 	bool CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance);
+	unsigned int GetID() override;
 };
 

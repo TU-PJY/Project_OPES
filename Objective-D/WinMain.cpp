@@ -268,8 +268,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 		xmfloat3 createPosition = xmfloat3(packet->x, 0.0, packet->z);
 
-		if (!GLOBAL.defenseIDList.contains(packet->monsterID)) {
-			GLOBAL.defenseIDList.insert(packet->monsterID);
+		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
 
 			if (GLOBAL.mapName.compare("map1") == 0)
