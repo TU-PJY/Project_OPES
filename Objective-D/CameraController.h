@@ -101,6 +101,8 @@ public:
 
 		camera.Rotate(CamRotation.x, CamRotation.y, 0.0);
 		CamPosition = camera.GetPosition();
+
+		QP::SoundSystem.SetListenerPosition(camera.GetPosition());
 	}
 
 	/*XMFLOAT3 GetRotation() {
