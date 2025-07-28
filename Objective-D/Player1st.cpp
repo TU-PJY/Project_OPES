@@ -415,6 +415,8 @@ void Player1st::updateMove(float Delta) {
 
 		if (playerPosition.y <= -15.0) {
 			currentState = STATE_DEATH;
+			currentHP = 0;
+			SendMtoPDamagePacket(GLOBAL.myID, 0, 999);
 			scene.AddObject(new CameraController, "camControll", LAYER1, true);
 			scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
 			scene.DeleteObject(this);
