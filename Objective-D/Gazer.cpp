@@ -24,6 +24,10 @@ Gazer::Gazer(const xmfloat3& createPosition, unsigned int ID, bool defenseState)
 Gazer::~Gazer() {
 	if (hpInd)
 		scene.DeleteObject(hpInd);
+
+	GLOBAL.Map3DefenseEnemyRemained--;
+	if (GLOBAL.Map3DefenseEnemyRemained == 0)
+		GLOBAL.Map3DefenseState = false;
 }
 
 void Gazer::gz_updateIndicator() {
