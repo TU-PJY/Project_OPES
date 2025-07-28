@@ -326,6 +326,18 @@
     <Filter Include="[ D3D12 ]\[7] - [ Matrix ]">
       <UniqueIdentifier>{7febbad7-710f-4a0c-805a-07807e8ae6e3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Game Over Screen ]">
+      <UniqueIdentifier>{28260cc8-349b-4287-a5a7-bc023d339b64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ GameOver Mode ]">
+      <UniqueIdentifier>{fec636d8-db32-4884-963f-cb079078d86e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Clear Screen ]">
+      <UniqueIdentifier>{e2f4ecda-29a9-403a-80c6-47a8b11ba212}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ Clear Mode ]">
+      <UniqueIdentifier>{ed1333de-d177-4337-8cd9-aee80d761faf}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -592,6 +604,12 @@
     </ClInclude>
     <ClInclude Include="SoundModule\QuadPent_Sound.h">
       <Filter>[ Sound ]</Filter>
+    </ClInclude>
+    <ClInclude Include="GameOverScreen.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Game Over Screen ]</Filter>
+    </ClInclude>
+    <ClInclude Include="ClearScreen.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Clear Screen ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -882,6 +900,18 @@
     </ClCompile>
     <ClCompile Include="SoundModule\QuadPent_SoundSystem.cpp">
       <Filter>[ Sound ]</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverScreen.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Game Over Screen ]</Filter>
+    </ClCompile>
+    <ClCompile Include="GameOverMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ GameOver Mode ]</Filter>
+    </ClCompile>
+    <ClCompile Include="ClearScreen.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Clear Screen ]</Filter>
+    </ClCompile>
+    <ClCompile Include="ClearMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Clear Mode ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

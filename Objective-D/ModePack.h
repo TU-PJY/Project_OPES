@@ -28,6 +28,17 @@ namespace LobbyMode {
 	void Destructor();
 }
 
+namespace GameOverMode {
+	void Start();
+	void Destructor();
+}
+
+namespace ClearMode {
+	void Start();
+	void Destructor();
+}
+
+
 // FBX 애니메이션 구현을 위한 테스트 모드. 실제 개발 시 비활성화한다.
 namespace TestMode {
 	void Start();

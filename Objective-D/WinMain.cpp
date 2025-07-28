@@ -168,7 +168,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 				}
 
 				else if (GLOBAL.stage == 3) {
-					scene.SwitchMode(TitleMode::Start);
+					scene.SwitchMode(ClearMode::Start);
 				}
 			}
 		}
@@ -419,6 +419,11 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		std::cout << "PLAYER_DEATH-id: " << pkt->playerID << std::endl;
 
 		GLOBAL.deathCount++;
+
+		if (GLOBAL.deathCount == MIN_PLAYER_COUNT) {
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			scene.SwitchMode(GameOverMode::Start);
+		}
 
 		if (auto player = scene.SearchLayer(LAYER_PLAYER, std::to_string(pkt->playerID)); player)
 			player->InputState(STATE_DEATH);
