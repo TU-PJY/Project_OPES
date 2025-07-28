@@ -10,7 +10,19 @@ RoadBlock::RoadBlock(const XMFLOAT3& createPosition, float degrees, int num) {
 }
 
 void RoadBlock::Update(float Delta) {
-	if (!GLOBAL.Map1DefenseState) {
+	if (GLOBAL.mapName == "map1" && !GLOBAL.Map1DefenseState) {
+		position.y -= 5.0 * Delta;
+		if (position.y <= -4.0)
+			scene.DeleteObject(this);
+	}
+
+	if (GLOBAL.mapName == "map2" && !GLOBAL.Map2DefenseState) {
+		position.y -= 5.0 * Delta;
+		if (position.y <= -4.0)
+			scene.DeleteObject(this);
+	}
+
+	if (GLOBAL.mapName=="map3" && !GLOBAL.Map3DefenseState) {
 		position.y -= 5.0 * Delta;
 		if (position.y <= -4.0)
 			scene.DeleteObject(this);

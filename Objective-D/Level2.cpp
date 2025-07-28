@@ -62,7 +62,8 @@ void Level2::Start() {
 		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
 
 	if (!GLOBAL.skipDefenseMode) {
-		scene.AddObject(new RoadBlock(XMFLOAT3(-45.0, 1.0, -116.0), 90.0, 10), "roadBlock", LAYER1);
+		auto block = scene.AddObject(new RoadBlock(XMFLOAT3(-45.0, 1.0, -116.0), 90.0, 10), "roadBlock", LAYER1);
+		GLOBAL.mapOOBBdata.emplace_back(block->GetOOBB());
 
 		// map1 몬스터를 20번 스폰하는 디펜스 모드 몬스터 제너레이터
 		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);

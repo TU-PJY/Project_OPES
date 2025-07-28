@@ -11,6 +11,7 @@
 #include "OtherPlayer.h"
 #include "OtherPlayerIndicator.h"
 #include "MonsterGenerator.h"
+#include "RoadBlock.h"
 
 void SendFilePacket(int stage);
 
@@ -70,8 +71,12 @@ void Level3::Start() {
 	else
 		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpawner", LAYER1, GLOBAL.editMode);
 
-	if (!GLOBAL.skipDefenseMode)
+	if (!GLOBAL.skipDefenseMode) {
+		auto block = scene.AddObject(new RoadBlock(XMFLOAT3(-142.0 ,0.0, -46.0), 150.0 + 180.0, 5), "roadBlock", LAYER1);
+		GLOBAL.mapOOBBdata.emplace_back(block->GetOOBB());
+
 		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
+	}
 
 
 	SendFilePacket(3);

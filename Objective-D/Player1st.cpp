@@ -412,6 +412,13 @@ void Player1st::updateMove(float Delta) {
 	if (fallDown) {
 		fallAcc += Delta * 0.5;
 		playerPosition.y -= fallAcc;
+
+		if (playerPosition.y <= -15.0) {
+			currentState = STATE_DEATH;
+			scene.AddObject(new CameraController, "camControll", LAYER1, true);
+			scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
+			scene.DeleteObject(this);
+		}
 	}
 
 	// 카메라 위치를 플레이어 위치와 동기화 
