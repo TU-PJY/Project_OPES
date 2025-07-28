@@ -13,6 +13,7 @@
 #include "MonsterGenerator.h"
 #include "RoadBlock.h"
 #include "CrossHair.h"
+#include "Map1DefenseIndicator.h"
 
 void SendFilePacket(int stage);
 
@@ -77,6 +78,7 @@ void Level3::Start() {
 		GLOBAL.mapOOBBdata.emplace_back(block->GetOOBB());
 
 		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
+			scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);
 	}
 
 	scene.AddObject(new CrossHair, "crosshair", LAYERUI, true);

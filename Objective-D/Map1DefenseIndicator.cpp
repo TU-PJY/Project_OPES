@@ -22,15 +22,15 @@ DefenseIndicator::DefenseIndicator() {
 		currentRemain = GLOBAL.Map3DefenseEnemyRemained;
 		prevRemain = GLOBAL.Map3DefenseEnemyRemained;
 	}
-
-
 }
 
 void DefenseIndicator::Update(float Delta) {
 	if (GLOBAL.mapName.compare("map1") == 0)
 		currentRemain = GLOBAL.Map1DefenseEnemyRemained;
+
 	else if (GLOBAL.mapName.compare("map2") == 0)
 		currentRemain = GLOBAL.Map2DefenseEnemyRemained;
+
 	else if (GLOBAL.mapName.compare("map3") == 0)
 		currentRemain = GLOBAL.Map3DefenseEnemyRemained;
 
@@ -59,12 +59,12 @@ void DefenseIndicator::Render() {
 	Render2D(TEX.ColorTex, 0.5);
 
 	// 적 이미지
-	BeginRender(RENDER_TYPE_2D);
+	/*BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, -0.2, 1.0 - 0.15 + renderHeight);
 	Transform::Scale2D(ScaleMatrix, 0.2 + sizeOffset, 0.2 + sizeOffset);
-	Render2D(TEX.UI_map1Enemy);
+	Render2D(TEX.UI_map1Enemy);*/
 
 	// 텍스트
-	text.Render(XMFLOAT2(0.07, 1.0 - 0.07 + renderHeight), 0.15 + sizeOffset, renderString);
+	text.Render(XMFLOAT2(0.0, 1.0 - 0.07 + renderHeight), 0.15 + sizeOffset, renderString);
 }
 

@@ -353,8 +353,10 @@ void Gazer::InputHP(int hp) {
 	if (currentHP <= 0) {
 		currentHP = 0;
 		currentState = GAZER_DEATH;
-		if(hpInd)
+		if (hpInd) {
 			scene.DeleteObject(hpInd);
+			hpInd = nullptr;
+		}
 	}
 }
 
