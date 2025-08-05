@@ -270,7 +270,7 @@ void IOCompletionPort::RandomPositionThread() {
                 if (room.defenseStartTime == steady_clock::time_point::min()) {
                     room.defenseStartTime = now + seconds(PASS_STAGE_TIME);
                     room.lastMonsterSendTime = room.defenseStartTime;
-                    std::cout << "[1s-Room " << roomID << "] 몬스터 전송 3초 후 시작 예정\n";
+                    std::cout << "[1s-Room " << roomID << "] 몬스터 전송 n초 후 시작 예정!!!!!!!!!!!!!!!!!!!!!!\n";
                 }
 
                 if (now < room.defenseStartTime)
@@ -539,9 +539,9 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     //std::lock_guard<std::mutex> lock(roomMutex);
 
     Room newRoom;
-    newRoom.roomID = nextRoomID;
+    newRoom.roomID = nextRoomID;//=0
     newRoom.clients = members;
-    newRoom.defenseStartTime = std::chrono::steady_clock::now() + std::chrono::seconds(3);
+    //newRoom.defenseStartTime = std::chrono::steady_clock::now() + std::chrono::seconds(3);
     newRoom.lastMonsterSendTime = newRoom.defenseStartTime;
     std::cout << "---newRoom.roomID:" << newRoom.roomID << std::endl;
     nextRoomID++;
@@ -1394,7 +1394,7 @@ void IOCompletionPort::WorkThread() {
     DWORD bytesTransferred;
     ULONG_PTR completionKey;
     OVERLAPPED* overlapped;
-    int p = 0;
+    int room_id = 0;
     std::chrono::steady_clock::time_point Ltime = std::chrono::steady_clock::now();
     while (isRunning) {
         BOOL result = GetQueuedCompletionStatus(iocpHandle, &bytesTransferred, &completionKey, &overlapped, INFINITE);
@@ -1410,56 +1410,46 @@ void IOCompletionPort::WorkThread() {
             setsockopt(newClient->socketClient, IPPROTO_TCP, TCP_NODELAY, (char*)&bNoDelay, sizeof(BOOL));
 
             CreateIoCompletionPort((HANDLE)newClient->socketClient, iocpHandle, (ULONG_PTR)newClient, 0);
-            idCount++;
+
+            if (idCount%3==0) {
+                room_id++;
+            }
+            newClient->roomID = room_id;
             newClient->id = idCount;
+            idCount++;//=0
             //clients.push_back(newClient);
             AddClient(newClient);
             // 기존 처리 함수 호출
             
             std::cout << "입장idcount:" << idCount << std::endl;
             std::cout << "clientCount:" << clientCount << std::endl;
-
+            //CreateRoom(roomMembers);
+            
             SendData_EnterRoom(newClient);
             NotifyOthersAboutNewClient(newClient);
             SendExistingClientsToNewClient(newClient);
+
             {
                 std::lock_guard<std::mutex> lock(waitMutex);
                 waitingClients.push_back(newClient);
 
-                std::vector<stClientInfo*> validClients;
-                for (auto* client : waitingClients) {
-                    if (client && !client->alreadyRemoved)
-                        validClients.push_back(client);
-                }
-                
-                if (validClients.size() >= MIN_PLAYER_COUNT) {
-                    std::vector<stClientInfo*> roomMembers(validClients.begin(), validClients.begin() + MIN_PLAYER_COUNT);
-                
-                    for (auto* c : roomMembers) {
-                        waitingClients.erase(std::remove(waitingClients.begin(), waitingClients.end(), c), waitingClients.end());
-                    }
-                
-                    CreateRoom(roomMembers);
-                }
-                //if (waitingClients.size() >= MIN_PLAYER_COUNT) {
-                //    std::vector<stClientInfo*> roomMembers(waitingClients.begin(), waitingClients.begin() + MIN_PLAYER_COUNT);
-                //    waitingClients.erase(waitingClients.begin(), waitingClients.begin() + MIN_PLAYER_COUNT);
-                //    CreateRoom(roomMembers);
-                //    std::cout <<"---room:" << waitingClients.size() << std::endl;
-                //    for (auto& client : roomMembers) {
-                //        //SendData_EnterRoom(client);  // 여기서 먼저 룸 ID를 클라이언트에 전송
-                //        //NotifyOthersAboutNewClient(client);
-                //        //SendExistingClientsToNewClient(client);
-                //        
-                //    }
-                //    //(newClient);
-                //}
-                //else {
-                //    //SendData_EnterRoom(newClient);  // 대기 중인 상태 전송 (roomID == 0)
-                //    //NotifyOthersAboutNewClient(newClient );
-                //    //SendExistingClientsToNewClient(newClient);
-                //    //RegisterRecv(newClient);
-                //}
+               std::vector<stClientInfo*> validClients;
+               for (auto* client : waitingClients) {
+                   if (client && !client->alreadyRemoved)
+                       validClients.push_back(client);
+               }
+               
+               if (validClients.size() >= MIN_PLAYER_COUNT) {
+                   std::vector<stClientInfo*> roomMembers(validClients.begin(), validClients.begin() + MIN_PLAYER_COUNT);
+               
+                   for (auto* c : roomMembers) {
+                       waitingClients.erase(std::remove(waitingClients.begin(), waitingClients.end(), c), waitingClients.end());
+                   }
+               
+                   CreateRoom(roomMembers);
+               }
+
+               
             }
             RegisterRecv(newClient);
             // 다음 AcceptEx 등록
@@ -1943,6 +1933,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
 
 
         MtoPDamagePacket* pkt = reinterpret_cast<MtoPDamagePacket*>(buffer);
+        std::cout << "MTOP_DAMAGE: 맞은 데미지-" << pkt->attackHp << std::endl;
         int myHP = 0;
         {
             std::lock_guard<std::mutex> lock(*room.roomMutex);

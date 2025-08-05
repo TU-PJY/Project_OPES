@@ -81,10 +81,10 @@ constexpr int                  DEFENSE_MONSTER2 = 5;
 constexpr int                  DEFENSE_MONSTER3 = 5;
 
 //start 인원수 
-constexpr int				   MIN_PLAYER_COUNT = 2;          
+constexpr int				   MIN_PLAYER_COUNT = 3;          
 
 //스테이지 넘어갈때 딜레이 시간
-constexpr int                 PASS_STAGE_TIME = 5;
+constexpr int                 PASS_STAGE_TIME = 10;
 
 //몬스터 스폰 시간
 constexpr int                 CREAT_MONSTER_TIME = 4;
