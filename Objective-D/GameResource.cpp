@@ -156,8 +156,8 @@ void LoadMesh(DeviceSystem& System) {
 	LoadMultiStaticFBX(MESH.gun_flame, "Resources//Models//weapon//flame.fbx");
 	LoadMultiStaticFBX(MESH.gun_flame_back, "Resources//Models//weapon//flame-back.fbx");
 
-	/*LoadMultiStaticFBX(MESH.turretFlame, "Resources//Models//weapon//flame-turret.fbx");
-	LoadMultiStaticFBX(MESH.turretFlameBack, "Resources//Models//weapon//flame-turret-back.fbx");*/
+	//LoadMultiStaticFBX(MESH.turretFlame, "Resources//Models//weapon//flame-turret.fbx");
+	//LoadMultiStaticFBX(MESH.turretFlameBack, "Resources//Models//weapon//flame-turret-back.fbx");
 
 	// polygon scifi player asset - heavy
 	LoadAnimatedFBX(MESH.heavy[0], "Resources//Models//player//heavy//heavy_idle.fbx",

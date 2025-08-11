@@ -11,6 +11,7 @@ void GameOverMode::Start() {
 
 	GLOBAL.playerList.clear();
 	GLOBAL.serverConnected = false;
+	GLOBAL.startedGameServer = false;
 }
 
 void GameOverMode::Destructor() {

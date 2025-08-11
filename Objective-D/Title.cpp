@@ -2,12 +2,63 @@
 #include "MouseUtil.h"
 #include "ModePack.h"
 
+bool GetClipboardTextW(std::wstring& out) {
+	out.clear();
+
+	if (!IsClipboardFormatAvailable(CF_UNICODETEXT))
+		return false;
+
+	if (!OpenClipboard(nullptr))
+		return false;
+
+	HGLOBAL hData = GetClipboardData(CF_UNICODETEXT);
+	if (!hData) { CloseClipboard(); return false; }
+
+	const wchar_t* pText = static_cast<const wchar_t*>(GlobalLock(hData));
+	if (!pText) { CloseClipboard(); return false; }
+
+	out = pText; // 복사
+	GlobalUnlock(hData);
+	CloseClipboard();
+
+	return true;
+}
+
+std::string WStringToString(const std::wstring& wstr) {
+	if (wstr.empty()) return {};
+
+	int sizeNeeded = WideCharToMultiByte(
+		CP_UTF8,            // UTF-8 코드페이지
+		0,
+		wstr.c_str(),
+		(int)wstr.size(),
+		nullptr,
+		0,
+		nullptr,
+		nullptr
+	);
+
+	std::string result(sizeNeeded, 0);
+
+	WideCharToMultiByte(
+		CP_UTF8,
+		0,
+		wstr.c_str(),
+		(int)wstr.size(),
+		result.data(),
+		sizeNeeded,
+		nullptr,
+		nullptr
+	);
+
+	return result;
+}
+
 void Title::InputKey(KeyEvent& Event) {
-	if (Event.Type == WM_CHAR && Event.Key != VK_BACK) {
+	if (Event.Type == WM_CHAR && Event.Key != VK_BACK && Event.Key != VK_CONTROL) {
 		if (!nameInputMode) {
-			if ((Event.Key >= '0' && Event.Key <= '9') || Event.Key == '.') {
+			if ((Event.Key >= '0' && Event.Key <= '9') || Event.Key == '.') 
 				GLOBAL.enterIP += Event.Key;
-			}
 
 			std::wstring copyWstr(GLOBAL.enterIP.begin(), GLOBAL.enterIP.end());
 			GLOBAL.enterIPw = copyWstr;
@@ -19,19 +70,41 @@ void Title::InputKey(KeyEvent& Event) {
 		}
 	}
 
-	else if (Event.Type == WM_KEYDOWN && Event.Key == VK_BACK) {
-		if (!nameInputMode) {
-			if (!GLOBAL.enterIP.empty()) {
-				GLOBAL.enterIP.pop_back();
-				if (GLOBAL.enterIP.back() == '.')
-					GLOBAL.enterIP.pop_back();
-			}
-		}
 
-		else {
-			if (!GLOBAL.myName.empty())
-				GLOBAL.myName.pop_back();
+	else if (Event.Type == WM_KEYDOWN) {
+		switch(Event.Key) {
+		case VK_BACK:
+			if (!nameInputMode) {
+				if (!GLOBAL.enterIP.empty()) {
+					GLOBAL.enterIP.pop_back();
+					if (GLOBAL.enterIP.back() == '.')
+						GLOBAL.enterIP.pop_back();
+				}
+			}
+
+			else {
+				if (!GLOBAL.myName.empty())
+					GLOBAL.myName.pop_back();
+			}
+			break;
+
+		case VK_CONTROL:
+			ctrlPressed = true;
+			break;
+
+		case 'V':
+			if (!nameInputMode) {
+				std::wstring copyString{};
+				if (GetClipboardTextW(copyString))
+					GLOBAL.enterIP = WStringToString(copyString);
+			}
+			break;
 		}
+	}
+
+	else if (Event.Type == WM_KEYUP) {
+		if (Event.Key == VK_CONTROL)
+			ctrlPressed = false;
 	}
 }
 

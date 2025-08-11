@@ -11,6 +11,7 @@ private:
 	std::string ipStr{};
 
 	bool nameInputMode{};
+	bool ctrlPressed{};
 
 public:
 	void InputKey(KeyEvent& Event) override;

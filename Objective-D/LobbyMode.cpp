@@ -14,8 +14,11 @@ void LobbyMode::Start() {
 		GLOBAL.enterServerState = true;
 	}
 
-	while (!GLOBAL.serverConnected.load()) {}
-	SendNamePacket(GLOBAL.myName.c_str());
+	if (!GLOBAL.startedGameServer) {
+		GLOBAL.serverConnected.wait(false);
+		SendNamePacket(GLOBAL.myName.c_str());
+		GLOBAL.startedGameServer = true;
+	}
 
 	scene.AddObject(new Lobby, "lobby", LAYERUI, true);
 }

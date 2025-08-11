@@ -372,12 +372,12 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		std::cout << "접속 아이디: " << GLOBAL.myID << std::endl;
 		GLOBAL.serverConnected = true;
 
-		//if (0 != EnterPacket->roomID) {
-		//	enter_room = true;
-		//}
-		//else {
-		//	std::cout << "대기중.." << std::endl;
-		//}
+	/*	if (0 != EnterPacket->roomID) {
+			enter_room = true;
+		}
+		else {
+			std::cout << "대기중.." << std::endl;
+		}*/
 	}
 
 	else if (*type == PacketType::NEW_CLIENT) {

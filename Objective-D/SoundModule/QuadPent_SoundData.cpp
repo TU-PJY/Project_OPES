@@ -11,10 +11,10 @@ bool QP::QuadPent_SoundData::LoadFile(const std::string& Directory, FMOD_MODE Op
 	FMOD_MODE mode;
 	Data->getMode(&mode);
 
-	if (mode & FMOD_3D)
+	/*if (mode & FMOD_3D)
 		std::cout << Directory <<  " 3D »ç¿îµå·Î ·ÎµåµÊ\n";
 	else
-		std::cout << Directory << " 3D ¸ðµå ¾Æ´Ô\n";
+		std::cout << Directory << " 3D ¸ðµå ¾Æ´Ô\n";*/
 
 	return true;
 }

@@ -105,6 +105,9 @@ typedef struct {
 	bool enterServerState;
 	std::thread netThread;
 
+	// 서버 시작 여부
+	bool startedGameServer;
+
 	// 현재 서버 연결 여부
 	std::atomic<bool> serverConnected;
 
