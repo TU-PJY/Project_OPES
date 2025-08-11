@@ -62,7 +62,7 @@ void Level3::Start() {
 
 		for (auto& p : GLOBAL.playerList) {
 			std::cout << "currentCharacterType: " << p.second.characterType << std::endl;
-			scene.AddObject(new OtherPlayer(p.second.characterType, p.first, p.second.name), p.second.name, LAYER_PLAYER);
+			scene.AddObject(new OtherPlayer(p.second.characterType, p.first, p.second.name), std::to_string(p.first), LAYER_PLAYER);
 			if (GLOBAL.otherIndicator)
 				static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(p.first, p.second.characterType, p.second.name);
 		}
