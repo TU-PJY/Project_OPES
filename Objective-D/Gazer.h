@@ -78,6 +78,10 @@ public:
 	bool CheckHit(float& distance) override;
 	xmfloat3 GetPosition() override;
 	void GiveDamage(int damage) override;
+	void InputState(unsigned int State) override;
+	void InputPosition(XMFLOAT3& Position) override;
+	void InputRotation(float Rotation) override;
+	void InputTargetID(unsigned int ID) override;
 	void InputHP(int hp) override;
 	bool GetDeathState() override;
 	bool CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance);

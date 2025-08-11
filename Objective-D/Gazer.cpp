@@ -350,6 +350,32 @@ void Gazer::GiveDamage(int damage) {
 	// packet
 }
 
+void Gazer::InputState(unsigned int State) {
+	if (currentState == GAZER_DEATH)
+		return;
+
+	currentState = State;
+	if (currentState == GAZER_DEATH) {
+		currentHP = 0;
+		if (hpInd) {
+			scene.DeleteObject(hpInd);
+			hpInd = nullptr;
+		}
+	}
+}
+
+void Gazer::InputPosition(XMFLOAT3& Position) {
+	positionDest = position;
+}
+
+void Gazer::InputRotation(float Rotation) {
+	rotationDest.y = Rotation;
+}
+
+void Gazer::InputTargetID(unsigned int ID) {
+	currentTargetID = ID;
+}
+
 void Gazer::InputHP(int hp) {
 	if (currentState == GAZER_DEATH)
 		return;
