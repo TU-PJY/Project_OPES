@@ -71,7 +71,7 @@ struct stClientInfo {
     char prevBuffer[MAX_SOCKBUF] = { 0 };
     stClientInfo() {
         socketClient = INVALID_SOCKET;
-        roomID = 0;
+        roomID = -1;
         x = -130.0;
         y = 20;
         z = -130.0;
@@ -88,7 +88,7 @@ struct stClientInfo {
 
 
 struct Room {
-    int roomID;
+    int roomID=-1;
     std::vector<stClientInfo*> clients;
     std::vector<MonsterData> myMonsters;
     std::vector<MonsterData> defenseMonsters{ DEFENSE_MONSTER1};
@@ -113,6 +113,7 @@ struct Room {
     int nextMonsterToSend = 0;
     bool monsterRandomSent = false;
     std::chrono::steady_clock::time_point defenseStartTime = std::chrono::steady_clock::time_point::min();
+    //std::cout << defenseStartTime << "!!!\n";
     std::chrono::steady_clock::time_point lastMonsterSendTime = std::chrono::steady_clock::time_point::min();
 };
 

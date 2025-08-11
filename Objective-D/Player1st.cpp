@@ -416,10 +416,11 @@ void Player1st::updateMove(float Delta) {
 		fallAcc += Delta * 0.5;
 		playerPosition.y -= fallAcc;
 
-		if (playerPosition.y <= -15.0) {
-			currentState = STATE_DEATH;
+		if (playerPosition.y <= -50.0) {
+			playerPosition.y = -50.0;
+		/*	currentState = STATE_DEATH;
 			currentHP = 0;
-			SendMtoPDamagePacket(GLOBAL.myID, 0, 999);
+			SendMtoPDamagePacket(GLOBAL.myID, 0, 999);*/
 			scene.AddObject(new CameraController, "camControll", LAYER1, true);
 			scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
 			scene.DeleteObject(this);
