@@ -114,6 +114,8 @@ typedef struct {
 	// 에디터 모드 여부
 	bool editMode;
 
+	bool RENDER_BOUND;
+
 }GlobalValue;
 extern GlobalValue GLOBAL;
 

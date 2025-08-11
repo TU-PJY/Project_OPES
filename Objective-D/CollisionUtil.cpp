@@ -112,7 +112,10 @@ void OOBB::Update(XMFLOAT3& Position, XMFLOAT3& Size, XMFLOAT3& Rotation) {
 }
 
 void OOBB::Render() {
-#ifdef SHOW_BOUND_BOX
+//#ifdef SHOW_BOUND_BOX
+	if (!GLOBAL.RENDER_BOUND)
+		return;
+
 	GlobalCommandList->SetGraphicsRootSignature(BoundboxShaderRootSignature);
 
 	Transform::Identity(TranslateMatrix);
@@ -139,7 +142,7 @@ void OOBB::Render() {
 	RCUtil::Input(GlobalCommandList, &BoundboxColor, GAME_OBJECT_INDEX, 3, 16);
 
 	SYSRES.BoundMesh->Render(GlobalCommandList);
-#endif
+//#endif
 }
 
 
@@ -181,7 +184,8 @@ void AABB::Update(XMFLOAT3& Position, XMFLOAT3& Size) {
 }
 
 void AABB::Render() {
-#ifdef SHOW_BOUND_BOX
+	if (!GLOBAL.RENDER_BOUND)
+		return;
 	GlobalCommandList->SetGraphicsRootSignature(BoundboxShaderRootSignature);
 
 	Transform::Identity(TranslateMatrix);
@@ -202,7 +206,6 @@ void AABB::Render() {
 	RCUtil::Input(GlobalCommandList, &BoundboxColor, GAME_OBJECT_INDEX, 3, 16);
 
 	SYSRES.BoundMesh->Render(GlobalCommandList);
-#endif
 }
 
 bool AABB::CheckCollision(const AABB& Other) {
@@ -282,7 +285,8 @@ bool BoundSphere::CheckCollision(const OOBB& Other) {
 }
 
 void BoundSphere::Render() {
-#ifdef SHOW_BOUND_BOX
+	if (!GLOBAL.RENDER_BOUND)
+		return;
 	GlobalCommandList->SetGraphicsRootSignature(BoundboxShaderRootSignature);
 
 	Transform::Identity(TranslateMatrix);
@@ -303,5 +307,5 @@ void BoundSphere::Render() {
 	RCUtil::Input(GlobalCommandList, &BoundboxColor, GAME_OBJECT_INDEX, 3, 16);
 
 	SYSRES.BoundingSphereMesh->Render(GlobalCommandList);
-#endif
+
 }
