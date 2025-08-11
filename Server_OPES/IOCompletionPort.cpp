@@ -900,6 +900,9 @@ void IOCompletionPort::SendExistingClientsToNewClient(stClientInfo* receiver) {
         ExistingClientsDataPacket* pkt = new ExistingClientsDataPacket{};
         pkt->type = PacketType::EXISTING_CLIENTS;
         pkt->id = client->id;
+        pkt->size = client->name_size;
+        memcpy(pkt->name,client->name,client->name_size);
+        pkt->name[pkt->size] = '\0';
 
         stOverlappedEx* sendOver = new stOverlappedEx{};
         ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
@@ -932,6 +935,10 @@ void IOCompletionPort::NotifyOthersAboutNewClient(stClientInfo* newClient) {
         NewClientPacket* pkt = new NewClientPacket{};
         pkt->type = PacketType::NEW_CLIENT;
         pkt->id = newClient->id;
+        pkt->size = newClient->name_size;
+        memcpy(pkt->name, newClient->name, newClient->name_size);
+        pkt->name[pkt->size] = '\0';
+
         std::cout << "NotifyOthersAboutNewClient-id:" << pkt->id << std::endl;
 
 
@@ -1426,8 +1433,8 @@ void IOCompletionPort::WorkThread() {
             //CreateRoom(roomMembers);
             
             SendData_EnterRoom(newClient);
-            NotifyOthersAboutNewClient(newClient);
-            SendExistingClientsToNewClient(newClient);
+            //NotifyOthersAboutNewClient(newClient);
+            //SendExistingClientsToNewClient(newClient);
 
             {
                 std::lock_guard<std::mutex> lock(waitMutex);
@@ -1597,6 +1604,7 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     if (type == PT::DISCONNECT) return sizeof(DisconnectPacket);
     if (type == PT::FILE_LOAD) return sizeof(FilePacket);
     if (type == PT::MASTER_KEY) return sizeof(MasterKeyPacket);
+    if (type == PT::NAME) return sizeof(NamePacket);
     return 0; // 알 수 없는 타입이면 0
 }
 void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
@@ -2109,6 +2117,15 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
             }
         }
         
+    }
+    else if (*packetType == PacketType::NAME) {
+        NamePacket* pkt= reinterpret_cast<NamePacket*>(buffer);
+        memcpy(client->name, pkt->name,pkt->size);
+        client->name_size = pkt->size;
+        client->name[pkt->size] = '\0';
+        NotifyOthersAboutNewClient(client);
+        SendExistingClientsToNewClient(client);
+
     }
     else if (*packetType == PacketType::MASTER_KEY) {
        //MasterKeyPacket* pkt = reinterpret_cast<MasterKeyPacket*>(buffer);

@@ -29,6 +29,7 @@ enum class PacketType:unsigned int {
     DISCONNECT,
     FILE_LOAD,
     MASTER_KEY,
+    NAME,
 };
 
 constexpr int MONSTER_TYPE1 = 1;//꽃
@@ -88,14 +89,23 @@ struct EnterRoomPacket {
     unsigned int roomID;
     unsigned int myID;
 };
+struct NamePacket {
+    PacketType type;
+    int size;
+    char name[20];
+};
 struct NewClientPacket {
     PacketType type;
     unsigned int id;
+    int size;
+    char name[20];
 };
 
 struct ExistingClientsDataPacket {
     PacketType type;
     unsigned int id;
+    int size;
+    char name[20];
    //unsigned int count; // 클라이언트 수
    //struct {
    //    unsigned int id;

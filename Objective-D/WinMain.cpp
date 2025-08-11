@@ -657,6 +657,36 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 //		}
 //	}
 //}
+void SendNamePacket(const char* playerName) {
+	if (enter_room) {
+		auto* pkt = new NamePacket{};
+		pkt->type = PacketType::NAME;
+
+		pkt->size = static_cast<int>(strlen(playerName));
+		memcpy(pkt->name, playerName, pkt->size);
+		pkt->name[pkt->size] = '\0'; // 안전하게 NULL 종료
+
+		auto* context = new SendContext{};
+		ZeroMemory(context, sizeof(SendContext));
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+		wsaBuf.len = sizeof(NamePacket);
+
+		context->cleanup = [pkt, context]() {
+			delete pkt;
+			delete context;
+			};
+
+		DWORD bytesSent = 0;
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+			std::cerr << "[클라이언트] 이름 패킷 전송 실패\n";
+			context->cleanup();
+		}
+	}
+}
+
 void SendMasterKeyPacket(int key) {
 	if (enter_room) {
 		auto* pkt = new MasterKeyPacket{ PacketType::MASTER_KEY,  key };

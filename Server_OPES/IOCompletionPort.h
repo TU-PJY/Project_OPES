@@ -65,6 +65,8 @@ struct stClientInfo {
     bool curr;
     int hp;
     int roomID;
+    int name_size;
+    char name[20];
     std::atomic<bool> alreadyRemoved{ false };
 
     int prevRemainSize = 0;
