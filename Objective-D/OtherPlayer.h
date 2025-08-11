@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include "MeshUtil.h"
+#include "TextUtil.h"
 
 class OtherPlayer : public GameObject {
 private:
@@ -47,8 +48,11 @@ private:
 	float footstepTime{};
 	float footstepInterval{ 0.5 };
 
+	std::string playerName{};
+	GameObject* tagObject{};
+
 public:
-	OtherPlayer(int characterType, unsigned int ID);
+	OtherPlayer(int characterType, unsigned int ID, const std::string name);
 	void updateState();
 	void updateAnimation(float Delta);
 	void updateBound();

@@ -19,6 +19,8 @@ private:
 
 	bool       TextStaticSize{};
 
+	XMFLOAT2   TextOffset{};
+
 public:
 	Text() {}
 	Text(int AlignFlag, int HeightFlag, const XMFLOAT3& Color);
@@ -31,6 +33,7 @@ public:
 	void SetOpacity(float OpacityValue);
 	void EnableStaticSize();
 	void DisableStaticSize();
+	XMFLOAT2 GetTextOffset();
 	void Render3D(const XMFLOAT3& Position, float Size, const std::string& Str);
 	void Render(const XMFLOAT2& Position, float Size, const std::string& Str);
 

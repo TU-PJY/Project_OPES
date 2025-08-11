@@ -611,6 +611,9 @@
     <ClInclude Include="ClearScreen.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Clear Screen ]</Filter>
     </ClInclude>
+    <ClInclude Include="PlayerTag.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Scene.cpp">
@@ -912,6 +915,9 @@
     </ClCompile>
     <ClCompile Include="ClearMode.cpp">
       <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ Clear Mode ]</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerTag.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

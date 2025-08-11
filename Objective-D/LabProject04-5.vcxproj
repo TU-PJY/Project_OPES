@@ -214,6 +214,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="PlayerHit.h" />
     <ClInclude Include="PlayerIndicator.h" />
     <ClInclude Include="OtherPlayer.h" />
+    <ClInclude Include="PlayerTag.h" />
     <ClInclude Include="PoisonBall.h" />
     <ClInclude Include="RayTargetUtil.h" />
     <ClInclude Include="Resource.h" />
@@ -308,6 +309,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Player1st.cpp" />
     <ClCompile Include="PlayerHit.cpp" />
     <ClCompile Include="PlayerIndicator.cpp" />
+    <ClCompile Include="PlayerTag.cpp" />
     <ClCompile Include="PoisonBall.cpp" />
     <ClCompile Include="RandomUtil.cpp" />
     <ClCompile Include="RayTargetUtil.cpp" />

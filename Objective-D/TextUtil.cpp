@@ -50,6 +50,10 @@ void Text::DisableStaticSize() {
 	TextStaticSize = false;
 }
 
+XMFLOAT2 Text::GetTextOffset() {
+	return TextOffset;
+}
+
 void Text::Render(const XMFLOAT2& Position, float Size, const std::string& Str) {
 	const char* Input = Str.c_str();
 	int Length = Str.length();
@@ -76,20 +80,31 @@ void Text::Render(const XMFLOAT2& Position, float Size, const std::string& Str) 
 void Text::TransformText(const XMFLOAT2& Position, float Size, float TotalLength, int StrLength, const char* Input) {
 	switch (TextAlign) {
 	case ALIGN_DEFAULT:
-		Transform::Move2D(TextMatrix, Position.x, Position.y); break;
+		Transform::Move2D(TextMatrix, Position.x, Position.y); 
+		TextOffset.x = 0.0;
+		break;
 	case ALIGN_MIDDLE:
-		Transform::Move2D(TextMatrix, Position.x - TotalLength * 0.5, Position.y); break;
+		Transform::Move2D(TextMatrix, Position.x - TotalLength * 0.5, Position.y); 
+		TextOffset.x = -TotalLength * 0.5;
+		break;
 	case ALIGN_LEFT:
-		Transform::Move2D(TextMatrix, Position.x - TotalLength, Position.y); break;
+		Transform::Move2D(TextMatrix, Position.x - TotalLength, Position.y); 
+		TextOffset.x = -TotalLength;
+		break;
 	}
 
 	switch (TextHeightAlign) {
 	case HEIGHT_DEFAULT:
-		Transform::Move2D(TextMatrix, 0.0, Size * 0.5); break;
+		Transform::Move2D(TextMatrix, 0.0, Size * 0.5);
+		TextOffset.y = Size * 0.05;
+		break;
 	case HEIGHT_MIDDLE:
+		TextOffset.y = 0.0;
 		break;
 	case HEIGHT_UNDER:
-		Transform::Move2D(TextMatrix, 0.0, -Size * 0.5); break;
+		Transform::Move2D(TextMatrix, 0.0, -Size * 0.5);
+		TextOffset.y = -Size * 0.5;
+		break;
 	}
 
 	Transform::Scale2D(TextMatrix, Size, Size);
@@ -161,32 +176,41 @@ void Text::Render3D(const XMFLOAT3& Position, float Size, const std::string& Str
 }
 
 void Text::TransformText3D(const XMFLOAT3& Position, float Size, float TotalLength, int StrLength, const char* Input) {
+	Vector vec{};
+
+	Transform::Move(TextMatrix, Position.x, Position.y, Position.z);
+	Math::BillboardLookAt(TextMatrix, vec, XMFLOAT3(Position), camera.GetPosition());
+
 	switch (TextAlign) {
 	case ALIGN_DEFAULT:
-		Transform::Move(TextMatrix, Position.x, Position.y, Position.z); break;
+		break;
 	case ALIGN_MIDDLE:
-		Transform::Move(TextMatrix, Position.x - TotalLength * 0.5, Position.y, Position.z); break;
+		Transform::Move(TextMatrix, -TotalLength * 0.5, 0.0, 0.0); 
+		break;
 	case ALIGN_LEFT:
-		Transform::Move(TextMatrix, Position.x - TotalLength, Position.y, Position.z); break;
+		Transform::Move(TextMatrix, -TotalLength, 0.0, 0.0); 
+		break;
 	}
-
-	Vector vec{};
-	Math::BillboardLookAt(TextMatrix, vec, (XMFLOAT3)Position, camera.GetPosition());
 
 	switch (TextHeightAlign) {
 	case HEIGHT_DEFAULT:
-		Transform::Move2D(TextMatrix, 0.0, Size * 0.5); break;
+		Transform::Move2D(TextMatrix, 0.0, Size * 0.5); 
+		TextOffset.y = Size * 0.5;
+		break;
 	case HEIGHT_MIDDLE:
+		TextOffset.y = 0.0;
 		break;
 	case HEIGHT_UNDER:
-		Transform::Move2D(TextMatrix, 0.0, -Size * 0.5); break;
+		Transform::Move2D(TextMatrix, 0.0, -Size * 0.5); 
+		TextOffset.y = -Size * 0.5;
+		break;
 	}
-
 	Transform::Scale2D(TextMatrix, Size, Size);
 
 	for (int i = 0; i < StrLength; i++) {
 		if (i > 0)
 			Transform::Move2D(TextMatrix, 0.45, 0.0);
+
 		char Word = Input[i];
 		int Index = static_cast<int>(Input[i]);
 		if (0 < Index - 32 && Index - 32 < 96)

@@ -21,10 +21,12 @@ GameObject* ind;
 
 class TestObject : public GameObject {
 public:
-	Text text{ ALIGN_MIDDLE, HEIGHT_DEFAULT, {1.0f, 1.0f, 1.0f} };
+	FBX fbx{MESH.engineer[0]};
+
+	Text playerName{ ALIGN_MIDDLE, HEIGHT_MIDDLE, {1.0f, 1.0f, 1.0f} };
 
 	TestObject() {
-		text.EnableStaticSize();
+		playerName.EnableStaticSize();
 		
 	}
 
@@ -37,11 +39,24 @@ public:
 	}
 
 	void Update(float Delta) {
-
+		fbx.UpdateAnimation(Delta);
 	}
 
 	void Render() {
-		text.Render3D({ 5.0f, -3.0f, 10.0f }, 0.05, "Hello World!");
+		BeginRender();
+		Transform::Scale(ScaleMatrix, 3.0f, 3.0f, 3.0f);
+		RenderFBX(fbx, TEX.scifi);
+
+		BeginRender();
+		Vector Vec{};
+		float renderMultiply = Math::CalcDistance3D(XMFLOAT3(0.0, 6.0, 0.0), camera.GetPosition()) * 0.5;
+
+		Transform::Move(TranslateMatrix, 0.0f, 6.0f, 0.0f);
+		Math::BillboardLookAt(RotateMatrix, Vec, XMFLOAT3(0.0f, 6.0f , 0.0f) , camera.GetPosition());
+		Transform::Scale(ScaleMatrix, 0.03 * 8.0 * renderMultiply, 0.05 * renderMultiply, 1.0);
+		Render3D(SYSRES.BillboardMesh, TEX.ColorTex, 0.6, DEPTH_TEST_NONE);
+
+		playerName.Render3D(XMFLOAT3(0.0f, 6.0f, 0.0f), 0.03, "Player1");
 	}
 };
 

@@ -2,9 +2,10 @@
 #include "CameraUtil.h"
 #include "ClampUtil.h"
 #include "ScriptUtil.h"
+#include "PlayerTag.h"
 
 // 캐릭터 타입에 따라 다른 fbx를 초기화 한다.
-OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
+OtherPlayer::OtherPlayer(int characterType, unsigned int ID, const std::string name) {
 	this->characterType = characterType;
 	ScriptUtil script{};
 	script.Load("Resources//Scripts//weapon//flamePosition.xml");
@@ -65,6 +66,17 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID) {
 	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);
 
 	this->ID = ID;
+
+	tagObject = scene.AddObject(new PlayerTag(playerName), "tag", LAYERUI);
+	if (tagObject)
+		tagObject->InputPosition(position);
+
+	playerName = name;
+}
+
+OtherPlayer::~OtherPlayer() {
+	if (tagObject)
+		scene.DeleteObject(tagObject);
 }
 
 void OtherPlayer::updateState() {
@@ -144,6 +156,9 @@ void OtherPlayer::Update(float Delta) {
 		}
 	}
 
+	if (tagObject)
+		tagObject->InputPosition(position);
+
 	updateDeath();
 }
 
@@ -171,7 +186,6 @@ void OtherPlayer::Render() {
 		RenderFBX(deathFBX, TEX.scifi);
 		break;
 	}
-
 
 	renderState = currentState;
 }
@@ -230,6 +244,8 @@ void OtherPlayer::InputHP(int currentHP) {
 	//this->currentHP = currentHP;
 	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
 	if (this->currentHP == 0) {
+		if (tagObject)
+			scene.DeleteObject(tagObject);
 		currentState = STATE_DEATH;
 	}
 }
