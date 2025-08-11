@@ -365,7 +365,7 @@ void Gazer::InputState(unsigned int State) {
 }
 
 void Gazer::InputPosition(XMFLOAT3& Position) {
-	positionDest = position;
+	positionDest = Position;
 }
 
 void Gazer::InputRotation(float Rotation) {
