@@ -18,9 +18,12 @@ private:
 	XMFLOAT3 CamRotation{};
 	XMFLOAT3 DestCamRotation{};
 
+	bool EndCaptureEnabled{};
+
 public:
-	CameraController() {
+	CameraController(bool capEnd=false) {
 		camera.Move(CamPosition);
+		EndCaptureEnabled = capEnd;
 	}
 
 	void InputKey(KeyEvent& Event) override {
@@ -68,7 +71,8 @@ public:
 			break;
 
 		case WM_LBUTTONUP:
-			mouse.EndMotionCapture();
+			if(EndCaptureEnabled)
+				mouse.EndMotionCapture();
 			break;
 		}
 	}
