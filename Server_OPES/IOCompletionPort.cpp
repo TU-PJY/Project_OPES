@@ -2120,6 +2120,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
     }
     else if (*packetType == PacketType::NAME) {
         NamePacket* pkt= reinterpret_cast<NamePacket*>(buffer);
+        std::cout << "name:" << pkt->name << std::endl;
         memcpy(client->name, pkt->name,pkt->size);
         client->name_size = pkt->size;
         client->name[pkt->size] = '\0';
@@ -2176,7 +2177,7 @@ void IOCompletionPort::DestroyThread() {
     //} 
     if (workerThread.joinable()) workerThread.join();
 
-    if (accepterThread.joinable()) accepterThread.join();
+    //if (accepterThread.joinable()) accepterThread.join();
    // if (npcThread.joinable()) npcThread.join();
     if (randomPositionThread.joinable()) randomPositionThread.join();
 
