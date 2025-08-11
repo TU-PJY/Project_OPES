@@ -88,6 +88,9 @@ typedef struct {
 	std::string enterIP;
 	std::wstring enterIPw;
 
+	// 마지막으로 입력한 내 닉네임
+	std::string myName;
+
 	int deathCount;
 
 	int stage;

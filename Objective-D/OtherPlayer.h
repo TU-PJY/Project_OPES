@@ -53,6 +53,7 @@ private:
 
 public:
 	OtherPlayer(int characterType, unsigned int ID, const std::string name);
+	~OtherPlayer();
 	void updateState();
 	void updateAnimation(float Delta);
 	void updateBound();

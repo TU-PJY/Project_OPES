@@ -89,17 +89,17 @@ constexpr bool localServer = false; //!useServer;
 bool DevMode = true;
 
 // UI 제작 시 사용하는 플래그. true일 시 아래 3개의 플래그가 모두 강제로 false가 된다.
-bool UIcreateMode = false;
+bool UIcreateMode = true;
 
-bool LoadMap1Resources = false;
-bool LoadMap2Resources = false;
-bool LoadMap3Resources = false;
+bool LoadMap1Resources = true;
+bool LoadMap2Resources = true;
+bool LoadMap3Resources = true;
 
 // 사운드 리소스를 로드한다.
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode =  TestMode::Start;
+START_MODE_PTR StartMode =  TitleMode::Start;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -108,26 +108,22 @@ START_MODE_PTR StartMode =  TestMode::Start;
 char RecvRemainBuffer[MAX_SOCKBUF * 2] = { 0 };
 int RecvRemainSize = 0;
 
-std::unordered_set<unsigned int> ID_List;
-
 struct SendContext {
 	WSAOVERLAPPED overlapped;
 	std::function<void()> cleanup;
 };
 
-bool IsNewPlayer(unsigned int ID) {
+bool IsNewPlayer(unsigned int ID, std::string Name) {
 	{
 		std::lock_guard<std::mutex> lock(PacketMutex);
-		if (!ID_List.contains(ID)) {
-			ID_List.insert(ID);
-
+		if (!GLOBAL.playerList.contains(ID)) {
 			// 새로운 플레이어가 접속하면 전역 플레이어 리스트에 등록한다.
-
 			PlayerLobbyInfo newInfo{};
+			newInfo.name = Name;
 			GLOBAL.playerList.emplace(ID, newInfo);
 
 		/*	if (skipTitleMode) {
-				scene.AddObject(new OtherPlayer(CHARACTER_MG, ID), std::to_string(ID), LAYER_PLAYER);
+				scene.AddObject(new OtherPlayer(CHARACTER_MG, ID, newInfo.name), std::to_string(ID), LAYER_PLAYER);
 				if (!GLOBAL.otherIndicator)
 					GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
 				static_cast<GameObject*>(GLOBAL.otherIndicator)->AddPlayer(ID, CHARACTER_MG, std::to_string(ID));
@@ -156,7 +152,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 		// 현재 접속한 사람이 모두 도착 지점에 들어가면 다음 스테이지로 넘어간다.
 		// 자신의 아이디는 ID_List에 없기 때문에 1을 더한 값으로 비교한다.
-		if (Packet->PlayerCount >= (ID_List.size() + 1)  - GLOBAL.deathCount) {
+		if (Packet->PlayerCount >= (GLOBAL.playerList.size() + 1)  - GLOBAL.deathCount) {
 			{
 				std::lock_guard<std::mutex> lock(PacketMutex);
 				if (GLOBAL.stage == 1) {
@@ -387,7 +383,9 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	else if (*type == PacketType::NEW_CLIENT) {
 		NewClientPacket* newClientPacket = reinterpret_cast<NewClientPacket*>(buffer);
 		std::cout << "[접속] 새로운 클라들어옴! ID: " << newClientPacket->id << std::endl;
-		IsNewPlayer(newClientPacket->id);
+
+		std::string newName = std::string(newClientPacket->name);
+		IsNewPlayer(newClientPacket->id, newName);
 
 		//	std::cout << "ID: " << newClientPacket->id << std::endl;
 
@@ -397,7 +395,9 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 	else if (*type == PacketType::EXISTING_CLIENTS) {
 		ExistingClientsDataPacket* pkt = reinterpret_cast<ExistingClientsDataPacket*>(buffer);
-		IsNewPlayer(pkt->id);
+
+		std::string newName = std::string(pkt->name);
+		IsNewPlayer(pkt->id, newName);
 		//for (unsigned int i = 0; i < pkt->count; ++i) {
 		//	auto& info = pkt->clients[i];
 		//	std::cout << "[초기화] 현재 접속한 클라이언트 ID: " << info.id << std::endl;

@@ -4,10 +4,23 @@
 
 void Title::InputKey(KeyEvent& Event) {
 	if (Event.Type == WM_CHAR) {
-		if ((Event.Key >= '0' && Event.Key <= '9') || Event.Key == '.') {
-			GLOBAL.enterIP += Event.Key;
+		if (!nameInputMode) {
+			if ((Event.Key >= '0' && Event.Key <= '9') || Event.Key == '.') {
+				GLOBAL.enterIP += Event.Key;
+			}
+
+			std::wstring copyWstr(GLOBAL.enterIP.begin(), GLOBAL.enterIP.end());
+			GLOBAL.enterIPw = copyWstr;
 		}
-		else if (Event.Key == VK_BACK) {
+
+		else {
+			GLOBAL.myName += Event.Key;
+			std::cout << "input\n";
+		}
+	}
+
+	else if (Event.Type == WM_KEYDOWN && Event.Key == VK_BACK) {
+		if (!nameInputMode) {
 			if (!GLOBAL.enterIP.empty()) {
 				GLOBAL.enterIP.pop_back();
 				if (GLOBAL.enterIP.back() == '.')
@@ -15,15 +28,23 @@ void Title::InputKey(KeyEvent& Event) {
 			}
 		}
 
-		std::wstring copyWstr(GLOBAL.enterIP.begin(), GLOBAL.enterIP.end());
-		GLOBAL.enterIPw = copyWstr;
+		else {
+			if (!GLOBAL.myName.empty())
+				GLOBAL.myName.pop_back();
+		}
 	}
 }
 
 void Title::InputMouse(MouseEvent& Event) {
 	if (Event.Type == WM_LBUTTONDOWN) {
-		if(button.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y)))
+		if (startButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y)))
 			scene.SwitchMode(LobbyMode::Start);
+
+		else if (ipButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y)))
+			nameInputMode = false;
+
+		else if (nameButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y)))
+			nameInputMode = true;
 	}
 }
 
@@ -43,9 +64,15 @@ void Title::Render() {
 	std::string renderStr = "-> " + GLOBAL.enterIP;
 	text.Render(xmfloat2(0.0, 0.1), 0.1, renderStr);
 
-	text.Render(xmfloat2(0.0, -0.15), 0.2, "Start Game");
+	text.Render(xmfloat2(0.0, -0.1), 0.1, "Enter Player Name");
+	renderStr = "-> " + GLOBAL.myName;
+	text.Render(xmfloat2(0.0, -0.2), 0.1, renderStr);
+
+	text.Render(xmfloat2(0.0, -0.4), 0.2, "Start Game");
 }
 
 void Title::Update(float Delta) {
-	button.Update(xmfloat3(0.0, -0.15, 0.0), xmfloat3(0.675, 0.1, 0.0));
+	ipButton.Update(xmfloat3(0.0, 0.1, 0.0), xmfloat3(0.675, 0.1, 0.0));
+	nameButton.Update(xmfloat3(0.0, -0.2, 0.0), xmfloat3(0.675, 0.1, 0.0));
+	startButton.Update(xmfloat3(0.0, -0.4, 0.0), xmfloat3(0.675, 0.1, 0.0));
 }
