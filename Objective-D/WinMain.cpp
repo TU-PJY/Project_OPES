@@ -89,7 +89,7 @@ constexpr bool localServer = false; //!useServer;
 bool DevMode = true;
 
 // UI 제작 시 사용하는 플래그. true일 시 아래 3개의 플래그가 모두 강제로 false가 된다.
-bool UIcreateMode = true;
+bool UIcreateMode = false;
 
 bool LoadMap1Resources = true;
 bool LoadMap2Resources = true;
