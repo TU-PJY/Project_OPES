@@ -101,16 +101,16 @@ void OtherPlayer::updateState() {
 
 void OtherPlayer::updateAnimation(float Delta) {
 	switch (currentState) {
-	case STATE_IDLE: case STATE_IDLE_SHOOT:
+	case STATE_IDLE:
 		idleFBX.UpdateAnimation(Delta, false, !inFrustum);
 		break;
 
-	case STATE_MOVE_FRONT: case STATE_MOVE_FRONT_SHOOT:
+	case STATE_MOVE_FRONT:
 		moveFBX.SetSpeed(1.0);
 		moveFBX.UpdateAnimation(Delta, false, !inFrustum);
 		break;
 
-	case STATE_MOVE_BACK: case STATE_MOVE_BACK_SHOOT:
+	case STATE_MOVE_BACK:
 		moveFBX.SetSpeed(-1.0);
 		moveFBX.UpdateAnimation(Delta, false, !inFrustum);
 		break;
@@ -155,8 +155,7 @@ void OtherPlayer::Update(float Delta) {
 	if (footstepTime > 0.0)
 		footstepTime -= Delta;
 
-	if (currentState == STATE_MOVE_FRONT_SHOOT || currentState == STATE_MOVE_FRONT ||
-		currentState == STATE_MOVE_BACK_SHOOT || currentState == STATE_MOVE_BACK) {
+	if (currentState == STATE_MOVE_FRONT || currentState == STATE_MOVE_BACK) {
 		if (footstepTime <= 0.0) {
 			footstepTime = footstepInterval;
 			SOUND.footstep.Play();
@@ -179,12 +178,12 @@ void OtherPlayer::Render() {
 	Transform::Rotate(RotateMatrix, 0.0, rotation.y, 0.0);
 
 	switch (renderState) {
-	case STATE_IDLE: case STATE_IDLE_SHOOT:
+	case STATE_IDLE:
 		RenderFBX(idleFBX, TEX.scifi);
 		RenderIdleFlame();
 		break;
 
-	case STATE_MOVE_FRONT: case STATE_MOVE_FRONT_SHOOT: case STATE_MOVE_BACK: case STATE_MOVE_BACK_SHOOT:
+	case STATE_MOVE_FRONT: case STATE_MOVE_BACK:
 		RenderFBX(moveFBX, TEX.scifi);
 		RenderMoveFlame();
 		break;

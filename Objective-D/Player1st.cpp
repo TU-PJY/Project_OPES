@@ -361,59 +361,18 @@ void Player1st::InputKey(KeyEvent& Event) {
 
 // 상태를 업데이트 한다.
 void Player1st::updateState() {
-	//if (currentState == STATE_DEATH) return;
+	if ((moveState[RIGHT] && !moveState[LEFT]) || (!moveState[RIGHT] && moveState[LEFT])) 
+		currentState = STATE_MOVE_FRONT;
 
-	/*if ((moveState[FRONT] && !moveState[BACK]) || (!moveState[FRONT] && moveState[BACK]) ||
-		(moveState[RIGHT] && !moveState[LEFT]) || (!moveState[RIGHT] && moveState[LEFT])) {
-		if (triggerState)
-			currentState = STATE_MOVE_SHOOT;
-		else
-			currentState = STATE_MOVE;
-	}*/
-
-	if (moveState[FRONT] && !moveState[BACK]) {
-		if(triggerState)
-			currentState = STATE_MOVE_FRONT_SHOOT;
-		else
-			currentState = STATE_MOVE_FRONT;
-	}
-
-	if (!moveState[FRONT] && moveState[BACK]) {
-		if (triggerState)
-			currentState = STATE_MOVE_BACK_SHOOT;
-		else
-			currentState = STATE_MOVE_BACK;
-	}
-
-	if ((moveState[RIGHT] && !moveState[LEFT]) || (!moveState[RIGHT] && moveState[LEFT])) {
-		if (moveState[FRONT] && !moveState[BACK]) {
-			if (triggerState)
-				currentState = STATE_MOVE_FRONT_SHOOT;
-			else
-				currentState = STATE_MOVE_FRONT;
-		}
-
-		else if (!moveState[FRONT] && moveState[BACK]) {
-			if (triggerState)
-				currentState = STATE_MOVE_BACK_SHOOT;
-			else
-				currentState = STATE_MOVE_BACK;
-		}
-
-		else {
-			if (triggerState)
-				currentState = STATE_MOVE_FRONT_SHOOT;
-			else
-				currentState = STATE_MOVE_FRONT;
-		}
-	}
-
-	else {
-		if (triggerState)
-			currentState = STATE_IDLE_SHOOT;
-		else
-			currentState = STATE_IDLE;
-	}
+	if (moveState[FRONT] && !moveState[BACK]) 
+		currentState = STATE_MOVE_FRONT;
+	
+	if (!moveState[FRONT] && moveState[BACK]) 
+		currentState = STATE_MOVE_BACK;
+	
+	if (moveState[FRONT] && moveState[BACK] && moveState[RIGHT] && moveState[LEFT] 
+		|| !moveState[FRONT] && !moveState[BACK] && !moveState[RIGHT] && !moveState[LEFT])
+		currentState = STATE_IDLE;
 }
 
 // 플레이어 이동 속도를 업데이트한다.
@@ -511,8 +470,7 @@ void Player1st::updateGun() {
 	if (weaponPtr) {
 		weaponPtr->InputPosition(cameraPosition);
 		weaponPtr->inputRotation(currentRotation);
-		if(currentState == STATE_MOVE_FRONT_SHOOT || currentState == STATE_MOVE_FRONT || 
-			currentState == STATE_MOVE_BACK_SHOOT || currentState == STATE_MOVE_BACK)
+		if(currentState == STATE_MOVE_FRONT || currentState == STATE_MOVE_BACK)
 			weaponPtr->inputMoveState(true);
 		else
 			weaponPtr->inputMoveState(false);
@@ -567,8 +525,7 @@ void Player1st::Update(float Delta) {
 	if (footstepTime > 0.0)
 		footstepTime -= Delta;
 
-	if (currentState == STATE_MOVE_FRONT_SHOOT || currentState == STATE_MOVE_FRONT ||
-		currentState == STATE_MOVE_BACK_SHOOT || currentState == STATE_MOVE_BACK) {
+	if (currentState == STATE_MOVE_FRONT || currentState == STATE_MOVE_BACK) {
 		if (footstepTime <= 0.0) {
 			footstepTime = footstepInterval;
 			SOUND.footstep.Play();
