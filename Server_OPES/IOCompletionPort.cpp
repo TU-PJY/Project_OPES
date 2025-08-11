@@ -1976,17 +1976,15 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 }
 
             }
-            for (auto* client : room.clients) {
-                if (client->hp <= 0) {
-                    if (!client) continue;
-                    room.DeathCount++;
-                    for (auto* c : room.clients) {
-                        if (!c) continue;
-                        SendData_PlayerDeathPacket(c, client->id);
-                        std::cout << "데스패킷전송\n";
-                    }
+
+            if (client->hp == 0) {
+                for (auto* c : room.clients) {
+                    if (!c) continue;
+                    SendData_PlayerDeathPacket(c, client->id);
+                    std::cout << "데스패킷전송\n";
                 }
             }
+           
             
         }
         for (auto* otherClient : room.clients) {
