@@ -473,6 +473,7 @@ int GetPacketSizeByType(PacketType type) {
 	case PacketType::PLAYER_DEATH: return sizeof(PlayerDeathPacket);
 	case PacketType::DISCONNECT: return sizeof(DisconnectPacket);
 	case PacketType::MASTER_KEY: return sizeof(MasterKeyPacket);
+	case PacketType::NAME: return sizeof(NamePacket);
 	default:
 		std::cout << "타입?\n";
 		return 0;
@@ -677,7 +678,7 @@ void SendNamePacket(const char* playerName) {
 			delete pkt;
 			delete context;
 			};
-
+		std::cout << "sendName\n";
 		DWORD bytesSent = 0;
 		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
 		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {

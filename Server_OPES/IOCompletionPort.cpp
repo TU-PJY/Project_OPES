@@ -1609,7 +1609,16 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
 }
 void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
     PacketType* packetType = reinterpret_cast<PacketType*>(buffer);
+    if (*packetType == PacketType::NAME) {
+        NamePacket* pkt = reinterpret_cast<NamePacket*>(buffer);
+        std::cout << "name:" << pkt->name << std::endl;
+        memcpy(client->name, pkt->name, pkt->size);
+        client->name_size = pkt->size;
+        client->name[pkt->size] = '\0';
+        NotifyOthersAboutNewClient(client);
+        SendExistingClientsToNewClient(client);
 
+    }
     // 방 찾기
     auto it = rooms.find(client->roomID);
     if (it == rooms.end()) {
@@ -2118,15 +2127,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
         }
         
     }
-    else if (*packetType == PacketType::NAME) {
-        NamePacket* pkt= reinterpret_cast<NamePacket*>(buffer);
-        memcpy(client->name, pkt->name,pkt->size);
-        client->name_size = pkt->size;
-        client->name[pkt->size] = '\0';
-        NotifyOthersAboutNewClient(client);
-        SendExistingClientsToNewClient(client);
-
-    }
+    
     else if (*packetType == PacketType::MASTER_KEY) {
        //MasterKeyPacket* pkt = reinterpret_cast<MasterKeyPacket*>(buffer);
        //if (pkt->keyNum == 1) {
@@ -2176,9 +2177,11 @@ void IOCompletionPort::DestroyThread() {
     //} 
     if (workerThread.joinable()) workerThread.join();
 
-    if (accepterThread.joinable()) accepterThread.join();
+    //if (accepterThread.joinable()) accepterThread.join();
    // if (npcThread.joinable()) npcThread.join();
     if (randomPositionThread.joinable()) randomPositionThread.join();
+    if (randomPositionThread2.joinable()) randomPositionThread2.join();
+    if (randomPositionThread3.joinable()) randomPositionThread3.join();
 
     std::cout << "서버 종료 완료.\n";
 }

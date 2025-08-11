@@ -185,7 +185,6 @@ private:
     SOCKET listenSocket = INVALID_SOCKET;
     HANDLE iocpHandle = INVALID_HANDLE_VALUE;
     //std::vector<std::thread> workerThreads;
-    std::thread accepterThread;
     std::thread workerThread;
     std::thread randomPositionThread;
     std::thread randomPositionThread2;
@@ -208,6 +207,5 @@ private:
     void RandomPositionThread();
     void RandomPositionThread2();
     void RandomPositionThread3();
-    //void AcceptThread();
 
 };
