@@ -91,7 +91,7 @@ bool DevMode = true;
 // UI 제작 시 사용하는 플래그. true일 시 아래 3개의 플래그가 모두 강제로 false가 된다.
 bool UIcreateMode = false;
 
-bool LoadMap1Resources = true;
+bool LoadMap1Resources = false;
 bool LoadMap2Resources = false;
 bool LoadMap3Resources = false;
 
@@ -99,7 +99,7 @@ bool LoadMap3Resources = false;
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode =  Level1::Start;
+START_MODE_PTR StartMode =  TestMode::Start;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
