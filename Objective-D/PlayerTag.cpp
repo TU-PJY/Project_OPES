@@ -4,9 +4,10 @@
 
 PlayerTag::PlayerTag(const std::string& name) {
 	tag = name;
-	tagText.SetAlign(ALIGN_DEFAULT);
-	tagText.SetHeightAlign(HEIGHT_DEFAULT);
+	tagText.SetAlign(ALIGN_MIDDLE);
+	tagText.SetHeightAlign(HEIGHT_MIDDLE);
 	tagText.EnableStaticSize();
+	tagText.SetColor(XMFLOAT3(1.0, 1.0, 1.0));
 }
 
 void PlayerTag::Render() {
