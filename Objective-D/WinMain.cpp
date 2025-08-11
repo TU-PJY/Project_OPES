@@ -370,8 +370,8 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		// 전역 변수에 내 ID 저장
 		GLOBAL.myID = EnterPacket->myID;
 		std::cout << "접속 아이디: " << GLOBAL.myID << std::endl;
-		GLOBAL.serverConnected = true;
-
+		GLOBAL.serverConnected.store(true);
+		GLOBAL.serverConnected.notify_all();
 	/*	if (0 != EnterPacket->roomID) {
 			enter_room = true;
 		}

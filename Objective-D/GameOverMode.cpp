@@ -10,7 +10,7 @@ void GameOverMode::Start() {
 	scene.AddObject(new GameOverScreen, "goverscreen", LAYERUI);
 
 	GLOBAL.playerList.clear();
-	GLOBAL.serverConnected = false;
+	GLOBAL.serverConnected.store(false);
 	GLOBAL.startedGameServer = false;
 }
 
