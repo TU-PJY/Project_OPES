@@ -20,7 +20,7 @@ void LobbyMode::Start() {
 		GLOBAL.startedGameServer = true;
 	}
 
-	scene.AddObject(new Lobby, "lobby", LAYERUI, true);
+	scene.AddObject(new Lobby, "lobby", LAYER_UI2, true);
 }
 
 void LobbyMode::Destructor() {

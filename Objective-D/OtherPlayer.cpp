@@ -67,11 +67,11 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID, const std::string n
 
 	this->ID = ID;
 
-	tagObject = scene.AddObject(new PlayerTag(playerName), "tag", LAYERUI);
+	playerName = name;
+
+	tagObject = scene.AddObject(new PlayerTag(playerName), "tag", LAYER_UI1);
 	if (tagObject)
 		tagObject->InputPosition(position);
-
-	playerName = name;
 }
 
 OtherPlayer::~OtherPlayer() {

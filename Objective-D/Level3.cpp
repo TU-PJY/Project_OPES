@@ -52,13 +52,13 @@ void Level3::Start() {
 
 	if (GLOBAL.editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
-		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
+		scene.AddObject(new EditHelper, "editHelper", LAYER_UI2);
 	}
 	else
 		scene.AddObject(new Player1st(GLOBAL.myCharacter), "player", LAYER_PLAYER, true);
 
 	if (!GLOBAL.skipTitleMode) {
-		GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
+		GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYER_UI2);
 
 		for (auto& p : GLOBAL.playerList) {
 			std::cout << "currentCharacterType: " << p.second.characterType << std::endl;
@@ -78,10 +78,10 @@ void Level3::Start() {
 		GLOBAL.mapOOBBdata.emplace_back(block->GetOOBB());
 
 		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
-			scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYERUI);
+			scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYER_UI2);
 	}
 
-	scene.AddObject(new CrossHair, "crosshair", LAYERUI, true);
+	scene.AddObject(new CrossHair, "crosshair", LAYER_UI2, true);
 
 	SendFilePacket(3);
 }

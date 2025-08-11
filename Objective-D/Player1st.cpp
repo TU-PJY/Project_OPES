@@ -33,7 +33,7 @@ Player1st::Player1st(int characterType) {
 
 	case CHARACTER_DMR:
 		weaponPtr = scene.AddObject(new DMR(this), "dmr", LAYER4);
-		scopePtr = scene.AddObject(new Scope, "scope", LAYERUI);
+		scopePtr = scene.AddObject(new Scope, "scope", LAYER_UI2);
 		maxSpeed = CHARACTER_DMR_SPEED;
 		totalHP = CHARACTER_DMR_HP;
 		break;
@@ -54,7 +54,7 @@ Player1st::Player1st(int characterType) {
 	currentSpeed = maxSpeed;
 	
 	// 플레이어 인디케이터에 필요한 정보들을 전달한다.
-	IndicatorPtr = scene.AddObject(new PlayerIndicator(this->characterType), "playerInd", LAYERUI);
+	IndicatorPtr = scene.AddObject(new PlayerIndicator(this->characterType), "playerInd", LAYER_UI2);
 	if (IndicatorPtr) {
 		IndicatorPtr->InputHP(totalHP, currentHP);
 		IndicatorPtr->InputGrenade(currentGrenadeCount);
@@ -422,7 +422,7 @@ void Player1st::updateMove(float Delta) {
 			currentHP = 0;
 			SendMtoPDamagePacket(GLOBAL.myID, 0, 999);*/
 			scene.AddObject(new CameraController, "camControll", LAYER1, true);
-			scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
+			scene.AddObject(new SpecterUI, "sptUI", LAYER_UI2);
 			scene.DeleteObject(this);
 		}
 	}
@@ -584,7 +584,7 @@ void Player1st::GiveDamage(int damage) {
 	SendMtoPDamagePacket(GLOBAL.myID, 0, damage);
 
 	if (!GLOBAL.useServer) {
-		scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
+		scene.AddObject(new PlayerHit, "playerHit", LAYER_UI2);
 		currentHP -= damage;
 		if (currentHP < 0)
 			currentHP = 0;
@@ -612,7 +612,7 @@ void Player1st::InputHP(int currentHP) {
 
 	// 이전 체력보다 현재ㅐ 체력이 낮을 떄만 피격 이팩트 출력
 	if (prevHP > this->currentHP)
-		scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
+		scene.AddObject(new PlayerHit, "playerHit", LAYER_UI2);
 
 	prevHP = this->currentHP;
 
@@ -621,7 +621,7 @@ void Player1st::InputHP(int currentHP) {
 
 	if (this->currentHP <= 0) {
 		scene.AddObject(new CameraController, "camControll", LAYER1, true);
-		scene.AddObject(new SpecterUI, "sptUI", LAYERUI);
+		scene.AddObject(new SpecterUI, "sptUI", LAYER_UI2);
 		scene.DeleteObject(this);
 	}
 	//std::cout << "PLAYER HP: " << this->currentHP << std::endl;

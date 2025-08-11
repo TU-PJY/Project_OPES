@@ -358,5 +358,5 @@ void Player::UpdateCamera(float FrameTime) {
 
 void Player::GiveDamage(int HP) {
 	// 대미지를 받으면 피드백을 표시한다.
-	scene.AddObject(new PlayerHit, "playerHit", LAYERUI);
+	scene.AddObject(new PlayerHit, "playerHit", LAYER_UI2);
 }

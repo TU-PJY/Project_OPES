@@ -62,7 +62,7 @@ void Level1::Start() {
 
 	if (GLOBAL.editMode) {
 		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
-		scene.AddObject(new EditHelper, "editHelper", LAYERUI);
+		scene.AddObject(new EditHelper, "editHelper", LAYER_UI2);
 	}
 	else {
 		if (!GLOBAL.skipDefenseMode) {
@@ -78,7 +78,7 @@ void Level1::Start() {
 
 	
 		if (!GLOBAL.skipTitleMode) {
-			GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYERUI);
+			GLOBAL.otherIndicator = scene.AddObject(new OtherPlayerIndicator, "otherIndicator", LAYER_UI2);
 
 			for (auto& p : GLOBAL.playerList) {
 				std::cout << "currentCharacterType: " << p.second.characterType << std::endl;
@@ -89,9 +89,9 @@ void Level1::Start() {
 		}
 
 		if(!GLOBAL.skipDefenseMode)
-			scene.AddObject(new DefenseIndicator, "map1DefenseIndicator", LAYERUI);
+			scene.AddObject(new DefenseIndicator, "map1DefenseIndicator", LAYER_UI2);
 
-		scene.AddObject(new CrossHair, "crosshair", LAYERUI, true);
+		scene.AddObject(new CrossHair, "crosshair", LAYER_UI2, true);
 	}
 
 	SendFilePacket(1);
