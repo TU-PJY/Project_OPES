@@ -106,7 +106,7 @@ typedef struct {
 	std::thread netThread;
 
 	// 현재 서버 연결 여부
-	bool serverConnected;
+	std::atomic<bool> serverConnected;
 
 	// 타이틀 모드 넘김 여부
 	bool skipTitleMode;

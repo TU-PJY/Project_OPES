@@ -10,6 +10,7 @@ void GameOverMode::Start() {
 	scene.AddObject(new GameOverScreen, "goverscreen", LAYERUI);
 
 	GLOBAL.playerList.clear();
+	GLOBAL.serverConnected = false;
 }
 
 void GameOverMode::Destructor() {
