@@ -3,7 +3,7 @@
 #include "ModePack.h"
 
 void Title::InputKey(KeyEvent& Event) {
-	if (Event.Type == WM_CHAR) {
+	if (Event.Type == WM_CHAR && Event.Key != VK_BACK) {
 		if (!nameInputMode) {
 			if ((Event.Key >= '0' && Event.Key <= '9') || Event.Key == '.') {
 				GLOBAL.enterIP += Event.Key;
