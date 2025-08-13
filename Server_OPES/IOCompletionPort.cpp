@@ -228,7 +228,9 @@ bool IOCompletionPort::StartServer() {
     CreateIoCompletionPort((HANDLE)listenSocket, iocpHandle, 9999, 0);
     PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
-   
+   //
+    timerService = std::make_unique<TimerService>(*this);
+    timerService->start();
     
     std::cout << "서버가 시작되었습니다.\n";
     return true;
@@ -1390,6 +1392,58 @@ void IOCompletionPort::SendData_MasterKeytPacket(stClientInfo* receiver, int key
         delete sendOver;
     }
 }
+void IOCompletionPort::SendData_AttackObjectPacket(stClientInfo* receiver, int id) {
+    AttackObjectPacket* pkt = new AttackObjectPacket{};
+    pkt->type = PacketType::ATTACK_OBJECT;
+    pkt->id = id;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(AttackObjectPacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        PostRemove(receiver);
+        //std::cout << "DISCONNECT패킷전송오류!" << std::endl;
+        delete pkt;
+        delete sendOver;
+    }
+}
+void IOCompletionPort::SendData_PlayerUpgradePacket(stClientInfo* receiver, int player_id, int random_id) {
+    PlayerUpgradePacket* pkt = new PlayerUpgradePacket{};
+    pkt->type = PacketType::UPGRADE;
+    pkt->player_id = player_id;
+    pkt->random_id = random_id;
+
+    stOverlappedEx* sendOver = new stOverlappedEx{};
+    ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
+    sendOver->operation = IOOperation::SEND;
+    sendOver->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+    sendOver->wsaBuf.len = sizeof(PlayerUpgradePacket);
+    sendOver->cleanup = [pkt, sendOver]() {
+        delete pkt;
+        delete sendOver;
+        };
+    int ret = WSASend(receiver->socketClient, &sendOver->wsaBuf, 1, nullptr, 0,
+        &sendOver->overlapped,
+        NULL);
+    if (ret == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+        closesocket(receiver->socketClient);
+        PostRemove(receiver);
+        //std::cout << "DISCONNECT패킷전송오류!" << std::endl;
+        delete pkt;
+        delete sendOver;
+    }
+}
+
 float CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
     XMVECTOR VecA = XMLoadFloat3(&A);
     XMVECTOR VecB = XMLoadFloat3(&B);
@@ -1574,6 +1628,34 @@ void IOCompletionPort::WorkThread() {
         ProcessDelayedRemoves();
     }
 }
+std::unordered_map<int, Room>& IOCompletionPort::Rooms() { return rooms; }
+std::mutex& IOCompletionPort::RoomMapMutex() { return roomMapMutex; }
+std::atomic_bool& IOCompletionPort::RunningFlag() { return isRunning; }
+
+void IOCompletionPort::BroadcastStageTimer(unsigned roomID, int stage, int remainingSeconds, bool running) {
+    auto it = rooms.find((int)roomID);
+    if (it == rooms.end()) return;
+    Room& room = it->second;
+
+    for (auto* c : room.clients) {
+        if (!c || c->alreadyRemoved || c->socketClient == INVALID_SOCKET) continue;
+
+        auto* pkt = new StageTimerPacket{};
+        pkt->roomID = roomID;
+        pkt->stage = stage;
+        pkt->remainingSeconds = remainingSeconds;
+        pkt->running = running;
+
+        auto* ov = new stOverlappedEx{};
+        ZeroMemory(&ov->overlapped, sizeof(ov->overlapped));
+        ov->operation = IOOperation::SEND;
+        ov->wsaBuf.buf = reinterpret_cast<char*>(pkt);
+        ov->wsaBuf.len = sizeof(StageTimerPacket);
+        ov->cleanup = [pkt, ov]() { delete pkt; delete ov; };
+
+        WSASend(c->socketClient, &ov->wsaBuf, 1, nullptr, 0, &ov->overlapped, NULL);
+    }
+}
 int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     using PT = PacketType;
 
@@ -1593,7 +1675,7 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     if (type == PT::CHOOSE_JOB) return sizeof(ChooseJobPacket);
     if (type == PT::READY) return sizeof(ReadyPacket);
 
-    // ⬇️ 누락된 항목들 추가
+    // 
     if (type == PT::NEW_CLIENT) return sizeof(NewClientPacket);
     if (type == PT::EXISTING_CLIENTS) return sizeof(ExistingClientsDataPacket);
     if (type == PT::MONSTER_STATE) return sizeof(MonsterStatePacket_CtoS);  // 또는 _StoC?
@@ -1605,6 +1687,8 @@ int IOCompletionPort::GetPacketSizeByType(PacketType type) {
     if (type == PT::FILE_LOAD) return sizeof(FilePacket);
     if (type == PT::MASTER_KEY) return sizeof(MasterKeyPacket);
     if (type == PT::NAME) return sizeof(NamePacket);
+    if (type == PT::ATTACK_OBJECT) return sizeof(AttackObjectPacket);
+    if (type == PT::UPGRADE) return sizeof(PlayerUpgradePacket);
     return 0; // 알 수 없는 타입이면 0
 }
 void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
@@ -1701,9 +1785,10 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 std::cout << "다들어옴!\n";
                 room.defenseState = true;
                 room.stageState++;
+                if (timerService) timerService->stopRoom(room.roomID);
                 room.centerHp = CENTER_HP;
                 room.DeathCount = 0;
-                room.monsterRandomSent = false;
+                room.monsterRandomSent = false;//// ★ 종료 1회 알림 + 타이머 중단
                 room.nextMonsterToSend = 0;
                 room.clearCount = 0;
                 //if (randomTreadFlag2) {
@@ -1831,8 +1916,10 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                         }
                     }
                     sendHP = m.hp;
-                    if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; }))
+                    if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
+                        if (timerService) timerService->resetRoom(nextRoomID - 1, 60); // ★ 방 타이머 60초 시작
+                    }
                     
 
                     std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
@@ -1853,8 +1940,10 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                         }
                     }
                     sendHP = m.hp;
-                    if (std::all_of(room.defenseMonsters2.begin(), room.defenseMonsters2.end(), [](const MonsterData& m) { return m.hp <= 0; }))
+                    if (std::all_of(room.defenseMonsters2.begin(), room.defenseMonsters2.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
+                        if (timerService) timerService->resetRoom(nextRoomID - 1, 60); // ★ 방 타이머 60초 시작
+                    }
                     
 
                     std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
@@ -1875,8 +1964,10 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                         }
                     }
                     sendHP = m.hp;
-                    if (std::all_of(room.defenseMonsters3.begin(), room.defenseMonsters3.end(), [](const MonsterData& m) { return m.hp <= 0; }))
+                    if (std::all_of(room.defenseMonsters3.begin(), room.defenseMonsters3.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
+                        if (timerService) timerService->resetRoom(nextRoomID - 1, 60); // ★ 방 타이머 60초 시작
+                    }
                     
 
                     std::cout << pkt->monsterID << "번---PTOM_DAMAGE HP: " << sendHP << std::endl;
@@ -2125,7 +2216,24 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
         }
         
     }
-    
+    else if (*packetType == PacketType::ATTACK_OBJECT) {
+
+        AttackObjectPacket* pkt = reinterpret_cast<AttackObjectPacket*>(buffer);
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_AttackObjectPacket(otherClient, pkt->id);
+        }
+
+    }
+    else if (*packetType == PacketType::UPGRADE) {
+
+        PlayerUpgradePacket* pkt = reinterpret_cast<PlayerUpgradePacket*>(buffer);
+        for (auto* otherClient : room.clients) {
+            if (!otherClient || otherClient == client) continue;
+            SendData_PlayerUpgradePacket(otherClient, pkt->player_id, pkt->random_id);
+        }
+
+    }
     else if (*packetType == PacketType::MASTER_KEY) {
        //MasterKeyPacket* pkt = reinterpret_cast<MasterKeyPacket*>(buffer);
        //if (pkt->keyNum == 1) {
@@ -2180,6 +2288,6 @@ void IOCompletionPort::DestroyThread() {
     if (randomPositionThread.joinable()) randomPositionThread.join();
     if (randomPositionThread2.joinable()) randomPositionThread2.join();
     if (randomPositionThread3.joinable()) randomPositionThread3.join();
-
+    if (timerService) { timerService->stop(); timerService.reset(); }
     std::cout << "서버 종료 완료.\n";
 }

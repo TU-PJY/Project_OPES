@@ -3,7 +3,7 @@
 
 #define MAX_SOCKBUF 1024
 
-enum class PacketType:unsigned int {
+enum class PacketType :unsigned int {
     CHAT,
     MOVE,
     VIEW_ANGLE,
@@ -18,8 +18,8 @@ enum class PacketType:unsigned int {
     ENGINEER_INSTALL,
     ENGINEER_OBJECT,
     CENTER_HP,
-    GRENADE, 
-    PLAYER_ARRIVAL, 
+    GRENADE,
+    PLAYER_ARRIVAL,
     RANDOM_POSITION,
     CLEAR_COUNT,
     CHOOSE_JOB,
@@ -30,6 +30,10 @@ enum class PacketType:unsigned int {
     FILE_LOAD,
     MASTER_KEY,
     NAME,
+    ATTACK_OBJECT,
+    UPGRADE,
+    STAGE_TIMER,
+    
 };
 
 constexpr int MONSTER_TYPE1 = 1;//꽃
@@ -245,5 +249,21 @@ struct FilePacket {
 struct MasterKeyPacket {
     PacketType type;
     int keyNum;
+};
+struct AttackObjectPacket {
+    PacketType type;
+    int id;
+};
+struct PlayerUpgradePacket {
+    PacketType type;
+    int player_id;
+    int random_id;
+};
+struct StageTimerPacket {
+    PacketType type = PacketType::STAGE_TIMER;
+    unsigned int roomID;
+    int stage;               // 현재 스테이지(1,2,3..)
+    int remainingSeconds;    // 남은 시간(초, 0~60)
+    bool running;            // true=진행중, false=0초 도달(최종 1회)
 };
 #pragma pack(pop)

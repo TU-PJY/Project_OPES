@@ -134,6 +134,7 @@
     <ClCompile Include="TerrainUtil.cpp" />
     <ClCompile Include="ScriptUtil.cpp" />
     <ClCompile Include="server.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="tinyxml\tinystr.cpp" />
     <ClCompile Include="tinyxml\tinyxml.cpp" />
     <ClCompile Include="tinyxml\tinyxmlerror.cpp" />
@@ -146,6 +147,7 @@
     <ClInclude Include="protocol.h" />
     <ClInclude Include="ScriptUtil.h" />
     <ClInclude Include="TerrainUtil.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="tinyxml\tinystr.h" />
     <ClInclude Include="tinyxml\tinyxml.h" />
   </ItemGroup>

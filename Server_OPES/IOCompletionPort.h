@@ -16,10 +16,13 @@
 #include "ScriptUtil.h"
 #include"protocol.h"
 #include"Packet.h"
+#include "Timer.h"
 #define MAX_SOCKBUF 1024  
 #define SERVER_PORT 9000
 //#define MAX_WORKERTHREAD 4  
 constexpr std::size_t MAX_CLIENTS = 5000;
+
+class TimerService;
 
 // 몬스터의 타입과 초기 스폰 위치를 저장하는 구조체
 struct MonsterData {
@@ -117,6 +120,11 @@ struct Room {
     std::chrono::steady_clock::time_point defenseStartTime = std::chrono::steady_clock::time_point::min();
     //std::cout << defenseStartTime << "!!!\n";
     std::chrono::steady_clock::time_point lastMonsterSendTime = std::chrono::steady_clock::time_point::min();
+
+    //
+    bool timerRunning = false;
+    int  timerRemainSec = 0;
+    std::chrono::steady_clock::time_point timerLastTick{};
 };
 
 struct DelayedRemoveEntry {
@@ -162,6 +170,8 @@ public:
     void SendData_PlayerDeathPacket(stClientInfo* receiver, unsigned int id);
     void SendData_DisconnectPacket(stClientInfo* receiver, unsigned int id);
     void SendData_MasterKeytPacket(stClientInfo* receiver, int key);
+    void SendData_AttackObjectPacket(stClientInfo* receiver, int id);
+    void SendData_PlayerUpgradePacket(stClientInfo* receiver, int player_id, int random_id);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);
 
@@ -174,6 +184,12 @@ public:
 
     void PostRemove(stClientInfo* client);
     void ProcessDelayedRemoves();
+
+    //
+    std::unordered_map<int, Room>& Rooms();
+    std::mutex& RoomMapMutex();
+    std::atomic_bool& RunningFlag();
+    void BroadcastStageTimer(unsigned roomID, int stage, int remainingSeconds, bool running);
 
 private:
     
@@ -190,7 +206,8 @@ private:
     std::thread randomPositionThread2;
     std::thread randomPositionThread3;
 
-    bool isRunning = true;
+    //bool isRunning = true;
+    std::atomic_bool isRunning{ true };
     std::mutex clientMutex;
     //
     std::vector<stClientInfo*> waitingClients;
@@ -201,6 +218,8 @@ private:
 
     std::mutex removeQueueMutex;
     std::vector<DelayedRemoveEntry> removeQueue;
+
+    std::unique_ptr<TimerService> timerService;
 
     void WorkThread();
     void PostAccept();

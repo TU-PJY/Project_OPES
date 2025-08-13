@@ -443,6 +443,24 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 		//MASTER_KEY 처리!!
 	}
+	else if (*type == PacketType::UPGRADE) {
+		PlayerUpgradePacket* pkt = reinterpret_cast<PlayerUpgradePacket*>(buffer);
+		std::cout << "PlayerUpgrade-id: " << pkt->player_id<<", "<<pkt->random_id << std::endl;
+
+
+		}
+	else if (*type == PacketType::ATTACK_OBJECT) {
+		AttackObjectPacket* pkt = reinterpret_cast<AttackObjectPacket*>(buffer);
+		std::cout << "AttackObject-id: " << pkt->id << std::endl;
+
+
+	}
+	else if (*type == PacketType::STAGE_TIMER) {
+		StageTimerPacket* pkt = reinterpret_cast<StageTimerPacket*>(buffer);
+		std::cout << "StageTimerPacket-id: " << pkt->remainingSeconds << std::endl;
+
+
+    }
 	else {
 		std::cout << "== [ERROR] 알 수 없는 패킷 타입 ==" << std::endl;
 	}
@@ -474,6 +492,9 @@ int GetPacketSizeByType(PacketType type) {
 	case PacketType::DISCONNECT: return sizeof(DisconnectPacket);
 	case PacketType::MASTER_KEY: return sizeof(MasterKeyPacket);
 	case PacketType::NAME: return sizeof(NamePacket);
+	case PacketType::UPGRADE: return sizeof(PlayerUpgradePacket);
+	case PacketType::ATTACK_OBJECT: return sizeof(AttackObjectPacket);
+	case PacketType::STAGE_TIMER: return sizeof(StageTimerPacket);
 	default:
 		std::cout << "타입?\n";
 		return 0;
@@ -658,6 +679,55 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 //		}
 //	}
 //}
+
+void SendAttackObjectPacket(int id) {
+	if (enter_room) {
+		auto* pkt = new AttackObjectPacket{ PacketType::ATTACK_OBJECT,  id };
+
+		auto* context = new SendContext{};
+		ZeroMemory(context, sizeof(SendContext));
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+		wsaBuf.len = sizeof(AttackObjectPacket);
+
+		context->cleanup = [pkt, context]() {
+			delete pkt;
+			delete context;
+			};
+
+		DWORD bytesSent = 0;
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+			std::cerr << "[클라이언트] 전송 실패\n";
+			context->cleanup(); // 실패 시 즉시 해제
+		}
+	}
+}
+void SendPlayerUpgradePacket(int player_id,int random_id) {
+	if (enter_room) {
+		auto* pkt = new PlayerUpgradePacket{ PacketType::UPGRADE,  player_id,random_id };
+
+		auto* context = new SendContext{};
+		ZeroMemory(context, sizeof(SendContext));
+
+		WSABUF wsaBuf;
+		wsaBuf.buf = reinterpret_cast<char*>(pkt);
+		wsaBuf.len = sizeof(PlayerUpgradePacket);
+
+		context->cleanup = [pkt, context]() {
+			delete pkt;
+			delete context;
+			};
+
+		DWORD bytesSent = 0;
+		int result = WSASend(clientSocket, &wsaBuf, 1, &bytesSent, 0, &context->overlapped, SendCallback);
+		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
+			std::cerr << "[클라이언트] 전송 실패\n";
+			context->cleanup(); // 실패 시 즉시 해제
+		}
+	}
+}
 void SendNamePacket(const char* playerName) {
 	if (enter_room) {
 		auto* pkt = new NamePacket{};
