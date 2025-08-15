@@ -37,12 +37,7 @@ void FallingStone::Update(float Delta) {
 		for (int i = 0; i < size; i++) {
 			if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
 				if (monster->CheckHit(sphere)) {
-					if (!GLOBAL.useServer)
-						monster->GiveDamage(999);
-					else {
-						unsigned int ID = monster->GetID();
-						SendPtoMDamagePacket(ID, 999);
-					}
+					monster->GiveDamage(999);
 				}
 			}
 		}
