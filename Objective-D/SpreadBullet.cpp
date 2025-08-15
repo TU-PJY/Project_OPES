@@ -60,12 +60,8 @@ void SpreadBullet::Update(float Delta) {
 	}
 
 	for (auto& d : damageList) {
-		if (d.first) {
-			if (!GLOBAL.useServer)
-				d.first->GiveDamage(d.second);
-			else
-				SendPtoMDamagePacket(d.first->GetID(), d.second);
-		}
+		if (d.first)
+			d.first->GiveDamage(d.second);
 	}
 
 	/*if (!damageList.empty()) {

@@ -5,6 +5,7 @@
 #include "PoisonBall.h"
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
+void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
 //void SendPlantAnimationTimePacket(unsigned int monsterID, float time);
 
 // 히트박스 업데이트
@@ -373,18 +374,23 @@ void PlantMonster::GiveDamage(int damage) {
 	if (currentState == PLANT_DEATH)
 		return;
 
-	currentHP -= damage;
+	if (!GLOBAL.useServer) {
+		currentHP -= damage;
 
-	if (currentHP <= 0) {
-		if (hpIndicator) {
-			scene.DeleteObject(hpIndicator);
-			hpIndicator = nullptr;
+		if (currentHP <= 0) {
+			if (hpIndicator) {
+				scene.DeleteObject(hpIndicator);
+				hpIndicator = nullptr;
+			}
+
+			currentHP = 0;
+			currentState = PLANT_DEATH;
+			//SendMonstertypePacket(1, currentState, ID);
 		}
-
-		currentHP = 0;
-		currentState = PLANT_DEATH;
-		SendMonstertypePacket(1, currentState, ID);
 	}
+
+	else
+		SendPtoMDamagePacket(ID, damage);
 }
 
 unsigned int PlantMonster::GetID() {

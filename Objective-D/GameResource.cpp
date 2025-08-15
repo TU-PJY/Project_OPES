@@ -185,7 +185,6 @@ void LoadMesh(DeviceSystem& System) {
 	LoadAnimatedFBX(MESH.marksman[3], "Resources//Models//player//marksman//marksmanDeath.fbx",
 		"Resources//Animation Data//marksmanDeath.pca", "", false);
 
-
 	LoadAnimatedFBX(MESH.engineer[0], "Resources//Models//player//engineer//engineerIdle.fbx",
 		"Resources//Animation Data//engineerIdle.pca", "", false);
 

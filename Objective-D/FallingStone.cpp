@@ -2,6 +2,7 @@
 #include "PickingUtil.h"
 
 void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
+void SendAttackObjectPacket(int id);
 
 FallingStone::FallingStone(const xmfloat3& createPosition, unsigned int createID) {
 	position = createPosition;
@@ -90,7 +91,18 @@ unsigned int FallingStone::GetID() {
 }
 
 void FallingStone::GiveDamage(int damage) {
-	hp -= damage;
-	if (hp <= 0)
-		hp = 0;
+	if (hp == 0)
+		return;
+
+	if (!GLOBAL.useServer) {
+		hp -= damage;
+		if (hp <= 0)
+			hp = 0;
+	}
+	else
+		SendAttackObjectPacket(ID);
+}
+
+void FallingStone::InputHP(int hp) {
+	this->hp = hp;
 }

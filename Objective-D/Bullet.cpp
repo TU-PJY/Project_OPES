@@ -56,12 +56,7 @@ void Bullet::updateCollision() {
 	auto ptr = rayTarget.GetNearestTarget();
 	if (ptr) {
 		//std::cout << "=========== NOT NULLPTR ==============" << std::endl;
-		if(!GLOBAL.useServer)
-			ptr->GiveDamage(bulletDamage);
-		else {
-			unsigned int ID = ptr->GetID();
-			SendPtoMDamagePacket(ID, bulletDamage);
-		}
+		ptr->GiveDamage(bulletDamage);
 		//std::cout << "SEND ID: "  << ID << std::endl;
 	}
 	//else

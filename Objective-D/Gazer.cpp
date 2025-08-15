@@ -6,6 +6,7 @@
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
 void SendCenterBuildingPacket(int hp);
+void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
 
 Gazer::Gazer(const xmfloat3& createPosition, unsigned int ID, bool defenseState) {
 	position = createPosition;
@@ -338,15 +339,19 @@ void Gazer::GiveDamage(int damage) {
 	if (currentState == GAZER_DEATH)
 		return;
 
-	currentHP -= damage;
-	if (currentHP <= 0) {
-		currentHP = 0;
-		currentState = GAZER_DEATH;
-		if (hpInd) {
-			scene.DeleteObject(hpInd);
-			hpInd = nullptr;
+	if (!GLOBAL.useServer) {
+		currentHP -= damage;
+		if (currentHP <= 0) {
+			currentHP = 0;
+			currentState = GAZER_DEATH;
+			if (hpInd) {
+				scene.DeleteObject(hpInd);
+				hpInd = nullptr;
+			}
 		}
 	}
+	else
+		SendPtoMDamagePacket(ID, damage);
 	// packet
 }
 

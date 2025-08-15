@@ -28,6 +28,7 @@ public:
 	bool CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) override;
 	unsigned int GetID() override;
 	void GiveDamage(int damage) override;
+	void InputHP(int hp) override;
 };
 
 

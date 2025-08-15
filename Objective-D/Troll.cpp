@@ -6,6 +6,7 @@
 
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
+void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
 
 Troll::Troll(const xmfloat3& createPosition, unsigned int ID) {
 	position = createPosition;
@@ -271,10 +272,19 @@ void Troll::GiveDamage(int damage) {
 	if (currentState == TROLL_DEATH)
 		return;
 
-	currentHP -= damage;
-	Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
-	if (currentHP == 0)
-		currentState = TROLL_DEATH;
+	if (!GLOBAL.useServer) {
+		currentHP -= damage;
+		Clamp::LimitValue(currentHP, 0, CLAMP_DIR_LESS);
+		if (currentHP == 0) {
+			currentState = TROLL_DEATH;
+			if (hpInd) {
+				scene.DeleteObject(hpInd);
+				hpInd = nullptr;
+			}
+		}
+	}
+	else
+		SendPtoMDamagePacket(ID, damage);
 }
 
 void Troll::InputHP(int currentHP) {

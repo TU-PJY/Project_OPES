@@ -5,6 +5,7 @@
 
 void SendMonstertypePacket(unsigned int monsterType, unsigned int monsterState, unsigned int id);
 void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int monsterId, unsigned int targetid);
+void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
 
 Scorpion::Scorpion(const XMFLOAT3& createPosition, unsigned int ID) {
 	position = createPosition;
@@ -322,16 +323,22 @@ void Scorpion::GiveDamage(int damage) {
 	if (currentState == SCOR_DEATH)
 		return;
 
-	currentHP -= damage;
+	if (!GLOBAL.useServer) {
+		currentHP -= damage;
 
-	if (currentHP <= 0) {
-		if (hpIndicator) {
-			scene.DeleteObject(hpIndicator);
-			hpIndicator = nullptr;
+		if (currentHP <= 0) {
+			currentHP = 0;
+			currentState = SCOR_DEATH;
+			if (hpIndicator) {
+				scene.DeleteObject(hpIndicator);
+				hpIndicator = nullptr;
+			}
+			//SendMonstertypePacket(2, currentState, ID);
 		}
-		currentState = SCOR_DEATH;
-		SendMonstertypePacket(2, currentState, ID);
 	}
+
+	else
+		SendPtoMDamagePacket(ID, damage);
 }
 
 void Scorpion::InputHP(int currentHP) {

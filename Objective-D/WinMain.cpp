@@ -449,12 +449,15 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 
 		}
+
+		
 	else if (*type == PacketType::ATTACK_OBJECT) {
 		AttackObjectPacket* pkt = reinterpret_cast<AttackObjectPacket*>(buffer);
 		std::cout << "AttackObject-id: " << pkt->id << std::endl;
-
-
+		// 패킷에 ATTACK_OBJECT에 가한 대미지 값 필요!
+		// ID밖에 없어서 ATTACK_OBJECT의 체력을 동기화 못 함
 	}
+
 	else if (*type == PacketType::STAGE_TIMER) {
 		StageTimerPacket* pkt = reinterpret_cast<StageTimerPacket*>(buffer);
 		std::cout << "StageTimerPacket-id: " << pkt->remainingSeconds << std::endl;

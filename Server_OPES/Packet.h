@@ -252,6 +252,7 @@ struct MasterKeyPacket {
 };
 struct AttackObjectPacket {
     PacketType type;
+    int damage;
     int id;
 };
 struct PlayerUpgradePacket {
