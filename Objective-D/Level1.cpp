@@ -15,6 +15,7 @@
 #include "EditHelper.h"
 #include "OtherPlayer.h"
 #include "OtherPlayerIndicator.h"
+#include "FallingStone.h"
 
 void SendFilePacket(int stage);
 
@@ -49,7 +50,12 @@ void Level1::Start() {
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
 	auto mapObject = scene.AddObject(new Map1, GLOBAL.mapName, LAYER1, true);
 	auto centerObject = scene.AddObject(new CenterBuilding(-2.0), "center_building", LAYER1);
-	
+
+	// 떨어지는 바위는 0부터 순차 ID로 생성
+	scene.AddObject(new FallingStone(xmfloat3(-114.3, 20.0, -40.9), 0), std::to_string(0), LAYER_STONE);
+	scene.AddObject(new FallingStone(xmfloat3(-77.0, 10.0, 71.9), 1), std::to_string(1), LAYER_STONE);
+	scene.AddObject(new FallingStone(xmfloat3(34.9, 20.0, -92.9), 2), std::to_string(2), LAYER_STONE);
+
 	// 터레인 유틸 객체와 맵 오브젝트 바운드 데이터를 전역에 저장
 	GLOBAL.mapTerrain = mapObject->GetTerrain();
 	GLOBAL.mapOOBBdata = mapObject->GetMapWallOOBB();
@@ -61,7 +67,7 @@ void Level1::Start() {
 		scene.AddObject(new MonsterSpawner(GLOBAL.editMode), "monsterSpawner", LAYER1, GLOBAL.editMode);
 
 	if (GLOBAL.editMode) {
-		scene.AddObject(new CameraController, "camera_controller", LAYER1, true);
+		scene.AddObject(new CameraController(true), "camera_controller", LAYER1, true);
 		scene.AddObject(new EditHelper, "editHelper", LAYER_UI2);
 	}
 	else {

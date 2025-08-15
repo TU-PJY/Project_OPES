@@ -350,10 +350,6 @@ void Player1st::InputKey(KeyEvent& Event) {
 			//SendMasterKeyPacket(3);
 			playerPosition = MAP3_DESTINATION;
 			break;
-
-		case VK_F1:
-			GLOBAL.RENDER_BOUND = !GLOBAL.RENDER_BOUND;
-				break;
 		break;
 		}
 	}

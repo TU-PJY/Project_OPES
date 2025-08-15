@@ -39,6 +39,15 @@ void SpreadBullet::Update(float Delta) {
 			}
 		}
 
+		// 떨어지는 바위와 충돌
+		size_t size2 = scene.LayerSize(LAYER_STONE);
+		for (int i = 0; i < size2; i++) {
+			if (auto stone = scene.ReferLayer(LAYER_STONE, i); stone) {
+				if (stone->CheckHit(ray.first, ray.second, distance))
+					newTarget.Add(stone, distance);
+			}
+		}
+
 		targets.emplace_back(newTarget);
 	}
 

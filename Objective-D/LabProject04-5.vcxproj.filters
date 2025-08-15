@@ -338,6 +338,9 @@
     <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ Clear Mode ]">
       <UniqueIdentifier>{ed1333de-d177-4337-8cd9-aee80d761faf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[FallingStone]">
+      <UniqueIdentifier>{120b7d71-34ef-485d-a88f-b9f80f2a33ca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -613,6 +616,9 @@
     </ClInclude>
     <ClInclude Include="PlayerTag.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
+    </ClInclude>
+    <ClInclude Include="FallingStone.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[FallingStone]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -918,6 +924,9 @@
     </ClCompile>
     <ClCompile Include="PlayerTag.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ UIs ]</Filter>
+    </ClCompile>
+    <ClCompile Include="FallingStone.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[FallingStone]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

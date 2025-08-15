@@ -180,6 +180,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="DMR.h" />
     <ClInclude Include="EditHelper.h" />
     <ClInclude Include="Explosion.h" />
+    <ClInclude Include="FallingStone.h" />
     <ClInclude Include="Framework.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameOverScreen.h" />
@@ -270,6 +271,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="DMR.cpp" />
     <ClCompile Include="EditHelper.cpp" />
     <ClCompile Include="Explosion.cpp" />
+    <ClCompile Include="FallingStone.cpp" />
     <ClCompile Include="FBXInstance.cpp" />
     <ClCompile Include="FBXUtil.cpp" />
     <ClCompile Include="Framework.cpp" />

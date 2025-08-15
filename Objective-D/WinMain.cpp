@@ -78,10 +78,10 @@ struct RecvContext {
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
 constexpr bool skipTitleMode = false;
 
-constexpr bool skipDefenseMode = false;
+constexpr bool skipDefenseMode = true;
 constexpr bool editMode = false;
 
-constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
 
 // 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
@@ -92,14 +92,14 @@ bool DevMode = true;
 bool UIcreateMode = false;
 
 bool LoadMap1Resources = true;
-bool LoadMap2Resources = true;
-bool LoadMap3Resources = true;
+bool LoadMap2Resources = false;
+bool LoadMap3Resources = false;
 
 // 사운드 리소스를 로드한다.
-bool LoadSoundResources = true;
+bool LoadSoundResources = false;
 
 // 시작 모드
-START_MODE_PTR StartMode =  TitleMode::Start;
+START_MODE_PTR StartMode =  Level1::Start;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -1461,6 +1461,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lPara
 		break;
 
 	case WM_KEYDOWN: case WM_KEYUP: case WM_CHAR:
+		if(nMessageID == WM_KEYDOWN && wParam == VK_F1)
+			GLOBAL.RENDER_BOUND = !GLOBAL.RENDER_BOUND;
+
 		scene.InputKeyMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 

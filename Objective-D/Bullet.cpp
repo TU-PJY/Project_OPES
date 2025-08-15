@@ -41,6 +41,16 @@ void Bullet::updateCollision() {
 				rayTarget.Add(object, distance);
 		}
 	}
+
+	// 떨어지는 바위와 충돌
+	size_t size2 = scene.LayerSize(LAYER_STONE);
+	for (int i = 0; i < size2; i++) {
+		if (auto stone = scene.ReferLayer(LAYER_STONE, i); stone) {
+			float distance{};
+			if (stone->CheckHit(distance))
+				rayTarget.Add(stone, distance);
+		}
+	}
 	
 	// 가장 가까운 거리를 가지는 타겟이 지형이나 맵 오브젝트라면 nullptr을 리턴하여 어떠한 몬스터도 대미지를 입지 않게 된다.
 	auto ptr = rayTarget.GetNearestTarget();
