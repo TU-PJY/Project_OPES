@@ -45,6 +45,10 @@ void FallingStone::Update(float Delta) {
 			}
 		}
 
+		float distance = Math::CalcDistance3D(position, camera.GetPosition());
+		float shakePower = 0.5 - distance * 0.001;
+		camera.AddShake(shakePower);
+
 		scene.DeleteObject(this);
 	}
 }

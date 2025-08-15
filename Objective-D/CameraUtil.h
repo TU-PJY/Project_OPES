@@ -5,6 +5,17 @@
 
 class Camera {
 protected:
+	//카메라 연출 변수
+	// 흔들림 강도
+	float ShakeStrength{};
+
+	// 흔들림으로 인한 뷰포트 위치 오프셋
+	xmfloat2 ShakeOffset{};
+
+	// 흔들림 값 생성 딜레이
+	float ShakeDelay{};
+
+
 	XMFLOAT3						Position{};
 
 	XMFLOAT3						Right{ 1.0, 0.0, 0.0 };
@@ -41,6 +52,7 @@ public:
 	D3D12_VIEWPORT					Viewport{};
 	XMFLOAT4X4						ViewMatrix{};
 	XMFLOAT4X4						ProjectionMatrix{};
+	XMFLOAT4X4                      ShakeMatrix{};
 
 	// 정적 출력을 위한 스테틱 행렬 (예: UI, 이미지 등
 	XMFLOAT4X4 StaticViewMatrix{};
@@ -49,6 +61,12 @@ public:
 	Camera();
 	virtual ~Camera() {}
 	void Update(float FT);
+
+	// 흔들림 강도를 특정 수치로 설정한다.
+	void SetShake(float Strength);
+
+	// 현재 흔들림 강도에서 추가 흔들림 강도를 추가한다.
+	void AddShake(float Strength);
 
 	virtual void CreateShaderVariables(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList) {}
 	virtual void ReleaseShaderVariables() {}

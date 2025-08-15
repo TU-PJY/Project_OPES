@@ -2,14 +2,34 @@
 #include "RootConstants.h"
 #include "RootConstantUtil.h"
 #include "TransformUtil.h"
+#include "RandomUtil.h"
 
 // Config.h 에서 작성한 모드에 따라 카메라가 다르게 동작하도록 작성할 수 있다.
 // 예) 카메라 추적 대상 변경, 카메라 시점 변경 등
 void Camera::Update(float FT) {
-	switch (Mode) {
-	case CamMode::MODE1:
-		break;
+	if (Mode == CamMode::MODE1) {
+		// 카메라 흔들림
+		// ShakeStrength를 기반으로 실시간으로 랜덤 값을 생성하여 뷰포트 오프셋을 이동시키며, 흔들림 강도는 선형 보간으로 감소한다.
+		// 너무 빠르게 흔들리는것을 방지하기 위해 딜레이를 준다.
+		ShakeDelay += FT;
+		if (ShakeDelay >= 0.01) {
+			ShakeStrength = std::lerp(ShakeStrength, 0.0, 5.0 * FT);
+			ShakeOffset.x = Random.Gen(-ShakeStrength, ShakeStrength);
+			ShakeOffset.y = Random.Gen(-ShakeStrength, ShakeStrength);
+			ShakeDelay -= 0.01;
+		}
 	}
+}
+
+void Camera::SetShake(float Strength) {
+	ShakeStrength = Strength;
+}
+
+void Camera::AddShake(float Strength) {
+	if (Strength <= 0.0)
+		return;
+
+	ShakeStrength += Strength;
 }
 
 // 카메라 모드를 변경한다. Config.h에 작성했던 모드 열거형을 파라미터에 넣으면 된다.
@@ -63,6 +83,9 @@ void Camera::UpdateShaderVariables() {
 	// 스테틱 모드 실행 시 스테틱 행렬을 쉐이더로 전달한다.
 	switch(StaticMode) {
 	case false:
+		ProjectionMatrix._31 += ShakeOffset.x;
+		ProjectionMatrix._32 += ShakeOffset.y;
+
 		XMStoreFloat4x4(&xmf4x4View, XMMatrixTranspose(XMLoadFloat4x4(&ViewMatrix)));
 		XMStoreFloat4x4(&xmf4x4Projection, XMMatrixTranspose(XMLoadFloat4x4(&ProjectionMatrix)));
 		RCUtil::Input(GlobalCommandList, &Position, CAMERA_INDEX, 3, 32);
