@@ -1,5 +1,6 @@
 #include "FallingStone.h"
 #include "PickingUtil.h"
+#include "Dust.h"
 
 void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
 void SendAttackObjectPacket(int id);
@@ -47,9 +48,9 @@ void FallingStone::Update(float Delta) {
 		}
 
 		float distance = Math::CalcDistance3D(position, camera.GetPosition());
-		float shakePower = 0.5 - distance * 0.001;
-		camera.AddShake(shakePower);
+		camera.AddShake(distance, 60.0, 120.0, 2.0, 0.5);
 
+		scene.AddObject(new Dust(position, { 30.0, 30.0, 30.0 }, { 100.0, 100.0, 100.0 }, RGB(115, 67, 16)), "dust", LAYER5);
 		scene.DeleteObject(this);
 	}
 }
@@ -96,7 +97,7 @@ void FallingStone::GiveDamage(int damage) {
 
 	if (!GLOBAL.useServer) {
 		hp -= damage;
-		if (hp <= 0)
+		if (hp <= 0) 
 			hp = 0;
 	}
 	else
@@ -104,5 +105,7 @@ void FallingStone::GiveDamage(int damage) {
 }
 
 void FallingStone::InputHP(int hp) {
+	if (this->hp == 0)
+		return;
 	this->hp = hp;
 }

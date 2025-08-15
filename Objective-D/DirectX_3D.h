@@ -250,6 +250,16 @@ XMFLOAT3 operator - (const XMFLOAT3& Value);
 XMFLOAT3 operator * (const XMFLOAT3& Value, float MulValue);
 std::ostream& operator << (std::ostream& os, const XMFLOAT3& Value);
 
+#undef RGB
+
+inline XMFLOAT3 RGB(int R, int G, int B) {
+	float ConvR = (float)R / 255.0;
+	float ConvG = (float)G / 255.0;
+	float ConvB = (float)B / 255.0;
+
+	return XMFLOAT3(ConvR, ConvG, ConvB);
+}
+
 namespace Vec3 {
 	inline XMFLOAT3 XMVectorToFloat3(XMVECTOR& xmvVector) {
 		XMFLOAT3 xmf3Result;

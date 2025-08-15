@@ -2,6 +2,7 @@
 #include "RootConstants.h"
 #include "RootConstantUtil.h"
 #include "TransformUtil.h"
+#include "MathUtil.h"
 #include "RandomUtil.h"
 
 // Config.h 에서 작성한 모드에 따라 카메라가 다르게 동작하도록 작성할 수 있다.
@@ -30,6 +31,24 @@ void Camera::AddShake(float Strength) {
 		return;
 
 	ShakeStrength += Strength;
+}
+
+void Camera::AddShake(float d, float R0, float R1, float p, float Strength) {
+	if (d <= R0) {
+		ShakeStrength += Strength;
+		return;
+	}
+	if (d >= R1) 
+		return;
+
+	float t = (d - R0) / (R1 - R0);
+	ShakeStrength += powf(1.0f - t, p) * Strength;
+}
+
+void Camera::AddShakeWithDistance(float Distance, float Strength) {
+	float t = (15.0 - Distance) / 15.0;
+	t = std::clamp(t, 0.0f, 1.0f);
+	int damage = (int)(300.0 * t);
 }
 
 // 카메라 모드를 변경한다. Config.h에 작성했던 모드 열거형을 파라미터에 넣으면 된다.

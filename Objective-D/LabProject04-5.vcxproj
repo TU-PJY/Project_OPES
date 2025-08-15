@@ -178,6 +178,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="DMR.h" />
+    <ClInclude Include="Dust.h" />
     <ClInclude Include="EditHelper.h" />
     <ClInclude Include="Explosion.h" />
     <ClInclude Include="FallingStone.h" />
@@ -269,6 +270,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="CrossHair.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DMR.cpp" />
+    <ClCompile Include="Dust.cpp" />
     <ClCompile Include="EditHelper.cpp" />
     <ClCompile Include="Explosion.cpp" />
     <ClCompile Include="FallingStone.cpp" />
