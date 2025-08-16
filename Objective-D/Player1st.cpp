@@ -118,9 +118,6 @@ void Player1st::sendPacket(float Delta) {
 }
 
 void Player1st::InputMouseMotion(MotionEvent& Event) {
-	if (!GLOBAL.controlEnabled)
-		return;
-
 	if (GetCapture() == Event.CaptureState) {
 		mouse.HideCursor();
 		GetCapture();
@@ -145,9 +142,6 @@ void Player1st::InputMouseMotion(MotionEvent& Event) {
 }
 
 void Player1st::InputMouse(MouseEvent& Event) {
-	if (!GLOBAL.controlEnabled)
-		return;
-
 	// 총 발사 상태 활성화 / 비활성화
 	switch (Event.Type) {
 	case WM_MOUSEWHEEL:
@@ -322,9 +316,6 @@ void Player1st::InputMouse(MouseEvent& Event) {
 
 // 4방향 이동 토글
 void Player1st::InputKey(KeyEvent& Event) {
-	if (!GLOBAL.controlEnabled)
-		return;
-
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'W', moveState[FRONT]);
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'S', moveState[BACK]);
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'A', moveState[LEFT]);
