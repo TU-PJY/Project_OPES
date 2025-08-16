@@ -13,7 +13,7 @@ public:
     void start();
     void stop();
 
-    void resetRoom(unsigned roomID, int seconds = 60); // 스테이지 진입/전환
+    void resetRoom(unsigned roomID, int seconds = TIMER_ADVENTURE); // 스테이지 진입/전환
     void stopRoom(unsigned roomID);                    // 스테이지 완전 종료
 
 private:
