@@ -46,11 +46,11 @@ void DMR::updateFire(float Delta) {
 		recoilOffset -= recoilBack;
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
-		//if (userPtr) userPtr->InputRecoil(recoil);
+		if (userPtr) userPtr->InputRecoil(recoil);
 		//{
 		//std::lock_guard<std::mutex> lock(PacketMutex);
 		scene.AddObject(new Bullet(damage), "bullet", LAYER3);
-		camera.AddRecoilShake(200.0);
+		camera.AddRecoilShake(200.0, 0.5);
 	//	}
 		currentAmmo--;
 		fireEnableState = false;

@@ -108,6 +108,7 @@ void FallingStone::InputHP(int hp) {
 void FallingStone::InputDamage(int damage) {
 	if (this->hp == 0)
 		return;
+
 	this->hp -= damage;
 	if (this->hp <= 0)
 		this->hp = 0;

@@ -64,7 +64,7 @@ void Shotgun::updateFire(float Delta) {
 			std::lock_guard<std::mutex> lock(PacketMutex);*/
 			scene.AddObject(new SpreadBullet(SG_DAMAGE), "spreadBullet", LAYER3);
 			SendBangPacket(GLOBAL.myID);
-			camera.AddRecoilShake(300.0);
+			camera.AddRecoilShake(300.0, 0.5);
 		//}
 		currentAmmo--;
 		fireEnableState = false;

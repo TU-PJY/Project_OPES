@@ -1,5 +1,6 @@
 #include "Scope.h"
 #include "ClampUtil.h"
+#include "CameraUtil.h"
 
 void Scope::Render() {
 	if (!renderState)
@@ -7,6 +8,7 @@ void Scope::Render() {
 
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Scale2D(ScaleMatrix, size, size);
+	Transform::Rotate(RotateMatrix, 0.0, 0.0, camera.recoilShake);
 	Render2D(TEX.scope);
 }
 

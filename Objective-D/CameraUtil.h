@@ -73,7 +73,7 @@ public:
 
 	// 현재 흔들림 강도에서 추가 흔들림 강도를 추가한다.
 	void AddShake(float Strength);
-	void AddRecoilShake(float Strength);
+	void AddRecoilShake(float Strength, float duration=0.3f);
 	void AddShake(float d, float R0, float R1, float p, float Strength);
 
 	// 현재 흔들림 강도에서 거리에 따른 강도를 추가한다.

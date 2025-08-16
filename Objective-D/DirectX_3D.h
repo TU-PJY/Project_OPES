@@ -1,4 +1,6 @@
 #pragma once
+#pragma warning(disable : 4305)
+#pragma warning(disable : 4244)
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")

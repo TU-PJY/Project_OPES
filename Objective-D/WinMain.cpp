@@ -686,7 +686,7 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 
 void SendAttackObjectPacket(int id,int damage) {
 	if (enter_room) {
-		auto* pkt = new AttackObjectPacket{ PacketType::ATTACK_OBJECT,  id,damage };
+		auto* pkt = new AttackObjectPacket{ PacketType::ATTACK_OBJECT, damage, id };
 
 		auto* context = new SendContext{};
 		ZeroMemory(context, sizeof(SendContext));

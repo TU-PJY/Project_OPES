@@ -145,10 +145,10 @@ void Camera::AddShake(float Strength) {
 	ShakeStrength += Strength;
 }
 
-void Camera::AddRecoilShake(float Strength) {
+void Camera::AddRecoilShake(float Strength, float duration) {
 	ShakeParams params{};
 	params.freqRot = 30.0f;
-	params.duration = 0.3f;
+	params.duration = duration;
 	
 	int randNum = Random.Gen(0, 1);
 	if (randNum == 1)

@@ -309,6 +309,9 @@ void LoadTexture(DeviceSystem& System) {
 /////////////////////////////////////////////////////////////////////////////////
 
 void LoadSound() {
+	if (!LoadSoundResources)
+		return;
+
 	SOUND.machinegunShoot.Load("Resources//Sounds//machinegunShoot.wav");
 	SOUND.dmrShoot.Load("Resources//Sounds//dmrShoot.mp3");
 	SOUND.shotgunShoot.Load("Resources//Sounds//shotgunShoot.mp3");
