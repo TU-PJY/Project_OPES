@@ -86,10 +86,10 @@ constexpr int				   MIN_PLAYER_COUNT = 3;
 constexpr int                 PASS_STAGE_TIME = 1;
 
 //몬스터 스폰 시간
-constexpr int                 CREAT_MONSTER_TIME = 4;
+constexpr int                 CREAT_MONSTER_TIME = 2;
 
 //어드벤처 타이머
-constexpr int                 TIMER_ADVENTURE = 180;
+constexpr int                 TIMER_ADVENTURE = 300;
 
 
 // 스테이지 1
