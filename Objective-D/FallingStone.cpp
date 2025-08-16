@@ -3,7 +3,7 @@
 #include "Dust.h"
 
 void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
-void SendAttackObjectPacket(int id);
+void SendAttackObjectPacket(int id,int damage);
 
 FallingStone::FallingStone(const xmfloat3& createPosition, unsigned int createID) {
 	position = createPosition;

@@ -1392,10 +1392,11 @@ void IOCompletionPort::SendData_MasterKeytPacket(stClientInfo* receiver, int key
         delete sendOver;
     }
 }
-void IOCompletionPort::SendData_AttackObjectPacket(stClientInfo* receiver, int id) {
+void IOCompletionPort::SendData_AttackObjectPacket(stClientInfo* receiver, int id,int damage) {
     AttackObjectPacket* pkt = new AttackObjectPacket{};
     pkt->type = PacketType::ATTACK_OBJECT;
     pkt->id = id;
+    pkt->damage = damage;
 
     stOverlappedEx* sendOver = new stOverlappedEx{};
     ZeroMemory(&sendOver->overlapped, sizeof(sendOver->overlapped));
@@ -2221,7 +2222,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
         AttackObjectPacket* pkt = reinterpret_cast<AttackObjectPacket*>(buffer);
         for (auto* otherClient : room.clients) {
             if (!otherClient || otherClient == client) continue;
-            SendData_AttackObjectPacket(otherClient, pkt->id);
+            SendData_AttackObjectPacket(otherClient, pkt->id,pkt->damage);
         }
 
     }
