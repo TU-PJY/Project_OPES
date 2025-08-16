@@ -54,7 +54,7 @@ void Beacon::Update(float Delta) {
 		for (int i = 0; i < size; i++) {
 			if (auto player = scene.ReferLayer(LAYER_PLAYER, i); player) {
 				if(healZone.CheckCollision(player->GetOOBB()))
-					player->GiveHeal(5);
+					player->GiveHeal(BEACON_HEAL);
 			}
 		}
 
