@@ -170,7 +170,7 @@ public:
     void SendData_PlayerDeathPacket(stClientInfo* receiver, unsigned int id);
     void SendData_DisconnectPacket(stClientInfo* receiver, unsigned int id);
     void SendData_MasterKeytPacket(stClientInfo* receiver, int key);
-    void SendData_AttackObjectPacket(stClientInfo* receiver, int id);
+    void SendData_AttackObjectPacket(stClientInfo* receiver, int id,int damage);
     void SendData_PlayerUpgradePacket(stClientInfo* receiver, int player_id, int random_id);
     //
     void CreateRoom(const std::vector<stClientInfo*>& members);

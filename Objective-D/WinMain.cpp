@@ -453,7 +453,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		
 	else if (*type == PacketType::ATTACK_OBJECT) {
 		AttackObjectPacket* pkt = reinterpret_cast<AttackObjectPacket*>(buffer);
-		std::cout << "AttackObject-id: " << pkt->id << std::endl;
+		std::cout << "AttackObject-id: " << pkt->id <<"damage:" << pkt->damage<< std::endl;
 		// 패킷에 ATTACK_OBJECT에 가한 대미지 값 필요!
 		// ID밖에 없어서 ATTACK_OBJECT의 체력을 동기화 못 함
 	}
@@ -683,9 +683,9 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 //	}
 //}
 
-void SendAttackObjectPacket(int id) {
+void SendAttackObjectPacket(int id,int damage) {
 	if (enter_room) {
-		auto* pkt = new AttackObjectPacket{ PacketType::ATTACK_OBJECT,  id };
+		auto* pkt = new AttackObjectPacket{ PacketType::ATTACK_OBJECT,  id,damage };
 
 		auto* context = new SendContext{};
 		ZeroMemory(context, sizeof(SendContext));
