@@ -229,6 +229,9 @@ bool IOCompletionPort::StartServer() {
     PostAccept();
     workerThread = std::thread([this]() { WorkThread(); });
    //
+    randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+    randomPositionThread2 = std::thread([this]() { RandomPositionThread2(); });
+    randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
     timerService = std::make_unique<TimerService>(*this);
     timerService->start();
     
@@ -608,7 +611,7 @@ void IOCompletionPort::CreateRoom(const std::vector<stClientInfo*>& members) {
     // centerHp, clearCount, defenseState 기본 설정
     newRoom.centerHp = CENTER_HP;
     newRoom.clearCount = 0;
-    newRoom.defenseState = true;
+    //newRoom.defenseState = false;
     //rooms[newRoom.roomID] = std::move(newRoom);
     {
         std::lock_guard<std::mutex> lock(roomMapMutex);
@@ -1784,7 +1787,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     SendData_ClearCountPacket(Client, arrivedCount);
                 }
                 std::cout << "다들어옴!\n";
-                room.defenseState = true;
+                //room.defenseState = true;
                 room.stageState++;
                 if (timerService) timerService->stopRoom(room.roomID);
                 room.centerHp = CENTER_HP;
@@ -1919,7 +1922,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     sendHP = m.hp;
                     if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
-                        if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
+                        //if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
                     }
                     
 
@@ -1943,7 +1946,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     sendHP = m.hp;
                     if (std::all_of(room.defenseMonsters2.begin(), room.defenseMonsters2.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
-                        if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
+                        //if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
                     }
                     
 
@@ -1967,7 +1970,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     sendHP = m.hp;
                     if (std::all_of(room.defenseMonsters3.begin(), room.defenseMonsters3.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
-                        if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
+                        //if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
                     }
                     
 
@@ -2196,25 +2199,39 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
 
         FilePacket* pkt = reinterpret_cast<FilePacket*>(buffer);
         std::cout << "FILE_LOAD--stage:"<< pkt->stage << std::endl;
+        room.fileCount++;
+        if (pkt->startDefense) {
+            if (room.fileCount >= MIN_PLAYER_COUNT) {
+                room.defenseState = true;
+                room.fileCount = 0;
+            }
+        }
+        else {
+            if (room.fileCount >= MIN_PLAYER_COUNT) {
+                if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE);
+                room.fileCount = 0;
+            }
+        }
 
-        if (pkt->stage == 1) {
-            if (randomTreadFlag1) {
-                randomPositionThread = std::thread([this]() { RandomPositionThread(); });
-                randomTreadFlag1 = false;
-            }
-        }
-        else if (pkt->stage == 2) {
-            if (randomTreadFlag2) {
-                randomPositionThread2= std::thread([this]() { RandomPositionThread2(); });
-                randomTreadFlag2 = false;
-            }
-        }
-        else if (pkt->stage == 3) {
-            if (randomTreadFlag3) {
-                randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
-                randomTreadFlag3 = false;
-            }
-        }
+       
+        //if (pkt->stage == 1) {
+        //    if (randomTreadFlag1) {
+        //        randomPositionThread = std::thread([this]() { RandomPositionThread(); });
+        //        randomTreadFlag1 = false;
+        //    }
+        //}
+        //else if (pkt->stage == 2) {
+        //    if (randomTreadFlag2) {
+        //        randomPositionThread2= std::thread([this]() { RandomPositionThread2(); });
+        //        randomTreadFlag2 = false;
+        //    }
+        //}
+        //else if (pkt->stage == 3) {
+        //    if (randomTreadFlag3) {
+        //        randomPositionThread3 = std::thread([this]() { RandomPositionThread3(); });
+        //        randomTreadFlag3 = false;
+        //    }
+        //}
         
     }
     else if (*packetType == PacketType::ATTACK_OBJECT) {

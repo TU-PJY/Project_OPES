@@ -245,6 +245,7 @@ struct DisconnectPacket {
 struct FilePacket {
     PacketType type;
     int stage;
+    bool startDefense;
 };
 struct MasterKeyPacket {
     PacketType type;

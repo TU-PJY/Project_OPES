@@ -792,9 +792,9 @@ void SendMasterKeyPacket(int key) {
 		}
 	}
 }
-void SendFilePacket(int stage) {
+void SendFilePacket(int stage,bool startDefense) {
 	if (enter_room) {
-		auto* pkt = new FilePacket{ PacketType::FILE_LOAD,  stage };
+		auto* pkt = new FilePacket{ PacketType::FILE_LOAD,  stage,startDefense };
 
 		auto* context = new SendContext{};
 		ZeroMemory(context, sizeof(SendContext));
