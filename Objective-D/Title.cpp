@@ -66,7 +66,6 @@ void Title::InputKey(KeyEvent& Event) {
 
 		else {
 			GLOBAL.myName += Event.Key;
-			std::cout << "input\n";
 		}
 	}
 

@@ -8,6 +8,10 @@ void ClearMode::Start() {
 	// add works here
 
 	scene.AddObject(new ClearScreen, "cscreen", LAYER_UI2);
+
+	GLOBAL.playerList.clear();
+	GLOBAL.serverConnected.store(false);
+	GLOBAL.startedGameServer = false;
 }
 
 void ClearMode::Destructor() {

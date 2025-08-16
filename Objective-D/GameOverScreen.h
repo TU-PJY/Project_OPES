@@ -5,8 +5,10 @@
 class GameOverScreen : public GameObject {
 private:
 	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0) };
+	float time{};
 
 public:
 	void Render() override;
+	void Update(float delta) override;
 };
 

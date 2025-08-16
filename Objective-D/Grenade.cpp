@@ -322,7 +322,7 @@ void Grenade::Update(float Delta) {
 
         scene.AddObject(new Explosion(position), "explosion", LAYER3);
         float distance = Math::CalcDistance3D(position, camera.GetPosition());
-        camera.AddShake(distance, 60.0, 120.0, 2.0, 0.5);
+        camera.AddShake(distance, 30.0, 60.0, 2.0, 0.5);
 
         scene.DeleteObject(this);
     }

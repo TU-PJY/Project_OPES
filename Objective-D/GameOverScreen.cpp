@@ -1,4 +1,5 @@
 #include "GameOverScreen.h"
+#include "ModePack.h"
 
 void GameOverScreen::Render() {
 	BeginRender(RENDER_TYPE_2D);
@@ -11,4 +12,10 @@ void GameOverScreen::Render() {
 	Render2D(TEX.UI_lobbyBackground, 0.3);
 
 	text.Render(xmfloat2(0.0, 0.0), 0.2, "GAME OVER");
+}
+
+void GameOverScreen::Update(float delta) {
+	time += delta;
+	if (time >= 5.0)
+		scene.SwitchMode(TitleMode::Start);
 }
