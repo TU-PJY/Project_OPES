@@ -29,6 +29,7 @@ void Level3::Start() {
 	GLOBAL.offsetFOV = 0.0;
 	GLOBAL.deathCount = 0;
 	GLOBAL.stage = 3;
+	GLOBAL.controlEnabled = true;
 
 	FOG_DATA FogData{
 		{0.68, 0.28, 0.1}, // Fog Color

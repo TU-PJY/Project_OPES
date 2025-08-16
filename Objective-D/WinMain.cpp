@@ -714,7 +714,7 @@ void SendAttackObjectPacket(int id,int damage) {
 		}
 	}
 }
-void SendPlayerUpgradePacket(int player_id,int random_id) {
+void SendPlayerUpgradePacket(int player_id, int random_id) {
 	if (enter_room) {
 		auto* pkt = new PlayerUpgradePacket{ PacketType::UPGRADE,  player_id,random_id };
 

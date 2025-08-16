@@ -153,8 +153,8 @@ constexpr float                MAP3_RANDOM_MAX_RADIANS = 180.0;
 // 공통 보너스
 constexpr float BONUS_RPM = 1.2f;				// 무기 과열 제거 (Weapon Cooling), 무기 연사속도 +20%
 constexpr float BONUS_RELOAD = 0.55f;			// 빠른 장전 훈련 (Quick Reload Training), 장전 속도 30% 감소
-constexpr float BONUS_MOVE_SPEED = 1.15f;		// 아드레날린 러시 (Adrenaline Rush), 이동속도 +15%
 constexpr int   BONUS_GRENADE = 1;				// 전술 확장 벨트 (Tactical Extended Pocket), 수류탄 +1
+constexpr float BONUS_MOVE_SPEED = 1.15f;		// 아드레날린 러시 (Adrenaline Rush), 이동속도 +15%
 
 // 기관총병 보너스
 constexpr float BONUS_RECOIL_LMG = 0.6f;		// 반동 제어 숙련 (Recoil Mastery), 반동 -50%

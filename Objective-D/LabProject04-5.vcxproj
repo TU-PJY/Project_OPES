@@ -52,7 +52,7 @@
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <EnableUnitySupport>false</EnableUnitySupport>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -219,6 +219,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="OtherPlayer.h" />
     <ClInclude Include="PlayerTag.h" />
     <ClInclude Include="PoisonBall.h" />
+    <ClInclude Include="RandomUpgrade.h" />
     <ClInclude Include="RayTargetUtil.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="RoadBlock.h" />
@@ -317,6 +318,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="PlayerIndicator.cpp" />
     <ClCompile Include="PlayerTag.cpp" />
     <ClCompile Include="PoisonBall.cpp" />
+    <ClCompile Include="RandomUpgrade.cpp" />
     <ClCompile Include="RandomUtil.cpp" />
     <ClCompile Include="RayTargetUtil.cpp" />
     <ClCompile Include="Resterizers.cpp" />

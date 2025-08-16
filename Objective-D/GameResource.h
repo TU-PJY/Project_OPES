@@ -124,8 +124,11 @@ typedef struct {
 	bool editMode;
 
 	// 플레이어 버프 및 디버프
-	bool buff[4]{};
-	bool deBuff[4]{};
+	bool buff[4];
+	bool deBuff[4];
+
+	//플레이어 컨트롤 가능 여부
+	bool controlEnabled;
 
 	bool RENDER_BOUND;
 
