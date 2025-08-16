@@ -106,7 +106,7 @@ struct Room {
 
     int centerHp = CENTER_HP;
     int clearCount = 0;
-    bool defenseState = true;
+    bool defenseState = false;
     //bool isCreat = true;
     int stageState = 1;
     int DeathCount = 0;
@@ -125,6 +125,8 @@ struct Room {
     bool timerRunning = false;
     int  timerRemainSec = 0;
     std::chrono::steady_clock::time_point timerLastTick{};
+    //
+    int fileCount = 0;
 };
 
 struct DelayedRemoveEntry {
