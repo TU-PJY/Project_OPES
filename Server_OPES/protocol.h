@@ -89,6 +89,9 @@ constexpr int                 PASS_STAGE_TIME = 10;
 //몬스터 스폰 시간
 constexpr int                 CREAT_MONSTER_TIME = 4;
 
+//어드벤처 타이머
+constexpr int                 TIMER_ADVENTURE = 180;
+
 
 // 스테이지 1
 // Plant Monster
