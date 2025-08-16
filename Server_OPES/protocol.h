@@ -46,7 +46,7 @@ constexpr float                TURRET_SHOOT_DELAY   = 0.2f;
 constexpr float                TURRET_INSTALL_COOLTIME = 40.0f;
 
 constexpr unsigned int         BEACON_ID = 2;
-constexpr unsigned int         BEACON_HEAL = 5;
+constexpr unsigned int         BEACON_HEAL = 15;
 constexpr float                BEACON_DURABILITY = 30.0f;
 constexpr float                BEACON_HEAL_DELAY = 0.5f;
 constexpr float                BEACON_INSTALL_COOLTIME = 50.0f;
@@ -58,7 +58,6 @@ constexpr float                BEACON_INSTALL_COOLTIME = 50.0f;
 constexpr int                  CHARACTER_MG = 0;
 constexpr int                  CHARACTER_DMR = 1;
 constexpr int                  CHARACTER_ENG = 2;
-
 
 constexpr int				   MG_JOB_TYPE     = 0;
 constexpr unsigned int         CHARACTER_MG_HP = 300;
