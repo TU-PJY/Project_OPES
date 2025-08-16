@@ -2221,7 +2221,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
 
         AttackObjectPacket* pkt = reinterpret_cast<AttackObjectPacket*>(buffer);
         for (auto* otherClient : room.clients) {
-            if (!otherClient || otherClient == client) continue;
+            if (!otherClient) continue;
             SendData_AttackObjectPacket(otherClient, pkt->id,pkt->damage);
         }
 
