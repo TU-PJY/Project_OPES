@@ -454,7 +454,7 @@ void Player1st::updateCamera(float Delta) {
 	// 벡터 및 카메라 추적 업데이트
 	Math::UpdateVector(playerVector, currentRotation);
 	camera.Track(cameraPosition, playerVector, 0);
-	camera.Rotate(currentRotation.x, currentRotation.y, currentRotation.z);
+	camera.Rotate(currentRotation.x, currentRotation.y, currentRotation.z + camera.recoilShake);
 
 	// FOV 업데이트
 	GLOBAL.offsetFOV = std::lerp(GLOBAL.offsetFOV, destFOV, Delta * 20.0);

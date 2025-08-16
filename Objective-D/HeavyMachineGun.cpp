@@ -1,5 +1,6 @@
 #include "HeavyMachineGun.h"
 #include "Bullet.h"
+#include "CameraUtil.h"
 void SendBangPacket(unsigned int ID);
 
 HeavyMachineGun::HeavyMachineGun(GameObject* Ptr) {
@@ -38,13 +39,15 @@ void HeavyMachineGun::updateFire(float Delta) {
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
 		if (userPtr) userPtr->InputRecoil(recoil);
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
+		//{
+		//	std::lock_guard<std::mutex> lock(PacketMutex);
 			scene.AddObject(new Bullet(damage), "bullet", LAYER3);
 			SendBangPacket(GLOBAL.myID);
-		}
+		//}
 		currentAmmo--;
 		fireEnableState = false;
+
+		camera.AddRecoilShake(150.0);
 	}
 }
 

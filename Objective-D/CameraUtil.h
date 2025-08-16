@@ -15,6 +15,10 @@ protected:
 	// 흔들림 값 생성 딜레이
 	float ShakeDelay{};
 
+	float destRecoilShake{};
+	float recoilShakeNum{};
+
+
 
 	XMFLOAT3						Position{};
 
@@ -49,6 +53,8 @@ private:
 	bool StaticMode{};
 
 public:
+	float recoilShake{};
+
 	D3D12_VIEWPORT					Viewport{};
 	XMFLOAT4X4						ViewMatrix{};
 	XMFLOAT4X4						ProjectionMatrix{};
@@ -67,6 +73,7 @@ public:
 
 	// 현재 흔들림 강도에서 추가 흔들림 강도를 추가한다.
 	void AddShake(float Strength);
+	void AddRecoilShake(float Strength);
 	void AddShake(float d, float R0, float R1, float p, float Strength);
 
 	// 현재 흔들림 강도에서 거리에 따른 강도를 추가한다.

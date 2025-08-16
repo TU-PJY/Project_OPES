@@ -1,6 +1,7 @@
 ﻿#include "Grenade.h"
 #include "MathUtil.h"
 #include "Explosion.h"
+#include "CameraUtil.h"
 
 void SendPtoMDamagePacket( unsigned int monsterID, int attackHp);
 void SendGrenadePacket(float posX, float posY, float posZ, float rotX, float rotY, float rotZ);
@@ -320,6 +321,9 @@ void Grenade::Update(float Delta) {
         }
 
         scene.AddObject(new Explosion(position), "explosion", LAYER3);
+        float distance = Math::CalcDistance3D(position, camera.GetPosition());
+        camera.AddShake(distance, 60.0, 120.0, 2.0, 0.5);
+
         scene.DeleteObject(this);
     }
     

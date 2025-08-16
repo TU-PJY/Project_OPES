@@ -1,5 +1,6 @@
 #include "Shotgun.h"
 #include "SpreadBullet.h"
+#include "CameraUtil.h"
 void SendBangPacket(unsigned int ID);
 
 
@@ -59,11 +60,12 @@ void Shotgun::updateFire(float Delta) {
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
 		if (userPtr) userPtr->InputRecoil(recoil);
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
+		/*{
+			std::lock_guard<std::mutex> lock(PacketMutex);*/
 			scene.AddObject(new SpreadBullet(SG_DAMAGE), "spreadBullet", LAYER3);
 			SendBangPacket(GLOBAL.myID);
-		}
+			camera.AddRecoilShake(300.0);
+		//}
 		currentAmmo--;
 		fireEnableState = false;
 	}

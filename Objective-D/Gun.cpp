@@ -1,6 +1,7 @@
 #include "HeavyMachineGun.h"
 #include "ClampUtil.h"
 #include "Bullet.h"
+#include "CameraUtil.h"
 
 void SendBangPacket(unsigned int ID);
 

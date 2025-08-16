@@ -4,22 +4,134 @@
 #include "TransformUtil.h"
 #include "MathUtil.h"
 #include "RandomUtil.h"
+#include <numeric>
+
+static float Lerp(float a, float b, float t) { return a + (b - a) * t; }
+static float Fade(float t) { return t * t * t * (t * (t * 6 - 15) + 10); } // Perlin의 quintic
+static int   Perm[512]; // 시드로 채우는 순열 테이블
+
+static void InitPerm(uint32_t seed) {
+	std::mt19937 rng(seed);
+	std::vector<int> p(256);
+	std::iota(p.begin(), p.end(), 0);
+	std::shuffle(p.begin(), p.end(), rng);
+	for (int i = 0; i < 512; ++i) Perm[i] = p[i & 255];
+}
+static float Grad(int hash, float x, float y, float z) {
+	int h = hash & 15;
+	float u = h < 8 ? x : y;
+	float v = h < 4 ? y : (h == 12 || h == 14 ? x : z);
+	return ((h & 1) ? -u : u) + ((h & 2) ? -v : v);
+}
+static float Perlin3(float x, float y, float z) {
+	int X = (int)floorf(x) & 255;
+	int Y = (int)floorf(y) & 255;
+	int Z = (int)floorf(z) & 255;
+	x -= floorf(x); y -= floorf(y); z -= floorf(z);
+	float u = Fade(x), v = Fade(y), w = Fade(z);
+	int A = Perm[X] + Y, AA = Perm[A] + Z, AB = Perm[A + 1] + Z;
+	int B = Perm[X + 1] + Y, BA = Perm[B] + Z, BB = Perm[B + 1] + Z;
+	float res =
+		Lerp(Lerp(Lerp(Grad(Perm[AA], x, y, z),
+			Grad(Perm[BA], x - 1, y, z), u),
+			Lerp(Grad(Perm[AB], x, y - 1, z),
+				Grad(Perm[BB], x - 1, y - 1, z), u), v),
+			Lerp(Lerp(Grad(Perm[AA + 1], x, y, z - 1),
+				Grad(Perm[BA + 1], x - 1, y, z - 1), u),
+				Lerp(Grad(Perm[AB + 1], x, y - 1, z - 1),
+					Grad(Perm[BB + 1], x - 1, y - 1, z - 1), u), v), w);
+	// 결과 범위 대략 [-1,1]
+	return res;
+}
+
+struct ShakeParams {
+	float duration = 0.35f;     // 전체 길이
+	float freqPos = 10.0f;     // 위치 노이즈 주파수(Hz)
+	float freqRot = 8.0f;      // 회전 노이즈 주파수(Hz)
+	xmfloat3  ampPos = { 0.02f, 0.02f, 0.01f }; // m 또는 world units
+	xmfloat3  ampRot = { 0.6f, 0.8f, 0.3f };    // degrees
+	float decayK = 6.0f;      // 지수 감쇠 세기 (커질수록 빨리 죽음)
+	uint32_t seed = 12345;     // 시드(무기마다 다르게 주면 패턴 차별화)
+	float   phase = 0.0f;      // 시간 오프셋(쇼트마다 랜덤 추가)
+	float   distanceFalloffK = 0.06f; // 거리 감쇠 계수
+};
+
+struct ShakeState {
+	bool   active = false;
+	float  t = 0.0f;     // 누적 시간(초)
+	float  life = 0.0f;  // 남은 시간
+	ShakeParams P;
+};
+ShakeState gShake;
+
+static float Attenuation(float d, float k) { return 1.0f / (1.0f + k * d * d); }
+
+inline void StartShake(ShakeState& S, const ShakeParams& P, float distanceToEvent = 0.0f) {
+	S.P = P;
+	S.P.phase = std::uniform_real_distribution<float>(0.0f, 1000.0f)(std::mt19937(P.seed)); // 임의 위상
+	InitPerm(P.seed); // 시드 기반 노이즈 테이블
+	S.t = 0.0f;
+	S.life = P.duration;
+	S.active = true;
+
+	// 거리 감쇠를 시작 세기에 반영하고 싶다면, 바로 amp에 곱하거나 별도 스케일 유지
+	float att = Attenuation(distanceToEvent, P.distanceFalloffK);
+	S.P.ampPos.x *= att; S.P.ampPos.y *= att; S.P.ampPos.z *= att;
+	S.P.ampRot.x *= att; S.P.ampRot.y *= att; S.P.ampRot.z *= att;
+}
+
+inline void UpdateShake(ShakeState& S, float dt, xmfloat3& outPos, xmfloat3& outRotDeg) {
+	outPos = { 0,0,0 };
+	outRotDeg = { 0,0,0 };
+	if (!S.active) return;
+
+	S.t += dt;
+	S.life -= dt;
+	float time = S.t + S.P.phase;
+
+	// 지수 감쇠(0~1)
+	float env = expf(-S.P.decayK * (S.t / std::max(0.0001f, S.P.duration)));
+	env = std::clamp(env, 0.0f, 1.0f);
+
+	// 축별 샘플 좌표(서로 다른 위상/시드를 주려면 상수 오프셋)
+	float px = Perlin3(time * S.P.freqPos, 3.17f, 8.23f);
+	float py = Perlin3(5.91f, time * S.P.freqPos, 11.71f);
+	float pz = Perlin3(9.73f, 6.41f, time * S.P.freqPos);
+
+	float rx = Perlin3(time * S.P.freqRot, 2.11f, 4.77f);
+	float ry = Perlin3(7.33f, time * S.P.freqRot, 1.19f);
+	float rz = Perlin3(0.41f, 5.55f, time * S.P.freqRot);
+
+	// [-1,1] → 곱
+	outPos.x = px * S.P.ampPos.x * env;
+	outPos.y = py * S.P.ampPos.y * env;
+	outPos.z = pz * S.P.ampPos.z * env;
+
+	outRotDeg.x = rx * S.P.ampRot.x * env; // pitch
+	outRotDeg.y = ry * S.P.ampRot.y * env; // yaw
+	outRotDeg.z = rz * S.P.ampRot.z * env; // roll
+
+	if (S.life <= 0.0f) S.active = false;
+}
 
 // Config.h 에서 작성한 모드에 따라 카메라가 다르게 동작하도록 작성할 수 있다.
 // 예) 카메라 추적 대상 변경, 카메라 시점 변경 등
 void Camera::Update(float FT) {
-	if (Mode == CamMode::MODE1) {
-		// 카메라 흔들림
-		// ShakeStrength를 기반으로 실시간으로 랜덤 값을 생성하여 뷰포트 오프셋을 이동시키며, 흔들림 강도는 선형 보간으로 감소한다.
-		// 너무 빠르게 흔들리는것을 방지하기 위해 딜레이를 준다.
-		ShakeDelay += FT;
-		if (ShakeDelay >= 0.01) {
-			ShakeStrength = std::lerp(ShakeStrength, 0.0, 5.0 * FT);
-			ShakeOffset.x = Random.Gen(-ShakeStrength, ShakeStrength);
-			ShakeOffset.y = Random.Gen(-ShakeStrength, ShakeStrength);
-			ShakeDelay -= 0.01;
-		}
+	// 카메라 흔들림
+	// ShakeStrength를 기반으로 실시간으로 랜덤 값을 생성하여 뷰포트 오프셋을 이동시키며, 흔들림 강도는 선형 보간으로 감소한다.
+	// 너무 빠르게 흔들리는것을 방지하기 위해 딜레이를 준다.
+	ShakeDelay += FT;
+	if (ShakeDelay >= 0.01) {
+		ShakeStrength = std::lerp(ShakeStrength, 0.0, 5.0 * FT);
+		ShakeOffset.x = Random.Gen(-ShakeStrength, ShakeStrength);
+		ShakeOffset.y = Random.Gen(-ShakeStrength, ShakeStrength);
+		ShakeDelay -= 0.01;
 	}
+
+	xmfloat3 shakePos, shakeRotDeg;
+	UpdateShake(gShake, FT, shakePos, shakeRotDeg);
+	recoilShakeNum = std::lerp(recoilShakeNum, shakeRotDeg.z, 10.0 * FT);
+	recoilShake = std::lerp(recoilShake, recoilShakeNum, 20.0 * FT);
 }
 
 void Camera::SetShake(float Strength) {
@@ -31,6 +143,19 @@ void Camera::AddShake(float Strength) {
 		return;
 
 	ShakeStrength += Strength;
+}
+
+void Camera::AddRecoilShake(float Strength) {
+	ShakeParams params{};
+	params.freqRot = 30.0f;
+	params.duration = 0.3f;
+	
+	int randNum = Random.Gen(0, 1);
+	if (randNum == 1)
+		params.ampRot = { 0.0f, 0.0f, Strength }; // 반동 세기
+	else
+		params.ampRot = { 0.0f, 0.0f, -Strength }; // 반동 세기
+	StartShake(gShake, params);
 }
 
 void Camera::AddShake(float d, float R0, float R1, float p, float Strength) {
