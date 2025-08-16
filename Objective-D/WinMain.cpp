@@ -10,6 +10,7 @@
 #include "GameResource.h"
 #include "StartMode.h"
 
+#include "RandomUpgrade.h"
 #include "Scene.h"
 #include "CameraUtil.h"
 #include "ShaderUtil.h"
@@ -156,17 +157,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		if (Packet->PlayerCount >= (GLOBAL.playerList.size() + 1)  - GLOBAL.deathCount) {
 			{
 				std::lock_guard<std::mutex> lock(PacketMutex);
-				if (GLOBAL.stage == 1) {
-					scene.SwitchMode(Level2::Start);
-				}
-
-				else if (GLOBAL.stage == 2) {
-					scene.SwitchMode(Level3::Start);
-				}
-
-				else if (GLOBAL.stage == 3) {
-					scene.SwitchMode(ClearMode::Start);
-				}
+				scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
 			}
 		}
 

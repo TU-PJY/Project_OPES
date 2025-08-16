@@ -1,11 +1,14 @@
 #include "RandomUpgrade.h"
 #include "RandomUtil.h"
+#include "ModePack.h"
 
 void SendPlayerUpgradePacket(int player_id, int random_id);
 
 // 랜덤 버프/디버프 중에는 컨트롤 불가능
 RandomUpgrade::RandomUpgrade() {
 	GLOBAL.controlEnabled = false;
+	if(GLOBAL.stage == 3)
+		scene.SwitchMode(ClearMode::Start);
 }
 
 // 버프 부여
@@ -38,11 +41,16 @@ void RandomUpgrade::Update(float delta) {
 		}
 	}
 
-	if (delay >= 5.0) {
+	if (delay >= 3.0) {
 		cardSize = std::lerp(cardSize, 1.2, 5.0 * delta);
 		opacity = std::lerp(opacity, 0.0, 5.0 * delta);
-		if (opacity <= 0.001)
-			scene.DeleteObject(this);
+		if (opacity <= 0.001) {
+			if (GLOBAL.stage == 1)
+				scene.SwitchMode(Level2::Start);
+
+			else if (GLOBAL.stage == 2) 
+				scene.SwitchMode(Level3::Start);
+		}
 	}
 }
 
