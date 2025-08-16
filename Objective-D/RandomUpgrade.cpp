@@ -28,7 +28,7 @@ void RandomUpgrade::GetRandomDebuff() {
 void RandomUpgrade::Update(float delta) {
 	delay += delta;
 
-	if (delay >= 1.0 && delay < 5.0) {
+	if (delay < 3.0) {
 		// 아이콘을 위로 이동 및 회전시키면서 보여준다
 		cardSize = std::lerp(cardSize, 0.7, 5.0 * delta);
 		opacity = std::lerp(opacity, 1.0, 5.0 * delta);
