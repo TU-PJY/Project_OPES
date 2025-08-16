@@ -47,7 +47,7 @@ void DefenseIndicator::Update(float Delta) {
 	// 디펜스모드 적을 모두 잡으면 화면 위로 올라가면서 삭제된다.
 	if (currentRemain == 0) {
 		renderHeight += Delta * 0.5;
-		if (renderHeight >= 1.5) {
+		if (renderHeight >= 0.3) {
 			scene.AddObject(new AdventureTimer, "advTimer", LAYER_UI2);
 			scene.DeleteObject(this);
 		}
