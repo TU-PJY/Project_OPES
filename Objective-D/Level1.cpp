@@ -54,7 +54,7 @@ void Level1::Start() {
 	// 떨어지는 바위는 0부터 순차 ID로 생성
 	scene.AddObject(new FallingStone(xmfloat3(-114.3, 20.0, -40.9), 0), std::to_string(0), LAYER_STONE);
 	scene.AddObject(new FallingStone(xmfloat3(-77.0, 10.0, 71.9), 1), std::to_string(1), LAYER_STONE);
-	scene.AddObject(new FallingStone(xmfloat3(34.9, 20.0, -92.9), 2), std::to_string(2), LAYER_STONE);
+	scene.AddObject(new FallingStone(xmfloat3(34.9, 10.0, -92.9), 2), std::to_string(2), LAYER_STONE);
 
 	// 터레인 유틸 객체와 맵 오브젝트 바운드 데이터를 전역에 저장
 	GLOBAL.mapTerrain = mapObject->GetTerrain();

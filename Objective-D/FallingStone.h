@@ -29,6 +29,7 @@ public:
 	unsigned int GetID() override;
 	void GiveDamage(int damage) override;
 	void InputHP(int hp) override;
+	void InputDamage(int damage) override;
 };
 
 
