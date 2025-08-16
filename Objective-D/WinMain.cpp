@@ -100,7 +100,7 @@ bool LoadSoundResources = false;
 START_MODE_PTR StartMode =  TitleMode::Start;
 
 // 0: heavy, 1: dmr, 2: engineer
-int myCharacter = 0;
+int myCharacter = -1;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

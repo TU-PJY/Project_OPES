@@ -6,7 +6,7 @@ void SendChooseJobPacket(unsigned int playerID, int job);
 void SendReadyPacket(unsigned int id);
 
 Lobby::Lobby() {
-	
+
 }
 
 void Lobby::InputMouse(MouseEvent& Event) {

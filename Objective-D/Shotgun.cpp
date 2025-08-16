@@ -33,6 +33,7 @@ void Shotgun::Render() {
 
 	// È­¿° ·»´õ¸µ
 	if (currentFlameRenderTime > 0.0) {
+		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.0);
 		Render3D(MESH.gun_flame, TEX.gun_flame);
 		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
 	}
