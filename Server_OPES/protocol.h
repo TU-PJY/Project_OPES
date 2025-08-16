@@ -169,7 +169,6 @@ constexpr float BONUS_STRUCTURE_DUR_ENG = 1.5f;  // 적응형 구조 (Adaption Struct
 //BONUS_STRUCTURE_HP_ENG -> BONUS_STRUCTURE_DUR_ENG HP -> DUR로 변경
 constexpr int   BONUS_PELLET_SG = 3;			// 집탄 모듈 확장 (Expanded Pellet Module), 산탄 수 +3
 
-
 // 공통 페널티
 constexpr float PENALTY_RPM = 0.85f;			// 무기 과열 (Weapon Overheating), 무기 연사속도 -15%
 constexpr float PENALTY_RELOAD = 1.2f;			// 급한 장전 (Interrupted Reload), 장전 속도 +30%

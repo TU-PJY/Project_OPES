@@ -123,6 +123,10 @@ typedef struct {
 	// 에디터 모드 여부
 	bool editMode;
 
+	// 플레이어 버프 및 디버프
+	bool buff[4]{};
+	bool deBuff[4]{};
+
 	bool RENDER_BOUND;
 
 }GlobalValue;

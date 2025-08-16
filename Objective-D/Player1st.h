@@ -67,7 +67,7 @@ private:
 	float beaconCoolTime{};
 
 	// 플레이어 당 2개 사용 가능
-	int currentGrenadeCount{ 2 };
+	int currentGrenadeCount{ 3 };
 
 	TerrainUtil terrainUtil{};
 
