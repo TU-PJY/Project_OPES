@@ -15,9 +15,9 @@
 #include "CrossHair.h"
 #include "Map1DefenseIndicator.h"
 
-void SendFilePacket(int stage);
-
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
+
+void SendFilePacket(int stage, bool startDefense);
 
 void Level3::Start() {
 	scene.SetupMode("Level3", Destructor, ControlObjectList);
@@ -83,7 +83,7 @@ void Level3::Start() {
 
 	scene.AddObject(new CrossHair, "crosshair", LAYER_UI2, true);
 
-	SendFilePacket(3);
+	SendFilePacket(3, true);
 }
 
 void Level3::Destructor() {

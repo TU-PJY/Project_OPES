@@ -6,6 +6,8 @@
 #include "Imp.h"
 #include "Gazer.h"
 
+void SendFilePacket(int stage, bool startDefense);
+
 // 현재 맵에 따라 다른 몬스터 데이터를 로드하도록 한다.
 MonsterSpawner::MonsterSpawner(bool editMode) {
 	this->editMode = editMode;
@@ -110,16 +112,19 @@ void MonsterSpawner::Update(float Delta) {
 	
 	if (GLOBAL.mapName == "map1" && GLOBAL.Map1DefenseEnemyRemained == 0) {
 		LoadDataAndSpawnMonster();
+		SendFilePacket(1, false);
 		scene.DeleteObject(this);
 	}
 
 	if (GLOBAL.mapName == "map2" && GLOBAL.Map2DefenseEnemyRemained == 0) {
 		LoadDataAndSpawnMonster();
+		SendFilePacket(2, false);
 		scene.DeleteObject(this);
 	}
 
 	if (GLOBAL.mapName == "map3" && GLOBAL.Map3DefenseEnemyRemained == 0) {
 		LoadDataAndSpawnMonster();
+		SendFilePacket(3, false);
 		scene.DeleteObject(this);
 	}
 }

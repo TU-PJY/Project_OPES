@@ -15,10 +15,9 @@
 #include "CrossHair.h"
 #include "RoadBlock.h"
 
-void SendFilePacket(int stage);
-
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
+void SendFilePacket(int stage, bool startDefense);
 
 void Level2::Start() {
 	scene.SetupMode("Level2", Destructor, ControlObjectList);
@@ -91,7 +90,7 @@ void Level2::Start() {
 
 	scene.AddObject(new CrossHair, "crosshair", LAYER_UI2, true);
 
-	SendFilePacket(2);
+	SendFilePacket(2, true);
 }
 
 void Level2::Destructor() {
