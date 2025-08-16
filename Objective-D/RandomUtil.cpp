@@ -8,6 +8,13 @@ float RandomUtil::Gen(float Min, float Max) {
 	return urd(dre);
 }
 
+int RandomUtil::Gen(int Min, int Max) {
+    static std::default_random_engine dre(RD());
+    std::uniform_int_distribution uid{ Min, Max };
+    return uid(dre);
+}
+
+
 XMFLOAT2 RandomUtil::GenPointInCircle(float Diameter, const XMFLOAT2& Center) {
     static std::default_random_engine dre(RD());
     static std::uniform_real_distribution<float> DistAngle(0.0f, 2.0f * XM_PI);

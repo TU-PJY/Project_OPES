@@ -1,6 +1,7 @@
 #include "DMR.h"
 #include "ClampUtil.h"
 #include "Bullet.h"
+#include "CameraUtil.h"
 
 DMR::DMR(GameObject* Ptr) {
 	damage = DMR_DAMAGE;
@@ -45,11 +46,12 @@ void DMR::updateFire(float Delta) {
 		recoilOffset -= recoilBack;
 		currentFireDelayTime = fireDelayTime;
 		currentFlameRenderTime = flameRenderTime;
-		if (userPtr) userPtr->InputRecoil(recoil);
-		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
-			scene.AddObject(new Bullet(damage), "bullet", LAYER3);
-		}
+		//if (userPtr) userPtr->InputRecoil(recoil);
+		//{
+		//std::lock_guard<std::mutex> lock(PacketMutex);
+		scene.AddObject(new Bullet(damage), "bullet", LAYER3);
+		camera.AddRecoilShake(200.0);
+	//	}
 		currentAmmo--;
 		fireEnableState = false;
 

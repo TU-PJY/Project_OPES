@@ -8,6 +8,7 @@ private:
 
 public:
 	float Gen(float Min, float Max);
+	int Gen(int Min, int Max);
 	XMFLOAT2 GenPointInCircle(float Diameter, const XMFLOAT2& Center);
 	XMFLOAT2 GenPointInDonut(float DiameterMin, float DiameterMax, const XMFLOAT2& Center);
 };
