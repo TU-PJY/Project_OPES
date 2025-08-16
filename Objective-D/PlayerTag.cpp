@@ -12,7 +12,7 @@ PlayerTag::PlayerTag(const std::string& name) {
 
 void PlayerTag::Render() {
 	Vector vec{};
-	XMFLOAT3 renderPosition = XMFLOAT3(position.x, position.y + 6.0, position.z);
+	XMFLOAT3 renderPosition = XMFLOAT3(position.x, position.y + 4.0, position.z);
 	float renderMultiply = Math::CalcDistance3D(renderPosition, camera.GetPosition()) * 0.5;
 
 	BeginRender();
