@@ -5,7 +5,6 @@
 
 void SendBangPacket(unsigned int ID);
 
-
 Shotgun::Shotgun(GameObject* Ptr) {
 	// 탄환 하나 당 대미지 (12개)
 	damage = SG_DAMAGE;
@@ -79,16 +78,23 @@ void Shotgun::updateGun(float Delta) {
 	rotation.y = std::lerp(rotation.y, rotationDest.y, Delta * 30.0);
 	rotation.z = std::lerp(rotation.z, rotationDest.z, Delta * 30.0);
 
-	if (reloadState) {
+	// 줌에 따른 위치 오프셋 업데이트
+	if (!reloadState) {
+		if (zoomState) {
+			positionOffset.x = std::lerp(positionOffset.x, 0.0, Delta * 20.0);
+			positionOffset.y = std::lerp(positionOffset.y, -0.22, Delta * 20.0);
+			positionOffset.z = std::lerp(positionOffset.z, 0.2, Delta * 20.0);
+		}
+		else {
+			positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 20.0);
+			positionOffset.y = std::lerp(positionOffset.y, -0.3, Delta * 20.0);
+			positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 20.0);
+		}
+	}
+	else {
 		positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 10.0);
 		positionOffset.y = std::lerp(positionOffset.y, -0.6, Delta * 10.0);
 		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 10.0);
-	}
-
-	else {
-		positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 20.0);
-		positionOffset.y = std::lerp(positionOffset.y, -0.3, Delta * 20.0);
-		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 20.0);
 	}
 
 	// 반동에 따른 위치 오프셋 업데이트
