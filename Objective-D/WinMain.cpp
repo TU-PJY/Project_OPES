@@ -464,7 +464,8 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		StageTimerPacket* pkt = reinterpret_cast<StageTimerPacket*>(buffer);
 		std::cout << "StageTimerPacket-id: " << pkt->remainingSeconds << std::endl;
 
-
+		if (auto timer = scene.SearchLayer(LAYER_UI2, "advTimer"); timer)
+			timer->InputTime(pkt->remainingSeconds);
     }
 	else {
 		std::cout << "== [ERROR] 알 수 없는 패킷 타입 ==" << std::endl;

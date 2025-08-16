@@ -81,6 +81,7 @@ public:
 	virtual void InputHP(unsigned int ID, int currentHP) {}
 	virtual void InputDamage(int damage) {}
 	virtual void InputCreatePositionAndID(float x, float z, unsigned int ID) {}
+	virtual void InputTime(int time) {}
 
 	// 사용자 정의 리턴 함수는 아래에 정의한다.
 	// 크로스헤어 반동 부여 함수

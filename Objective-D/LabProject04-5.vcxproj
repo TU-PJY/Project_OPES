@@ -161,6 +161,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
   <ItemGroup>
     <ClInclude Include="..\Server_OPES\Packet.h" />
     <ClInclude Include="..\Server_OPES\protocol.h" />
+    <ClInclude Include="AdventureTimer.h" />
     <ClInclude Include="Beacon.h" />
     <ClInclude Include="BoundboxShader.h" />
     <ClInclude Include="Bullet.h" />
@@ -255,6 +256,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="RandomUtil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AdventureTimer.cpp" />
     <ClCompile Include="Beacon.cpp" />
     <ClCompile Include="Blends.cpp" />
     <ClCompile Include="BoundboxShader.cpp" />

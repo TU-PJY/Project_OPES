@@ -344,6 +344,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Particle ]\[ Dust ]">
       <UniqueIdentifier>{225df454-e8b0-4fbb-965a-07a118369725}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Adventure Timer ]">
+      <UniqueIdentifier>{ce105702-4e0c-4f34-b08a-70b863a8abc0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -625,6 +628,9 @@
     </ClInclude>
     <ClInclude Include="Dust.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Particle ]\[ Dust ]</Filter>
+    </ClInclude>
+    <ClInclude Include="AdventureTimer.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Adventure Timer ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -936,6 +942,9 @@
     </ClCompile>
     <ClCompile Include="Dust.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Particle ]\[ Dust ]</Filter>
+    </ClCompile>
+    <ClCompile Include="AdventureTimer.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Adventure Timer ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
