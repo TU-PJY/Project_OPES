@@ -1919,7 +1919,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     sendHP = m.hp;
                     if (std::all_of(room.defenseMonsters.begin(), room.defenseMonsters.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
-                        if (timerService) timerService->resetRoom(nextRoomID - 1, 60); // ★ 방 타이머 60초 시작
+                        if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
                     }
                     
 
@@ -1943,7 +1943,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     sendHP = m.hp;
                     if (std::all_of(room.defenseMonsters2.begin(), room.defenseMonsters2.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
-                        if (timerService) timerService->resetRoom(nextRoomID - 1, 60); // ★ 방 타이머 60초 시작
+                        if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
                     }
                     
 
@@ -1967,7 +1967,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     sendHP = m.hp;
                     if (std::all_of(room.defenseMonsters3.begin(), room.defenseMonsters3.end(), [](const MonsterData& m) { return m.hp <= 0; })) {
                         room.defenseState = false;
-                        if (timerService) timerService->resetRoom(nextRoomID - 1, 60); // ★ 방 타이머 60초 시작
+                        if (timerService) timerService->resetRoom(nextRoomID - 1, TIMER_ADVENTURE); // ★ 방 타이머 60초 시작
                     }
                     
 
