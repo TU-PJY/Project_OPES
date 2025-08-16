@@ -185,14 +185,16 @@ void Lobby::Update(float Delta) {
 	backButton.Update(xmfloat3(-1.0 * ASPECT + 0.125, 1.0 - 0.125, 0.0), xmfloat3(0.075, 0.75, 0.0));
 	readyButton.Update(xmfloat3(-1.0 * ASPECT + 0.3 + 1.65, -1.0 + 0.2, 0.0), xmfloat3(0.25, 0.125, 0.0));
 
-	bool allReady = true;
-
-	for (auto& p : GLOBAL.playerList) {
-		if (!p.second.readyState) {
-			allReady = false;
+	if (GLOBAL.imReady) {
+		for (auto& p : GLOBAL.playerList) {
+			StartGame = true;
+			if (!p.second.readyState) {
+				StartGame = false;
+				break;
+			}
 		}
-	}
 
-	if (allReady && GLOBAL.imReady)
-		scene.SwitchMode(Level1::Start);
+		if(StartGame)
+			scene.SwitchMode(Level1::Start);
+	}
 }

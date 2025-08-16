@@ -13,10 +13,12 @@ private:
 	// 준비 버튼
 	AABB readyButton{};
 
-	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0)};
+	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0) };
 	Text playerText{ ALIGN_DEFAULT, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0) };
 
-	int selectedCharacter{-1};
+	int selectedCharacter{ -1 };
+
+	bool StartGame{};
 
 public:
 	Lobby();
