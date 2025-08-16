@@ -7,8 +7,6 @@ void SendPlayerUpgradePacket(int player_id, int random_id);
 // 랜덤 버프/디버프 중에는 컨트롤 불가능
 RandomUpgrade::RandomUpgrade() {
 	GLOBAL.controlEnabled = false;
-	if(GLOBAL.stage == 3)
-		scene.SwitchMode(ClearMode::Start);
 }
 
 // 버프 부여
@@ -26,6 +24,11 @@ void RandomUpgrade::GetRandomDebuff() {
 }
 
 void RandomUpgrade::Update(float delta) {
+	if (GLOBAL.stage == 3) {
+		scene.SwitchMode(ClearMode::Start);
+		return;
+	}
+
 	delay += delta;
 
 	if (delay < 3.0) {
