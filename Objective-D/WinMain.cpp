@@ -55,8 +55,6 @@
 #define SERVER_IP "127.0.0.1"
 #define SERVER_PORT 9000
 
-
-std::atomic<bool> NetRunning{ true };
 std::mutex PacketMutex;
 
 SOCKET clientSocket;
@@ -76,12 +74,12 @@ struct RecvContext {
 
 // 인게임 모드로 스킵하려면 true
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
-constexpr bool skipTitleMode = false;
+constexpr bool skipTitleMode = true;
 
-constexpr bool skipDefenseMode = false;
+constexpr bool skipDefenseMode = true;
 constexpr bool editMode = false;
 
-constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
 
 // 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
@@ -92,14 +90,17 @@ bool DevMode = true;
 bool UIcreateMode = false;
 
 bool LoadMap1Resources = true;
-bool LoadMap2Resources = true;
-bool LoadMap3Resources = true;
+bool LoadMap2Resources = false;
+bool LoadMap3Resources = false;
 
 // 사운드 리소스를 로드한다.
 bool LoadSoundResources = false;
 
 // 시작 모드
-START_MODE_PTR StartMode =  TitleMode::Start;
+START_MODE_PTR StartMode =  Level1::Start;
+
+// 0: heavy, 1: dmr, 2: engineer
+int myCharacter = 1;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -202,8 +203,8 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	else if (*type == PacketType::MONSTER_MOVE) {
 		MonsterMovePacket* packet = reinterpret_cast<MonsterMovePacket*>(buffer);
 
-		std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
-			<< packet->z << " angle:" << packet->angle_y << std::endl;
+		//std::cout << "MonsterID:" << packet->monsterId << "pID" << packet->playerId << "(" << packet->x << ", " << packet->x << ", " << packet->y << ", "
+		//	<< packet->z << " angle:" << packet->angle_y << std::endl;
 		XMFLOAT3 recvPosition = { packet->x, packet->y, packet->z };
 		float recvRotation = packet->angle_y;
 
@@ -219,7 +220,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 	else if (*type == PacketType::PTOM_DAMAGE) {
 		PtoMDamagePacket* packet = reinterpret_cast<PtoMDamagePacket*>(buffer);
-		std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << "damage: " << packet->attackHp << std::endl;
+		//std::cout << "[PTOM_DAMAGE] monsterID: " << packet->monsterID << "damage: " << packet->attackHp << std::endl;
 
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
@@ -232,7 +233,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 
 	else if (*type == PacketType::MTOP_DAMAGE) {
 		MtoPDamagePacket* packet = reinterpret_cast<MtoPDamagePacket*>(buffer);
-		std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
+		//std::cout << "[MTOP_DAMAGE] monsterID: " << packet->monsterID << ", playerID: " << packet->playerID << "damage: " << packet->attackHp << std::endl;
 
 		if (packet->playerID == GLOBAL.myID) {
 			{
@@ -256,8 +257,8 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	}
 	else if (*type == PacketType::RANDOM_POSITION) {
 		DefenseRandomPacket* packet = reinterpret_cast<DefenseRandomPacket*>(buffer);
-		std::cout << "[RANDOM_POSITION] ID: " << packet->monsterID << ", pos: (" << packet->x << ", " << packet->z
-			<< "), rotY: " << std::endl;
+		/*std::cout << "[RANDOM_POSITION] ID: " << packet->monsterID << ", pos: (" << packet->x << ", " << packet->z
+			<< "), rotY: " << std::endl;*/
 
 		/*if (auto defendeGenerator = scene.SearchLayer(LAYER1, "defenseModeMonsterGenerator"); defendeGenerator)
 			defendeGenerator->InputCreatePositionAndID(packet->x, packet->z, packet->monsterID);*/
@@ -281,9 +282,9 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	}
 	else if (*type == PacketType::ENGINEER_INSTALL) {
 		EngineerInstallPacket* packet = reinterpret_cast<EngineerInstallPacket*>(buffer);
-		std::cout << "[ENGINEER_INSTALL] ID: " << packet->ID << ", type: " << packet->Etype
+	/*	std::cout << "[ENGINEER_INSTALL] ID: " << packet->ID << ", type: " << packet->Etype
 			<< ", pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
-			<< "), rotY: " << packet->rotY << std::endl;
+			<< "), rotY: " << packet->rotY << std::endl;*/
 
 		xmfloat3 installPosition = xmfloat3(packet->posX, packet->posY, packet->posZ);
 		float installRotation = packet->rotY;
@@ -301,7 +302,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	}
 	else if (*type == PacketType::ENGINEER_OBJECT) {
 		EngineerObjectPacket* packet = reinterpret_cast<EngineerObjectPacket*>(buffer);
-		std::cout << "[ENGINEER_OBJECT] ID: " << packet->ID << ", hp: " << packet->hp << std::endl;
+		//std::cout << "[ENGINEER_OBJECT] ID: " << packet->ID << ", hp: " << packet->hp << std::endl;
 
 		//처리부분
 	}
@@ -316,8 +317,8 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	}
 	else if (*type == PacketType::GRENADE) {
 		GrenadePacket* packet = reinterpret_cast<GrenadePacket*>(buffer);
-		std::cout << "[GRENADE] pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
-			<< "), rot: (" << packet->rotX << ", " << packet->rotY << ", " << packet->rotZ << ")" << std::endl;
+	/*	std::cout << "[GRENADE] pos: (" << packet->posX << ", " << packet->posY << ", " << packet->posZ
+			<< "), rot: (" << packet->rotX << ", " << packet->rotY << ", " << packet->rotZ << ")" << std::endl;*/
 
 		xmfloat3 createPosition = xmfloat3(packet->posX, packet->posY, packet->posZ);
 		xmfloat3 rotation = xmfloat3(packet->rotX, packet->rotY, packet->rotZ);
@@ -331,14 +332,14 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	}
 	else if (*type == PacketType::PLAYER_ARRIVAL) {
 		PlayerArrivalPacket* packet = reinterpret_cast<PlayerArrivalPacket*>(buffer);
-		std::cout << "[PLAYER_ARRIVAL] playerID: " << packet->playerID << std::endl;
+		//std::cout << "[PLAYER_ARRIVAL] playerID: " << packet->playerID << std::endl;
 
 		//처리부분
 	}
 
 	else if (*type == PacketType::READY) {
 		ReadyPacket* packet = reinterpret_cast<ReadyPacket*>(buffer);
-		std::cout << "[READY] playerID: " << packet->playerID << std::endl;
+		//std::cout << "[READY] playerID: " << packet->playerID << std::endl;
 
 		{
 			std::lock_guard<std::mutex> lock(PacketMutex);
@@ -351,7 +352,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	}
 	else if (*type == PacketType::CHOOSE_JOB) {
 		ChooseJobPacket* packet = reinterpret_cast<ChooseJobPacket*>(buffer);
-		std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << "job:" << packet->job << std::endl;
+		//std::cout << "[CHOOSE_JOB] playerID: " << packet->playerID << "job:" << packet->job << std::endl;
 
 		//처리부분
 		{
@@ -415,7 +416,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 	}
 	else if (*type == PacketType::PLAYER_DEATH) {
 		PlayerDeathPacket* pkt = reinterpret_cast<PlayerDeathPacket*>(buffer);
-		std::cout << "PLAYER_DEATH-id: " << pkt->playerID << std::endl;
+		//std::cout << "PLAYER_DEATH-id: " << pkt->playerID << std::endl;
 
 		GLOBAL.deathCount++;
 
@@ -453,7 +454,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		
 	else if (*type == PacketType::ATTACK_OBJECT) {
 		AttackObjectPacket* pkt = reinterpret_cast<AttackObjectPacket*>(buffer);
-		std::cout << "AttackObject-id: " << pkt->id <<"damage:" << pkt->damage<< std::endl;
+		//std::cout << "AttackObject-id: " << pkt->id <<"damage:" << pkt->damage<< std::endl;
 		
 		if (auto stone = scene.SearchLayer(LAYER_STONE, std::to_string(pkt->id)); stone)
 			stone->InputDamage(pkt->damage);
@@ -655,9 +656,13 @@ void NetworkThread(bool localServer, const wchar_t* cmdLine)
 	//	newContext2->cleanup();
 	//}
 	// 콜백 실행 루프
-	while (NetRunning.load()) {
+	while (GLOBAL.NetRunning.load()) {
 		SleepEx(INFINITE, TRUE); // RecvCallback, SendCallback 실행됨
 	}
+
+	shutdown(clientSocket, SD_BOTH);    // ② 진행 중 I/O 모두 취소
+	closesocket(clientSocket);          //    → SleepEx(INFINITE,TRUE) 깨움
+	WSACleanup();                       // ④ Winsock 해제
 }
 //void SendPlayerDeathPacket(unsigned int playerID) {
 //	if (enter_room) {
@@ -1246,8 +1251,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	AccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT045));
 
 	// 타이틀 모드 스킵 시 cmd로 입력해야 접속 가능
-	if (skipTitleMode)
+	if (skipTitleMode) {
+		GLOBAL.NetRunning.store(true);
 		GLOBAL.netThread = std::thread(NetworkThread, localServer, lpCmdLine);
+	}
 
 	/*if (useServer) {
 		GLOBAL.netThread = std::thread(NetworkThread, localServer, lpCmdLine);
@@ -1335,19 +1342,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	}
 
 	// _tWinMain() 루프를 빠져나온 직후 ---------
-	NetRunning = false;                 // ① 네트워크 루프 정지 플래그
-
-	shutdown(clientSocket, SD_BOTH);    // ② 진행 중 I/O 모두 취소
-	closesocket(clientSocket);          //    → SleepEx(INFINITE,TRUE) 깨움
-
-	if (GLOBAL.netThread.joinable())           // ③ 즉시 조인 가능
-		GLOBAL.netThread.join();
-
-	WSACleanup();                       // ④ Winsock 해제
 	framework.Destroy();                // ⑤ DirectX·리소스 정리
 	return static_cast<int>(Messege.wParam);
-
-
 	//return((int)Messege.wParam);
 }
 
@@ -1404,6 +1400,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow) {
 	GLOBAL.skipDefenseMode = skipDefenseMode;
 	GLOBAL.skipTitleMode = skipTitleMode;
 	GLOBAL.editMode = editMode;
+	GLOBAL.myCharacter = myCharacter;
 
 	std::cout << "전역 변수 초기화 완료" << std::endl;
 

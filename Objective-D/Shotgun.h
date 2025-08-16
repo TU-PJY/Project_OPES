@@ -7,5 +7,6 @@ public:
 	void Render() override;
 	void ReloadGun() override;
 	void updateFire(float Delta) override;
+	void updateGun(float Delta) override;
 };
 

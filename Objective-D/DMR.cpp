@@ -50,7 +50,7 @@ void DMR::updateFire(float Delta) {
 		//{
 		//std::lock_guard<std::mutex> lock(PacketMutex);
 		scene.AddObject(new Bullet(damage), "bullet", LAYER3);
-		camera.AddRecoilShake(200.0, 0.5);
+		camera.AddRecoilShake(200.0, 0.7, 40.0);
 	//	}
 		currentAmmo--;
 		fireEnableState = false;
@@ -79,7 +79,7 @@ void DMR::updateGun(float Delta) {
 	}
 
 	// 반동에 따른 위치 오프셋 업데이트
-	recoilOffset = std::lerp(recoilOffset, 0.0, Delta * 10.0);
+	recoilOffset = std::lerp(recoilOffset, 0.0, Delta * 4.0);
 
 	// 화염 렌더링시간 업데이트
 	currentFlameRenderTime -= Delta;

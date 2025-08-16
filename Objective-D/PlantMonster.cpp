@@ -271,7 +271,7 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 
 
 
-	std::cout << "==============================PLANT MONSTER " << ID << " ADDED ==========================================" << std::endl;
+	//std::cout << "==============================PLANT MONSTER " << ID << " ADDED ==========================================" << std::endl;
 }
 
 PlantMonster::~PlantMonster() {

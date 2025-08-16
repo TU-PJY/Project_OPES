@@ -1,6 +1,8 @@
 #include "Shotgun.h"
 #include "SpreadBullet.h"
 #include "CameraUtil.h"
+#include "ClampUtil.h"
+
 void SendBangPacket(unsigned int ID);
 
 
@@ -64,9 +66,35 @@ void Shotgun::updateFire(float Delta) {
 			std::lock_guard<std::mutex> lock(PacketMutex);*/
 			scene.AddObject(new SpreadBullet(SG_DAMAGE), "spreadBullet", LAYER3);
 			SendBangPacket(GLOBAL.myID);
-			camera.AddRecoilShake(300.0, 0.5);
+			camera.AddRecoilShake(200.0, 0.7, 40.0);
 		//}
 		currentAmmo--;
 		fireEnableState = false;
 	}
+}
+
+void Shotgun::updateGun(float Delta) {
+	// 총 회전 업데이트
+	rotation.x = std::lerp(rotation.x, rotationDest.x, Delta * 30.0);
+	rotation.y = std::lerp(rotation.y, rotationDest.y, Delta * 30.0);
+	rotation.z = std::lerp(rotation.z, rotationDest.z, Delta * 30.0);
+
+	if (reloadState) {
+		positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 10.0);
+		positionOffset.y = std::lerp(positionOffset.y, -0.6, Delta * 10.0);
+		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 10.0);
+	}
+
+	else {
+		positionOffset.x = std::lerp(positionOffset.x, 0.3, Delta * 20.0);
+		positionOffset.y = std::lerp(positionOffset.y, -0.3, Delta * 20.0);
+		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 20.0);
+	}
+
+	// 반동에 따른 위치 오프셋 업데이트
+	recoilOffset = std::lerp(recoilOffset, 0.0, Delta * 4.0);
+
+	// 화염 렌더링시간 업데이트
+	currentFlameRenderTime -= Delta;
+	Clamp::LimitValue(currentFlameRenderTime, 0.0, CLAMP_DIR_LESS);
 }

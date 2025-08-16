@@ -41,7 +41,7 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 			randomPosition.x = RandomXZ.x;
 			randomPosition.z = RandomXZ.y;
 			scene.AddObject(new PlantMonster(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
-			std::cout << currentGenerateCount << "번째 생성" << std::endl;
+			//std::cout << currentGenerateCount << "번째 생성" << std::endl;
 		}
 
 		if (GLOBAL.mapName.compare("map2") == 0) {
@@ -51,7 +51,7 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 			randomPosition.x = RandomXZ.x;
 			randomPosition.z = RandomXZ.y;
 			scene.AddObject(new Treant(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
-			std::cout << currentGenerateCount << "번째 생성" << std::endl;
+			//std::cout << currentGenerateCount << "번째 생성" << std::endl;
 		}
 
 		if (GLOBAL.mapName.compare("map3") == 0) {
@@ -61,7 +61,7 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 			randomPosition.x = RandomXZ.x;
 			randomPosition.z = RandomXZ.y;
 			scene.AddObject(new Gazer(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
-			std::cout << currentGenerateCount << "번째 생성" << std::endl;
+			//std::cout << currentGenerateCount << "번째 생성" << std::endl;
 		}
 
 		currentGenerateCount++;
@@ -70,7 +70,7 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 		// 최대 스폰 횟수에 도달하면 스스로 삭제하여 몬스터 스폰을 중단한다.
 		if (currentGenerateCount == maxGenerateCount) {
 			scene.DeleteObject(this);
-			std::cout << "제너레이터 삭제됨" << std::endl;
+			//std::cout << "제너레이터 삭제됨" << std::endl;
 		}
 	}
 }

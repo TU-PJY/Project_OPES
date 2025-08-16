@@ -8,10 +8,9 @@ void SendNamePacket(const char* playerName);
 void LobbyMode::Start() {
 	scene.SetupMode("LobbyMode", Destructor, ControlObjectList);
 
-	//if(GLOBAL.useServer)
-	if (!GLOBAL.enterServerState) {
+	if (!GLOBAL.NetRunning.load()) {
+		GLOBAL.NetRunning.store(true);
 		GLOBAL.netThread = std::thread(NetworkThread, GLOBAL.useLocalServer, GLOBAL.enterIPw.c_str());
-		GLOBAL.enterServerState = true;
 	}
 
 	if (!GLOBAL.startedGameServer) {

@@ -75,6 +75,9 @@ typedef struct {
 	bool useServer;
 	bool useLocalServer;
 
+	// 서버 구동 여부
+	std::atomic<bool> NetRunning;
+
 	// 현재 접속한 나의 ID
 	unsigned int myID;
 
