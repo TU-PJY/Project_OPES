@@ -1792,6 +1792,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                 if (timerService) timerService->stopRoom(room.roomID);
                 room.centerHp = CENTER_HP;
                 room.DeathCount = 0;
+                room.defenseState = false;
                 room.monsterRandomSent = false;//// ★ 종료 1회 알림 + 타이머 중단
                 room.nextMonsterToSend = 0;
                 room.clearCount = 0;
