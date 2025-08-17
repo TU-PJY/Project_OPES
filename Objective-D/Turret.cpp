@@ -60,7 +60,7 @@ void Turret::updateBound() {
 	frustumBound.Update(turretPosition, xmfloat3(3.0, 3.0, 3.0));
 	inFrustum = camera.CheckFrustum(frustumBound);
 
-	lookRange.Update(position, 30.0);
+	lookRange.Update(position, 50.0);
 	hitBox.Update(turretPosition, xmfloat3(3.0, 3.0, 3.0), xmfloat3(0.0, rotation.y, 0.0));
 }
 

@@ -43,13 +43,13 @@ constexpr unsigned int         TURRET_DAMAGE	    = 10;
 constexpr float                TURRET_DURABILITY    = 20.0f;
 constexpr float                TURRET_INSTALL_SPEED	= 0.5f;
 constexpr float                TURRET_SHOOT_DELAY   = 0.2f;
-constexpr float                TURRET_INSTALL_COOLTIME = 40.0f;
+constexpr float                TURRET_INSTALL_COOLTIME = 20.0f;
 
 constexpr unsigned int         BEACON_ID = 2;
 constexpr unsigned int         BEACON_HEAL = 15;
 constexpr float                BEACON_DURABILITY = 30.0f;
 constexpr float                BEACON_HEAL_DELAY = 0.5f;
-constexpr float                BEACON_INSTALL_COOLTIME = 50.0f;
+constexpr float                BEACON_INSTALL_COOLTIME = 20.0f;
 
 // 캐릭터 LMG 기관총 사수 / DMR 지정사수 / ENG 엔지니어
 // HP 체력, SPEED 이동속도(km/h)

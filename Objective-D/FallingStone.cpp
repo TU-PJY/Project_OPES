@@ -33,6 +33,8 @@ void FallingStone::Update(float Delta) {
 	terrain.InputPosition(position , -3.0);
 
 	if (terrain.CheckCollision(GLOBAL.mapTerrain)) {
+		SOUND.stoneFall.SetPosition(position);
+		SOUND.stoneFall.Play3D();
 		size_t size = scene.LayerSize(LAYER_MONSTER);
 		for (int i = 0; i < size; i++) {
 			if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {

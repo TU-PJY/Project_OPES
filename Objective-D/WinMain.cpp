@@ -77,10 +77,10 @@ struct RecvContext {
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
 constexpr bool skipTitleMode = false;
 
-constexpr bool skipDefenseMode = false;
+constexpr bool skipDefenseMode = true;
 constexpr bool editMode = false;
 
-constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
+constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
 
 // 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
@@ -91,17 +91,17 @@ bool DevMode = true;
 bool UIcreateMode = false;
 
 bool LoadMap1Resources = true;
-bool LoadMap2Resources = true;
-bool LoadMap3Resources = true;
+bool LoadMap2Resources = false;
+bool LoadMap3Resources = false;
 
 // 사운드 리소스를 로드한다.
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode =  TitleMode::Start;
+START_MODE_PTR StartMode =  Level1::Start;
 
 // -1: not selected 0: heavy, 1: dmr, 2: engineer
-int myCharacter = -1;
+int myCharacter = 2;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

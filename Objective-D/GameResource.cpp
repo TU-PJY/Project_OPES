@@ -324,18 +324,19 @@ void LoadSound() {
 	if (!LoadSoundResources)
 		return;
 
-	SOUND.machinegunShoot.Load("Resources//Sounds//machinegunShoot.wav");
+	SOUND.machinegunShoot.Load("Resources//Sounds//machinegunShoot.mp3");
 	SOUND.dmrShoot.Load("Resources//Sounds//dmrShoot.mp3");
 	SOUND.shotgunShoot.Load("Resources//Sounds//shotgunShoot.mp3");
 	SOUND.machinegunReload.Load("Resources//Sounds//machinegunReload.ogg");
 	SOUND.dmrReload.Load("Resources//Sounds//dmrReload.ogg");
 	SOUND.explode.Load("Resources//Sounds//explode.wav", FMOD_3D | FMOD_3D_LINEARROLLOFF);
-	SOUND.machinegunShoot3d.Load("Resources//Sounds//machinegunShoot.wav", FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	SOUND.machinegunShoot3d.Load("Resources//Sounds//machinegunShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.dmrShoot3d.Load("Resources//Sounds//dmrShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.shotgunShoot3d.Load("Resources//Sounds//shotgunShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.turretShoot.Load("Resources//Sounds//turretShoot.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.footstep.Load("Resources//Sounds//footstep.mp3");
 	SOUND.footstep3d.Load("Resources//Sounds//footstep.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	SOUND.stoneFall.Load("Resources//Sounds//stoneFall.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 }
 
 
