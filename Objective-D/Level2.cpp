@@ -14,6 +14,7 @@
 #include "MonsterGenerator.h"
 #include "CrossHair.h"
 #include "RoadBlock.h"
+#include "BuffDebuffIndicator.h"
 
 namespace Level2 { std::deque<GameObject*> ControlObjectList; }
 
@@ -31,16 +32,35 @@ void Level2::Start() {
 	GLOBAL.stage = 2;
 	GLOBAL.controlEnabled = true;
 
-	FOG_DATA FogData{
+	FOG_DATA FogData{};
+
+	// VISION_RANGE_REDUCE 활성화 시 시야가 짧아진다.
+	if (GLOBAL.deBuff[VISION_RANGE_REDUCE]) {
+		FogData = {
 		{0.63, 0.77, 0.98}, // Fog Color
 		0.0,   //   padding1
 
-		300.0, // Fog Start
+		150.0, // Fog Start
 		{0.0, 0.0, 0.0}, // padding2
 
-		500.0, // FogEnd
+		300.0, // FogEnd
 		{0.0, 0.0, 0.0} // padding3
-	};
+		};
+	}
+
+	else {
+		FogData = {
+			{0.63, 0.77, 0.98}, // Fog Color
+			0.0,   //   padding1
+
+			300.0, // Fog Start
+			{0.0, 0.0, 0.0}, // padding2
+
+			500.0, // FogEnd
+			{0.0, 0.0, 0.0} // padding3
+		};
+	}
+
 	CBVUtil::Reset(GlobalSystem.CmdList, FogCBV);
 	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
 
@@ -90,6 +110,7 @@ void Level2::Start() {
 		scene.AddObject(new DefenseIndicator, "map2DefenseIndicator", LAYER_UI2);
 
 	scene.AddObject(new CrossHair, "crosshair", LAYER_UI2, true);
+	scene.AddObject(new BuffDebuffIndicator, "buffdebuff", LAYER_UI2);
 
 	SendFilePacket(2, true);
 }

@@ -14,6 +14,7 @@
 #include "RoadBlock.h"
 #include "CrossHair.h"
 #include "Map1DefenseIndicator.h"
+#include "BuffDebuffIndicator.h"
 
 namespace Level3 { std::deque<GameObject*> ControlObjectList; }
 
@@ -31,16 +32,33 @@ void Level3::Start() {
 	GLOBAL.stage = 3;
 	GLOBAL.controlEnabled = true;
 
-	FOG_DATA FogData{
-		{0.68, 0.28, 0.1}, // Fog Color
-		0.0,   //   padding1
+	// VISION_RANGE_REDUCE 활성화 시 시야가 짧아진다.
+	FOG_DATA FogData{};
+	if (GLOBAL.deBuff[VISION_RANGE_REDUCE]) {
+		FogData = {
+			{0.68, 0.28, 0.1}, // Fog Color
+			0.0,   //   padding1
 
-		500.0, // Fog Start
-		{0.0, 0.0, 0.0}, // padding2
+			250.0, // Fog Start
+			{0.0, 0.0, 0.0}, // padding2
 
-		900.0, // FogEnd
-		{0.0, 0.0, 0.0} // padding3
-	};
+			500.0, // FogEnd
+			{0.0, 0.0, 0.0} // padding3
+		};
+	}
+
+	else {
+		FogData = {
+			{0.68, 0.28, 0.1}, // Fog Color
+			0.0,   //   padding1
+
+			500.0, // Fog Start
+			{0.0, 0.0, 0.0}, // padding2
+
+			900.0, // FogEnd
+			{0.0, 0.0, 0.0} // padding3
+		};
+	}
 	CBVUtil::Reset(GlobalSystem.CmdList, FogCBV);
 	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
 
@@ -83,6 +101,7 @@ void Level3::Start() {
 	}
 
 	scene.AddObject(new CrossHair, "crosshair", LAYER_UI2, true);
+	scene.AddObject(new BuffDebuffIndicator, "buffdebuff", LAYER_UI2);
 
 	SendFilePacket(3, true);
 }

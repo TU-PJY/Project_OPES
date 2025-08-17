@@ -16,6 +16,7 @@
 #include "OtherPlayer.h"
 #include "OtherPlayerIndicator.h"
 #include "FallingStone.h"
+#include "BuffDebuffIndicator.h"
 
 void SendFilePacket(int stage, bool startDefense);
 
@@ -35,7 +36,7 @@ void Level1::Start() {
 	GLOBAL.stage = 1;
 	GLOBAL.controlEnabled = true;
 
-	FOG_DATA FogData{
+	FOG_DATA FogData = {
 		{0.63, 0.77, 0.98}, // Fog Color
 		0.0,   //   padding1
 
@@ -45,6 +46,7 @@ void Level1::Start() {
 		500.0, // FogEnd
 		{0.0, 0.0, 0.0} // padding3
 	};
+	
 	CBVUtil::Reset(GlobalSystem.CmdList, FogCBV);
 	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
 
@@ -99,6 +101,7 @@ void Level1::Start() {
 			scene.AddObject(new DefenseIndicator, "map1DefenseIndicator", LAYER_UI2);
 
 		scene.AddObject(new CrossHair, "crosshair", LAYER_UI2, true);
+		scene.AddObject(new BuffDebuffIndicator, "buffdebuff", LAYER_UI2);
 	}
 
 	SendFilePacket(1, true);

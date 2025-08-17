@@ -11,19 +11,36 @@ RandomUpgrade::RandomUpgrade() {
 
 // 버프 부여
 void RandomUpgrade::GetRandomBuff() {
-	int randNum = Random.Gen(0, 3);
-	GLOBAL.buff[randNum] = true;
-	SendPlayerUpgradePacket(GLOBAL.myID, randNum);
+	std::vector<int> availableItems{};
+
+	// 현재 적용되지 않은 버프만 뽑는다.
+	for (int i = 1; i < 5; i++) {
+		if (!GLOBAL.buff[i])
+			availableItems.emplace_back(i);
+	}
+
+	deBuffIndex = Random.Gen(0, availableItems.size() - 1);
+	GLOBAL.buff[availableItems[deBuffIndex]] = true;
+	SendPlayerUpgradePacket(GLOBAL.myID, -deBuffIndex);
 }
 
 // 디버프 부여
 void RandomUpgrade::GetRandomDebuff() {
-	int randNum = Random.Gen(0, 3);
-	GLOBAL.deBuff[randNum] = true;
-	SendPlayerUpgradePacket(GLOBAL.myID, -randNum);
+	std::vector<int> availableItems{};
+
+	// 현재 적용되지 않은 디버프만 뽑는다.
+	for (int i = 1; i < 5; i++) {
+		if (!GLOBAL.buff[i])
+			availableItems.emplace_back(i);
+	}
+
+	buffIndex = Random.Gen(1, availableItems.size() - 1);
+	GLOBAL.buff[availableItems[buffIndex]] = true;
+	SendPlayerUpgradePacket(GLOBAL.myID, -buffIndex);
 }
 
 void RandomUpgrade::Update(float delta) {
+	// 마지막 스테이지의 경우 바로 삭제
 	if (GLOBAL.stage == 3) {
 		scene.SwitchMode(ClearMode::Start);
 		return;
@@ -68,13 +85,18 @@ void RandomUpgrade::Render() {
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, 0.7, 0.0);
 	Transform::Scale2D(ScaleMatrix, cardSize, cardSize);
-	SetColor(0.0, 1.0, 0.0);
-	Render2D(TEX.ColorTex, opacity);
+	if (buffIndex == MORE_GRENADE) {
+		if (GLOBAL.myCharacter == CHARACTER_ENG)
+			Render2D(TEX.UI_buff[0], opacity);
+		else
+			Render2D(TEX.UI_buff[buffIndex], opacity);
+	}
+	else 
+		Render2D(TEX.UI_buff[buffIndex], opacity);
 
 	// 디버프 아이콘 렌더링
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, -0.7, 0.0);
 	Transform::Scale2D(ScaleMatrix, cardSize, cardSize);
-	SetColor(1.0, 0.0, 0.0);
-	Render2D(TEX.ColorTex, opacity);
+	Render2D(TEX.UI_buff[deBuffIndex], opacity);
 }

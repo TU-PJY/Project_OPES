@@ -56,7 +56,11 @@ void Bullet::updateCollision() {
 	auto ptr = rayTarget.GetNearestTarget();
 	if (ptr) {
 		//std::cout << "=========== NOT NULLPTR ==============" << std::endl;
-		ptr->GiveDamage(bulletDamage);
+		// DAMAGE_REDUCE 활성화 시 대미지 20% 감소
+		float Result = bulletDamage;
+		if (GLOBAL.deBuff[DAMAGE_REDUCE])
+			Result *= 0.8;
+		ptr->GiveDamage(Result);
 		//std::cout << "SEND ID: "  << ID << std::endl;
 	}
 	//else

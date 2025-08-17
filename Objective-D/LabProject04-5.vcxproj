@@ -164,6 +164,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="AdventureTimer.h" />
     <ClInclude Include="Beacon.h" />
     <ClInclude Include="BoundboxShader.h" />
+    <ClInclude Include="BuffDebuffIndicator.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CameraController.h" />
     <ClInclude Include="CameraUtil.h" />
@@ -261,6 +262,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="Beacon.cpp" />
     <ClCompile Include="Blends.cpp" />
     <ClCompile Include="BoundboxShader.cpp" />
+    <ClCompile Include="BuffDebuffIndicator.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CameraUtil.cpp" />
     <ClCompile Include="CenterBuilding.cpp" />

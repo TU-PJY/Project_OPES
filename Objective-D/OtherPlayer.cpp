@@ -70,8 +70,10 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID, const std::string n
 	playerName = name;
 
 	tagObject = scene.AddObject(new PlayerTag(playerName), "tag", LAYER_UI1);
-	if (tagObject)
+	if (tagObject) {
 		tagObject->InputPosition(position);
+		tagObject->SetBuffDebuff(ID);
+	}
 }
 
 OtherPlayer::~OtherPlayer() {

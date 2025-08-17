@@ -14,6 +14,14 @@ HeavyMachineGun::HeavyMachineGun(GameObject* Ptr) {
 	reloadTime = MG_RELOAD_TIME;
 
 	userPtr = Ptr;
+
+	// SHOOT_SPEED_INCREASE 활성화 시 연사 속도 20% 증가
+	if (GLOBAL.buff[SHOOT_SPEED_INCREASE])
+		fireDelayTime *= 0.8;
+
+	// RELOAD_SPEED_INCREASE 활성화 시 재장전 시간 50% 감소
+	if (GLOBAL.buff[RELOAD_SPEED_INCREASE])
+		reloadTime *= 0.5;
 }
 
 void HeavyMachineGun::ReloadGun() {

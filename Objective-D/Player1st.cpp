@@ -33,7 +33,7 @@ Player1st::Player1st(int characterType) {
 
 	case CHARACTER_DMR:
 		weaponPtr = scene.AddObject(new DMR(this), "dmr", LAYER4);
-		scopePtr = scene.AddObject(new Scope, "scope", LAYER_UI2);
+		scopePtr = scene.AddObject(new Scope, "scope", LAYER_UI1);
 		maxSpeed = CHARACTER_DMR_SPEED;
 		totalHP = CHARACTER_DMR_HP;
 		break;
@@ -67,9 +67,13 @@ Player1st::Player1st(int characterType) {
 
 	// 2번 맵은 미끄러워서 가감속이 느려짐
 	if (GLOBAL.mapName.compare("map2") == 0)
-		speedAcc = 1.0;
+		speedAcc = 2.0;
 	else
 		speedAcc = 10.0;
+
+	// MORE_GRENADE 활성화 시 수류탄 개수 1개 추가
+	if (GLOBAL.buff[MORE_GRENADE])
+		currentGrenadeCount = 4;
 }
 
 Player1st::~Player1st() {
@@ -375,19 +379,26 @@ void Player1st::updateState() {
 void Player1st::updateMove(float Delta) {
 //	if (currentState == STATE_DEATH) return;
 
+	// WALK_ACC_REDUCE가 활성화 될 경우 이동 가속 증가 20% 감소
+	int AccMultiply{};
+	if (GLOBAL.deBuff[WALK_ACC_REDUCE])
+		AccMultiply *= 0.8;
+	else
+		AccMultiply = 1.0;
+
 	// 앞뒤 가속/감속
 	if (moveState[FRONT] && !moveState[BACK])
-		forwardSpeed = std::lerp(forwardSpeed, currentSpeed, speedAcc * Delta);
+		forwardSpeed = std::lerp(forwardSpeed, currentSpeed, AccMultiply * speedAcc * Delta);
 	else if (!moveState[FRONT] && moveState[BACK])
-		forwardSpeed = std::lerp(forwardSpeed, -currentSpeed, speedAcc * Delta);
+		forwardSpeed = std::lerp(forwardSpeed, -currentSpeed, AccMultiply * speedAcc * Delta);
 	else 
 		forwardSpeed = std::lerp(forwardSpeed, 0.0, speedAcc * Delta);
 
 	// 좌우 가속/감속
 	if (moveState[RIGHT] && !moveState[LEFT])
-		strafeSpeed = std::lerp(strafeSpeed, currentSpeed, speedAcc * Delta);
+		strafeSpeed = std::lerp(strafeSpeed, currentSpeed, AccMultiply * speedAcc * Delta);
 	else if (!moveState[RIGHT] && moveState[LEFT])
-		strafeSpeed = std::lerp(strafeSpeed, -currentSpeed, speedAcc * Delta);
+		strafeSpeed = std::lerp(strafeSpeed, -currentSpeed, AccMultiply * speedAcc * Delta);
 	else
 		strafeSpeed = std::lerp(strafeSpeed, 0.0, speedAcc * Delta);
 
@@ -502,8 +513,15 @@ void Player1st::updateIndicator() {
 
 
 void Player1st::Update(float Delta) {
-	turretCoolTime -= Delta;
-	beaconCoolTime -= Delta;
+	// 엔지니어의 경우 LESS_COOL_TIME 활성화 시 설치 쿨타임 50% 감소
+	if (GLOBAL.buff[LESS_COOL_TIME]) {
+		turretCoolTime -= Delta * 2.0;
+		beaconCoolTime -= Delta * 2.0;
+	}
+	else {
+		turretCoolTime -= Delta;
+		beaconCoolTime -= Delta;
+	}
 	Clamp::LimitValue(turretCoolTime, 0.0, CLAMP_DIR_LESS);
 	Clamp::LimitValue(beaconCoolTime, 0.0, CLAMP_DIR_LESS);
 
@@ -547,7 +565,12 @@ XMFLOAT3 Player1st::GetSize() {
 }
 
 void Player1st::InputRecoil(float Value) {
-	currentRotation.x -= Value;
+	// RECOIL_INCREASE 활성화 시 반동 20% 증가
+	float Input = Value;
+	if (GLOBAL.deBuff[RECOIL_INCREASE])
+		Input *= 1.2;
+
+	currentRotation.x -= Input;
 }
 
 void Player1st::GiveHeal(int healHP) {
@@ -561,17 +584,24 @@ void Player1st::GiveHeal(int healHP) {
 	}
 	else {
 		//음수를 보내 회복
-		SendMtoPDamagePacket(GLOBAL.myID, 0, -5);
+		SendMtoPDamagePacket(GLOBAL.myID, 0, healHP);
 	}
 }
 
 void Player1st::GiveDamage(int damage) {
 	if (currentState == STATE_DEATH) return;
-	SendMtoPDamagePacket(GLOBAL.myID, 0, damage);
+
+	// DEFENSE_INCREASE 활성화 시 받는 대미지 20% 감소
+	float Input = damage;
+	if (GLOBAL.buff[DEFENSE_INCREASE])
+		Input *= 0.8;
+
+	int Result = (int)Input;
+	SendMtoPDamagePacket(GLOBAL.myID, 0, Result);
 
 	if (!GLOBAL.useServer) {
 		scene.AddObject(new PlayerHit, "playerHit", LAYER_UI2);
-		currentHP -= damage;
+		currentHP -= Result;
 		if (currentHP < 0)
 			currentHP = 0;
 

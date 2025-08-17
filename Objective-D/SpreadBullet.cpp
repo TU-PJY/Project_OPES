@@ -60,8 +60,13 @@ void SpreadBullet::Update(float Delta) {
 	}
 
 	for (auto& d : damageList) {
-		if (d.first)
-			d.first->GiveDamage(d.second);
+		if (d.first) {
+			// DAMAGE_REDUCE 활성화 시 탄 하나 당 대미지 20% 감소
+			float Result = d.second;
+			if (GLOBAL.deBuff[DAMAGE_REDUCE])
+				Result *= 0.8;
+			d.first->GiveDamage(Result);
+		}
 	}
 
 	/*if (!damageList.empty()) {

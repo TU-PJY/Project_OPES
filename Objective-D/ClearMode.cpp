@@ -14,6 +14,10 @@ void ClearMode::Start() {
 	GLOBAL.startedGameServer = false;
 	GLOBAL.imReady = false;
 	GLOBAL.myCharacter = -1;
+	for (int i = 0; i < 5; i++) {
+		GLOBAL.buff[i] = false;
+		GLOBAL.deBuff[i] = false;
+	}
 	mouse.EndMotionCapture();
 
 	GLOBAL.NetRunning = false;                 // ① 네트워크 루프 정지 플래그

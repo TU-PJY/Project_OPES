@@ -304,6 +304,18 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.UI_back, L"Resources//Image//ui//back.png");
 	LoadTexture(TEX.UI_lobbyBackground, L"Resources//Image//ui//lobby-background.png");
 
+	LoadTexture(TEX.UI_buff[BUFF_NONE], L"Resources//Image//ui//buff//less_cooltime.png");
+	LoadTexture(TEX.UI_buff[SHOOT_SPEED_INCREASE], L"Resources//Image//ui//buff//faster_shoot_speed.png");
+	LoadTexture(TEX.UI_buff[RELOAD_SPEED_INCREASE], L"Resources//Image//ui//buff//faster_reload.png");
+	LoadTexture(TEX.UI_buff[MORE_GRENADE], L"Resources//Image//ui//buff//more_grenade.png");
+	LoadTexture(TEX.UI_buff[DEFENSE_INCREASE], L"Resources//Image//ui//buff//more_defense.png");
+
+	LoadTexture(TEX.UI_deBuff[DEBUFF_NONE], L"Resources//Image//ui//debuff//less_damage.png");
+	LoadTexture(TEX.UI_deBuff[RECOIL_INCREASE], L"Resources//Image//ui//debuff//more_recoil.png");
+	LoadTexture(TEX.UI_deBuff[DAMAGE_REDUCE], L"Resources//Image//ui//debuff//less_damage.png");
+	LoadTexture(TEX.UI_deBuff[VISION_RANGE_REDUCE], L"Resources//Image//ui//debuff//less_vision.png");
+	LoadTexture(TEX.UI_deBuff[WALK_ACC_REDUCE], L"Resources//Image//ui//debuff//less_acc.png");
+
 	LoadTexture(TEX.UI_crosshair, L"Resources//Image//ui//crosshair.png");
 }
 /////////////////////////////////////////////////////////////////////////////////

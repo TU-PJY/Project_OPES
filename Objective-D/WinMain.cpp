@@ -100,7 +100,7 @@ bool LoadSoundResources = false;
 // 시작 모드
 START_MODE_PTR StartMode =  TitleMode::Start;
 
-// 0: heavy, 1: dmr, 2: engineer
+// -1: not selected 0: heavy, 1: dmr, 2: engineer
 int myCharacter = -1;
 
 /////////////////////////////////////////////////
@@ -439,8 +439,19 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		PlayerUpgradePacket* pkt = reinterpret_cast<PlayerUpgradePacket*>(buffer);
 		std::cout << "PlayerUpgrade-id: " << pkt->player_id<<", "<<pkt->random_id << std::endl;
 
+		unsigned int ID = pkt->player_id;
+		int EnabledItem = pkt->random_id;
 
+		auto player = GLOBAL.playerList.find(ID);
+		if (player != GLOBAL.playerList.end()) {
+			// 버프
+			if (EnabledItem > 0)
+				player->second.buff[EnabledItem] = true;
+			// 디버프
+			else if (EnabledItem < 0)
+				player->second.deBuff[EnabledItem * -1] = true;
 		}
+	}
 
 		
 	else if (*type == PacketType::ATTACK_OBJECT) {

@@ -347,6 +347,12 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Adventure Timer ]">
       <UniqueIdentifier>{ce105702-4e0c-4f34-b08a-70b863a8abc0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Random Upgrade ]">
+      <UniqueIdentifier>{12518004-01c9-423a-873d-f54c0d556b90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ BuffDebuff ]">
+      <UniqueIdentifier>{5a0f44ca-577b-4216-b738-99b147d46284}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -631,6 +637,12 @@
     </ClInclude>
     <ClInclude Include="AdventureTimer.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Adventure Timer ]</Filter>
+    </ClInclude>
+    <ClInclude Include="RandomUpgrade.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Random Upgrade ]</Filter>
+    </ClInclude>
+    <ClInclude Include="BuffDebuffIndicator.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ BuffDebuff ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -945,6 +957,12 @@
     </ClCompile>
     <ClCompile Include="AdventureTimer.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Adventure Timer ]</Filter>
+    </ClCompile>
+    <ClCompile Include="RandomUpgrade.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ Random Upgrade ]</Filter>
+    </ClCompile>
+    <ClCompile Include="BuffDebuffIndicator.cpp">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ BuffDebuff ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -37,10 +37,34 @@ enum GlobalEnum : unsigned int {
 	CONSTRUCT_BARRIER
 };
 
+enum BuffEnum {
+	BUFF_NONE,
+	SHOOT_SPEED_INCREASE,
+	RELOAD_SPEED_INCREASE,
+	MORE_GRENADE, // (INSTALL_TIME_REDUCE)
+	DEFENSE_INCREASE
+};
+
+enum BuffEng {
+	LESS_COOL_TIME = MORE_GRENADE
+};
+
+enum DebuffEnum {
+	DEBUFF_NONE,
+	RECOIL_INCREASE,
+	DAMAGE_REDUCE, // (수류탄, 터렛은 해당 X)
+	VISION_RANGE_REDUCE, 
+	WALK_ACC_REDUCE
+};
+
 struct PlayerLobbyInfo {
 	int characterType = -1;
 	std::string name = "N/A";
 	bool readyState{};
+
+	// 플레이어 버프 및 디버프
+	bool buff[5]{};
+	bool deBuff[5]{};
 };
 
 // 프로젝트 전역에서 사용하는 변수들
@@ -124,8 +148,8 @@ typedef struct {
 	bool editMode;
 
 	// 플레이어 버프 및 디버프
-	bool buff[4];
-	bool deBuff[4];
+	bool buff[5];
+	bool deBuff[5];
 
 	//플레이어 컨트롤 가능 여부
 	bool controlEnabled;
@@ -282,6 +306,14 @@ typedef struct {
 	Texture* UI_selected;
 	Texture* UI_back;
 	Texture* UI_lobbyBackground;
+
+	Texture* UI_fasterShoot;
+	Texture* UI_fasterReload;
+	Texture* UI_moreGrenade;
+	Texture* UI_lessDamage;
+
+	Texture* UI_buff[5];
+	Texture* UI_deBuff[5];
 
 	Texture* UI_crosshair;
 }TextureResource;
