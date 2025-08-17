@@ -8,8 +8,8 @@ private:
 	XMFLOAT3 position{};
 	Text     tagText{};
 
-	std::vector<bool> buffState{};
-	std::vector<bool> debuffState{};
+	std::deque<bool> buffState{};
+	std::deque<bool> debuffState{};
 
 public:
 	PlayerTag(const std::string& name);

@@ -8,16 +8,17 @@ PlayerTag::PlayerTag(const std::string& name) {
 	tagText.SetHeightAlign(HEIGHT_MIDDLE);
 	tagText.EnableStaticSize();
 	tagText.SetColor(XMFLOAT3(1.0, 1.0, 1.0));
+
+	buffState.assign({}, 5);
+	debuffState.assign({}, 5);
 }
 
 void PlayerTag::SetBuffDebuff(unsigned int ID) {
-	for (int i = 0; i < 5; i++) {
-		if (i > 0) {
-			if (GLOBAL.playerList[ID].buff[i])
-				buffState[i] = true;
-			if (GLOBAL.playerList[ID].deBuff[i])
-				debuffState[i] = true;
-		}
+	for (int i = 1; i < 5; i++) {
+		if (GLOBAL.playerList[ID].buff[i])
+			buffState[i] = true;
+		if (GLOBAL.playerList[ID].deBuff[i])
+			debuffState[i] = true;
 	}
 }
 
@@ -40,7 +41,7 @@ void PlayerTag::Render() {
 	tagText.Render3D(renderPosition, 0.03, tag);
 
 	float renderOffset{};
-	for (int i = 1; i < 3; i++) {
+	for (int i = 1; i < 5; i++) {
 		if (buffState[i]) {
 			BeginRender();
 			SetFogUse(DISABLE_FOG);

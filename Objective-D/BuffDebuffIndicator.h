@@ -5,8 +5,8 @@ class BuffDebuffIndicator : public GameObject {
 private:
 	int buffCount{};
 	int deBuffCount{};
-	std::vector<float> buffPosition{};
-	std::vector<float> deBuffPosition{};
+	std::deque<float> buffPosition{};
+	std::deque<float> deBuffPosition{};
 
 public:
 	BuffDebuffIndicator();
