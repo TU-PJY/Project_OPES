@@ -9,8 +9,8 @@ PlayerTag::PlayerTag(const std::string& name) {
 	tagText.EnableStaticSize();
 	tagText.SetColor(XMFLOAT3(1.0, 1.0, 1.0));
 
-	buffState.assign({}, 5);
-	debuffState.assign({}, 5);
+	buffState.assign(5, false);
+	debuffState.assign(5, false);
 }
 
 void PlayerTag::SetBuffDebuff(unsigned int ID) {
