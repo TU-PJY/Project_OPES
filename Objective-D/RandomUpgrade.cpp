@@ -6,7 +6,6 @@ void SendPlayerUpgradePacket(int player_id, int random_id);
 
 // 랜덤 버프/디버프 중에는 컨트롤 불가능
 RandomUpgrade::RandomUpgrade() {
-	GLOBAL.controlEnabled = false;
 }
 
 // 버프 부여

@@ -35,13 +35,14 @@ void PlayerTag::Render() {
 	SetLightUse(DISABLE_LIGHT);
 	Transform::Move(TranslateMatrix, renderPosition);
 	Math::BillboardLookAt(RotateMatrix, vec, renderPosition, camera.GetPosition());
-	rotMat = RotateMatrix;
 	Transform::Scale(ScaleMatrix, 0.03 * 8.0 * renderMultiply, 0.05 * renderMultiply, 1.0);
 	Render3D(SYSRES.BillboardMesh, TEX.ColorTex, 0.6, DEPTH_TEST_NONE);
 
 	tagText.Render3D(renderPosition, 0.03, tag);
 
-	float renderOffset{};
+	float renderBuffOffset{};
+	float renderDebuffOffset{};
+
 	for (int i = 1; i < 5; i++) {
 		if (buffState[i]) {
 			BeginRender();
@@ -50,8 +51,10 @@ void PlayerTag::Render() {
 			Transform::Move(TranslateMatrix, renderPosition);
 			Math::BillboardLookAt(RotateMatrix, vec, renderPosition, camera.GetPosition());
 			Transform::Scale(ScaleMatrix, 0.07 * renderMultiply, 0.07 * renderMultiply, 1.0);
-			Transform::Move(ScaleMatrix, -2.3 + 1.5 * renderOffset, 1.1, 0.0);
+			Transform::Move(ScaleMatrix, -2.3 + 1.5 * renderBuffOffset, 1.1, 0.0);
 			Render3D(SYSRES.BillboardMesh, TEX.UI_buff[i], 1.0, DEPTH_TEST_NONE);
+
+			renderBuffOffset++;
 		}
 
 		if (debuffState[i]) {
@@ -61,10 +64,11 @@ void PlayerTag::Render() {
 			Transform::Move(TranslateMatrix, renderPosition);
 			Math::BillboardLookAt(RotateMatrix, vec, renderPosition, camera.GetPosition());
 			Transform::Scale(ScaleMatrix, 0.07 * renderMultiply, 0.07 * renderMultiply, 1.0);
-			Transform::Move(ScaleMatrix, (2.3 - 1.5) + 1.5 * renderOffset, 1.1, 0.0);
+			Transform::Move(ScaleMatrix, (2.3 - 1.5) + 1.5 * renderDebuffOffset, 1.1, 0.0);
 			Render3D(SYSRES.BillboardMesh, TEX.UI_deBuff[i], 1.0, DEPTH_TEST_NONE);
+
+			renderDebuffOffset++;
 		}
-		renderOffset++;
 	}
 }
 

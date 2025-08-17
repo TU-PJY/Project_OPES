@@ -377,14 +377,12 @@ void Player1st::updateState() {
 
 // 플레이어 이동 속도를 업데이트한다.
 void Player1st::updateMove(float Delta) {
-//	if (currentState == STATE_DEATH) return;
+	if (currentState == STATE_DEATH) return;
 
 	// WALK_ACC_REDUCE가 활성화 될 경우 이동 가속 증가 20% 감소
-	int AccMultiply{};
+	float AccMultiply = 1.0;
 	if (GLOBAL.deBuff[WALK_ACC_REDUCE])
 		AccMultiply *= 0.8;
-	else
-		AccMultiply = 1.0;
 
 	// 앞뒤 가속/감속
 	if (moveState[FRONT] && !moveState[BACK])

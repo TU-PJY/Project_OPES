@@ -44,6 +44,8 @@ void BuffDebuffIndicator::Render() {
 			}
 			else
 				Render2D(TEX.UI_buff[i]);
+
+			renderBuffPos += 1.5;
 		}
 
 		if (debuffState[i]) {
@@ -53,9 +55,8 @@ void BuffDebuffIndicator::Render() {
 			Transform::Move2D(TranslateMatrix, 0.0, 1.0);
 			Transform::Move2D(TranslateMatrix, renderDebuffPos, 0.0);
 			Render2D(TEX.UI_deBuff[i]);
-		}
 
-		renderBuffPos += 1.5;
-		renderDebuffPos += 1.5;
+			renderDebuffPos += 1.5;
+		}
 	}
 }
