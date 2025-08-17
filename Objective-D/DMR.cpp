@@ -3,6 +3,8 @@
 #include "Bullet.h"
 #include "CameraUtil.h"
 
+void SendBangPacket(unsigned int ID);
+
 DMR::DMR(GameObject* Ptr) {
 	damage = DMR_DAMAGE;
 	recoil = DMR_RECOIL;
@@ -59,6 +61,7 @@ void DMR::updateFire(float Delta) {
 		//std::lock_guard<std::mutex> lock(PacketMutex);
 		scene.AddObject(new Bullet(damage), "bullet", LAYER3);
 		camera.AddRecoilShake(200.0, 0.7, 40.0);
+		SendBangPacket(GLOBAL.myID);
 	//	}
 		currentAmmo--;
 		fireEnableState = false;
