@@ -26,7 +26,7 @@ class TestObject : public GameObject {
 public:
 	GameObject* tag{};
 	TestObject() {
-		tag = scene.AddObject(new PlayerTag("Player1"), "tag", LAYER_UI1);
+		//tag = scene.AddObject(new PlayerTag("Player1"), "tag", LAYER_UI1);
 	}
 
 	void InputKey(KeyEvent& Event) {
@@ -38,7 +38,7 @@ public:
 	}
 
 	void Update(float Delta) {
-		tag->InputPosition(XMFLOAT3( 0.0, 0.0, 0.0 ));
+		//tag->InputPosition(XMFLOAT3( 0.0, 0.0, 0.0 ));
 	}
 
 	void Render() {
@@ -58,7 +58,7 @@ void TestMode::Start() {
 	scene.SetupMode("TestMode", Destructor, ControlObjectList);
 	scene.AddObject(new CameraController(true), "camera_controller", LAYER1, true);
 	scene.AddObject(new TestObject, "testObject", LAYER1, true);
-	scene.AddObject(new BuffDebuffIndicator, "ran", LAYER_UI1);
+	scene.AddObject(new RandomUpgrade, "ran", LAYER_UI1);
 	
 //	scene.AddObject(new Lobby, "lobby", LAYERUI, true);
 	//ind = scene.AddObject(new PlayerIndicator(CHARACTER_MG), "ind", LAYER1);

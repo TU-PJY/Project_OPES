@@ -220,9 +220,9 @@ void Treant::updateAttack() {
 			}
 			else {
 				if (auto center = scene.SearchLayer(LAYER1, "center_building"); center) {
-					if(!GLOBAL.useServer)
+					//if(!GLOBAL.useServer)
 						center->GiveDamage(15);
-					SendCenterBuildingPacket(15);
+					//SendCenterBuildingPacket(10);
 				}
 			}
 			attackDid = true;

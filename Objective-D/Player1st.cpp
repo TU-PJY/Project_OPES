@@ -382,7 +382,7 @@ void Player1st::updateMove(float Delta) {
 	// WALK_ACC_REDUCE가 활성화 될 경우 이동 가속 증가 20% 감소
 	float AccMultiply = 1.0;
 	if (GLOBAL.deBuff[WALK_ACC_REDUCE])
-		AccMultiply *= 0.8;
+		AccMultiply *= 0.7;
 
 	// 앞뒤 가속/감속
 	if (moveState[FRONT] && !moveState[BACK])
@@ -566,7 +566,7 @@ void Player1st::InputRecoil(float Value) {
 	// RECOIL_INCREASE 활성화 시 반동 20% 증가
 	float Input = Value;
 	if (GLOBAL.deBuff[RECOIL_INCREASE])
-		Input *= 1.2;
+		Input *= 1.5;
 
 	currentRotation.x -= Input;
 }
@@ -599,6 +599,9 @@ void Player1st::GiveDamage(int damage) {
 
 	if (!GLOBAL.useServer) {
 		scene.AddObject(new PlayerHit, "playerHit", LAYER_UI2);
+		SOUND.hurt.Play();
+		camera.AddShake(0.1);
+
 		currentHP -= Result;
 		if (currentHP < 0)
 			currentHP = 0;
@@ -606,6 +609,7 @@ void Player1st::GiveDamage(int damage) {
 		if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
 
 		if (this->currentHP <= 0) {
+			SOUND.death.Play();
 			scene.AddObject(new CameraController, "camControll", LAYER1, true);
 			scene.DeleteObject(this);
 		}
@@ -625,8 +629,11 @@ void Player1st::InputHP(int currentHP) {
 		IndicatorPtr->InputHP(totalHP, this->currentHP);
 
 	// 이전 체력보다 현재ㅐ 체력이 낮을 떄만 피격 이팩트 출력
-	if (prevHP > this->currentHP)
+	if (prevHP > this->currentHP) {
 		scene.AddObject(new PlayerHit, "playerHit", LAYER_UI2);
+		SOUND.hurt.Play();
+		camera.AddShake(0.1);
+	}
 
 	prevHP = this->currentHP;
 
@@ -634,6 +641,7 @@ void Player1st::InputHP(int currentHP) {
 	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
 
 	if (this->currentHP <= 0) {
+		SOUND.death.Play();
 		scene.AddObject(new CameraController, "camControll", LAYER1, true);
 		scene.AddObject(new SpecterUI, "sptUI", LAYER_UI2);
 		scene.DeleteObject(this);

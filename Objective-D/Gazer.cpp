@@ -90,10 +90,10 @@ void Gazer::gz_updateAttack() {
 			}
 			else {
 				if (auto center = scene.SearchLayer(LAYER1, "center_building"); center) {
-					if (!GLOBAL.useServer)
+					//if (!GLOBAL.useServer)
 						center->GiveDamage(10);
-					else
-						SendCenterBuildingPacket(10);
+					//else
+						//SendCenterBuildingPacket(10);
 				}
 			}
 			attackDid = true;

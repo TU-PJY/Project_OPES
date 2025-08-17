@@ -252,6 +252,9 @@ void OtherPlayer::InputHP(int currentHP) {
 	//this->currentHP = currentHP;
 	Clamp::LimitValue(this->currentHP, 0, CLAMP_DIR_LESS);
 	if (this->currentHP == 0) {
+		SOUND.death3D.SetPosition(position);
+		SOUND.death3D.Play3D();
+
 		if (tagObject)
 			scene.DeleteObject(tagObject);
 		currentState = STATE_DEATH;

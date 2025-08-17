@@ -80,7 +80,7 @@ constexpr bool skipTitleMode = false;
 constexpr bool skipDefenseMode = true;
 constexpr bool editMode = false;
 
-constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
 
 // 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
@@ -91,17 +91,17 @@ bool DevMode = true;
 bool UIcreateMode = false;
 
 bool LoadMap1Resources = true;
-bool LoadMap2Resources = false;
-bool LoadMap3Resources = false;
+bool LoadMap2Resources = true;
+bool LoadMap3Resources = true;
 
 // 사운드 리소스를 로드한다.
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode =  Level1::Start;
+START_MODE_PTR StartMode =  TitleMode::Start;
 
 // -1: not selected 0: heavy, 1: dmr, 2: engineer
-int myCharacter = 2;
+int myCharacter = -1;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

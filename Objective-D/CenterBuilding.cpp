@@ -1,6 +1,9 @@
 #include "CenterBuilding.h"
 #include "Scene.h"
 #include "HP_Indicator.h"
+#include "ModePack.h"
+
+void SendCenterBuildingPacket(int damage);
 
 CenterBuilding::CenterBuilding(float height_offset) {
 	if (auto terrain = scene.Find(GLOBAL.mapName); terrain) {
@@ -48,9 +51,13 @@ void CenterBuilding::GiveDamage(int Damage) {
 	if (currentHP <= 0)
 		return;
 
-	currentHP -= Damage;
-	if (currentHP <= 0)
-		currentHP = 0;
+	if (!GLOBAL.useServer) {
+		currentHP -= Damage;
+		if (currentHP <= 0)
+			currentHP = 0;
+	}
+	else
+		SendCenterBuildingPacket(Damage);
 }
 
 void CenterBuilding::InputHP(int hp) {
@@ -58,6 +65,8 @@ void CenterBuilding::InputHP(int hp) {
 		return;
 
 	currentHP = hp;
-	if (currentHP <= 0)
+	if (currentHP <= 0) {
 		currentHP = 0;
+		scene.SwitchMode(GameOverMode::Start);
+	}
 }

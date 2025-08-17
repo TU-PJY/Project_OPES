@@ -1,5 +1,6 @@
 #pragma once
 #include "Scene.h"
+#include "TextUtil.h"
 
 class RandomUpgrade : public GameObject {
 private:
@@ -10,6 +11,8 @@ private:
 
 	int buffResult{};
 	int debuffResult{};
+
+	Text text{};
 
 public:
 	RandomUpgrade();

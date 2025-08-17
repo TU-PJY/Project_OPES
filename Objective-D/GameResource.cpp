@@ -319,6 +319,8 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.UI_frame, L"Resources//Image//ui//frame_yellow.png");
 
 	LoadTexture(TEX.UI_crosshair, L"Resources//Image//ui//crosshair.png");
+
+	LoadTexture(TEX.UI_clearScreen, L"Resources//Image//clear.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -340,6 +342,10 @@ void LoadSound() {
 	SOUND.footstep3d.Load("Resources//Sounds//footstep.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.stoneFall.Load("Resources//Sounds//stoneFall.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.install.Load("Resources//Sounds//installTurret.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	SOUND.death3D.Load("Resources//Sounds//death.mp3", FMOD_3D | FMOD_3D_INVERSEROLLOFF);
+	SOUND.death.Load("Resources//Sounds//death.mp3");
+	SOUND.hurt.Load("Resources//Sounds//hurt.mp3");
+	SOUND.buff.Load("Resources//Sounds//buff.mp3");
 }
 
 

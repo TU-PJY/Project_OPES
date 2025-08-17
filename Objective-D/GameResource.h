@@ -318,6 +318,8 @@ typedef struct {
 	Texture* UI_frame;
 
 	Texture* UI_crosshair;
+
+	Texture* UI_clearScreen;
 }TextureResource;
 extern TextureResource TEX;
 
@@ -336,6 +338,10 @@ typedef struct {
 	QP::Sound footstep3d;
 	QP::Sound stoneFall;
 	QP::Sound install;
+	QP::Sound death;
+	QP::Sound death3D;
+	QP::Sound hurt;
+	QP::Sound buff;
 }SoundRecources;
 extern SoundRecources SOUND;
 
