@@ -98,5 +98,5 @@ void RandomUpgrade::Render() {
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, -0.7, 0.0);
 	Transform::Scale2D(ScaleMatrix, cardSize, cardSize);
-	Render2D(TEX.UI_buff[deBuffIndex], opacity);
+	Render2D(TEX.UI_deBuff[deBuffIndex], opacity);
 }
