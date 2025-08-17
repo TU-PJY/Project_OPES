@@ -18,7 +18,6 @@ void ClearMode::Start() {
 		GLOBAL.buff[i] = false;
 		GLOBAL.deBuff[i] = false;
 	}
-	mouse.EndMotionCapture();
 
 	GLOBAL.NetRunning = false;                 // ① 네트워크 루프 정지 플래그
 	//if (GLOBAL.netThread.joinable())           // ③ 즉시 조인 가능
@@ -26,4 +25,5 @@ void ClearMode::Start() {
 }
 
 void ClearMode::Destructor() {
+	mouse.EndMotionCapture();
 }
