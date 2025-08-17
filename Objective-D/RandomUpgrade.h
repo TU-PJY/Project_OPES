@@ -7,8 +7,9 @@ private:
 	bool randomCreated{};
 	float opacity{};
 	float delay{};
-	int buffIndex{};
-	int deBuffIndex{};
+
+	int buffResult{};
+	int debuffResult{};
 
 public:
 	RandomUpgrade();

@@ -11,6 +11,7 @@ RandomUpgrade::RandomUpgrade() {
 // 버프 부여
 void RandomUpgrade::GetRandomBuff() {
 	std::vector<int> availableItems{};
+	int index{};
 	// 현재 적용되지 않은 버프만 뽑는다.
 	{
 		std::lock_guard<std::mutex> lock(PacketMutex);
@@ -19,15 +20,18 @@ void RandomUpgrade::GetRandomBuff() {
 				availableItems.emplace_back(i);
 		}
 
-		buffIndex = Random.Gen(0, availableItems.size() - 1);
-		GLOBAL.buff[availableItems[buffIndex]] = true;
+		index = Random.Gen(0, availableItems.size() - 1);
+		GLOBAL.buff[availableItems[index]] = true;
+		buffResult = availableItems[index];
 	}
-	SendPlayerUpgradePacket(GLOBAL.myID, buffIndex);
+
+	SendPlayerUpgradePacket(GLOBAL.myID, availableItems[index]);
 }
 
 // 디버프 부여
 void RandomUpgrade::GetRandomDebuff() {
 	std::vector<int> availableItems{};
+	int index{};
 	// 현재 적용되지 않은 디버프만 뽑는다.
 	{
 		std::lock_guard<std::mutex> lock(PacketMutex);
@@ -36,10 +40,12 @@ void RandomUpgrade::GetRandomDebuff() {
 				availableItems.emplace_back(i);
 		}
 
-		deBuffIndex = Random.Gen(1, availableItems.size() - 1);
-		GLOBAL.deBuff[availableItems[deBuffIndex]] = true;
+		index = Random.Gen(0, availableItems.size() - 1);
+		GLOBAL.deBuff[availableItems[index]] = true;
+		debuffResult = availableItems[index];
 	}
-	SendPlayerUpgradePacket(GLOBAL.myID, -deBuffIndex);
+
+	SendPlayerUpgradePacket(GLOBAL.myID, -availableItems[index]);
 }
 
 void RandomUpgrade::Update(float delta) {
@@ -90,18 +96,18 @@ void RandomUpgrade::Render() {
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, 0.7, 0.0);
 	Transform::Scale2D(ScaleMatrix, cardSize, cardSize);
-	if (buffIndex == MORE_GRENADE) {
+	if (buffResult == MORE_GRENADE) {
 		if (GLOBAL.myCharacter == CHARACTER_ENG)
 			Render2D(TEX.UI_buff[0], opacity);
 		else
-			Render2D(TEX.UI_buff[buffIndex], opacity);
+			Render2D(TEX.UI_buff[buffResult], opacity);
 	}
 	else 
-		Render2D(TEX.UI_buff[buffIndex], opacity);
+		Render2D(TEX.UI_buff[buffResult], opacity);
 
 	// 디버프 아이콘 렌더링
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, -0.7, 0.0);
 	Transform::Scale2D(ScaleMatrix, cardSize, cardSize);
-	Render2D(TEX.UI_deBuff[deBuffIndex], opacity);
+	Render2D(TEX.UI_deBuff[debuffResult], opacity);
 }
