@@ -3,12 +3,9 @@
 
 class BuffDebuffIndicator : public GameObject {
 private:
-	int buffCount{};
-	int deBuffCount{};
 	int renderCount{};
-
-	std::deque<float> buffPosition{};
-	std::deque<float> deBuffPosition{};
+	std::deque<bool> buffState{};
+	std::deque<bool> debuffState{};
 
 public:
 	BuffDebuffIndicator();
