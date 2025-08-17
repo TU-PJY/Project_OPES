@@ -20,9 +20,9 @@ void RandomUpgrade::GetRandomBuff() {
 		}
 
 		deBuffIndex = Random.Gen(0, availableItems.size() - 1);
-		GLOBAL.buff[availableItems[deBuffIndex]] = true;
+		GLOBAL.buff[availableItems[buffIndex]] = true;
 	}
-	SendPlayerUpgradePacket(GLOBAL.myID, deBuffIndex);
+	SendPlayerUpgradePacket(GLOBAL.myID, buffIndex);
 }
 
 // 디버프 부여
@@ -37,9 +37,9 @@ void RandomUpgrade::GetRandomDebuff() {
 		}
 
 		buffIndex = Random.Gen(1, availableItems.size() - 1);
-		GLOBAL.deBuff[availableItems[buffIndex]] = true;
+		GLOBAL.deBuff[availableItems[deBuffIndex]] = true;
 	}
-	SendPlayerUpgradePacket(GLOBAL.myID, -buffIndex);
+	SendPlayerUpgradePacket(GLOBAL.myID, -deBuffIndex);
 }
 
 void RandomUpgrade::Update(float delta) {
