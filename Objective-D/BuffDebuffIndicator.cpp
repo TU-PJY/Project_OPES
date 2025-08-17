@@ -2,6 +2,8 @@
 
 BuffDebuffIndicator::BuffDebuffIndicator() {
 	renderCount = GLOBAL.stage - 1;
+	buffState.resize(5);
+	debuffState.resize(5);
 
 	std::lock_guard<std::mutex> lock(PacketMutex);
 	for (int i = 0; i < 5; i++) {
