@@ -19,7 +19,7 @@ void RandomUpgrade::GetRandomBuff() {
 				availableItems.emplace_back(i);
 		}
 
-		deBuffIndex = Random.Gen(0, availableItems.size() - 1);
+		buffIndex = Random.Gen(0, availableItems.size() - 1);
 		GLOBAL.buff[availableItems[buffIndex]] = true;
 	}
 	SendPlayerUpgradePacket(GLOBAL.myID, buffIndex);
@@ -36,7 +36,7 @@ void RandomUpgrade::GetRandomDebuff() {
 				availableItems.emplace_back(i);
 		}
 
-		buffIndex = Random.Gen(1, availableItems.size() - 1);
+		deBuffIndex = Random.Gen(1, availableItems.size() - 1);
 		GLOBAL.deBuff[availableItems[deBuffIndex]] = true;
 	}
 	SendPlayerUpgradePacket(GLOBAL.myID, -deBuffIndex);
