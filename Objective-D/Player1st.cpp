@@ -582,7 +582,7 @@ void Player1st::GiveHeal(int healHP) {
 	}
 	else {
 		//음수를 보내 회복
-		SendMtoPDamagePacket(GLOBAL.myID, 0, healHP);
+		SendMtoPDamagePacket(GLOBAL.myID, 0, -healHP);
 	}
 }
 
