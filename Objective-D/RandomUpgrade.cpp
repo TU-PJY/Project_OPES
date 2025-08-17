@@ -12,30 +12,34 @@ RandomUpgrade::RandomUpgrade() {
 // 버프 부여
 void RandomUpgrade::GetRandomBuff() {
 	std::vector<int> availableItems{};
-
 	// 현재 적용되지 않은 버프만 뽑는다.
-	for (int i = 1; i < 5; i++) {
-		if (!GLOBAL.buff[i])
-			availableItems.emplace_back(i);
-	}
+	{
+		std::lock_guard<std::mutex> lock(PacketMutex);
+		for (int i = 1; i < 5; i++) {
+			if (!GLOBAL.buff[i])
+				availableItems.emplace_back(i);
+		}
 
-	deBuffIndex = Random.Gen(0, availableItems.size() - 1);
-	GLOBAL.buff[availableItems[deBuffIndex]] = true;
+		deBuffIndex = Random.Gen(0, availableItems.size() - 1);
+		GLOBAL.buff[availableItems[deBuffIndex]] = true;
+	}
 	SendPlayerUpgradePacket(GLOBAL.myID, deBuffIndex);
 }
 
 // 디버프 부여
 void RandomUpgrade::GetRandomDebuff() {
 	std::vector<int> availableItems{};
-
 	// 현재 적용되지 않은 디버프만 뽑는다.
-	for (int i = 1; i < 5; i++) {
-		if (!GLOBAL.deBuff[i])
-			availableItems.emplace_back(i);
-	}
+	{
+		std::lock_guard<std::mutex> lock(PacketMutex);
+		for (int i = 1; i < 5; i++) {
+			if (!GLOBAL.deBuff[i])
+				availableItems.emplace_back(i);
+		}
 
-	buffIndex = Random.Gen(1, availableItems.size() - 1);
-	GLOBAL.deBuff[availableItems[buffIndex]] = true;
+		buffIndex = Random.Gen(1, availableItems.size() - 1);
+		GLOBAL.deBuff[availableItems[buffIndex]] = true;
+	}
 	SendPlayerUpgradePacket(GLOBAL.myID, -buffIndex);
 }
 
@@ -55,8 +59,10 @@ void RandomUpgrade::Update(float delta) {
 
 		// 랜덤 버프 / 디버프 부여는 1회만 한다.
 		if (!randomCreated) {
-			GetRandomBuff();
-			GetRandomDebuff();
+			{
+				GetRandomBuff();
+				GetRandomDebuff();
+			}
 			randomCreated = true;
 		}
 	}

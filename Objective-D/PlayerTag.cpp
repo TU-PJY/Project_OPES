@@ -14,6 +14,7 @@ PlayerTag::PlayerTag(const std::string& name) {
 }
 
 void PlayerTag::SetBuffDebuff(unsigned int ID) {
+	std::lock_guard<std::mutex> lock(PacketMutex);
 	for (int i = 1; i < 5; i++) {
 		if (GLOBAL.playerList[ID].buff[i])
 			buffState[i] = true;

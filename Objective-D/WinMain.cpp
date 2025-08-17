@@ -184,7 +184,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		//std::cout << "몬스터id:" << packet->id << "state: " << packet->state << std::endl;
 
 		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
+			//std::lock_guard<std::mutex> lock(PacketMutex);
 			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->id)); monster)
 				monster->InputState(packet->state);
 
@@ -200,7 +200,7 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		float recvRotation = packet->angle_y;
 
 		{
-			std::lock_guard<std::mutex> lock(PacketMutex);
+			//std::lock_guard<std::mutex> lock(PacketMutex);
 			if (auto monster = scene.SearchLayer(LAYER_MONSTER, std::to_string(packet->monsterId)); monster) {
 				monster->InputPosition(recvPosition);
 				monster->InputRotation(recvRotation);
@@ -442,14 +442,17 @@ void ProcessPacketOnClient(char* buffer, int size) {
 		unsigned int ID = pkt->player_id;
 		int EnabledItem = pkt->random_id;
 
-		auto player = GLOBAL.playerList.find(ID);
-		if (player != GLOBAL.playerList.end()) {
-			// 버프
-			if (EnabledItem > 0)
-				player->second.buff[EnabledItem] = true;
-			// 디버프
-			else if (EnabledItem < 0)
-				player->second.deBuff[EnabledItem * -1] = true;
+		{
+			std::lock_guard<std::mutex> lock(PacketMutex);
+			auto player = GLOBAL.playerList.find(ID);
+			if (player != GLOBAL.playerList.end()) {
+				// 버프
+				if (EnabledItem > 0)
+					player->second.buff[EnabledItem] = true;
+				// 디버프
+				else if (EnabledItem < 0)
+					player->second.deBuff[EnabledItem * -1] = true;
+			}
 		}
 	}
 
