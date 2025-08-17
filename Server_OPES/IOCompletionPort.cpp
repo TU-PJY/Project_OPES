@@ -2056,6 +2056,7 @@ void IOCompletionPort::ProcessPacket(char* buffer, stClientInfo* client) {
                     targetClient->hp -= pkt->attackHp;
                     if (targetClient->hp < 0) { 
                         targetClient->hp = 0; 
+                        room.DeathCount++;
                         //SendData_PlayerDeathPacket(targetClient, targetClient);
                     }
                     if (targetClient->job == MG_JOB_TYPE) {
