@@ -145,10 +145,10 @@ void Turret::Update(float Delta) {
 			SendPtoMDamagePacket( target->GetID(), 10);
 			std::cout << "ID: " << target->GetID() << std::endl;
 			std::cout << "HP: " << target->GetHP() << std::endl;
-
-			SOUND.turretShoot.SetPosition(position);
-			SOUND.turretShoot.Play3D();
 		}
+
+		SOUND.turretShoot.SetPosition(position);
+		SOUND.turretShoot.Play3D();
 
 		currentShootDelay = TURRET_SHOOT_DELAY;
 		flameRenderTime = FLAME_RENDER_TIME;
