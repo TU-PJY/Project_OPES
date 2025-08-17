@@ -315,6 +315,8 @@ typedef struct {
 	Texture* UI_buff[5];
 	Texture* UI_deBuff[5];
 
+	Texture* UI_frame;
+
 	Texture* UI_crosshair;
 }TextureResource;
 extern TextureResource TEX;

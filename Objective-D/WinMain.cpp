@@ -101,7 +101,7 @@ bool LoadSoundResources = true;
 START_MODE_PTR StartMode =  Level1::Start;
 
 // -1: not selected 0: heavy, 1: dmr, 2: engineer
-int myCharacter = 2;
+int myCharacter = 0;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////

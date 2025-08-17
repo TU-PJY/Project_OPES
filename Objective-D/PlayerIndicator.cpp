@@ -24,8 +24,8 @@ void PlayerIndicator::Render() {
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.125 + 0.25 * currentIndex, -1.0 + 0.45);
 	Transform::Scale2D(ScaleMatrix, 0.25, 0.25);
-	SetColor(1.0, 1.0, 1.0);
-	Render2D(TEX.ColorTex, 0.8);
+	SetColor(0.0, 0.0, 0.0);
+	Render2D(TEX.ColorTex, 0.3);
 
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, -1.0 * ASPECT, -1.0);
@@ -155,6 +155,11 @@ void PlayerIndicator::Render() {
 		Render2D(TEX.UI_shotgunIcon);
 		break;
 	}
+
+	BeginRender(RENDER_TYPE_2D);
+	Transform::Move2D(TranslateMatrix, -1.0 * ASPECT + 0.125 + 0.25 * currentIndex, -1.0 + 0.45);
+	Transform::Scale2D(ScaleMatrix, 0.25, 0.25);
+	Render2D(TEX.UI_frame);
 }
 
 void PlayerIndicator::InputHP(int total, int current) {

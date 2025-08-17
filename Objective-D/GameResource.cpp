@@ -316,6 +316,8 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.UI_deBuff[VISION_RANGE_REDUCE], L"Resources//Image//ui//debuff//less_vision.png");
 	LoadTexture(TEX.UI_deBuff[WALK_ACC_REDUCE], L"Resources//Image//ui//debuff//less_acc.png");
 
+	LoadTexture(TEX.UI_frame, L"Resources//Image//ui//frame_yellow.png");
+
 	LoadTexture(TEX.UI_crosshair, L"Resources//Image//ui//crosshair.png");
 }
 /////////////////////////////////////////////////////////////////////////////////
