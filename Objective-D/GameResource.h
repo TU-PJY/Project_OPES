@@ -335,6 +335,7 @@ typedef struct {
 	QP::Sound footstep;
 	QP::Sound footstep3d;
 	QP::Sound stoneFall;
+	QP::Sound install;
 }SoundRecources;
 extern SoundRecources SOUND;
 

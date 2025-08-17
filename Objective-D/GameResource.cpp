@@ -339,6 +339,7 @@ void LoadSound() {
 	SOUND.footstep.Load("Resources//Sounds//footstep.mp3");
 	SOUND.footstep3d.Load("Resources//Sounds//footstep.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 	SOUND.stoneFall.Load("Resources//Sounds//stoneFall.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
+	SOUND.install.Load("Resources//Sounds//installTurret.mp3", FMOD_3D | FMOD_3D_LINEARROLLOFF);
 }
 
 

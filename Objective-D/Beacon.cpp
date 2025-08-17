@@ -22,6 +22,10 @@ Beacon::Beacon(const xmfloat3& createPosition, float rotation, bool createFromSe
 
 	if(!createFromServer)
 		SendEngineerInstallPacket(BEACON_ID, 0, rotation, position.x, position.y, position.z);
+
+
+	SOUND.install.SetPosition(position);
+	SOUND.install.Play3D();
 }
 
 Beacon::~Beacon() {

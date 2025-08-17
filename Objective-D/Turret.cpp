@@ -48,6 +48,9 @@ Turret::Turret(const xmfloat3& createPosition, float createRotation, bool create
 
 	if (!createFromServer)
 		SendEngineerInstallPacket(TURRET_ID, 0, rotation.y, position.x, position.y, position.z);
+
+	SOUND.install.SetPosition(position);
+	SOUND.install.Play3D();
 }
 
 Turret::~Turret() {
