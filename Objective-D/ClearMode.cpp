@@ -26,4 +26,9 @@ void ClearMode::Start() {
 
 void ClearMode::Destructor() {
 	mouse.EndMotionCapture();
+
+	if (!GLOBAL.startedGameServer) {
+		if (GLOBAL.netThread.joinable())
+			GLOBAL.netThread.join();
+	}
 }
