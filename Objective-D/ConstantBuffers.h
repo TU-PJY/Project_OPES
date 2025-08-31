@@ -24,6 +24,9 @@ extern CBV BoolFogCBV;
 // fog cbv
 extern CBV FogCBV;
 
+// shadow cbv
+extern CBV ShadowCBV;
+
 
 // CBV 생성 관련 함수들
 void CreateConstantBufferResource(ID3D12Device* Device);

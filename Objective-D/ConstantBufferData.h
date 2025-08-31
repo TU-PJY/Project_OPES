@@ -44,3 +44,10 @@ struct FOG_DATA {
 	XMFLOAT3 Padding3;  // 12 bytes
 };
 
+// shadow data
+struct SHADOW_MATRIX_DATA {
+	DirectX::XMFLOAT4X4 LightViewProj;  // ¶óÀÌÆ® VP
+	DirectX::XMFLOAT4X4 ShadowTex;      // [-1,1]¡æ[0,1] º¯È¯ (scale-bias)
+	float ShadowBias;                   // 0.0005 ~ 0.005 µî Æ©´×
+	float _pad[3];
+};
