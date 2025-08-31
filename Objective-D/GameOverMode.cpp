@@ -26,4 +26,9 @@ void GameOverMode::Start() {
 
 void GameOverMode::Destructor() {
 	mouse.EndMotionCapture();
+
+	if (!GLOBAL.startedGameServer) {
+		if (GLOBAL.netThread.joinable())
+			GLOBAL.netThread.join();
+	}
 }
