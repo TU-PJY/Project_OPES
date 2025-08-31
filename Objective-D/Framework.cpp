@@ -103,15 +103,14 @@ void Framework::Update() {
 	ResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
 	CmdList->ResourceBarrier(1, &ResourceBarrier);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE RtvCPUDescriptorHandle = RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	RtvCPUDescriptorHandle = RtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	RtvCPUDescriptorHandle.ptr += (SwapChainBufferIndex * RtvDescriptorIncrementSize);
 
 	float ViewportColor[4] = { BackgroundColor.x, BackgroundColor.y, BackgroundColor.z, 1.0 };
 	CmdList->ClearRenderTargetView(RtvCPUDescriptorHandle, ViewportColor/*Colors::Azure*/, 0, NULL);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE DsvCPUDescriptorHandle = DsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	DsvCPUDescriptorHandle = DsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	CmdList->ClearDepthStencilView(DsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
-	CmdList->OMSetRenderTargets(1, &RtvCPUDescriptorHandle, TRUE, &DsvCPUDescriptorHandle);
 
 	// 오브젝트 업데이트
 	scene.Update(Timer.GetTimeElapsed(), CmdList);

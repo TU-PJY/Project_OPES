@@ -12,6 +12,8 @@
 // 기본 RANDER_TYPE_3D로 타입이 지정되어있다.
 // RENDER_TYPE_3D_STATIC또는 RENDER_TYPE_2D_STATIC일 경우 행렬 초기화를 실행하지 않는다. 
 void GameObject::BeginRender(int RenderTypeFlag) {
+	GlobalCommandList->OMSetRenderTargets(1, &RtvCPUDescriptorHandle, TRUE, &DsvCPUDescriptorHandle);
+
 	// 출력 모드 지정
 	RenderType = RenderTypeFlag;
 

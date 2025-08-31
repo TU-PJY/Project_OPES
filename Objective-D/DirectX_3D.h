@@ -231,6 +231,12 @@ extern ID3D12RootSignature* BoundboxShaderRootSignature;
 // 전역 HWND
 extern HWND GlobalHWND;
 
+// 일반 렌더링 DSV
+extern D3D12_CPU_DESCRIPTOR_HANDLE DsvCPUDescriptorHandle;
+
+// 일반 렌더링 RTV
+extern D3D12_CPU_DESCRIPTOR_HANDLE RtvCPUDescriptorHandle;
+
 // screen size
 extern int SCREEN_WIDTH, SCREEN_HEIGHT;
 #define ASPECT (float(SCREEN_WIDTH) / float(SCREEN_HEIGHT))

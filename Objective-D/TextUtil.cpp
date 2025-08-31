@@ -120,6 +120,7 @@ void Text::TransformText(const XMFLOAT2& Position, float Size, float TotalLength
 }
 
 void Text::BeginTextRender() {
+	GlobalCommandList->OMSetRenderTargets(1, &RtvCPUDescriptorHandle, TRUE, &DsvCPUDescriptorHandle);
 	Transform::Identity(TextMatrix);
 	GlobalCommandList->SetGraphicsRootSignature(ImageShaderRootSignature);
 	CBVUtil::Input(GlobalCommandList, FlipCBV, FLIP_TYPE_V);
@@ -219,6 +220,7 @@ void Text::TransformText3D(const XMFLOAT3& Position, float Size, float TotalLeng
 }
 
 void Text::BeginTextRender3D() {
+	GlobalCommandList->OMSetRenderTargets(1, &RtvCPUDescriptorHandle, TRUE, &DsvCPUDescriptorHandle);
 	Transform::Identity(TextMatrix);
 	GlobalCommandList->SetGraphicsRootSignature(ObjectShaderRootSignature);
 	CBVUtil::Input(GlobalCommandList, FlipCBV, FLIP_TYPE_V);
