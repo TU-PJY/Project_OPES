@@ -6,6 +6,7 @@
 #include "CBVUtil.h"
 #include "MeshUtil.h"
 #include "SoundModule//QuadPent_Sound.h"
+#include "ShadowMap.h"
 
 void Framework::Init() {
 	SetBackgroundColor(0.5, 0.5, 0.5);
@@ -32,6 +33,7 @@ void Framework::Init() {
 	LoadSystemMesh(System);
 	LoadMesh(System);
 	LoadTexture(System);
+	ShadowUtil.Init(System.Device);
 	QP::SoundSystem.Init();
 	LoadSound();
 

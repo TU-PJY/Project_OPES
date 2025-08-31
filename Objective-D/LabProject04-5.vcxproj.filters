@@ -353,6 +353,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ BuffDebuff ]">
       <UniqueIdentifier>{5a0f44ca-577b-4216-b738-99b147d46284}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ D3D12 ]\[6] - [ Util ]\[ Shadow Util ]">
+      <UniqueIdentifier>{1cdcac4b-fb1b-46b4-9bd2-cd2747b79fe5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -643,6 +646,9 @@
     </ClInclude>
     <ClInclude Include="BuffDebuffIndicator.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ BuffDebuff ]</Filter>
+    </ClInclude>
+    <ClInclude Include="ShadowMap.h">
+      <Filter>[ D3D12 ]\[6] - [ Util ]\[ Shadow Util ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -963,6 +969,9 @@
     </ClCompile>
     <ClCompile Include="BuffDebuffIndicator.cpp">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ UI ]\[ BuffDebuff ]</Filter>
+    </ClCompile>
+    <ClCompile Include="ShadowMap.cpp">
+      <Filter>[ D3D12 ]\[6] - [ Util ]\[ Shadow Util ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
