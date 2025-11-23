@@ -39,13 +39,18 @@ private:
 
 	GameObject* randUp{};
 
+	float     offset{};
+	float     offsetNum{};
+
 public:
 	// 레벨 엔트리/엑시트, 현재 레벨 번호 입력
 	CamAnimController(int flag, int level) {
 		animModeFlag = flag;
 		currentLevel = level;
-		if (level == 3)
+		if (level == 3) {
 			screenOpacity = 1.5f;
+			SOUND.engine.Play();
+		}
 	}
 
 	void SetCameraStartPosition(const XMFLOAT3& position) override {
@@ -134,7 +139,10 @@ public:
 				else if (currentTime >= 6.f)
 					screenOpacity += delta;
 
-				camera.Move(camPos);
+				offsetNum += delta;
+				offset = sin(offsetNum) * 2.f;
+
+				camera.Move(camPos.x + offset, camPos.y, camPos.z);
 				camera.Rotate(camRot.x, camRot.y, 20.f);
 				camera.SetShake(0.025f);
 				GLOBAL.offsetFOV = fov;

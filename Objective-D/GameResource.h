@@ -353,6 +353,7 @@ typedef struct {
 	QP::Sound death3D;
 	QP::Sound hurt;
 	QP::Sound buff;
+	QP::Sound engine;
 }SoundRecources;
 extern SoundRecources SOUND;
 

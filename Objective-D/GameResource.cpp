@@ -350,6 +350,7 @@ void LoadSound() {
 	SOUND.death.Load("Resources//Sounds//death.mp3");
 	SOUND.hurt.Load("Resources//Sounds//hurt.mp3");
 	SOUND.buff.Load("Resources//Sounds//buff.mp3");
+	SOUND.engine.Load("Resources//Sounds//engine.mp3");
 }
 
 
