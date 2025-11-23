@@ -34,7 +34,7 @@ void Level2::Start() {
 
 	FOG_DATA FogData{};
 
-	// VISION_RANGE_REDUCE È°¼ºÈ­ ½Ã ½Ã¾ß°¡ Âª¾ÆÁø´Ù.
+	// VISION_RANGE_REDUCE í™œì„±í™” ì‹œ ì‹œì•¼ê°€ ì§§ì•„ì§„ë‹¤.
 	if (GLOBAL.deBuff[VISION_RANGE_REDUCE]) {
 		FogData = {
 		{0.63, 0.77, 0.98}, // Fog Color
@@ -64,8 +64,8 @@ void Level2::Start() {
 	CBVUtil::Reset(GlobalSystem.CmdList, FogCBV);
 	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
 
-	// ¸ÊÀÌ ¹İµå½Ã Playerº¸´Ù ¸ÕÀú Ãß°¡µÇ¾î¾ß ÇÑ´Ù
-	// ÇÃ·¹ÀÌ¾î °´Ã¼ »ı¼ºÀÚ¿¡¼­ ¸Ê µ¥ÀÌÅÍ¸¦ ¹Ş¾Æ¾ß ÇÏ±â ¶§¹®
+	// ë§µì´ ë°˜ë“œì‹œ Playerë³´ë‹¤ ë¨¼ì € ì¶”ê°€ë˜ì–´ì•¼ í•œë‹¤
+	// í”Œë ˆì´ì–´ ê°ì²´ ìƒì„±ìì—ì„œ ë§µ ë°ì´í„°ë¥¼ ë°›ì•„ì•¼ í•˜ê¸° ë•Œë¬¸
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
 	auto mapObject = scene.AddObject(new Map2, "map2", LAYER1, GLOBAL.editMode);
 	auto centerObject = scene.AddObject(new CenterBuilding(-2.0), "center_building", LAYER1);
@@ -85,7 +85,7 @@ void Level2::Start() {
 		auto block = scene.AddObject(new RoadBlock(XMFLOAT3(-45.0, 1.0, -116.0), 90.0, 10), "roadBlock", LAYER1);
 		GLOBAL.mapOOBBdata.emplace_back(block->GetOOBB());
 
-		// map1 ¸ó½ºÅÍ¸¦ 20¹ø ½ºÆùÇÏ´Â µğÆæ½º ¸ğµå ¸ó½ºÅÍ Á¦³Ê·¹ÀÌÅÍ
+		// map1 ëª¬ìŠ¤í„°ë¥¼ 20ë²ˆ ìŠ¤í°í•˜ëŠ” ë””íœìŠ¤ ëª¨ë“œ ëª¬ìŠ¤í„° ì œë„ˆë ˆì´í„°
 		scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 	}
 

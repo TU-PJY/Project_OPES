@@ -1,6 +1,6 @@
 #include "RootConstantUtil.h"
 
-// ·çÆ®»ó¼ö¸¦ ½¦ÀÌ´õ·Î Àü´ÞÇÑ´Ù.
+// ë£¨íŠ¸ìƒìˆ˜ë¥¼ ì‰ì´ë”ë¡œ ì „ë‹¬í•œë‹¤.
 void RCUtil::Input(ID3D12GraphicsCommandList* CmdList, void* Data, int RootSignatureIndex, int BitValue, int Offset) {
 	CmdList->SetGraphicsRoot32BitConstants(RootSignatureIndex, BitValue, Data, Offset);
 }

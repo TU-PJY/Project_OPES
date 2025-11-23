@@ -51,7 +51,7 @@ void Beacon::Update(float Delta) {
 
 	healZone.Update(position, 10.0);
 	
-	// 0.5ÃÊ °£°İÀ¸·Î ÇÃ·¹ÀÌ¾îµéÀ» 5¾¿ È¸º¹½ÃÅ²´Ù.
+	// 0.5ì´ˆ ê°„ê²©ìœ¼ë¡œ í”Œë ˆì´ì–´ë“¤ì„ 5ì”© íšŒë³µì‹œí‚¨ë‹¤.
 	currentDelay -= Delta;
 	if (currentDelay <= 0.0) {
 		size_t size = scene.LayerSize(LAYER_PLAYER);

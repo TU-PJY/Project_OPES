@@ -2,14 +2,14 @@
 #include "MouseUtil.h"
 #include "MathUtil.h"
 
-// ÇÇÅ·À» ´ã´çÇÏ´Â À¯Æ¿ÀÌ´Ù.
+// í”¼í‚¹ì„ ë‹´ë‹¹í•˜ëŠ” ìœ í‹¸ì´ë‹¤.
 
 int ConvertXToWinCoord(float X);
 int ConvertYToWinCoord(float Y);
 
 
-// ¾î¶² ÀÌÀ¯ ¶§¹®ÀÎÁø ¸ô¶óµµ µ¿ÀÛÀÌ ¾ÈµÇ´Âµ¥, ¾îÂ÷ÇÇ ÃÑ¾Ë ÇÇ°İ ÆÇÁ¤Àº oobb ¾µ°Å¶ó »ó°ü ¾øÀ½
-//// Ä¿¼­¸¦ »ç¿ëÇÏ¿© FBX ¸Å½¬¸¦ ÇÇÅ·ÇÑ´Ù.
+// ì–´ë–¤ ì´ìœ  ë•Œë¬¸ì¸ì§„ ëª°ë¼ë„ ë™ì‘ì´ ì•ˆë˜ëŠ”ë°, ì–´ì°¨í”¼ ì´ì•Œ í”¼ê²© íŒì •ì€ oobb ì“¸ê±°ë¼ ìƒê´€ ì—†ìŒ
+//// ì»¤ì„œë¥¼ ì‚¬ìš©í•˜ì—¬ FBX ë§¤ì‰¬ë¥¼ í”¼í‚¹í•œë‹¤.
 //bool PickingUtil::PickByCursorFBX(LPARAM lParam, GameObject* Object, FBXMesh& Mesh) {
 //	for (auto const& M : Mesh.MeshPart) {
 //		if (PickByCursor(lParam, Object, M))
@@ -34,7 +34,7 @@ int ConvertYToWinCoord(float Y);
 //	return false;
 //}
 
-// Ä¿¼­¸¦ »ç¿ëÇÏ¿© ¸Å½¬¸¦ ÇÇÅ·ÇÑ´Ù
+// ì»¤ì„œë¥¼ ì‚¬ìš©í•˜ì—¬ ë§¤ì‰¬ë¥¼ í”¼í‚¹í•œë‹¤
 bool PickingUtil::PickByCursor(LPARAM lParam, GameObject* Object, Mesh* MeshPtr) {
 	if (!MeshPtr)
 		return false;
@@ -55,7 +55,7 @@ bool PickingUtil::PickByCursor(LPARAM lParam, GameObject* Object, Mesh* MeshPtr)
 	return false;
 }
 
-// À©µµ¿ì ÁÂÇ¥¸¦ »ç¿ëÇÏ¿© ¸Å½¬¸¦ ÇÇÅ·ÇÑ´Ù
+// ìœˆë„ìš° ì¢Œí‘œë¥¼ ì‚¬ìš©í•˜ì—¬ ë§¤ì‰¬ë¥¼ í”¼í‚¹í•œë‹¤
 bool PickingUtil::PickByWinCoord(int X, int Y, GameObject* Object, Mesh* MeshPtr) {
 	if (!MeshPtr)
 		return false;
@@ -76,7 +76,7 @@ bool PickingUtil::PickByWinCoord(int X, int Y, GameObject* Object, Mesh* MeshPtr
 	return false;
 }
 
-// ºäÆ÷Æ® ÁÂÇ¥¸¦ »ç¿ëÇÏ¿© ¸Å½¬¸¦ ÇÇÅ·ÇÑ´Ù
+// ë·°í¬íŠ¸ ì¢Œí‘œë¥¼ ì‚¬ìš©í•˜ì—¬ ë§¤ì‰¬ë¥¼ í”¼í‚¹í•œë‹¤
 bool PickingUtil::PickByViewport(float X, float Y, GameObject* Object, Mesh* MeshPtr) {
 	if (!MeshPtr)
 		return false;
@@ -98,7 +98,7 @@ bool PickingUtil::PickByViewport(float X, float Y, GameObject* Object, Mesh* Mes
 }
 
 
-// ¸¶¿ì½º·Î ¹Ù¿îµå ¹Ú½º¸¦ ÇÇÅ·ÇÑ´Ù.
+// ë§ˆìš°ìŠ¤ë¡œ ë°”ìš´ë“œ ë°•ìŠ¤ë¥¼ í”¼í‚¹í•œë‹¤.
 bool PickingUtil::PickByCursorAABB(LPARAM lParam, const AABB& Other) {
 	XMFLOAT3 PickPoint{};
 	PickPoint.x = (((2.0f * LOWORD(lParam)) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;
@@ -137,7 +137,7 @@ bool PickingUtil::PickByCursorRange(LPARAM lParam, const BoundSphere& Other) {
 }
 
 
-// À©µµ¿ì ÁÂÇ¥¸¦ »ç¿ëÇÏ¿© ¹Ù¿îµå¹Ú½º¸¦ ÇÇÅ·ÇÑ´Ù.
+// ìœˆë„ìš° ì¢Œí‘œë¥¼ ì‚¬ìš©í•˜ì—¬ ë°”ìš´ë“œë°•ìŠ¤ë¥¼ í”¼í‚¹í•œë‹¤.
 bool PickingUtil::PickByWinCoordAABB(int X, int Y, const AABB& Other) {
 	XMFLOAT3 PickPoint{};
 	PickPoint.x = (((2.0f * X) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;
@@ -176,7 +176,7 @@ bool PickingUtil::PickByWinCoordRange(int X, int Y, const BoundSphere& Other) {
 }
 
 
-// ºäÆ÷Æ® ÁÂÇ¥¸¦ »ç¿ëÇÏ¿© ¹Ù¿îµå¹Ú½º¸¦ ÇÇÅ·ÇÑ´Ù.
+// ë·°í¬íŠ¸ ì¢Œí‘œë¥¼ ì‚¬ìš©í•˜ì—¬ ë°”ìš´ë“œë°•ìŠ¤ë¥¼ í”¼í‚¹í•œë‹¤.
 bool PickingUtil::PickByViewportAABB(float X, float Y, const AABB& Other) {
 	XMFLOAT3 PickPoint{};
 	PickPoint.x = (((2.0f * ConvertXToWinCoord(X)) / (float)SCREEN_WIDTH) - 1) / camera.ProjectionMatrix._11;
@@ -217,7 +217,7 @@ bool PickingUtil::PickByViewportRange(float X, float Y, const BoundSphere& Other
 	return Math::CheckRayCollision(Origin, Direction, Other);
 }
 
-// À©µµ¿ì ÁÂÇ¥¸¦ °ø°£ ·¹ÀÌ º¤ÅÍ·Î º¯È¯ÇÑ´Ù. ÇÁ·Î±×·¡¸Ó°¡ Á÷Á¢ »ç¿ëÇÒ ÀÏÀº ¾ø´Ù.
+// ìœˆë„ìš° ì¢Œí‘œë¥¼ ê³µê°„ ë ˆì´ ë²¡í„°ë¡œ ë³€í™˜í•œë‹¤. í”„ë¡œê·¸ë˜ë¨¸ê°€ ì§ì ‘ ì‚¬ìš©í•  ì¼ì€ ì—†ë‹¤.
 void PickingUtil::GenBoundboxPickingRay(XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, XMVECTOR& PickRayOrigin, XMVECTOR& PickRayDirection) {
 	XMMATRIX MatrixTomodel = XMMatrixInverse(NULL, ViewMatrix);
 	XMFLOAT3 CameraOrigin(0.0f, 0.0f, 0.0f);

@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "TerrainUtil.h"
 
-// ±âÁ¸ÀÇ ÇÃ·¹ÀÌ¾î Å¬·¡½º ´ëÃ¼
+// ê¸°ì¡´ì˜ í”Œë ˆì´ì–´ í´ë˜ìŠ¤ ëŒ€ì²´
 class Player1st : public GameObject {
 private:
 	enum playerMove {
@@ -14,72 +14,72 @@ private:
 
 	int characterType{};
 
-	// 4 ¹æÇâ ÀÌµ¿ »óÅÂ
+	// 4 ë°©í–¥ ì´ë™ ìƒíƒœ
 	bool     moveState[4]{};
 
-	// position: ½ÇÁ¦ À§Ä¡, camPosition: Ä«¸Ş¶ó À§Ä¡
-	// ½ÇÁ¦ À§Ä¡¿Í Ä«¸Ş¶ó À§Ä¡ÀÇ ³ôÀÌ´Â 3.0 Â÷ÀÌ³­´Ù.
+	// position: ì‹¤ì œ ìœ„ì¹˜, camPosition: ì¹´ë©”ë¼ ìœ„ì¹˜
+	// ì‹¤ì œ ìœ„ì¹˜ì™€ ì¹´ë©”ë¼ ìœ„ì¹˜ì˜ ë†’ì´ëŠ” 3.0 ì°¨ì´ë‚œë‹¤.
 	XMFLOAT3 playerPosition{ -140.0, 20.0, -130.0 };
 	XMFLOAT3 cameraPosition{};
 
-	// ÇöÀç È¸Àü°ª, ÀÌÀü È¸Àü°ª, Ä«¸Ş¶ó ÃßÀûÀ» À§ÇÑ º¤ÅÍ
+	// í˜„ì¬ íšŒì „ê°’, ì´ì „ íšŒì „ê°’, ì¹´ë©”ë¼ ì¶”ì ì„ ìœ„í•œ ë²¡í„°
 	XMFLOAT3 currentRotation{};
 	XMFLOAT3 prevRotation{};
 	Vector   playerVector{};
 
-	// Å©±â
+	// í¬ê¸°
 	XMFLOAT3 playerSize{ 2.0, 2.0, 2.0 };
 
-	// ÇöÀç »óÅÂ ¹× ÀÌÀü »óÅÂ. ÀÌÀü »óÅÂ¿Í ÇöÀç »óÅÂ°¡ ´Ù¸¦¶§¸¸ ÆĞÅ¶À» Àü¼ÛÇÑ´Ù.
+	// í˜„ì¬ ìƒíƒœ ë° ì´ì „ ìƒíƒœ. ì´ì „ ìƒíƒœì™€ í˜„ì¬ ìƒíƒœê°€ ë‹¤ë¥¼ë•Œë§Œ íŒ¨í‚·ì„ ì „ì†¡í•œë‹¤.
 	int      currentState{ STATE_IDLE };
 	int      prevState{ STATE_IDLE };
 	int      serverState{ STATE_IDLE };
 
-	// ¹æ¾Æ¼è¸¦ ´ç±ä »óÅÂ. È°¼ºÈ­ µÇ¸é ¹«±â °´Ã¼°¡ µ¿ÀÛÇÑ´Ù.
+	// ë°©ì•„ì‡ ë¥¼ ë‹¹ê¸´ ìƒíƒœ. í™œì„±í™” ë˜ë©´ ë¬´ê¸° ê°ì²´ê°€ ë™ì‘í•œë‹¤.
 	bool     triggerState{};
 
-	// Á¤Á¶ÁØÀ» ÇÑ »óÅÂ. È°¼ºÈ­ µÇ¸é FOV°¡ º¯°æµÇ°í ¹«±â °´Ã¼°¡ µ¿ÀÛÇÑ´Ù.
+	// ì •ì¡°ì¤€ì„ í•œ ìƒíƒœ. í™œì„±í™” ë˜ë©´ FOVê°€ ë³€ê²½ë˜ê³  ë¬´ê¸° ê°ì²´ê°€ ë™ì‘í•œë‹¤.
 	bool     zoomState{};
 
-	// Ä«¸Ş¶ó ¸ñÇ¥ FOV
+	// ì¹´ë©”ë¼ ëª©í‘œ FOV
 	float    destFOV{};
 
-	// ¾Õ, ¿·, ÃÖ´ë ÀÌµ¿ ¼Óµµ
+	// ì•, ì˜†, ìµœëŒ€ ì´ë™ ì†ë„
 	float    forwardSpeed{};
 	float    strafeSpeed{};
 	float    maxSpeed{};
 	float    currentSpeed{};
 
-	// ÇÃ·¹ÀÌ¾î ÀÌµ¿ ¼Óµµ °¡°¨¼Ó ¼Óµµ
+	// í”Œë ˆì´ì–´ ì´ë™ ì†ë„ ê°€ê°ì† ì†ë„
 	float    speedAcc{};
 
-	// Ã¼·Â
+	// ì²´ë ¥
 	int totalHP{};
 	int prevHP{};
 	int currentHP{};
 
-	// ¸Ê3¿ë º¯¼ö
+	// ë§µ3ìš© ë³€ìˆ˜
 	bool fallDown{};
 	float fallAcc{};
 
-	// ¿£Áö´Ï¾î Àü¿ë º¯¼ö
+	// ì—”ì§€ë‹ˆì–´ ì „ìš© ë³€ìˆ˜
 	float turretCoolTime{};
 	float beaconCoolTime{};
 
-	// ÇÃ·¹ÀÌ¾î ´ç 2°³ »ç¿ë °¡´É
+	// í”Œë ˆì´ì–´ ë‹¹ 2ê°œ ì‚¬ìš© ê°€ëŠ¥
 	int currentGrenadeCount{ 3 };
 
 	TerrainUtil terrainUtil{};
 
 	BoundSphere       playerSphere{};
 
-	// ¸ó½ºÅÍ - ÇÃ·¹ÀÌ¾î Ãæµ¹Ã³¸®¿ë
+	// ëª¬ìŠ¤í„° - í”Œë ˆì´ì–´ ì¶©ëŒì²˜ë¦¬ìš©
 	OOBB              playerBound{};
 
-	// ÇöÀç °¡Áö´Â ÃÑ±â °´Ã¼ Æ÷ÀÎÅÍ
+	// í˜„ì¬ ê°€ì§€ëŠ” ì´ê¸° ê°ì²´ í¬ì¸í„°
 	GameObject* weaponPtr{};
 
-	// ÇÃ·¹ÀÌ¾î Ã¼·Â ÀÎµğÄÉÀÌÅÍ
+	// í”Œë ˆì´ì–´ ì²´ë ¥ ì¸ë””ì¼€ì´í„°
 	GameObject* IndicatorPtr{};
 
 	GameObject* installPtr{};
@@ -87,8 +87,8 @@ private:
 	GameObject* scopePtr{};
 
 
-	// ¼­¹ö¿ë º¯¼ö
-	// 30ÇÁ·¹ÀÓ °£°İÀ¸·Î ÆĞÅ¶À» Àü¼ÛÇÑ´Ù.
+	// ì„œë²„ìš© ë³€ìˆ˜
+	// 30í”„ë ˆì„ ê°„ê²©ìœ¼ë¡œ íŒ¨í‚·ì„ ì „ì†¡í•œë‹¤.
 	float             currentPacketSendDelay{};
 	float             packetSendDelay{ 1.0 / 60.0 };
 	int               sendOrder{1};

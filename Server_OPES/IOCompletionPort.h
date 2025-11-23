@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 #define NOMINMAX
 #pragma comment(lib, "ws2_32")
 #include <winsock2.h>

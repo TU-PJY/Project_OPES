@@ -54,7 +54,7 @@ public:
 				Load();
 				break;
 
-			//// ½Ã¿¬¿ë ÀÓ½Ã Á¶ÀÛÅ°
+			//// ì‹œì—°ìš© ì„ì‹œ ì¡°ì‘í‚¤
 			//case VK_RIGHT:
 			//	scene.SwitchMode(Level2::Start);
 			//	break;
@@ -68,15 +68,15 @@ public:
 	}
 
 	void Render() override {
-		// ¸Ê ÅÍ·¹ÀÎ ·»´õ¸µ
+		// ë§µ í„°ë ˆì¸ ë Œë”ë§
 		BeginRender();
 		Transform::Move(TranslateMatrix, 0.0, -50.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.3, 0.2, 0.3);
 		Render3D(MESH.TerrainMesh1, TEX.Palette1);
 
-		// È£¼ö ·»´õ¸µ
+		// í˜¸ìˆ˜ ë Œë”ë§
 		{
-			// È£¼ö ÁöÇü
+			// í˜¸ìˆ˜ ì§€í˜•
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, 0.0, -1.8, 0.0);
@@ -84,14 +84,14 @@ public:
 			Transform::Scale(ScaleMatrix, 0.01, 0.01, 0.01);
 			Render3D(MESH.LakeMesh, TEX.Palette2);
 
-			// Áß¾Ó È£¼ı¹ÙÀ§ ·»´õ¸µ
+			// ì¤‘ì•™ í˜¸ìˆ«ë°”ìœ„ ë Œë”ë§
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
 			Transform::Move(TranslateMatrix, 12.5, -2.0, -4.0);
 			Transform::Scale(ScaleMatrix, 0.03, 0.04, 0.03);
 			Render3D(MESH.RockMesh, TEX.Palette1);
 
-			// ¹° ·»´õ¸µ
+			// ë¬¼ ë Œë”ë§
 			BeginRender();
 			SetColor(0.05, 0.53, 0.80);
 			Transform::Rotate(RotateMatrix, 90.0, 0.0, 0.0);
@@ -99,7 +99,7 @@ public:
 			Transform::Scale(ScaleMatrix, 55.0, 41.0, 1.0);
 			Render3D(SYSRES.BillboardMesh, TEX.ColorTex, 0.5);
 
-			// È£¼ö ÁÖº¯ ¹ÙÀ§ ·»´õ¸µ
+			// í˜¸ìˆ˜ ì£¼ë³€ ë°”ìœ„ ë Œë”ë§
 			for (auto& P : LakeObjectPosition) {
 				BeginRender();
 				SetColor(0.0, 0.0, 0.0);
@@ -110,7 +110,7 @@ public:
 			}
 		}
 
-		// ¸Ê º® ·»´õ¸µ
+		// ë§µ ë²½ ë Œë”ë§
 		size_t size = WallObjectPosition.size();
 		for (int i = 0; i < size; i++) {
 			if (camera.CheckFrustum(wallFrustumOOBB[i])) {
@@ -125,7 +125,7 @@ public:
 			}
 		}
 
-		// ¸Ê ¿ÀºêÁ§Æ® ·»´õ¸µ
+		// ë§µ ì˜¤ë¸Œì íŠ¸ ë Œë”ë§
 		for (auto& P : MapObjectPosition) {
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
@@ -135,7 +135,7 @@ public:
 			Render3D(MESH.MapObjectMesh[P.Index], TEX.Palette3);
 		}
 
-		// ¼ÒÇü ¸Ê ¿ÀºêÁ§Æ® ·»´õ¸µ
+		// ì†Œí˜• ë§µ ì˜¤ë¸Œì íŠ¸ ë Œë”ë§
 		for (auto& P : SmallObjectPosition) {
 			BeginRender();
 			SetColor(0.0, 0.0, 0.0);
@@ -170,7 +170,7 @@ public:
 			}
 		}
 
-		//// oobb ·»´õ¸µ
+		//// oobb ë Œë”ë§
 		//for (auto& O : OOBBVec)
 			//O.Render();
 	}
@@ -294,7 +294,7 @@ public:
 		OOBBDataScript.LoadAllData(LoadOOBBData);
 	}
 
-	// ¸ÊÀÇ º® oobb¸¦ ¾ò´Â´Ù
+	// ë§µì˜ ë²½ oobbë¥¼ ì–»ëŠ”ë‹¤
 	std::vector<OOBB> GetMapWallOOBB() {
 		return OOBBVec;
 	}

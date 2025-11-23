@@ -10,7 +10,7 @@ int main() {
     if (!server.BindandListen()) return -1;
     if (!server.StartServer()) return -1;
 
-    printf("¼­¹ö ½ÇÇà Áß... ¾Æ¹« Å°³ª ´©¸£¸é Á¾·áµË´Ï´Ù.\n");
+    printf("ì„œë²„ ì‹¤í–‰ ì¤‘... ì•„ë¬´ í‚¤ë‚˜ ëˆ„ë¥´ë©´ ì¢…ë£Œë©ë‹ˆë‹¤.\n");
     getchar();
 
     server.DestroyThread();

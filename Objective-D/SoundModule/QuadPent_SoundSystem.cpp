@@ -34,9 +34,9 @@ void QP::QuadPent_SoundSystem::SetSurrondValue(float DoplerScale, float Distance
 void QP::QuadPent_SoundSystem::SetListenerPosition(const xmfloat3& Position) {
 	XMMATRIX invView = XMMatrixInverse(nullptr, XMLoadFloat4x4(&camera.GetViewMatrix()));
 
-	XMVECTOR forwardVec = XMVector3Normalize(invView.r[2]); // °Á ø¿∏•º’∞Ë ±‚¡ÿ Z+
-	XMVECTOR upVec = XMVector3Normalize(invView.r[1]);      // °Á ¿ß¬  Y+
-	XMVECTOR camPosVec = invView.r[3];                      // °Á ¿ßƒ°
+	XMVECTOR forwardVec = XMVector3Normalize(invView.r[2]); // ‚Üê Ïò§Î•∏ÏÜêÍ≥Ñ Í∏∞Ï§Ä Z+
+	XMVECTOR upVec = XMVector3Normalize(invView.r[1]);      // ‚Üê ÏúÑÏ™Ω Y+
+	XMVECTOR camPosVec = invView.r[3];                      // ‚Üê ÏúÑÏπò
 
 	FMOD_VECTOR listenerPos = {
 		XMVectorGetX(camPosVec),

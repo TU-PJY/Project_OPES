@@ -1,6 +1,6 @@
 #include "PlayerHit.h"
 
-// Á¡Â÷ Åõ¸íÇØÁö´Ù°¡ ¿ÏÀüÈ÷ Åõ¸íÇØÁö¸é »èÁ¦µÈ´Ù
+// ì ì°¨ íˆ¬ëª…í•´ì§€ë‹¤ê°€ ì™„ì „íˆ íˆ¬ëª…í•´ì§€ë©´ ì‚­ì œëœë‹¤
 void PlayerHit::Update(float Delta) {
 	opacity -= Delta * 2.0;
 	if (opacity <= 0.0)

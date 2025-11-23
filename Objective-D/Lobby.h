@@ -4,13 +4,13 @@
 
 class Lobby : public GameObject {
 private:
-	// Á÷¾÷ ¼±ÅÃ ¹öÆ°
+	// ì§ì—… ì„ íƒ ë²„íŠ¼
 	AABB button[3]{};
 
-	// µÚ·Î°¡±â ¹öÆ°
+	// ë’¤ë¡œê°€ê¸° ë²„íŠ¼
 	AABB backButton{};
 
-	// ÁØºñ ¹öÆ°
+	// ì¤€ë¹„ ë²„íŠ¼
 	AABB readyButton{};
 
 	Text text{ ALIGN_MIDDLE, HEIGHT_MIDDLE, xmfloat3(1.0, 1.0, 1.0) };

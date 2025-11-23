@@ -5,16 +5,16 @@
 #include "RootConstantUtil.h"
 #include "TextUtil.h"
 
-// GameObject Å¬·¡½º´Â ¸ğµç °´Ã¼µéÀÌ »ó¼Ó¹Ş´Â ºÎ¸ğ Å¬·¡½ºÀÌ´Ù.
-// ¸ğµç °´Ã¼´Â ¹İµå½Ã ÀÌ Å¬·¡½º·ÎºÎÅÍ »ó¼Ó¹Ş¾Æ¾ß SceneÀÌ °´Ã¼¸¦ ¾÷µ¥ÀÌÆ®ÇÏ°í ·»´õ¸µÇÑ´Ù.
+// GameObject í´ë˜ìŠ¤ëŠ” ëª¨ë“  ê°ì²´ë“¤ì´ ìƒì†ë°›ëŠ” ë¶€ëª¨ í´ë˜ìŠ¤ì´ë‹¤.
+// ëª¨ë“  ê°ì²´ëŠ” ë°˜ë“œì‹œ ì´ í´ë˜ìŠ¤ë¡œë¶€í„° ìƒì†ë°›ì•„ì•¼ Sceneì´ ê°ì²´ë¥¼ ì—…ë°ì´íŠ¸í•˜ê³  ë Œë”ë§í•œë‹¤.
 
-// °´Ã¼ÀÇ ·»´õ¸µ »óÅÂ¸¦ ÃÊ±âÈ­ ÇÑ´Ù. ¸ğµç °´Ã¼´Â ÀÌ ÇÔ¼ö·Î ·»´õ¸µ °úÁ¤ÀÌ ½ÃÀÛµÈ´Ù.
-// ±âº» RANDER_TYPE_3D·Î Å¸ÀÔÀÌ ÁöÁ¤µÇ¾îÀÖ´Ù.
-// RENDER_TYPE_3D_STATIC¶Ç´Â RENDER_TYPE_2D_STATICÀÏ °æ¿ì Çà·Ä ÃÊ±âÈ­¸¦ ½ÇÇàÇÏÁö ¾Ê´Â´Ù. 
+// ê°ì²´ì˜ ë Œë”ë§ ìƒíƒœë¥¼ ì´ˆê¸°í™” í•œë‹¤. ëª¨ë“  ê°ì²´ëŠ” ì´ í•¨ìˆ˜ë¡œ ë Œë”ë§ ê³¼ì •ì´ ì‹œì‘ëœë‹¤.
+// ê¸°ë³¸ RANDER_TYPE_3Dë¡œ íƒ€ì…ì´ ì§€ì •ë˜ì–´ìˆë‹¤.
+// RENDER_TYPE_3D_STATICë˜ëŠ” RENDER_TYPE_2D_STATICì¼ ê²½ìš° í–‰ë ¬ ì´ˆê¸°í™”ë¥¼ ì‹¤í–‰í•˜ì§€ ì•ŠëŠ”ë‹¤. 
 void GameObject::BeginRender(int RenderTypeFlag) {
 	GlobalCommandList->OMSetRenderTargets(1, &RtvCPUDescriptorHandle, TRUE, &DsvCPUDescriptorHandle);
 
-	// Ãâ·Â ¸ğµå ÁöÁ¤
+	// ì¶œë ¥ ëª¨ë“œ ì§€ì •
 	RenderType = RenderTypeFlag;
 
 	if (RenderTypeFlag != RENDER_TYPE_3D_STATIC && RenderTypeFlag != RENDER_TYPE_2D_STATIC) {
@@ -24,7 +24,7 @@ void GameObject::BeginRender(int RenderTypeFlag) {
 	}
 
 	if (RenderTypeFlag == RENDER_TYPE_2D || RenderTypeFlag == RENDER_TYPE_2D_STATIC) {
-		// 2d ¿ÀºêÁ§Æ® Ãâ·Â¿ë ·çÆ® ½Ã±×´ÏÃ³·Î º¯°æ
+		// 2d ì˜¤ë¸Œì íŠ¸ ì¶œë ¥ìš© ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ë¡œ ë³€ê²½
 		GlobalCommandList->SetGraphicsRootSignature(ImageShaderRootSignature);
 
 		Transform::Identity(ImageAspectMatrix);
@@ -32,29 +32,29 @@ void GameObject::BeginRender(int RenderTypeFlag) {
 	}
 
 	if (RenderTypeFlag == RENDER_TYPE_3D || RenderTypeFlag == RENDER_TYPE_3D_STATIC || RenderTypeFlag == RENDER_TYPE_3D_ORTHO) {
-		// 3d ¿ÀºêÁ§Æ® Ãâ·Â¿ë ·çÆ® ½Ã±×´ÏÃ³·Î º¯°æ
+		// 3d ì˜¤ë¸Œì íŠ¸ ì¶œë ¥ìš© ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ë¡œ ë³€ê²½
 		GlobalCommandList->SetGraphicsRootSignature(ObjectShaderRootSignature);
 		
-		// ¿É¼Ç¿¡ µû¶ó ¾È°³°¡ ¿ì¼± ºñÈ°¼ºÈ­ µÇ°Å³ª ¿ì¼± È°¼ºÈ­ µÈ´Ù.
+		// ì˜µì…˜ì— ë”°ë¼ ì•ˆê°œê°€ ìš°ì„  ë¹„í™œì„±í™” ë˜ê±°ë‚˜ ìš°ì„  í™œì„±í™” ëœë‹¤.
 		if (ENABLE_FOG_AFTER_BEGIN_RENDER)
 			SetFogUse(ENABLE_FOG);
 		else
 			SetFogUse(DISABLE_FOG);
 
-		// ¿É¼Ç¿¡ µû¶ó ÅØ½ºÃ³ ¼öÁ÷ ¹İÀüÀÌ Àû¿ëµÇ°Å³ª Àû¿ëµÇÁö ¾Ê´Â´Ù.
+		// ì˜µì…˜ì— ë”°ë¼ í…ìŠ¤ì²˜ ìˆ˜ì§ ë°˜ì „ì´ ì ìš©ë˜ê±°ë‚˜ ì ìš©ë˜ì§€ ì•ŠëŠ”ë‹¤.
 		if (ENABLE_TEXTURE_V_FLIP_AFTER_BEGIN_RENDER)
 			FlipTexture(FLIP_TYPE_V);
 		else
 			FlipTexture(FLIP_TYPE_NONE);
 	}
 
-	// ¸Å½¬ »ö»ó ÃÊ±âÈ­
+	// ë§¤ì‰¬ ìƒ‰ìƒ ì´ˆê¸°í™”
 	SetColor(XMFLOAT3(0.0, 0.0, 0.0));
 
-	// ÅØ½ºÃ³ »óÅÂ ÃÊ±âÈ­
+	// í…ìŠ¤ì²˜ ìƒíƒœ ì´ˆê¸°í™”
 	ObjectAlpha = 1.0f;
 
-	// Ãâ·Â ¸ğµå º¯°æ
+	// ì¶œë ¥ ëª¨ë“œ ë³€ê²½
 	switch(RenderTypeFlag) {
 	case RENDER_TYPE_2D: case RENDER_TYPE_2D_STATIC:
 		camera.SetToStaticMode();
@@ -67,28 +67,28 @@ void GameObject::BeginRender(int RenderTypeFlag) {
 	}
 }
 
-// °´Ã¼ ¸Ş½¬ÀÇ »ö»óÀ» ¼³Á¤ÇÑ´Ù.
+// ê°ì²´ ë©”ì‰¬ì˜ ìƒ‰ìƒì„ ì„¤ì •í•œë‹¤.
 void GameObject::SetColor(XMFLOAT3& Color) {
 	ObjectColor = Color;
 }
 
-// °´Ã¼ ¸Ş½¬ÀÇ »ö»óÀ» ¼³Á¤ÇÑ´Ù.
+// ê°ì²´ ë©”ì‰¬ì˜ ìƒ‰ìƒì„ ì„¤ì •í•œë‹¤.
 void GameObject::SetColor(float R, float G, float B) {
 	ObjectColor.x = R;
 	ObjectColor.y = G;
 	ObjectColor.z = B;
 }
 
-// RGB°ªÀ» »ç¿ëÇÏ¿© °´Ã¼ ¸Å½¬ÀÇ »ö»óÀ» ¼³Á¤ÇÑ´Ù.
+// RGBê°’ì„ ì‚¬ìš©í•˜ì—¬ ê°ì²´ ë§¤ì‰¬ì˜ ìƒ‰ìƒì„ ì„¤ì •í•œë‹¤.
 void GameObject::SetColorRGB(float R, float G, float B) {
 	ObjectColor.x = 1.0 / 255.0 * float(R);
 	ObjectColor.y = 1.0 / 255.0 * float(G);
 	ObjectColor.z = 1.0 / 255.0 * float(B);
 }
 
-// ÅØ½ºÃ³¸¦ ¹İÀü½ÃÅ²´Ù. ¸ğµ¨¿¡ µû¶ó ´Ù¸£°Ô »ç¿ëÇÒ ¼ö ÀÖ´Ù.
+// í…ìŠ¤ì²˜ë¥¼ ë°˜ì „ì‹œí‚¨ë‹¤. ëª¨ë¸ì— ë”°ë¼ ë‹¤ë¥´ê²Œ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤.
 void GameObject::FlipTexture(int FlipType) {
-	// ÀÌ¹ÌÁö Ãâ·Â ¸ğµå¿¡¼­´Â ¼öÁ÷ ¹İÀüÀÌ ±âº» Àû¿ëÀÌ±â ¶§¹®¿¡ ¹İÀüÀÌ ´Ù¸£°Ô µ¿ÀÛÇÑ´Ù.
+	// ì´ë¯¸ì§€ ì¶œë ¥ ëª¨ë“œì—ì„œëŠ” ìˆ˜ì§ ë°˜ì „ì´ ê¸°ë³¸ ì ìš©ì´ê¸° ë•Œë¬¸ì— ë°˜ì „ì´ ë‹¤ë¥´ê²Œ ë™ì‘í•œë‹¤.
 	if (RenderType == RENDER_TYPE_2D || RenderType == RENDER_TYPE_2D_STATIC) {
 		switch (FlipType) {
 		case FLIP_TYPE_V:
@@ -109,17 +109,17 @@ void GameObject::FlipTexture(int FlipType) {
 		CBVUtil::Input(GlobalCommandList, FlipCBV, FlipType);
 }
 
-// Á¶¸í È°¼ºÈ­ / ºñÈ°¼ºÈ­
+// ì¡°ëª… í™œì„±í™” / ë¹„í™œì„±í™”
 void GameObject::SetLightUse(int Flag) {
 	CBVUtil::Input(GlobalCommandList, BoolLightCBV, Flag);
 }
 
-// ¾È°³ È°¼ºÈ­ / ºñÈ°¼ºÈ­
+// ì•ˆê°œ í™œì„±í™” / ë¹„í™œì„±í™”
 void GameObject::SetFogUse(int Flag) {
 	CBVUtil::Input(GlobalCommandList, BoolFogCBV, Flag);
 }
 
-// 3D ·»´õ¸µ
+// 3D ë Œë”ë§
 void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, int DepthTestFlag) {
 	TexturePtr->Render3D(GlobalCommandList);
 
@@ -149,7 +149,7 @@ void GameObject::Render3D(Mesh* MeshPtr, Texture* TexturePtr, float AlphaValue, 
 	MeshPtr->Render(GlobalCommandList);
 }
 
-// 2D ·»´õ¸µ
+// 2D ë Œë”ë§
 void GameObject::Render2D(Texture* TexturePtr, float AlphaValue, bool EnableAspect) {
 	if(EnableAspect)
 		Transform::ImageAspect(ImageAspectMatrix, TexturePtr->Width, TexturePtr->Height);
@@ -161,30 +161,30 @@ void GameObject::Render2D(Texture* TexturePtr, float AlphaValue, bool EnableAspe
 	SYSRES.ImagePannel->Render(GlobalCommandList);
 }
 
-// ¸¶¿ì½º ¸ğ¼ÇÀ¸·ÎºÎÅÍ È¸Àü°ª ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+// ë§ˆìš°ìŠ¤ ëª¨ì…˜ìœ¼ë¡œë¶€í„° íšŒì „ê°’ ì—…ë°ì´íŠ¸ í•œë‹¤.
 void GameObject::UpdateMotionRotation(float& RotationX, float& RotationY, float DeltaX, float DeltaY) {
 	RotationX += DeltaY;
 	RotationY += DeltaX;
 }
 
-// ¸¶¿ì½º ¸ğ¼ÇÀ¸·ÎºÎÅÍ È¸Àü°ª ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+// ë§ˆìš°ìŠ¤ ëª¨ì…˜ìœ¼ë¡œë¶€í„° íšŒì „ê°’ ì—…ë°ì´íŠ¸ í•œë‹¤.
 void GameObject::UpdateMotionRotation(XMFLOAT3& Rotation, float DeltaX, float DeltaY) {
 	Rotation.x += DeltaY;
 	Rotation.y += DeltaX;
 }
 
-// ÇÇÅ·À» À§ÇÑ Çà·ÄÀ» ¾÷µ¥ÀÌÆ® ÇÑ´Ù. ·»´õ¸µ Á÷ÈÄ »ç¿ëÇÏµµ·Ï ÇÑ´Ù.
+// í”¼í‚¹ì„ ìœ„í•œ í–‰ë ¬ì„ ì—…ë°ì´íŠ¸ í•œë‹¤. ë Œë”ë§ ì§í›„ ì‚¬ìš©í•˜ë„ë¡ í•œë‹¤.
 void GameObject::UpdatePickMatrix() {
 	PickMatrix = ResultMatrix;
 }
 
-// °ª¿¡ Á¾È¾ºñ¸¦ °öÇÑ´Ù. UI¸¦ ±¸ÇöÇÒ¶§ ÁÖ·Î »ç¿ëÇÑ´Ù.
+// ê°’ì— ì¢…íš¡ë¹„ë¥¼ ê³±í•œë‹¤. UIë¥¼ êµ¬í˜„í• ë•Œ ì£¼ë¡œ ì‚¬ìš©í•œë‹¤.
 float GameObject::ASP(float Value) {
 	return ASPECT * Value;
 }
 
-// FBX ¾Ö´Ï¸ŞÀÌ¼ÇÀ» ¾÷µ¥ÀÌÆ® ÇÑ´Ù. ÇÁ·¹ÀÓ ½Ã°£À» ³Ö¾îÁÖ¸é ÀÚµ¿À¸·Î Àç»ıµÈ´Ù.
-// HEAP_TYPE_DEFAULT·Î ÁöÁ¤µÈ FBX´Â ¾Ö´Ï¸ŞÀÌ¼Ç ¾÷µ¥ÀÌÆ®¸¦ ÇÒ ¼ö ¾ø´Ù.
+// FBX ì• ë‹ˆë©”ì´ì…˜ì„ ì—…ë°ì´íŠ¸ í•œë‹¤. í”„ë ˆì„ ì‹œê°„ì„ ë„£ì–´ì£¼ë©´ ìë™ìœ¼ë¡œ ì¬ìƒëœë‹¤.
+// HEAP_TYPE_DEFAULTë¡œ ì§€ì •ëœ FBXëŠ” ì• ë‹ˆë©”ì´ì…˜ ì—…ë°ì´íŠ¸ë¥¼ í•  ìˆ˜ ì—†ë‹¤.
 void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
 	if (!TargetMesh.SerializedFlag) {
 		TargetMesh.CurrentTime += FrameTime;
@@ -207,13 +207,13 @@ void GameObject::UpdateFBXAnimation(FBXMesh& TargetMesh, float FrameTime) {
 	}
 }
 
-// ¿©·¯ ¾Ö´Ï¸ŞÀÌ¼Ç Áß ÇÏ³ª¸¦ ¼±ÅÃÇÑ´Ù.
+// ì—¬ëŸ¬ ì• ë‹ˆë©”ì´ì…˜ ì¤‘ í•˜ë‚˜ë¥¼ ì„ íƒí•œë‹¤.
 void GameObject::SelectFBXAnimation(FBXMesh& TargetMesh, std::string AnimationName) {
 	fbxUtil.SelectAnimation(TargetMesh, AnimationName);
 	ResetAnimationTime(TargetMesh);
 }
 
-// ÇöÀç ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ı ½Ã°£À» ÃÊ±âÈ­ ÇÑ´Ù.
+// í˜„ì¬ ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒ ì‹œê°„ì„ ì´ˆê¸°í™” í•œë‹¤.
 void GameObject::ResetAnimationTime(FBXMesh& TargetMesh) {
 	if(!TargetMesh.SerializedFlag)
 		TargetMesh.CurrentTime = 0.0;
@@ -221,8 +221,8 @@ void GameObject::ResetAnimationTime(FBXMesh& TargetMesh) {
 		TargetMesh.CurrentTime = TargetMesh.StartTime;
 }
 
-// FBX ·»´õ¿ë ÇÔ¼öÀÌ´Ù. ¾ÕÀ¸·Î FBX ¸ğµ¨ ·»´õ¸µ ½Ã ÀÌ ÇÔ¼ö¸¦ ¾²µµ·Ï ÇÑ´Ù.
-// Render3D´Â ±âÁ¸ÀÇ ÄÚµå¸¦ ÃÖ´ëÇÑ °ÇµéÁö ¾Ê±â À§ÇØ ³²°ÜµĞ´Ù.
+// FBX ë Œë”ìš© í•¨ìˆ˜ì´ë‹¤. ì•ìœ¼ë¡œ FBX ëª¨ë¸ ë Œë”ë§ ì‹œ ì´ í•¨ìˆ˜ë¥¼ ì“°ë„ë¡ í•œë‹¤.
+// Render3DëŠ” ê¸°ì¡´ì˜ ì½”ë“œë¥¼ ìµœëŒ€í•œ ê±´ë“¤ì§€ ì•Šê¸° ìœ„í•´ ë‚¨ê²¨ë‘”ë‹¤.
 void GameObject::RenderFBX(FBXMesh& TargetMesh, Texture* TexturePtr, float AlphaValue, int DepthTestFlag){
 	for (auto const& M : TargetMesh.MeshPart)
 		Render3D(M, TexturePtr, AlphaValue, DepthTestFlag);
@@ -261,7 +261,7 @@ void GameObject::RenderFBX(FBX& TargetFBX, Texture* TexturePtr, float AlphaValue
 	}
 }
 
-// FBX ¸Å½¬Àü¿ë ÇÇÅ· °Ë»ç ÇÔ¼öÀÌ´Ù. ´ëºÎºĞÀÇ ½ºÅ°´× ¾Ö´Ï¸ŞÀÌ¼ÇÀ» »ç¿ëÇÏ´Â FBX ÆÄÀÏµéÀº 1~2°³ÀÇ ¸Å½¬¸¦ °¡Áö°í ÀÖÀ» °ÍÀÌ¹Ç·Î ¼º´É »ó Å« ¿À¹öÇìµå´Â ¾øÀ»°ÍÀÌ´Ù. (¸¹´Ù¸é ÀÖ°ÚÁö¸¸...)
+// FBX ë§¤ì‰¬ì „ìš© í”¼í‚¹ ê²€ì‚¬ í•¨ìˆ˜ì´ë‹¤. ëŒ€ë¶€ë¶„ì˜ ìŠ¤í‚¤ë‹ ì• ë‹ˆë©”ì´ì…˜ì„ ì‚¬ìš©í•˜ëŠ” FBX íŒŒì¼ë“¤ì€ 1~2ê°œì˜ ë§¤ì‰¬ë¥¼ ê°€ì§€ê³  ìˆì„ ê²ƒì´ë¯€ë¡œ ì„±ëŠ¥ ìƒ í° ì˜¤ë²„í—¤ë“œëŠ” ì—†ì„ê²ƒì´ë‹¤. (ë§ë‹¤ë©´ ìˆê² ì§€ë§Œ...)
 int GameObject::PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance) {
 	int TotelInterSected{};
 	for (auto const& M : TargetMesh.MeshPart) {
@@ -275,7 +275,7 @@ int GameObject::PickRayFBX(FBXMesh& TargetMesh, XMVECTOR& PickPosition, XMMATRIX
 	return TotelInterSected;
 }
 
-// ÇÇÅ· ½Ã »ç¿ëÇÏ´Â ÇÔ¼öÀÌ´Ù. ÇÁ·Î±×·¡¸Ó°¡ ÀÌ ÇÔ¼ö¸¦ Á÷Á¢ »ç¿ëÇÒ ÀÏÀº ¾ø´Ù.
+// í”¼í‚¹ ì‹œ ì‚¬ìš©í•˜ëŠ” í•¨ìˆ˜ì´ë‹¤. í”„ë¡œê·¸ë˜ë¨¸ê°€ ì´ í•¨ìˆ˜ë¥¼ ì§ì ‘ ì‚¬ìš©í•  ì¼ì€ ì—†ë‹¤.
 int GameObject::PickRayInter(Mesh* MeshPtr, XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, float* HitDistance) {
 	int InterSected{};
 
@@ -286,8 +286,8 @@ int GameObject::PickRayInter(Mesh* MeshPtr, XMVECTOR& PickPosition, XMMATRIX& Vi
 	return(InterSected);
 }
 
-// Ä³¸¯ÅÍ ÄÁÆ®·Ñ·¯¿¡ »ç¿ëÇÏ´Â ÇÔ¼öÀÌ´Ù.
-// °¢ ÀÌµ¿ bool º¯¼ö¿Í ÇÏ³ªÀÇ Å°¿¡ ´ëÀÀÇÑ´Ù.
+// ìºë¦­í„° ì»¨íŠ¸ë¡¤ëŸ¬ì— ì‚¬ìš©í•˜ëŠ” í•¨ìˆ˜ì´ë‹¤.
+// ê° ì´ë™ bool ë³€ìˆ˜ì™€ í•˜ë‚˜ì˜ í‚¤ì— ëŒ€ì‘í•œë‹¤.
 void GameObject::InputBoolSwitch(int SwitchFlag, KeyEvent& Event, WPARAM Key, bool& BoolValue) {
 	if (Key == Event.Key) {
 		if (SwitchFlag == KEY_DOWN_TRUE) {
@@ -308,14 +308,14 @@ void GameObject::InputBoolSwitch(int SwitchFlag, KeyEvent& Event, WPARAM Key, bo
 
 //////////////////////////////////////// private
 
-// Çà·Ä°ú ½¦ÀÌ´õ ¹× »ö»ó °ü·Ã °ªµéÀ» ½¦ÀÌ´õ¿¡ Àü´ŞÇÑ´Ù. RenderÇÔ¼ö¸¦ ½ÇÇàÇÏ¸é ÀÌ ÇÔ¼öµµ ½ÇÇàµÈ´Ù. Áï, Á÷Á¢ »ç¿ëÇÒ ÀÏÀÌ ¾ø´Ù.
+// í–‰ë ¬ê³¼ ì‰ì´ë” ë° ìƒ‰ìƒ ê´€ë ¨ ê°’ë“¤ì„ ì‰ì´ë”ì— ì „ë‹¬í•œë‹¤. Renderí•¨ìˆ˜ë¥¼ ì‹¤í–‰í•˜ë©´ ì´ í•¨ìˆ˜ë„ ì‹¤í–‰ëœë‹¤. ì¦‰, ì§ì ‘ ì‚¬ìš©í•  ì¼ì´ ì—†ë‹¤.
 void GameObject::PrepareRender() {
 	SetCamera();
 
 	ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&RotateMatrix), XMLoadFloat4x4(&TranslateMatrix));
 	ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&ScaleMatrix), ResultMatrix);
 
-	// ÀÌ¹ÌÁö Ãâ·Â ¸ğµåÀÏ°æ¿ì Á¾È¾ºñ¸¦ Àû¿ëÇÑ´Ù.
+	// ì´ë¯¸ì§€ ì¶œë ¥ ëª¨ë“œì¼ê²½ìš° ì¢…íš¡ë¹„ë¥¼ ì ìš©í•œë‹¤.
 	if (RenderType == RENDER_TYPE_2D || RenderType == RENDER_TYPE_2D_STATIC)
 		ResultMatrix = XMMatrixMultiply(XMLoadFloat4x4(&ImageAspectMatrix), ResultMatrix);
 
@@ -327,9 +327,9 @@ void GameObject::PrepareRender() {
 	RCUtil::Input(GlobalCommandList, &ObjectAlpha, GAME_OBJECT_INDEX, 1, 19);
 }
 
-// ·»´õ¸µ Àü Ä«¸Ş¶ó¸¦ ¼³Á¤ÇÑ´Ù.
+// ë Œë”ë§ ì „ ì¹´ë©”ë¼ë¥¼ ì„¤ì •í•œë‹¤.
 void GameObject::SetCamera() {
-	// ·»´õ Å¸ÀÔ¿¡ µû¶ó ´Ù¸¥ Çà·ÄÀ» ÃÊ±âÈ­ ÇÑ´Ù.
+	// ë Œë” íƒ€ì…ì— ë”°ë¼ ë‹¤ë¥¸ í–‰ë ¬ì„ ì´ˆê¸°í™” í•œë‹¤.
 	switch (RenderType) {
 	case RENDER_TYPE_3D: case RENDER_TYPE_3D_STATIC:
 		camera.GeneratePerspectiveMatrix(0.1f, 1300.0f, ASPECT, 55.0f + GLOBAL.offsetFOV);
@@ -347,7 +347,7 @@ void GameObject::SetCamera() {
 	camera.UpdateShaderVariables();
 }
 
-// ÇÇÅ· ½Ã »ç¿ëÇÏ´Â ÇÔ¼öÀÌ´Ù. ÇÁ·Î±×·¡¸Ó°¡ ÀÌ ÇÔ¼ö¸¦ Á÷Á¢ »ç¿ëÇÒ ÀÏÀº ¾ø´Ù.
+// í”¼í‚¹ ì‹œ ì‚¬ìš©í•˜ëŠ” í•¨ìˆ˜ì´ë‹¤. í”„ë¡œê·¸ë˜ë¨¸ê°€ ì´ í•¨ìˆ˜ë¥¼ ì§ì ‘ ì‚¬ìš©í•  ì¼ì€ ì—†ë‹¤.
 void GameObject::GenPickingRay(XMVECTOR& PickPosition, XMMATRIX& ViewMatrix, XMVECTOR& PickRayOrigin, XMVECTOR& PickRayDirection) {
 	XMMATRIX MatrixTomodel = XMMatrixInverse(NULL, PickMatrix * ViewMatrix);
 	XMFLOAT3 CameraOrigin(0.0f, 0.0f, 0.0f);

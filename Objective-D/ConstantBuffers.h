@@ -28,7 +28,7 @@ extern CBV FogCBV;
 extern CBV ShadowCBV;
 
 
-// CBV »ı¼º °ü·Ã ÇÔ¼öµé
+// CBV ìƒì„± ê´€ë ¨ í•¨ìˆ˜ë“¤
 void CreateConstantBufferResource(ID3D12Device* Device);
 inline void ReserveConstantBuffer(CBV& CBV_Struct, int ReserveSize) {
 	CBV_Struct.Buffer.reserve(ReserveSize);

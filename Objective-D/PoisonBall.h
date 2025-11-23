@@ -21,7 +21,7 @@ private:
 
 	TerrainUtil       terrainUtil;
 
-	// Ãæµ¹Ã³¸®¿ë ¹Ù¿îµå
+	// é¢å€’è´¸åºœä¾© å®˜æ¬¾é›
 	BoundSphere       poisonSphere{};
 
 public:

@@ -36,9 +36,9 @@ void RoadBlock::Update(float Delta) {
 }
 
 void RoadBlock::Render() {
-	// ¿ìÃø, ÁÂÃøÀ¸·Î ³ª´©¾î ·»´õ¸µ
-	// ¿ìÃø ·»´õ¸µ
-	// Áß¾ÓºÎÅÍ ·»´õ¸µ
+	// Â¿Ã¬ÃƒÃ¸, ÃÃ‚ÃƒÃ¸Ã€Â¸Â·Ã Â³ÂªÂ´Â©Â¾Ã® Â·Â»Â´ÃµÂ¸Âµ
+	// Â¿Ã¬ÃƒÃ¸ Â·Â»Â´ÃµÂ¸Âµ
+	// ÃÃŸÂ¾Ã“ÂºÃÃ…Ã Â·Â»Â´ÃµÂ¸Âµ
 	float radians = XMConvertToRadians(rotation.y);
 	XMFLOAT3 startPosition = XMFLOAT3(position.x - cos(radians) * size.x * numBlock / 2, position.y, position.z + sin(radians) * size.x * numBlock / 2);
 

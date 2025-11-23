@@ -1,6 +1,6 @@
 #include "ShaderUtil.h"
 
-// ½¦ÀÌ´õ
+// ì‰ì´ë”
 Shader::~Shader() {
 	if (PSDefault)
 		PSDefault->Release();
@@ -70,28 +70,28 @@ void Shader::OnPrepareRender(ID3D12GraphicsCommandList* CmdList, ID3D12PipelineS
 		CmdList->SetPipelineState(PS);
 }
 
-// ¿ÍÀÌ¾î ÇÁ·¹ÀÓ ÆÄÀÌÇÁ¶óÀÎ Àû¿ë, ±íÀÌ °Ë»ç Àû¿ëµÊ
+// ì™€ì´ì–´ í”„ë ˆì„ íŒŒì´í”„ë¼ì¸ ì ìš©, ê¹Šì´ ê²€ì‚¬ ì ìš©ë¨
 void Shader::RenderWireframe(ID3D12GraphicsCommandList* CmdList) {
 	OnPrepareRender(CmdList, PSWireframe);
 }
 
-// ±íÀÌ °Ë»ç¸¦ ÇØÁ¦ÇÑ ÆÄÀÌÇÁ¶óÀÎ Àû¿ë
+// ê¹Šì´ ê²€ì‚¬ë¥¼ í•´ì œí•œ íŒŒì´í”„ë¼ì¸ ì ìš©
 void Shader::RenderDepthNone(ID3D12GraphicsCommandList* CmdList) {
 	OnPrepareRender(CmdList, PSDepthNone);
 }
 
-// ±íÀÌ °Ë»ç¸¦ Æ÷ÇÔÇÑ ÆÄÀÌÇÁ¶óÀÎ Àû¿ë
+// ê¹Šì´ ê²€ì‚¬ë¥¼ í¬í•¨í•œ íŒŒì´í”„ë¼ì¸ ì ìš©
 void Shader::RenderDefault(ID3D12GraphicsCommandList* CmdList) {
 	OnPrepareRender(CmdList, PSDefault);
 }
 
-// ±íÀÌ ¾²±â ¹ÌÆ÷ÇÔ ÆÄÀÌÇÁ¶óÀÎ Àû¿ë
+// ê¹Šì´ ì“°ê¸° ë¯¸í¬í•¨ íŒŒì´í”„ë¼ì¸ ì ìš©
 void Shader::RenderTransparentDefault(ID3D12GraphicsCommandList* CmdList) {
 	OnPrepareRender(CmdList, PSTransparentDefault);
 }
 
 
-// ÃÑ ºÒ²É ¿ÀºêÁ§Æ®¿ë ÆÄÀÌÇÁ¶óÀÎ Àû¿ë
+// ì´ ë¶ˆê½ƒ ì˜¤ë¸Œì íŠ¸ìš© íŒŒì´í”„ë¼ì¸ ì ìš©
 void Shader::RenderCullingNone(ID3D12GraphicsCommandList* CmdList) {
 	OnPrepareRender(CmdList, PSCullingNone);
 }

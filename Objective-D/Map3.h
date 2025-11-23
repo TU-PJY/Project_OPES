@@ -70,12 +70,12 @@ public:
 				LoadOOBBdata();
 				break;
 
-			//	// ½Ã¿¬¿ë ÀÓ½Ã Á¶ÀÛÅ°
+			//	// ì‹œì—°ìš© ì„ì‹œ ì¡°ì‘í‚¤
 			//case VK_RIGHT:
 			//	scene.SwitchMode(TestMode::Start);
 			//	break;
 
-			//	// ½Ã¿¬¿ë ÀÓ½Ã Á¶ÀÛÅ°
+			//	// ì‹œì—°ìš© ì„ì‹œ ì¡°ì‘í‚¤
 			//case VK_LEFT:
 			//	scene.SwitchMode(Level2::Start);
 			//	break;
@@ -95,7 +95,7 @@ public:
 		Transform::Scale(ScaleMatrix, 1000.0, 1000.0, 1.0);
 		Render3D(SYSRES.BillboardMesh, TEX.Magma);
 
-		// È­»ê
+		// í™”ì‚°
 		BeginRender();
 		SetLightUse(DISABLE_LIGHT);
 		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.5);
@@ -103,7 +103,7 @@ public:
 		Transform::Move(TranslateMatrix, 60.0, 5.0, -60.0);
 		Render3D(MESH.Volcano, TEX.Volcano);
 
-		// ºĞÈ­±¸
+		// ë¶„í™”êµ¬
 		for (auto& Volcano : VolcanoPosition) {
 			BeginRender();
 			Transform::Move(TranslateMatrix, Volcano.Position);
@@ -112,7 +112,7 @@ public:
 			Render3D(MESH.SmallVolcano, TEX.Map3Palette);
 		}
 
-		// ¹Ù´Ú µ¹
+		// ë°”ë‹¥ ëŒ
 		for (auto& Rock : RockPosition) {
 			BeginRender();
 			Transform::Move(TranslateMatrix, Rock.Position);
@@ -121,7 +121,7 @@ public:
 			Render3D(MESH.FloatingRock, TEX.Map3Palette);
 		}
 
-		// ³ª¹«
+		// ë‚˜ë¬´
 		for (auto& Tree : TreePosition) {
 			BeginRender();
 			Transform::Move(TranslateMatrix, Tree.Position.x, Tree.Position.y - 1.0, Tree.Position.z);
@@ -130,7 +130,7 @@ public:
 			Render3D(MESH.DeadTree, TEX.Map3Palette);
 		}
 
-		// ¹ÙÀ§
+		// ë°”ìœ„
 		for (auto& Stone : StonePosition) {
 			BeginRender();
 			Transform::Move(TranslateMatrix, Stone.Position);
@@ -139,7 +139,7 @@ public:
 			Render3D(MESH.Map3Stone[Stone.Index], TEX.Map3Palette);
 		}
 
-		// Å©¸®½ºÅ»
+		// í¬ë¦¬ìŠ¤íƒˆ
 		for (auto& Crystal : CrystalPosition) {
 			BeginRender();
 			Transform::Move(TranslateMatrix, Crystal.Position);
@@ -151,7 +151,7 @@ public:
 		for (auto& o : mapOOBBdata)
 			o.Render();
 
-		//// Å×½ºÆ®¿ë ÇÃ·¹ÀÌ¾î ¸ğµ¨
+		//// í…ŒìŠ¤íŠ¸ìš© í”Œë ˆì´ì–´ ëª¨ë¸
 		//BeginRender();
 		//Transform::Move(TranslateMatrix, -130.0, 0.0, -130.0);
 		//Transform::Scale(ScaleMatrix, 1.0, 1.0, 1.0);

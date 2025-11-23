@@ -8,12 +8,12 @@ void SendMonsterMovePacket(float x, float y, float z, float angle, unsigned int 
 void SendPtoMDamagePacket(unsigned int monsterID, int attackHp);
 //void SendPlantAnimationTimePacket(unsigned int monsterID, float time);
 
-// È÷Æ®¹Ú½º ¾÷µ¥ÀÌÆ®
+// íˆíŠ¸ë°•ìŠ¤ ì—…ë°ì´íŠ¸
 void PlantMonster::updateHitBox(float Delta) {
 	if (currentState == PLANT_DEATH)
 		return;
 
-	// µğÆæ½º ¸ğµåÀÏ¶§¸¸ ½Ç½Ã°£À¸·Î ÇÁ·¯½ºÅÒ ¹Ù¿îµå¸¦ ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+	// ë””íœìŠ¤ ëª¨ë“œì¼ë•Œë§Œ ì‹¤ì‹œê°„ìœ¼ë¡œ í”„ëŸ¬ìŠ¤í…€ ë°”ìš´ë“œë¥¼ ì—…ë°ì´íŠ¸ í•œë‹¤.
 	if (defenseModeState)
 		frustumBound.Update(position, 10.0);
 
@@ -38,12 +38,12 @@ void PlantMonster::sendCurrentPosition() {
 	prevTargetID = currentTargetID;
 }
 
-// °ø°İ ´ë»ó °¨Áö ÁøÇà
+// ê³µê²© ëŒ€ìƒ ê°ì§€ ì§„í–‰
 void PlantMonster::updateTargetDetect(float Delta) {
 	if (currentState == PLANT_DEATH)
 		return;
 
-	// µğÆæ½º ¸ğµå ½Ã¿¡´Â Áß¾Ó °Ç¹°¸¸À» °ø°İÇÏ¹Ç·Î ÇÃ·¹ÀÌ¾î ÀÎ½Ä ¾È ÇÔ
+	// ë””íœìŠ¤ ëª¨ë“œ ì‹œì—ëŠ” ì¤‘ì•™ ê±´ë¬¼ë§Œì„ ê³µê²©í•˜ë¯€ë¡œ í”Œë ˆì´ì–´ ì¸ì‹ ì•ˆ í•¨
 	if (defenseModeState)
 		return;
 
@@ -59,16 +59,16 @@ void PlantMonster::updateTargetDetect(float Delta) {
 	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
 		for (int i = 0; i < layerSize; i++) {
 			if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
-				// ½Ã¾ß ¹üÀ§ ³»¿¡¼­ ÇÃ·¹ÀÌ¾î°¡ °¨ÁöµÇ´ÂÁö È®ÀÎ
+				// ì‹œì•¼ ë²”ìœ„ ë‚´ì—ì„œ í”Œë ˆì´ì–´ê°€ ê°ì§€ë˜ëŠ”ì§€ í™•ì¸
 				if (lookRange.CheckCollision(player->GetOOBB())) {
 
-					// ÇÃ·¹ÀÌ¾î°¡ °¨ÁöµÇ¸é ÀÚ½Å°ú ÇÃ·¹ÀÌ¾î »çÀÌÀÇ ±¤¼±º¤ÅÍ °è»ê
+					// í”Œë ˆì´ì–´ê°€ ê°ì§€ë˜ë©´ ìì‹ ê³¼ í”Œë ˆì´ì–´ ì‚¬ì´ì˜ ê´‘ì„ ë²¡í„° ê³„ì‚°
 					XMFLOAT3 playerPosition = player->GetPosition();
 					playerPosition.y += player->GetSize().y * 1.5;
 					Ray rayVector = Math::CalcRayVector(position, playerPosition);
 					bool isBlocking{};
 
-					// ±¤¼±ÀÌ ¸Ê ¹Ù¿îµå¹Ú½º¿¡ Ãæµ¹ÇÏ¸é IDLE À¯Áö, ±×·¸Áö ¾Ê´Ù¸é ATTACKÀ¸·Î »óÅÂ º¯°æ
+					// ê´‘ì„ ì´ ë§µ ë°”ìš´ë“œë°•ìŠ¤ì— ì¶©ëŒí•˜ë©´ IDLE ìœ ì§€, ê·¸ë ‡ì§€ ì•Šë‹¤ë©´ ATTACKìœ¼ë¡œ ìƒíƒœ ë³€ê²½
 					for (auto& B : GLOBAL.mapOOBBdata) {
 						if (Math::CheckRayCollision(rayVector, B)) {
 							currentState = PLANT_IDLE;
@@ -86,7 +86,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 						currentState = PLANT_ATTACK;
 						currentTargetID = GLOBAL.myID;
 
-						// ÇÃ·¹ÀÌ¾î ¹æÇâÀÇ °¢µµ·Î ¸ñÇ¥ °¢µµ ¼³Á¤
+						// í”Œë ˆì´ì–´ ë°©í–¥ì˜ ê°ë„ë¡œ ëª©í‘œ ê°ë„ ì„¤ì •
 						destRotation = Math::CalcDegree3D(position, playerPosition);
 						Math::Normalize2DAngleTo360(destRotation.y);
 						targetPosition = playerPosition;
@@ -98,7 +98,7 @@ void PlantMonster::updateTargetDetect(float Delta) {
 					}
 				}
 
-				// ÇÃ·¹ÀÌ¾î°¡ ½Ã¾ß ¹ÛÀ¸·Î ³ª°¡¸é ´Ù½Ã IDLE·Î »óÅÂ º¯°æ
+				// í”Œë ˆì´ì–´ê°€ ì‹œì•¼ ë°–ìœ¼ë¡œ ë‚˜ê°€ë©´ ë‹¤ì‹œ IDLEë¡œ ìƒíƒœ ë³€ê²½
 				else {
 					currentState = PLANT_IDLE;
 					currentTargetID = 0;
@@ -123,17 +123,17 @@ void PlantMonster::updateTargetDetect(float Delta) {
 	}
 }
 
-// °ø°İ Å¸ÀÌ¹Ö ¾÷µ¥ÀÌÆ®
-// ÀÏÁ¤ ½Ã°£¸¶´Ù ±¸Ã¼¸¦ ¹ß»çÇÑ´Ù.
+// ê³µê²© íƒ€ì´ë° ì—…ë°ì´íŠ¸
+// ì¼ì • ì‹œê°„ë§ˆë‹¤ êµ¬ì²´ë¥¼ ë°œì‚¬í•œë‹¤.
 void PlantMonster::updateAttack(float Delta) {
 	if (currentState != PLANT_ATTACK) {
 		shootState = false;
 		return;
 	}
 
-	// °ø°İ ¸ğ¼Ç¿¡ ¸ÂÃß¾î µ¶ ±¸Ã¼¸¦ ¹ß»çÇÑ´Ù.
-	// °ø°İ ´ë»óÀ» ÇâÇØ ¹ß»çÇÑ´Ù.
-	// ±¸Ã¼ ¹ß»ç ÈÄ ¾Ö´Ï¸ŞÀÌ¼ÇÀÇ °°Àº ±¸°£¿¡ µµ´ŞÇÒ ¶§±îÁö ¹ß»çÇÏÁö ¾Ê´Â´Ù.
+	// ê³µê²© ëª¨ì…˜ì— ë§ì¶”ì–´ ë… êµ¬ì²´ë¥¼ ë°œì‚¬í•œë‹¤.
+	// ê³µê²© ëŒ€ìƒì„ í–¥í•´ ë°œì‚¬í•œë‹¤.
+	// êµ¬ì²´ ë°œì‚¬ í›„ ì• ë‹ˆë©”ì´ì…˜ì˜ ê°™ì€ êµ¬ê°„ì— ë„ë‹¬í•  ë•Œê¹Œì§€ ë°œì‚¬í•˜ì§€ ì•ŠëŠ”ë‹¤.
 	if (plantFBX.GetTimeSectionPassed(plantFBX.GetCurrentAnimationTime() - 0.65f)) {
 		if (!shootState) {
 			XMFLOAT3 createPosition = Math::CalcForwardOffset(position, rotation.y, 2.0f, size.y * 0.9);
@@ -144,11 +144,11 @@ void PlantMonster::updateAttack(float Delta) {
 	else
 		shootState = false;
 
-	// ¸ñÇ¥ °¢µµ·Î È¸ÀüÇÑ´Ù.
+	// ëª©í‘œ ê°ë„ë¡œ íšŒì „í•œë‹¤.
 	rotation.y = Math::LerpDegrees(rotation.y, destRotation.y, 15.0 * Delta);
 }
 
-// hp Ç¥½Ã±â ¾÷µ¥ÀÌÆ® ÁøÇà
+// hp í‘œì‹œê¸° ì—…ë°ì´íŠ¸ ì§„í–‰
 void PlantMonster::updateIndicatorHP() {
 	if (currentState == PLANT_DEATH)
 		return;
@@ -160,7 +160,7 @@ void PlantMonster::updateIndicatorHP() {
 	}
 }
 
-// µğÆæ½º ¸ğµå ½Ã ¶¥¿¡¼­ ¿Ã¶ó¿À´Â ¾Ö´Ï¸ŞÀÌ¼Ç ¾÷µ¥ÀÌÆ®
+// ë””íœìŠ¤ ëª¨ë“œ ì‹œ ë•…ì—ì„œ ì˜¬ë¼ì˜¤ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì—…ë°ì´íŠ¸
 void PlantMonster::updateLiftFromGround(float Delta) {
 	if (currentState != PLANT_LIFT)
 		return;
@@ -173,8 +173,8 @@ void PlantMonster::updateLiftFromGround(float Delta) {
 	}
 }
 
-// ¾Ö´Ï¸ŞÀÌ¼Ç ¾÷µ¥ÀÌÆ® ÁøÇà
-// ÀÌÀü »óÅÂ¿Í ÇöÀç »óÅÂ°¡ ´Ù¸¦ ¶§¸¶´Ù ¾Ö´Ï¸ŞÀÌ¼ÇÀ» º¯°æÇÑ´Ù.
+// ì• ë‹ˆë©”ì´ì…˜ ì—…ë°ì´íŠ¸ ì§„í–‰
+// ì´ì „ ìƒíƒœì™€ í˜„ì¬ ìƒíƒœê°€ ë‹¤ë¥¼ ë•Œë§ˆë‹¤ ì• ë‹ˆë©”ì´ì…˜ì„ ë³€ê²½í•œë‹¤.
 void PlantMonster::updateAnimation(float Delta) {
 	if (currentState != prevState) {
 		switch (currentState) {
@@ -198,12 +198,12 @@ void PlantMonster::updateAnimation(float Delta) {
 	plantFBX.UpdateAnimation(Delta, false, !inFrustum);
 }
 
-// Á×À½ »óÅÂ ¾÷µ¥ÀÌÆ® ÁøÇà
+// ì£½ìŒ ìƒíƒœ ì—…ë°ì´íŠ¸ ì§„í–‰
 void PlantMonster::updateDeath(float Delta) {
 	if (currentState != PLANT_DEATH)
 		return;
 
-	// Á×´Â ¾Ö´Ï¸ŞÀÌ¼Ç Àç»ıÀÌ ³¡³ª¸é ½º½º·Î »èÁ¦ÇÑ´Ù.
+	// ì£½ëŠ” ì• ë‹ˆë©”ì´ì…˜ ì¬ìƒì´ ëë‚˜ë©´ ìŠ¤ìŠ¤ë¡œ ì‚­ì œí•œë‹¤.
 	if (plantFBX.GetAnimationEndState()) {
 		scene.DeleteObject(this);
 	}
@@ -213,19 +213,19 @@ void PlantMonster::updateDeath(float Delta) {
 ////////////////////////////////////////////////////////////
 
 
-// createPosition: Ã³À½ »ı¼ºµÉ ¶§ ½ºÆùµÇ´Â À§Ä¡
-// terrainName: ÇöÀç ¸ÊÀÇ ÅÍ·¹ÀÎ °´Ã¼ ÀÌ¸§
-// appearFromGround: È°¼ºÈ­ ½Ã ¶¥ ¼Ó¿¡¼­ ³ª¿È
+// createPosition: ì²˜ìŒ ìƒì„±ë  ë•Œ ìŠ¤í°ë˜ëŠ” ìœ„ì¹˜
+// terrainName: í˜„ì¬ ë§µì˜ í„°ë ˆì¸ ê°ì²´ ì´ë¦„
+// appearFromGround: í™œì„±í™” ì‹œ ë•… ì†ì—ì„œ ë‚˜ì˜´
 PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool appearFromGround) {
-	// ¿øº»¿¡¼­ ÀÎ½ºÅÏ½º º¹»ç
+	// ì›ë³¸ì—ì„œ ì¸ìŠ¤í„´ìŠ¤ ë³µì‚¬
 	plantFBX.SelectFBXMesh(MESH.plantMonster);
 
-	// ¶¥¿¡¼­ ³ª¿À´Â »óÅÂÀÏ °æ¿ì µğÆæ½º ¾÷µ¥ÀÌÆ® ¸ğµå È°¼ºÈ­
+	// ë•…ì—ì„œ ë‚˜ì˜¤ëŠ” ìƒíƒœì¼ ê²½ìš° ë””íœìŠ¤ ì—…ë°ì´íŠ¸ ëª¨ë“œ í™œì„±í™”
 	tempPosition = createPosition;
 	behaviorEnabledState = !appearFromGround;
 	defenseModeState = appearFromGround;
 
-	// ¶¥¿¡¼­ ³ª¿À´Â »óÅÂÀÏ °æ¿ì º°µµÀÇ »óÅÂ¸¦ ÁöÁ¤ÇÑ´Ù.
+	// ë•…ì—ì„œ ë‚˜ì˜¤ëŠ” ìƒíƒœì¼ ê²½ìš° ë³„ë„ì˜ ìƒíƒœë¥¼ ì§€ì •í•œë‹¤.
 	if (behaviorEnabledState)
 		currentState = PLANT_IDLE;
 	else
@@ -233,19 +233,19 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 
 	TerrainUtil terrainUtil;
 
-	// °íÁ¤Çü ¸ó½ºÅÍÀÌ¹Ç·Î »ı¼º ÀÌÈÄ·Î´Â ÅÍ·¹ÀÎ ¾÷µ¥ÀÌÆ®¸¦ ÁøÇàÇÏÁö ¾Ê´Â´Ù.
+	// ê³ ì •í˜• ëª¬ìŠ¤í„°ì´ë¯€ë¡œ ìƒì„± ì´í›„ë¡œëŠ” í„°ë ˆì¸ ì—…ë°ì´íŠ¸ë¥¼ ì§„í–‰í•˜ì§€ ì•ŠëŠ”ë‹¤.
 	terrainUtil.InputPosition(tempPosition);
 	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, tempPosition, 0.0);
 	position = tempPosition;
 
-	// ÇöÀç À§Ä¡¿¡¼­ÀÇ ÅÍ·¹ÀÎ ³ôÀÌ ±¸ÇÏ±â
+	// í˜„ì¬ ìœ„ì¹˜ì—ì„œì˜ í„°ë ˆì¸ ë†’ì´ êµ¬í•˜ê¸°
 	terrainHeight = tempPosition.y;
 
-	//  ¶¥¿¡¼­ ³ª¿À´Â »óÅÂÀÏ °æ¿ì ³ôÀÌ¸¦ ¶¥ ¼ÓÀ¸·Î ¿Å±ä´Ù.
+	//  ë•…ì—ì„œ ë‚˜ì˜¤ëŠ” ìƒíƒœì¼ ê²½ìš° ë†’ì´ë¥¼ ë•… ì†ìœ¼ë¡œ ì˜®ê¸´ë‹¤.
 	if (!behaviorEnabledState)
 		position.y -= 10.0;
 
-	// µğÆæ½º ¸ğµå ÀÏ¶§´Â Áß¾Ó °Ç¹° ¸¸À» °ø°İÇÏ¹Ç·Î »ı¼º ÀÌÈÄ·Î´Â È¸Àü°¢µµ ¾÷µ¥ÀÌÆ®¸¦ ÇÏÁö ¾Ê´Â´Ù.
+	// ë””íœìŠ¤ ëª¨ë“œ ì¼ë•ŒëŠ” ì¤‘ì•™ ê±´ë¬¼ ë§Œì„ ê³µê²©í•˜ë¯€ë¡œ ìƒì„± ì´í›„ë¡œëŠ” íšŒì „ê°ë„ ì—…ë°ì´íŠ¸ë¥¼ í•˜ì§€ ì•ŠëŠ”ë‹¤.
 	if (defenseModeState) {
 		if (auto centerBuilding = scene.Find("center_building"); centerBuilding) {
 			XMFLOAT3 centerBuildingPosition = centerBuilding->GetPosition();
@@ -254,17 +254,17 @@ PlantMonster::PlantMonster(const XMFLOAT3& createPosition, unsigned int ID, bool
 		}
 	}
 
-	// ÀÚ±â ¼ÒÀ¯ÀÇ hp Ç¥½Ã±â °´Ã¼ Ãß°¡
+	// ìê¸° ì†Œìœ ì˜ hp í‘œì‹œê¸° ê°ì²´ ì¶”ê°€
 	hpIndicator = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER3);
 
 	for (int i = 0; i < 3; i++)
 		hitBox[i].SetUpdateFrequency(24);
 
-	// ¾îµåº¥Ã³ ¸ğµå¿¡¼­¸¸ ½Ã¾ß¸¦ ¼³Á¤ÇÑ´Ù.
+	// ì–´ë“œë²¤ì²˜ ëª¨ë“œì—ì„œë§Œ ì‹œì•¼ë¥¼ ì„¤ì •í•œë‹¤.
 	if (!defenseModeState)
 		lookRange.Update(XMFLOAT3(position.x, position.y + size.y, position.z), 80.0);
 
-	// ÇÁ·¯½ºÅÒ ¹Ù¿îµå ¼³Á¤
+	// í”„ëŸ¬ìŠ¤í…€ ë°”ìš´ë“œ ì„¤ì •
 	frustumBound.Update(position, 10.0);
 
 	this->ID = ID;
@@ -288,12 +288,12 @@ PlantMonster::~PlantMonster() {
 
 	count++;
 
-	std::cout <<"»èÁ¦ È½¼ö: " << count << std::endl;
+	std::cout <<"ì‚­ì œ íšŸìˆ˜: " << count << std::endl;
 }
 
-// ¸ğµç ¾÷µ¥ÀÌÆ®
+// ëª¨ë“  ì—…ë°ì´íŠ¸
 void PlantMonster::Update(float Delta) {
-	// ÇÁ·¯½ºÅÒ °Ë»ç
+	// í”„ëŸ¬ìŠ¤í…€ ê²€ì‚¬
 	inFrustum = camera.CheckFrustum(frustumBound);
 
 	updateHitBox(Delta);
@@ -310,9 +310,9 @@ void PlantMonster::Update(float Delta) {
 	updateLiftFromGround(Delta);
 }
 
-// ·»´õ¸µ
+// ë Œë”ë§
 void PlantMonster::Render() {
-	// ÇÁ·¯½ºÅÒ¿¡ µé¾î°¡ÀÖÁö ¾Ê´Ù¸é ·»´õ¸µÀ» °Ç³Ê¶Ú´Ù.
+	// í”„ëŸ¬ìŠ¤í…€ì— ë“¤ì–´ê°€ìˆì§€ ì•Šë‹¤ë©´ ë Œë”ë§ì„ ê±´ë„ˆë›´ë‹¤.
 	if (!inFrustum)
 		return;
 

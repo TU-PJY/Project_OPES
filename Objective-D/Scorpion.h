@@ -9,7 +9,7 @@ private:
 		SCOR_WALK,
 		SCOR_ATTACK,
 		SCOR_DEATH,
-		SCOR_LIFT // »óÅÂ °³¼ö ¸ÂÃß±â À§ÇÔ
+		SCOR_LIFT // ìƒíƒœ ê°œìˆ˜ ë§ì¶”ê¸° ìœ„í•¨
 	};
 
 	FBX         scorpionFBX{ MESH.scorpion };
@@ -19,9 +19,9 @@ private:
 	XMFLOAT3    rotationDest{};
 	XMFLOAT3    size{ 3.0, 3.0, 3.0 };
 
-	// ÀÜ»ó ¹æÁö¸¦ À§ÇØ Áö¿¬ À§Ä¡ ÀÔ·ÂÀ» ½ÇÇàÇÑ´Ù.
+	// ì”ìƒ ë°©ì§€ë¥¼ ìœ„í•´ ì§€ì—° ìœ„ì¹˜ ì…ë ¥ì„ ì‹¤í–‰í•œë‹¤.
 	XMFLOAT3    inputedPosition{};
-	// ÇØ´ç »óÅÂ°¡ trueÀÏ ¶§¸¸ positionÀÌ inputedPositionÀ» ¹İ¿µÇÑ´Ù.
+	// í•´ë‹¹ ìƒíƒœê°€ trueì¼ ë•Œë§Œ positionì´ inputedPositionì„ ë°˜ì˜í•œë‹¤.
 	bool        positionInputedState{};
 
 	int         currentState{ SCOR_IDLE };
@@ -48,24 +48,24 @@ private:
 	BoundSphere scorBound{};
 	BoundSphere attackBound{};
 
-	// ¸ó½ºÅÍ ¾ÆÀÌµğ
+	// ëª¬ìŠ¤í„° ì•„ì´ë””
 	unsigned int ID{};
 
-	// ÇöÀç ÃßÀû ÁßÀÎ ¾ÆÀÌµğ
-	// 0ÀÌ¸é IdleÀÌ°Å³ª ³ª¸¦ ÃßÀû Áß
-	// 0ÀÌ ¾Æ´Ï¸é ´Ù¸¥ ÇÃ·¹ÀÌ¾î ÃßÀû Áß
+	// í˜„ì¬ ì¶”ì  ì¤‘ì¸ ì•„ì´ë””
+	// 0ì´ë©´ Idleì´ê±°ë‚˜ ë‚˜ë¥¼ ì¶”ì  ì¤‘
+	// 0ì´ ì•„ë‹ˆë©´ ë‹¤ë¥¸ í”Œë ˆì´ì–´ ì¶”ì  ì¤‘
 	unsigned int currentTargetID{};
 	unsigned int prevTargetID{};
 
-	// ¼­¹ö·Î Àü¼ÛÇÏ´Â °£°İ
+	// ì„œë²„ë¡œ ì „ì†¡í•˜ëŠ” ê°„ê²©
 	float sendDelay{};
 
-	// 30ÇÁ·¹ÀÎ °£°İÀ¸·Î Àü¼Û
+	// 30í”„ë ˆì¸ ê°„ê²©ìœ¼ë¡œ ì „ì†¡
 	float destDelay{ 1.0 / 24.0 };
 
 	int sendOrder{1};
 
-	// Àü¼Û ¿©ºÎ
+	// ì „ì†¡ ì—¬ë¶€
 	bool sendState{};
 
 public:

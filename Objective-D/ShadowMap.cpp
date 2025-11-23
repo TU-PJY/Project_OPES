@@ -5,9 +5,9 @@ ShadowMap ShadowUtil;
 void ShadowMap::Init(ID3D12Device*& device) {
     const UINT SHADOW_SIZE = 2048;
 
-    // 0) µğ½ºÅ©¸³ÅÍ Èü »ı¼º + CPU/GPU ÇÚµé È®º¸
+    // 0) ë””ìŠ¤í¬ë¦½í„° í™ ìƒì„± + CPU/GPU í•¸ë“¤ í™•ë³´
     {
-        // DSV Èü (CPU Àü¿ë)
+        // DSV í™ (CPU ì „ìš©)
         D3D12_DESCRIPTOR_HEAP_DESC dsvDescHeap{};
         dsvDescHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
         dsvDescHeap.NumDescriptors = 1;
@@ -15,7 +15,7 @@ void ShadowMap::Init(ID3D12Device*& device) {
         device->CreateDescriptorHeap(&dsvDescHeap, IID_PPV_ARGS(&mDsvHeap));
         shadowDSVHandle = mDsvHeap->GetCPUDescriptorHandleForHeapStart();
 
-        // SRV Èü (¼ÎÀÌ´õ °¡½Ã) ? ÀÌ ÈüÀ» Ä¿¸Çµå¸®½ºÆ®¿¡ SetDescriptorHeaps·Î ¹ÙÀÎµùÇØ¼­ »ç¿ë
+        // SRV í™ (ì…°ì´ë” ê°€ì‹œ) ? ì´ í™ì„ ì»¤ë§¨ë“œë¦¬ìŠ¤íŠ¸ì— SetDescriptorHeapsë¡œ ë°”ì¸ë”©í•´ì„œ ì‚¬ìš©
         D3D12_DESCRIPTOR_HEAP_DESC srvDescHeap{};
         srvDescHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
         srvDescHeap.NumDescriptors = 1;
@@ -24,7 +24,7 @@ void ShadowMap::Init(ID3D12Device*& device) {
         shadowSRV_CbvSrvUavHeapHandle = mSrvHeap->GetCPUDescriptorHandleForHeapStart();
         shadowSRV_GpuHandle = mSrvHeap->GetGPUDescriptorHandleForHeapStart();
 
-        // Sampler Èü (¼ÎÀÌ´õ °¡½Ã)
+        // Sampler í™ (ì…°ì´ë” ê°€ì‹œ)
         D3D12_DESCRIPTOR_HEAP_DESC sampDescHeap{};
         sampDescHeap.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
         sampDescHeap.NumDescriptors = 1;
@@ -34,20 +34,20 @@ void ShadowMap::Init(ID3D12Device*& device) {
         shadowSampler_GpuHandle = mSamplerHeap->GetGPUDescriptorHandleForHeapStart();
     }
 
-    // 1) ¼¨µµ¿ì ¸Ê ÅØ½ºÃ³ (±íÀÌ Àü¿ë)
+    // 1) ì„€ë„ìš° ë§µ í…ìŠ¤ì²˜ (ê¹Šì´ ì „ìš©)
     D3D12_RESOURCE_DESC texDesc = {};
     texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
     texDesc.Width = SHADOW_SIZE;
     texDesc.Height = SHADOW_SIZE;
     texDesc.DepthOrArraySize = 1;
     texDesc.MipLevels = 1;
-    texDesc.Format = DXGI_FORMAT_R32_TYPELESS; // typeless (DSV/SRV °â¿ë)
+    texDesc.Format = DXGI_FORMAT_R32_TYPELESS; // typeless (DSV/SRV ê²¸ìš©)
     texDesc.SampleDesc = { 1, 0 };
     texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
     D3D12_CLEAR_VALUE clearDepth = {};
-    clearDepth.Format = DXGI_FORMAT_D32_FLOAT; // DSV¿ë Æ÷¸Ë
+    clearDepth.Format = DXGI_FORMAT_D32_FLOAT; // DSVìš© í¬ë§·
     clearDepth.DepthStencil.Depth = 1.0f;
     clearDepth.DepthStencil.Stencil = 0;
 
@@ -55,12 +55,12 @@ void ShadowMap::Init(ID3D12Device*& device) {
         &CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
         D3D12_HEAP_FLAG_NONE,
         &texDesc,
-        D3D12_RESOURCE_STATE_DEPTH_WRITE, // ÃÊ±â »óÅÂ
+        D3D12_RESOURCE_STATE_DEPTH_WRITE, // ì´ˆê¸° ìƒíƒœ
         &clearDepth,
-        IID_PPV_ARGS(&mShadowMap)         // ComPtr ¸â¹ö·Î º¸°ü
+        IID_PPV_ARGS(&mShadowMap)         // ComPtr ë©¤ë²„ë¡œ ë³´ê´€
     );
 
-    // 2) DSV »ı¼º (±íÀÌ¾²±â ºä)
+    // 2) DSV ìƒì„± (ê¹Šì´ì“°ê¸° ë·°)
     {
         D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
         dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -69,10 +69,10 @@ void ShadowMap::Init(ID3D12Device*& device) {
         device->CreateDepthStencilView(mShadowMap.Get(), &dsvDesc, shadowDSVHandle);
     }
 
-    // 3) SRV »ı¼º (¼¨µµ¿ì »ùÇÃ¿ë)
+    // 3) SRV ìƒì„± (ì„€ë„ìš° ìƒ˜í”Œìš©)
     {
         D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-        srvDesc.Format = DXGI_FORMAT_R32_FLOAT; // SRV¿ë Æ÷¸Ë
+        srvDesc.Format = DXGI_FORMAT_R32_FLOAT; // SRVìš© í¬ë§·
         srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
         srvDesc.Texture2D.MostDetailedMip = 0;
         srvDesc.Texture2D.MipLevels = 1;
@@ -80,7 +80,7 @@ void ShadowMap::Init(ID3D12Device*& device) {
         device->CreateShaderResourceView(mShadowMap.Get(), &srvDesc, shadowSRV_CbvSrvUavHeapHandle);
     }
 
-    // 4) ºñ±³ »ùÇÃ·¯(PCF)
+    // 4) ë¹„êµ ìƒ˜í”ŒëŸ¬(PCF)
     {
         D3D12_SAMPLER_DESC cmp = {};
         cmp.Filter = D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT;

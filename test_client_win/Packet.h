@@ -8,24 +8,24 @@ enum class PacketType {
     ENTER
 };
 
-// Ã¤ÆÃ ÆĞÅ¶ ±¸Á¶Ã¼
+// ì±„íŒ… íŒ¨í‚· êµ¬ì¡°ì²´
 struct ChatPacket_S {
-    PacketType type;  // Ç×»ó PacketType::CHAT
+    PacketType type;  // í•­ìƒ PacketType::CHAT
     char message[MAX_SOCKBUF];
 };
 struct ChatPacket_R {
-    PacketType type;  // Ç×»ó PacketType::CHAT
+    PacketType type;  // í•­ìƒ PacketType::CHAT
     unsigned int id;
     char message[MAX_SOCKBUF];
 
 };
-// ÀÌµ¿ ÆĞÅ¶ ±¸Á¶Ã¼
+// ì´ë™ íŒ¨í‚· êµ¬ì¡°ì²´
 struct MovePacket_S {
-    PacketType type;  // Ç×»ó PacketType::MOVE
+    PacketType type;  // í•­ìƒ PacketType::MOVE
     int direction;    // 0: UP, 1: DOWN, 2: LEFT, 3: RIGHT
 };
 struct MovePacket_R {
-    PacketType type;  // Ç×»ó PacketType::MOVE
+    PacketType type;  // í•­ìƒ PacketType::MOVE
     unsigned int id;
     int x;
     int y;

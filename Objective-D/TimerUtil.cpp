@@ -1,6 +1,6 @@
 #include "TimerUtil.h"
 
-// е╦юл╦с. ╥╕ га╥на╖ф╝юг е╦юл╦с©м ╣©юого╢ы
+// М┐─Л²╢К╗╦. К·╘ М■└К║°Л═²М┼╦Л²≤ М┐─Л²╢К╗╦Л≥─ К▐≥Л²╪М∙≤К▀╓
 
 Timer::Timer() {
 	::QueryPerformanceFrequency((LARGE_INTEGER*)&PerformanceFrequencyPerSec);

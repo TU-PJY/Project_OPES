@@ -1,15 +1,15 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-// ±âÁö Ã¼·Â
+// ê¸°ì§€ ì²´ë ¥
 constexpr int                  CENTER_HP		= 500;
 
-// ¹«±â
-// DAMAGE µ¥¹ÌÁö, RPM ¿¬»ç¼Óµµ(ºÐ´ç ¹ß»ç¼ö), RELOAD ÀçÀåÀü ¼Óµµ, MAGAZINE ÀåÅº¼ö, HIP °ßÂø, ADS Á¤Á¶ÁØ
-// ÃÑ±¸ È²¿° ·»´õ¸µ ½Ã°£
+// ë¬´ê¸°
+// DAMAGE ë°ë¯¸ì§€, RPM ì—°ì‚¬ì†ë„(ë¶„ë‹¹ ë°œì‚¬ìˆ˜), RELOAD ìž¬ìž¥ì „ ì†ë„, MAGAZINE ìž¥íƒ„ìˆ˜, HIP ê²¬ì°©, ADS ì •ì¡°ì¤€
+// ì´êµ¬ í™©ì—¼ ë Œë”ë§ ì‹œê°„
 constexpr float                FLAME_RENDER_TIME = 0.03f;
 
-// ±â°üÃÑ
+// ê¸°ê´€ì´
 constexpr unsigned int         MG_DAMAGE	   = 15;
 constexpr float                MG_RECOIL       = 2.5f;
 constexpr float				   MG_RECOIL_BACK  = 0.1;
@@ -17,7 +17,7 @@ constexpr float                MG_SHOOT_DELAY  = 0.1f;
 constexpr float                MG_RELOAD_TIME  = 3.0f;
 constexpr unsigned int         MG_MAGAZINE	   = 100;
 
-// ÁöÁ¤ »ç¼ö ¼ÒÃÑ
+// ì§€ì • ì‚¬ìˆ˜ ì†Œì´
 constexpr unsigned int         DMR_DAMAGE	    = 70;
 constexpr float                DMR_RECOIL       = 13.0;
 constexpr float                DMR_RECOIL_BACK  = 0.2f;
@@ -25,19 +25,19 @@ constexpr float                DMR_SHOOT_DELAY  = 0.7f;
 constexpr float                DMR_RELOAD_TIME  = 2.0f;
 constexpr unsigned int         DMR_MAGAZINE		= 10;
 
-// ¼¦°Ç
+// ìƒ·ê±´
 constexpr unsigned int         SG_DAMAGE		= 12;
 constexpr float                SG_RECOIL        = 12.0f;
 constexpr float                SG_RECOIL_BACK   = 0.2f;
-constexpr unsigned int         SG_FRAG			= 12;    // FRAG ÆÄÆí, PIECE Á¶°¢, BUCK »êÅº, PELLET Æç¸´ ¿ë¾î ¾ÆÁ÷ ¸øÁ¤ÇÔ.
+constexpr unsigned int         SG_FRAG			= 12;    // FRAG íŒŒíŽ¸, PIECE ì¡°ê°, BUCK ì‚°íƒ„, PELLET íŽ ë¦¿ ìš©ì–´ ì•„ì§ ëª»ì •í•¨.
 constexpr float                SG_SHOOT_DELAY   = 1.0f;
 constexpr float                SG_RELOAD_TIME	= 2.0f;
 constexpr unsigned int         SG_MAGAZINE		= 6;
 
-// ¼³Ä¡ ¹«±â
-// DAMAGE µ¥¹ÌÁö, DURABILITY ³»±¸µµ, INSTALL ¼³Ä¡ ½Ã°£, RPM ¿¬»ç¼Óµµ, COOLDOWN ÆÄ±«µÈ ÈÄ ÄðÅ¸ÀÓ
+// ì„¤ì¹˜ ë¬´ê¸°
+// DAMAGE ë°ë¯¸ì§€, DURABILITY ë‚´êµ¬ë„, INSTALL ì„¤ì¹˜ ì‹œê°„, RPM ì—°ì‚¬ì†ë„, COOLDOWN íŒŒê´´ëœ í›„ ì¿¨íƒ€ìž„
 
-// Æ÷Å¾(TURRET)
+// í¬íƒ‘(TURRET)
 constexpr unsigned int         TURRET_ID            = 1;
 constexpr unsigned int         TURRET_DAMAGE	    = 10;
 constexpr float                TURRET_DURABILITY    = 20.0f;
@@ -51,10 +51,10 @@ constexpr float                BEACON_DURABILITY = 30.0f;
 constexpr float                BEACON_HEAL_DELAY = 0.5f;
 constexpr float                BEACON_INSTALL_COOLTIME = 20.0f;
 
-// Ä³¸¯ÅÍ LMG ±â°üÃÑ »ç¼ö / DMR ÁöÁ¤»ç¼ö / ENG ¿£Áö´Ï¾î
-// HP Ã¼·Â, SPEED ÀÌµ¿¼Óµµ(km/h)
+// ìºë¦­í„° LMG ê¸°ê´€ì´ ì‚¬ìˆ˜ / DMR ì§€ì •ì‚¬ìˆ˜ / ENG ì—”ì§€ë‹ˆì–´
+// HP ì²´ë ¥, SPEED ì´ë™ì†ë„(km/h)
 
-//°¢Ä³¸¯ÅÍ Á¤º¸
+//ê°ìºë¦­í„° ì •ë³´
 constexpr int                  CHARACTER_MG = 0;
 constexpr int                  CHARACTER_DMR = 1;
 constexpr int                  CHARACTER_ENG = 2;
@@ -71,28 +71,28 @@ constexpr int				   ENG_JOB_TYPE      = 2;
 constexpr unsigned int         CHARACTER_ENG_HP = 250;
 constexpr float                CHARACTER_ENG_SPEED	= 11.0f;
 
-// ¸ó½ºÅÍ
-// HP Ã¼·Â, SPEED ÀÌµ¿¼Óµµ(km/h), DAMAGE µ¥¹ÌÁö, ATTACK ÁÖ±â(ÃÊ)
+// ëª¬ìŠ¤í„°
+// HP ì²´ë ¥, SPEED ì´ë™ì†ë„(km/h), DAMAGE ë°ë¯¸ì§€, ATTACK ì£¼ê¸°(ì´ˆ)
 
-//µðÆÒ½º ¸ó½ºÅÍ ¼ö
+//ë””íŒ¬ìŠ¤ ëª¬ìŠ¤í„° ìˆ˜
 constexpr int                  DEFENSE_MONSTER1 = 5;
 constexpr int                  DEFENSE_MONSTER2 = 5;
 constexpr int                  DEFENSE_MONSTER3 = 5;
 
-//start ÀÎ¿ø¼ö 
+//start ì¸ì›ìˆ˜ 
 constexpr int				   MIN_PLAYER_COUNT = 3;          
 
-//½ºÅ×ÀÌÁö ³Ñ¾î°¥¶§ µô·¹ÀÌ ½Ã°£
+//ìŠ¤í…Œì´ì§€ ë„˜ì–´ê°ˆë•Œ ë”œë ˆì´ ì‹œê°„
 constexpr int                 PASS_STAGE_TIME = 1;
 
-//¸ó½ºÅÍ ½ºÆù ½Ã°£
+//ëª¬ìŠ¤í„° ìŠ¤í° ì‹œê°„
 constexpr int                 CREAT_MONSTER_TIME = 2;
 
-//¾îµåº¥Ã³ Å¸ÀÌ¸Ó
+//ì–´ë“œë²¤ì²˜ íƒ€ì´ë¨¸
 constexpr int                 TIMER_ADVENTURE = 300;
 
 
-// ½ºÅ×ÀÌÁö 1
+// ìŠ¤í…Œì´ì§€ 1
 // Plant Monster
 constexpr unsigned int         PLANT_HP			= 100;
 constexpr unsigned int         PLANT_DAMAGE		= 5;
@@ -103,7 +103,7 @@ constexpr unsigned int         SCORPION_HP		= 300;
 constexpr unsigned int         SCORPION_DAMAGE	= 20;
 constexpr int                  SCORPION_TYPE    = 2;
 
-// ½ºÅ×ÀÌÁö 2
+// ìŠ¤í…Œì´ì§€ 2
 // Troll
 constexpr unsigned int         TROLL_HP = 200;
 constexpr unsigned int         TROLL_DAMAGE = 30;
@@ -114,7 +114,7 @@ constexpr unsigned int         TREANT_HP = 400;
 constexpr unsigned int         TREANT_DAMAGE = 60;
 constexpr int                  TREANT_TYPE = 2;
 
-// ½ºÅ×ÀÌÁö 3
+// ìŠ¤í…Œì´ì§€ 3
 // imp
 /* DEPRECATED */
 constexpr unsigned int         IMP_HP           = 150;
@@ -128,97 +128,97 @@ constexpr unsigned int         GAZER_HP         = 450;
 constexpr unsigned int         GAZER_DAMAGE     = 30;
 constexpr int                  GAZER_TYPE       = 2;
 
-// ½ºÅ×ÀÌÁö 1 µµÂø ÁöÁ¡ À§Ä¡
+// ìŠ¤í…Œì´ì§€ 1 ë„ì°© ì§€ì  ìœ„ì¹˜
 constexpr XMFLOAT3             MAP1_DESTINATION = XMFLOAT3(120.0, 0.0, 94.0);
 
-// ½ºÅ×ÀÌÁö1 ·£´ý »ý¼º ¹üÀ§
+// ìŠ¤í…Œì´ì§€1 ëžœë¤ ìƒì„± ë²”ìœ„
 constexpr float                MAP1_RANDOM_MIN_RADIANS = 30.0;
 constexpr float                MAP1_RANDOM_MAX_RADIANS = 60.0;
 
-// ½ºÅ×ÀÌÁö 2 µµÂø ÁöÁ¡ À§Ä¡
+// ìŠ¤í…Œì´ì§€ 2 ë„ì°© ì§€ì  ìœ„ì¹˜
 constexpr XMFLOAT3             MAP2_DESTINATION = XMFLOAT3(-210.0, 0.0, 65.0);
 
-// ½ºÅ×ÀÌÁö 2 ·£´ý »ý¼º À§Ä¡
+// ìŠ¤í…Œì´ì§€ 2 ëžœë¤ ìƒì„± ìœ„ì¹˜
 constexpr float                MAP2_RANDOM_MIN_RADIANS = 40.0;
 constexpr float                MAP2_RANDOM_MAX_RADIANS = 70.0;
 
-// ½ºÅ×ÀÌÁö 3 µµÂø ÁöÁ¡ À§Ä¡
+// ìŠ¤í…Œì´ì§€ 3 ë„ì°© ì§€ì  ìœ„ì¹˜
 constexpr XMFLOAT3             MAP3_DESTINATION = XMFLOAT3(275.0, 0.0, 185.0);
 
-// ½ºÅ×ÀÌÁö 3 ·£´ý »ý¼º À§Ä¡
+// ìŠ¤í…Œì´ì§€ 3 ëžœë¤ ìƒì„± ìœ„ì¹˜
 constexpr float                MAP3_RANDOM_MIN_RADIANS = 150.0;
 constexpr float                MAP3_RANDOM_MAX_RADIANS = 180.0;
 
-// º¸³Ê½º & Æä³ÎÆ¼
-// °øÅë º¸³Ê½º
-constexpr float BONUS_RPM = 1.2f;				// ¹«±â °ú¿­ Á¦°Å (Weapon Cooling), ¹«±â ¿¬»ç¼Óµµ +20%
-constexpr float BONUS_RELOAD = 0.55f;			// ºü¸¥ ÀåÀü ÈÆ·Ã (Quick Reload Training), ÀåÀü ¼Óµµ 30% °¨¼Ò
-constexpr int   BONUS_GRENADE = 1;				// Àü¼ú È®Àå º§Æ® (Tactical Extended Pocket), ¼ö·ùÅº +1
-constexpr float BONUS_MOVE_SPEED = 1.15f;		// ¾Æµå·¹³¯¸° ·¯½Ã (Adrenaline Rush), ÀÌµ¿¼Óµµ +15%
+// ë³´ë„ˆìŠ¤ & íŽ˜ë„í‹°
+// ê³µí†µ ë³´ë„ˆìŠ¤
+constexpr float BONUS_RPM = 1.2f;				// ë¬´ê¸° ê³¼ì—´ ì œê±° (Weapon Cooling), ë¬´ê¸° ì—°ì‚¬ì†ë„ +20%
+constexpr float BONUS_RELOAD = 0.55f;			// ë¹ ë¥¸ ìž¥ì „ í›ˆë ¨ (Quick Reload Training), ìž¥ì „ ì†ë„ 30% ê°ì†Œ
+constexpr int   BONUS_GRENADE = 1;				// ì „ìˆ  í™•ìž¥ ë²¨íŠ¸ (Tactical Extended Pocket), ìˆ˜ë¥˜íƒ„ +1
+constexpr float BONUS_MOVE_SPEED = 1.15f;		// ì•„ë“œë ˆë‚ ë¦° ëŸ¬ì‹œ (Adrenaline Rush), ì´ë™ì†ë„ +15%
 
-// ±â°üÃÑº´ º¸³Ê½º
-constexpr float BONUS_RECOIL_LMG = 0.6f;		// ¹Ýµ¿ Á¦¾î ¼÷·Ã (Recoil Mastery), ¹Ýµ¿ -50%
-constexpr float BONUS_HP_LMG = 1.3f;			// ±»Àº ÀÇÁö (Strong Will), Ã¼·Â +33%
+// ê¸°ê´€ì´ë³‘ ë³´ë„ˆìŠ¤
+constexpr float BONUS_RECOIL_LMG = 0.6f;		// ë°˜ë™ ì œì–´ ìˆ™ë ¨ (Recoil Mastery), ë°˜ë™ -50%
+constexpr float BONUS_HP_LMG = 1.3f;			// êµ³ì€ ì˜ì§€ (Strong Will), ì²´ë ¥ +33%
 
-// Àú°Ýº´ º¸³Ê½º - ÁöÇâ/Á¤Á¶ÁØÀÇ Â÷ÀÌ°¡ ¾ø¾î »èÁ¦
-//constexpr float BONUS_ADS_DAMAGE_DMR = 1.2f;    // Á¤Á¶ÁØ Á¶ÁØ°æ (ADS Scope Enhancement), Á¤Á¶ÁØ µ¥¹ÌÁö +20%
-//constexpr float BONUS_ADS_SPEED_DMR = 1.5f;		// ¹ÎÃ¸ÇÑ Á¶ÀÛ (Agile Handling), Á¤Á¶ÁØ ÀüÈ¯ ¼Óµµ +50%
+// ì €ê²©ë³‘ ë³´ë„ˆìŠ¤ - ì§€í–¥/ì •ì¡°ì¤€ì˜ ì°¨ì´ê°€ ì—†ì–´ ì‚­ì œ
+//constexpr float BONUS_ADS_DAMAGE_DMR = 1.2f;    // ì •ì¡°ì¤€ ì¡°ì¤€ê²½ (ADS Scope Enhancement), ì •ì¡°ì¤€ ë°ë¯¸ì§€ +20%
+//constexpr float BONUS_ADS_SPEED_DMR = 1.5f;		// ë¯¼ì²©í•œ ì¡°ìž‘ (Agile Handling), ì •ì¡°ì¤€ ì „í™˜ ì†ë„ +50%
 
-// ¿£Áö´Ï¾î º¸³Ê½º
-constexpr float BONUS_STRUCTURE_DUR_ENG = 1.5f;  // ÀûÀÀÇü ±¸Á¶ (Adaption Structure), ¼³Ä¡ ±¸Á¶¹° Áö¼Ó½Ã°£ +50% 
-//BONUS_STRUCTURE_HP_ENG -> BONUS_STRUCTURE_DUR_ENG HP -> DUR·Î º¯°æ
-constexpr int   BONUS_PELLET_SG = 3;			// ÁýÅº ¸ðµâ È®Àå (Expanded Pellet Module), »êÅº ¼ö +3
+// ì—”ì§€ë‹ˆì–´ ë³´ë„ˆìŠ¤
+constexpr float BONUS_STRUCTURE_DUR_ENG = 1.5f;  // ì ì‘í˜• êµ¬ì¡° (Adaption Structure), ì„¤ì¹˜ êµ¬ì¡°ë¬¼ ì§€ì†ì‹œê°„ +50% 
+//BONUS_STRUCTURE_HP_ENG -> BONUS_STRUCTURE_DUR_ENG HP -> DURë¡œ ë³€ê²½
+constexpr int   BONUS_PELLET_SG = 3;			// ì§‘íƒ„ ëª¨ë“ˆ í™•ìž¥ (Expanded Pellet Module), ì‚°íƒ„ ìˆ˜ +3
 
-// °øÅë Æä³ÎÆ¼
-constexpr float PENALTY_RPM = 0.85f;			// ¹«±â °ú¿­ (Weapon Overheating), ¹«±â ¿¬»ç¼Óµµ -15%
-constexpr float PENALTY_RELOAD = 1.2f;			// ±ÞÇÑ ÀåÀü (Interrupted Reload), ÀåÀü ¼Óµµ +30%
-constexpr float PENALTY_MOVE_SPEED = 0.85f;		// ÇÇ·Î ´©Àû (Fatigue Accumulation), ÀÌµ¿¼Óµµ -15%
-constexpr int   PENALTY_GRENADE = -1;			// Åº¶ì ¼Õ»ó (Damaged Utility Belt), ¼ö·ùÅº -2
+// ê³µí†µ íŽ˜ë„í‹°
+constexpr float PENALTY_RPM = 0.85f;			// ë¬´ê¸° ê³¼ì—´ (Weapon Overheating), ë¬´ê¸° ì—°ì‚¬ì†ë„ -15%
+constexpr float PENALTY_RELOAD = 1.2f;			// ê¸‰í•œ ìž¥ì „ (Interrupted Reload), ìž¥ì „ ì†ë„ +30%
+constexpr float PENALTY_MOVE_SPEED = 0.85f;		// í”¼ë¡œ ëˆ„ì  (Fatigue Accumulation), ì´ë™ì†ë„ -15%
+constexpr int   PENALTY_GRENADE = -1;			// íƒ„ë  ì†ìƒ (Damaged Utility Belt), ìˆ˜ë¥˜íƒ„ -2
 
-// ±â°üÃÑº´ Æä³ÎÆ¼
-constexpr float PENALTY_RECOIL_LMG = 1.25f;		// ¿¬»ç ºÒ¾ÈÁ¤ (Spray Instability), ¹Ýµ¿ +25%
+// ê¸°ê´€ì´ë³‘ íŽ˜ë„í‹°
+constexpr float PENALTY_RECOIL_LMG = 1.25f;		// ì—°ì‚¬ ë¶ˆì•ˆì • (Spray Instability), ë°˜ë™ +25%
 
-// Àú°Ýº´ Æä³ÎÆ¼ - ÁöÇâ/Á¤Á¶ÁØÀÇ Â÷ÀÌ°¡ ¾ø¾îÁ® »èÁ¦ÇÔ.
-//constexpr float PENALTY_RECOIL_DMR = 1.2f;		// Á¤Á¶ÁØ ºÒ¾ÈÁ¤ (ADS Instability), ¹Ýµ¿ +20%
-//constexpr float PENALTY_ADS_RPM_DMR = 0.9f;		// Á¤Á¶ÁØ ºÒ¾ÈÁ¤ (ADS Instability), Á¤Á¶ÁØ ¿¬»ç¼Óµµ -10%
-//constexpr float PENALTY_HIP_RPM_DMR = 0.75f;	// ºü¸¥ ÁöÇâÀÇ ´ë°¡ (Hipfire Penalty), ÁöÇâ»ç°Ý ¿¬»ç¼Óµµ -25%
+// ì €ê²©ë³‘ íŽ˜ë„í‹° - ì§€í–¥/ì •ì¡°ì¤€ì˜ ì°¨ì´ê°€ ì—†ì–´ì ¸ ì‚­ì œí•¨.
+//constexpr float PENALTY_RECOIL_DMR = 1.2f;		// ì •ì¡°ì¤€ ë¶ˆì•ˆì • (ADS Instability), ë°˜ë™ +20%
+//constexpr float PENALTY_ADS_RPM_DMR = 0.9f;		// ì •ì¡°ì¤€ ë¶ˆì•ˆì • (ADS Instability), ì •ì¡°ì¤€ ì—°ì‚¬ì†ë„ -10%
+//constexpr float PENALTY_HIP_RPM_DMR = 0.75f;	// ë¹ ë¥¸ ì§€í–¥ì˜ ëŒ€ê°€ (Hipfire Penalty), ì§€í–¥ì‚¬ê²© ì—°ì‚¬ì†ë„ -25%
 
-// ¿£Áö´Ï¾î Æä³ÎÆ¼
-constexpr float PENALTY_STRUCTURE_DUR_ENG = 0.7f;// ºÒ¾ÈÁ¤ÇÑ ¼³°è (Flawed Structure), ¼³Ä¡ ±¸Á¶¹° Áö¼Ó½Ã°£ -30%
+// ì—”ì§€ë‹ˆì–´ íŽ˜ë„í‹°
+constexpr float PENALTY_STRUCTURE_DUR_ENG = 0.7f;// ë¶ˆì•ˆì •í•œ ì„¤ê³„ (Flawed Structure), ì„¤ì¹˜ êµ¬ì¡°ë¬¼ ì§€ì†ì‹œê°„ -30%
 //PENALTY_STRUCTURE_HP_ENG -> PENALTY_STRUCTURE_DUR_ENG
-constexpr float PENALTY_PELLET_DAMAGE_SG = 0.8f;// ºÒ·® Åº¾à (Faulty Ammo), ¼¦°Ç Æç¸´´ç µ¥¹ÌÁö -20%
+constexpr float PENALTY_PELLET_DAMAGE_SG = 0.8f;// ë¶ˆëŸ‰ íƒ„ì•½ (Faulty Ammo), ìƒ·ê±´ íŽ ë¦¿ë‹¹ ë°ë¯¸ì§€ -20%
 
 /*
-	°ÔÀÓÀÇ ±äÀå°¨À» À§ÇØ¼­ ÀüÃ¼ÀûÀ¸·Î Ã¼·ÂÀ» ³·Ãß°íÀÚ ÇÔ.
+	ê²Œìž„ì˜ ê¸´ìž¥ê°ì„ ìœ„í•´ì„œ ì „ì²´ì ìœ¼ë¡œ ì²´ë ¥ì„ ë‚®ì¶”ê³ ìž í•¨.
 	MG HP 300 -> 200 / DMR HP 125 -> 100 / SG HP 150 -> 125
-	MG DMG 10 -> 12? ±â°üÃÑº´ÀÇ DPS »óÇâ °í¹Î
+	MG DMG 10 -> 12? ê¸°ê´€ì´ë³‘ì˜ DPS ìƒí–¥ ê³ ë¯¼
 
-	È¸º¹ Ã¼°¨ ¾àÇÔ. 5 -> 50
+	íšŒë³µ ì²´ê° ì•½í•¨. 5 -> 50
 
-	¸ó½ºÅÍ ÆÐÄ¡
-	º¸³Ê½º/Æä³ÎÆ¼·Î ¾ò´Â ¼öÄ¡¿¡ ºñÇØ ¸ó½ºÅÍ°¡ °úÇÏ°Ô °­ÇØ ³ÊÇÁ
+	ëª¬ìŠ¤í„° íŒ¨ì¹˜
+	ë³´ë„ˆìŠ¤/íŽ˜ë„í‹°ë¡œ ì–»ëŠ” ìˆ˜ì¹˜ì— ë¹„í•´ ëª¬ìŠ¤í„°ê°€ ê³¼í•˜ê²Œ ê°•í•´ ë„ˆí”„
 	Troll HP 250 -> 200 / DMG 25 -> 20
 	Treant HP 600 -> 500 / DMG 50 -> 40
-	3½ºÅ×ÀÌÁö´Â 2½ºÅ×ÀÌÁö¿¡ ºñÇØ ³«»ç°¡ ÀÖÁö¸¸ °¨¾ÈÇØµµ ½¬¿ö ¸ó½ºÅÍ Ãß°¡ ¹èÄ¡³ª ¸ó½ºÅÍÀÇ »óÇâÀÌ ÇÊ¿äÇØº¸ÀÓ.
-	¸ó½ºÅÍ ¹èÄ¡¸¦ ÇÑ´Ù¸é Áö±Ýº¸´Ù ¾à 2¹è ¸¹Àº °ÍÀÌ ÁÁ¾Æº¸ÀÌ°í
-	IMPÀÇ Ã¼·ÂÀ» ¼ø°£ Á¡»ç·Î Á×Áö ¾Ê°Ô ¸¸µé°í, µ¥¹ÌÁö¸¦ Å©°Ô ¹öÇÁÇØ ±äÀå°¨À» ºÎ¿©ÇÏ´Â °ÍÀÌ ÁÁ¾Æº¸ÀÓ.
+	3ìŠ¤í…Œì´ì§€ëŠ” 2ìŠ¤í…Œì´ì§€ì— ë¹„í•´ ë‚™ì‚¬ê°€ ìžˆì§€ë§Œ ê°ì•ˆí•´ë„ ì‰¬ì›Œ ëª¬ìŠ¤í„° ì¶”ê°€ ë°°ì¹˜ë‚˜ ëª¬ìŠ¤í„°ì˜ ìƒí–¥ì´ í•„ìš”í•´ë³´ìž„.
+	ëª¬ìŠ¤í„° ë°°ì¹˜ë¥¼ í•œë‹¤ë©´ ì§€ê¸ˆë³´ë‹¤ ì•½ 2ë°° ë§Žì€ ê²ƒì´ ì¢‹ì•„ë³´ì´ê³ 
+	IMPì˜ ì²´ë ¥ì„ ìˆœê°„ ì ì‚¬ë¡œ ì£½ì§€ ì•Šê²Œ ë§Œë“¤ê³ , ë°ë¯¸ì§€ë¥¼ í¬ê²Œ ë²„í”„í•´ ê¸´ìž¥ê°ì„ ë¶€ì—¬í•˜ëŠ” ê²ƒì´ ì¢‹ì•„ë³´ìž„.
 
-	º¸³Ê½º / Æä³ÎÆ¼´Â °¢ ½ºÅ×ÀÌÁö°¡ Áö³ª°¥ ¶§ ¸¶´Ù +2/-1 or ¸ðµç Å×ÀÌºí Áß ÇÏ³ª°¡ Àû´çÇÑ °Í °°À½.
-	º¸³Ê½º
-	¿¬»ç¼Óµµ 20->30%
-	ÀåÀü ¼Óµµ 30 -> 45%
-	¼ö·ùÅº +2 -> 3
+	ë³´ë„ˆìŠ¤ / íŽ˜ë„í‹°ëŠ” ê° ìŠ¤í…Œì´ì§€ê°€ ì§€ë‚˜ê°ˆ ë•Œ ë§ˆë‹¤ +2/-1 or ëª¨ë“  í…Œì´ë¸” ì¤‘ í•˜ë‚˜ê°€ ì ë‹¹í•œ ê²ƒ ê°™ìŒ.
+	ë³´ë„ˆìŠ¤
+	ì—°ì‚¬ì†ë„ 20->30%
+	ìž¥ì „ ì†ë„ 30 -> 45%
+	ìˆ˜ë¥˜íƒ„ +2 -> 3
 
-	±â°üÃÑº´ - ¹Ýµ¿ -50 -> -40%
-	Àú°Ýº´ - º¸³Ê½º -> »èÁ¦
-	¿£Áö´Ï¾î - ÀûÀÀÇü ±¸Á¶ Ã¼·Â -> À¯Áö ½Ã°£
+	ê¸°ê´€ì´ë³‘ - ë°˜ë™ -50 -> -40%
+	ì €ê²©ë³‘ - ë³´ë„ˆìŠ¤ -> ì‚­ì œ
+	ì—”ì§€ë‹ˆì–´ - ì ì‘í˜• êµ¬ì¡° ì²´ë ¥ -> ìœ ì§€ ì‹œê°„
 
-	Æä³ÎÆ¼
-	¿¬»ç¼Óµµ -15 -> -10
-	ÀÌµ¿¼Óµµ -15 -> -10
+	íŽ˜ë„í‹°
+	ì—°ì‚¬ì†ë„ -15 -> -10
+	ì´ë™ì†ë„ -15 -> -10
 
-	Àú°Ýº´ - Æä³ÎÆ¼ »èÁ¦
-	¿£Áö´Ï¾î - Ã¼·Â -> À¯Áö½Ã°£ / µ¥¹ÌÁö -20% -> Æç¸´ - 1°³
+	ì €ê²©ë³‘ - íŽ˜ë„í‹° ì‚­ì œ
+	ì—”ì§€ë‹ˆì–´ - ì²´ë ¥ -> ìœ ì§€ì‹œê°„ / ë°ë¯¸ì§€ -20% -> íŽ ë¦¿ - 1ê°œ
 
 
 */

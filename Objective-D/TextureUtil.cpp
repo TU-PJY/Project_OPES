@@ -31,7 +31,7 @@ void Texture::Render3D(ID3D12GraphicsCommandList* CmdList) {
 }
 
 void Texture::CreateTextureAndSRV(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszTextureFilename, ID3D12Resource** ppd3dTexture, ID3D12DescriptorHeap** ppd3dSrvDescriptorHeap, ID3D12DescriptorHeap** ppd3dSamplerDescriptorHeap, int Type, D3D12_FILTER FilterOption) {
-	// ÅØ½ºÃ³ ·Îµå, ÀÔ·ÂÇÑ Å¸ÀÔ¿¡ µû¶ó ´Ù¸¥ Çü½ÄÀÇ ÆÄÀÏÀ» ·ÎµåÇÑ´Ù.
+	// í…ìŠ¤ì²˜ ë¡œë“œ, ì…ë ¥í•œ íƒ€ì…ì— ë”°ë¼ ë‹¤ë¥¸ í˜•ì‹ì˜ íŒŒì¼ì„ ë¡œë“œí•œë‹¤.
 	if(Type == TEXTURE_TYPE_WIC)
 		*ppd3dTexture = CreateTextureResourceFromWICFile(pd3dDevice, pd3dCommandList, pszTextureFilename, &UploadBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
@@ -41,14 +41,14 @@ void Texture::CreateTextureAndSRV(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 	else if (Type == TEXTURE_TYPE_WIC_CROP)
 		*ppd3dTexture = CreateCroppedTextureResourceFromWICFile(pd3dDevice, pd3dCommandList, pszTextureFilename, &UploadBuffer, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, CropData);
 
-	// SRV Èü »ı¼º
+	// SRV í™ ìƒì„±
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
 	srvHeapDesc.NumDescriptors = 1;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	pd3dDevice->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(ppd3dSrvDescriptorHeap));
 
-	// SRV »ı¼º
+	// SRV ìƒì„±
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Format = (*ppd3dTexture)->GetDesc().Format;
@@ -56,21 +56,21 @@ void Texture::CreateTextureAndSRV(ID3D12Device* pd3dDevice, ID3D12GraphicsComman
 	srvDesc.Texture2D.MipLevels = 1;
 	pd3dDevice->CreateShaderResourceView(*ppd3dTexture, &srvDesc, (*ppd3dSrvDescriptorHeap)->GetCPUDescriptorHandleForHeapStart());
 
-	// »ùÇÃ·¯ µğ½ºÅ©¸³ÅÍ Èü »ı¼º
+	// ìƒ˜í”ŒëŸ¬ ë””ìŠ¤í¬ë¦½í„° í™ ìƒì„±
 	D3D12_DESCRIPTOR_HEAP_DESC samplerHeapDesc = {};
-	samplerHeapDesc.NumDescriptors = 1;  // »ùÇÃ·¯´Â ÇÏ³ª¸¸ »ı¼º
+	samplerHeapDesc.NumDescriptors = 1;  // ìƒ˜í”ŒëŸ¬ëŠ” í•˜ë‚˜ë§Œ ìƒì„±
 	samplerHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_SAMPLER;
-	samplerHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;  // ¼ÎÀÌ´õ¿¡¼­ Á¢±Ù °¡´ÉÇÏµµ·Ï ¼³Á¤
+	samplerHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;  // ì…°ì´ë”ì—ì„œ ì ‘ê·¼ ê°€ëŠ¥í•˜ë„ë¡ ì„¤ì •
 	pd3dDevice->CreateDescriptorHeap(&samplerHeapDesc, IID_PPV_ARGS(ppd3dSamplerDescriptorHeap));
 
-	// »ùÇÃ·¯ »ı¼º
+	// ìƒ˜í”ŒëŸ¬ ìƒì„±
 	D3D12_SAMPLER_DESC samplerDesc = {};
-	samplerDesc.Filter = FilterOption;  // ºñµî¹æ ÇÊÅÍ¸µ
-	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  // U ¹æÇâ ·¦ ¸ğµå
-	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  // V ¹æÇâ ·¦ ¸ğµå
-	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  // W ¹æÇâ ·¦ ¸ğµå
-	samplerDesc.MinLOD = 0;  // ÃÖ¼Ò LOD
-	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;  // ÃÖ´ë LOD
+	samplerDesc.Filter = FilterOption;  // ë¹„ë“±ë°© í•„í„°ë§
+	samplerDesc.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  // U ë°©í–¥ ë© ëª¨ë“œ
+	samplerDesc.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  // V ë°©í–¥ ë© ëª¨ë“œ
+	samplerDesc.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;  // W ë°©í–¥ ë© ëª¨ë“œ
+	samplerDesc.MinLOD = 0;  // ìµœì†Œ LOD
+	samplerDesc.MaxLOD = D3D12_FLOAT32_MAX;  // ìµœëŒ€ LOD
 	pd3dDevice->CreateSampler(&samplerDesc, (*ppd3dSamplerDescriptorHeap)->GetCPUDescriptorHandleForHeapStart());
 }
 
@@ -164,7 +164,7 @@ ID3D12Resource* Texture::CreateTextureResourceFromWICFile(ID3D12Device* pd3dDevi
 	Width = static_cast<int>(textureDesc.Width);
 	Height = static_cast<int>(textureDesc.Height);
 
-	// Áß°£ ¹öÆÛ Å©±â¸¦ °è»ê (pd3dTexture°¡ NULLÀÎÁö ´Ù½Ã È®ÀÎ)
+	// ì¤‘ê°„ ë²„í¼ í¬ê¸°ë¥¼ ê³„ì‚° (pd3dTextureê°€ NULLì¸ì§€ ë‹¤ì‹œ í™•ì¸)
 	UINT64 nBytes = GetRequiredIntermediateSize(pd3dTexture, 0, 1);
 	if (nBytes == 0) {
 		std::wcerr << L"Failed to calculate intermediate size for texture." << std::endl;
@@ -181,7 +181,7 @@ ID3D12Resource* Texture::CreateTextureResourceFromWICFile(ID3D12Device* pd3dDevi
 
 	D3D12_RESOURCE_DESC d3dResourceDesc;
 	::ZeroMemory(&d3dResourceDesc, sizeof(D3D12_RESOURCE_DESC));
-	d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER; //Upload Heap¿¡´Â ÅØ½ºÃÄ¸¦ »ı¼ºÇÒ ¼ö ¾øÀ½
+	d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER; //Upload Heapì—ëŠ” í…ìŠ¤ì³ë¥¼ ìƒì„±í•  ìˆ˜ ì—†ìŒ
 	d3dResourceDesc.Alignment = 0;
 	d3dResourceDesc.Width = nBytes;
 	d3dResourceDesc.Height = 1;
@@ -251,7 +251,7 @@ ID3D12Resource* Texture::CreateTextureResourceFromDDSFile(ID3D12Device* pd3dDevi
 
 	D3D12_RESOURCE_DESC d3dResourceDesc;
 	::ZeroMemory(&d3dResourceDesc, sizeof(D3D12_RESOURCE_DESC));
-	d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER; //Upload Heap¿¡´Â ÅØ½ºÃÄ¸¦ »ı¼ºÇÒ ¼ö ¾øÀ½
+	d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER; //Upload Heapì—ëŠ” í…ìŠ¤ì³ë¥¼ ìƒì„±í•  ìˆ˜ ì—†ìŒ
 	d3dResourceDesc.Alignment = 0;
 	d3dResourceDesc.Width = nBytes;
 	d3dResourceDesc.Height = 1;

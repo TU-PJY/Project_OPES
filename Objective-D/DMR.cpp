@@ -15,11 +15,11 @@ DMR::DMR(GameObject* Ptr) {
 	fireDelayTime = DMR_SHOOT_DELAY;
 	reloadTime = DMR_RELOAD_TIME;
 
-	// SHOOT_SPEED_INCREASE È°¼ºÈ­ ½Ã ¿¬»ç ¼Óµµ 20% Áõ°¡
+	// SHOOT_SPEED_INCREASE í™œì„±í™” ì‹œ ì—°ì‚¬ ì†ë„ 20% ì¦ê°€
 	if (GLOBAL.buff[SHOOT_SPEED_INCREASE])
 		fireDelayTime *= 0.6;
 
-	// RELOAD_SPEED_INCREASE È°¼ºÈ­ ½Ã ÀçÀåÀü ½Ã°£ 50% °¨¼Ò
+	// RELOAD_SPEED_INCREASE í™œì„±í™” ì‹œ ì¬ì¥ì „ ì‹œê°„ 50% ê°ì†Œ
 	if (GLOBAL.buff[RELOAD_SPEED_INCREASE])
 		reloadTime *= 0.5;
 
@@ -72,7 +72,7 @@ void DMR::updateFire(float Delta) {
 }
 
 void DMR::updateGun(float Delta) {
-	// ÃÑ È¸Àü ¾÷µ¥ÀÌÆ®
+	// ì´ íšŒì „ ì—…ë°ì´íŠ¸
 	rotation.x = std::lerp(rotation.x, rotationDest.x, Delta * 30.0);
 	rotation.y = std::lerp(rotation.y, rotationDest.y, Delta * 30.0);
 	rotation.z = std::lerp(rotation.z, rotationDest.z, Delta * 30.0);
@@ -89,10 +89,10 @@ void DMR::updateGun(float Delta) {
 		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 20.0);
 	}
 
-	// ¹İµ¿¿¡ µû¸¥ À§Ä¡ ¿ÀÇÁ¼Â ¾÷µ¥ÀÌÆ®
+	// ë°˜ë™ì— ë”°ë¥¸ ìœ„ì¹˜ ì˜¤í”„ì…‹ ì—…ë°ì´íŠ¸
 	recoilOffset = std::lerp(recoilOffset, 0.0, Delta * 4.0);
 
-	// È­¿° ·»´õ¸µ½Ã°£ ¾÷µ¥ÀÌÆ®
+	// í™”ì—¼ ë Œë”ë§ì‹œê°„ ì—…ë°ì´íŠ¸
 	currentFlameRenderTime -= Delta;
 	Clamp::LimitValue(currentFlameRenderTime, 0.0, CLAMP_DIR_LESS);
 }

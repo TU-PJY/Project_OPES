@@ -15,23 +15,23 @@ std::vector<XMFLOAT3> BloodParticle::CreatePositions(int count)
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<float> angleDist(0.0f, XM_2PI);
-    std::uniform_real_distribution<float> coreDist(0.0f, 0.3f); // ¹àÀº Áß½É
-    std::uniform_real_distribution<float> tailDist(0.3f, 0.6f); // À§ÂÊ ¿¬±â ²¿¸®
+    std::uniform_real_distribution<float> coreDist(0.0f, 0.3f); // ë°ì€ ì¤‘ì‹¬
+    std::uniform_real_distribution<float> tailDist(0.3f, 0.6f); // ìœ„ìª½ ì—°ê¸° ê¼¬ë¦¬
     std::uniform_real_distribution<float> heightDist(0.0f, 0.2f);
-    std::uniform_real_distribution<float> offsetY(-0.1f, 0.05f); // Áß½É »ìÂ¦ ¾Æ·¡
+    std::uniform_real_distribution<float> offsetY(-0.1f, 0.05f); // ì¤‘ì‹¬ ì‚´ì§ ì•„ë˜
 
     for (int i = 0; i < count; i++)
     {
         float angle = angleDist(gen);
-        float radius = (i < count * 0.7f) ? coreDist(gen) : tailDist(gen); // 70´Â Áß½É, ³ª¸ÓÁö´Â ²¿¸®
+        float radius = (i < count * 0.7f) ? coreDist(gen) : tailDist(gen); // 70ëŠ” ì¤‘ì‹¬, ë‚˜ë¨¸ì§€ëŠ” ê¼¬ë¦¬
         float x = cosf(angle) * radius;
         float y = sinf(angle) * radius + offsetY(gen);
 
-        // ¿¬±â ²¿¸®´Â À§·Î ¿Ã¶ó°¨
+        // ì—°ê¸° ê¼¬ë¦¬ëŠ” ìœ„ë¡œ ì˜¬ë¼ê°
         if (i >= count * 0.7f)
-            y += heightDist(gen); // ²¿¸® ÆÄÆ¼Å¬Àº À§·Î Á¶±İ ´õ ÀÌµ¿
+            y += heightDist(gen); // ê¼¬ë¦¬ íŒŒí‹°í´ì€ ìœ„ë¡œ ì¡°ê¸ˆ ë” ì´ë™
 
-        float z = 1.0f; // Á¤¸é ±âÁØ ±íÀÌ´Â ¸ğµÎ µ¿ÀÏ (ºôº¸µå¶ó¼­ ¹«ÀÇ¹Ì)
+        float z = 1.0f; // ì •ë©´ ê¸°ì¤€ ê¹Šì´ëŠ” ëª¨ë‘ ë™ì¼ (ë¹Œë³´ë“œë¼ì„œ ë¬´ì˜ë¯¸)
 
         positions.emplace_back(x, y, z);
     }

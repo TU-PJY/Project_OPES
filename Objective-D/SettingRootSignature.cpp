@@ -5,7 +5,7 @@
 
 void CompleteRootSignatureSetting(ID3D12Device*& Device, ID3D12RootSignature*& RootSignature, std::vector<D3D12_ROOT_PARAMETER>& RootParam);
 
-// ¿ÀºêÁ§Æ® ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³ ¼³Á¤
+// ì˜¤ë¸Œì íŠ¸ ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ ì„¤ì •
 ID3D12RootSignature* Scene::CreateObjectShaderSignature(ID3D12Device* Device) {
 	ID3D12RootSignature* GraphicsRootSignature{};
 	D3D12_DESCRIPTOR_RANGE Range{};
@@ -34,7 +34,7 @@ ID3D12RootSignature* Scene::CreateObjectShaderSignature(ID3D12Device* Device) {
 	return GraphicsRootSignature;
 }
 
-// ÀÌ¹ÌÁö ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³ ¼³Á¤
+// ì´ë¯¸ì§€ ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ ì„¤ì •
 ID3D12RootSignature* Scene::CreateImageShaderSignature(ID3D12Device* Device) {
 	ID3D12RootSignature* GraphicsRootSignature{};
 	D3D12_DESCRIPTOR_RANGE Range{};
@@ -55,7 +55,7 @@ ID3D12RootSignature* Scene::CreateImageShaderSignature(ID3D12Device* Device) {
 	return GraphicsRootSignature;
 }
 
-// ¹Ù¿îµå ¹Ú½º ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³ ¼³Á¤
+// ë°”ìš´ë“œ ë°•ìŠ¤ ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ ì„¤ì •
 ID3D12RootSignature* Scene::CreateBoundboxShaderSignature(ID3D12Device* Device) {
 	ID3D12RootSignature* GraphicsRootSignature{};
 	D3D12_DESCRIPTOR_RANGE Range{};
@@ -70,7 +70,7 @@ ID3D12RootSignature* Scene::CreateBoundboxShaderSignature(ID3D12Device* Device) 
 	return GraphicsRootSignature;
 }
 
-// ¼± ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³ ¼³Á¤
+// ì„  ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ ì„¤ì •
 ID3D12RootSignature* Scene::CreateLineShaderSignature(ID3D12Device* Device) {
 	ID3D12RootSignature* GraphicsRootSignature{};
 	D3D12_DESCRIPTOR_RANGE Range{};
@@ -89,7 +89,7 @@ ID3D12RootSignature* Scene::CreateLineShaderSignature(ID3D12Device* Device) {
 
 
 void CompleteRootSignatureSetting(ID3D12Device*& Device, ID3D12RootSignature*& RootSignature, std::vector<D3D12_ROOT_PARAMETER>& RootParam) {
-	// ·çÆ® ½Ã±×´ÏÃ³ ¼³Á¤
+	// ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ ì„¤ì •
 	D3D12_ROOT_SIGNATURE_DESC RootSignatureDesc;
 	RootSignatureDesc.NumParameters = RootParam.size(); //_countof(RootParameters);
 	RootSignatureDesc.pParameters = RootParam.data();

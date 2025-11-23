@@ -15,12 +15,12 @@ Bullet::~Bullet() {
 }
 
 void Bullet::updateCollision() {
-	// ¸ÕÀú ÅÍ·¹ÀÎ°ú ¸Ê ¿ÀºêÁ§Æ®¿¡ ±¤¼±ÀÌ Ãæµ¹ÇÏ´ÂÁö °Ë»ç ÈÄ, Ãæµ¹ÇÏ¸é Ãæµ¹ Å¸°Ù ÈÄº¸¿¡ Ãß°¡ÇÑ´Ù.
+	// ë¨¼ì € í„°ë ˆì¸ê³¼ ë§µ ì˜¤ë¸Œì íŠ¸ì— ê´‘ì„ ì´ ì¶©ëŒí•˜ëŠ”ì§€ ê²€ì‚¬ í›„, ì¶©ëŒí•˜ë©´ ì¶©ëŒ íƒ€ê²Ÿ í›„ë³´ì— ì¶”ê°€í•œë‹¤.
 
 	float terrainDistance{};
 	XMFLOAT3 pickPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, terrainDistance);
 
-	// ½ÇÁ¦·Î Ãæµ¹ ÇßÀ» ¶§¸¸ Ãß°¡
+	// ì‹¤ì œë¡œ ì¶©ëŒ í–ˆì„ ë•Œë§Œ ì¶”ê°€
 	if(terrainDistance > 0.0)
 		rayTarget.Add(nullptr, terrainDistance);
 
@@ -32,7 +32,7 @@ void Bullet::updateCollision() {
 		}
 	}
 
-	// ±× ´ÙÀ½ ¸ó½ºÅÍµéÀÌ ±¤¼±°ú Ãæµ¹ÇÏ¸é Ãæµ¹ Å¸ÄÏ ÈÄº¸¿¡ Ãß°¡ÇÑ´Ù.
+	// ê·¸ ë‹¤ìŒ ëª¬ìŠ¤í„°ë“¤ì´ ê´‘ì„ ê³¼ ì¶©ëŒí•˜ë©´ ì¶©ëŒ íƒ€ì¼“ í›„ë³´ì— ì¶”ê°€í•œë‹¤.
 	size_t size = scene.LayerSize(LAYER_MONSTER);
 	for (int i = 0; i < size; i++) {
 		if (auto object = scene.ReferLayer(LAYER_MONSTER, i); object) {
@@ -42,7 +42,7 @@ void Bullet::updateCollision() {
 		}
 	}
 
-	// ¶³¾îÁö´Â ¹ÙÀ§¿Í Ãæµ¹
+	// ë–¨ì–´ì§€ëŠ” ë°”ìœ„ì™€ ì¶©ëŒ
 	size_t size2 = scene.LayerSize(LAYER_STONE);
 	for (int i = 0; i < size2; i++) {
 		if (auto stone = scene.ReferLayer(LAYER_STONE, i); stone) {
@@ -52,11 +52,11 @@ void Bullet::updateCollision() {
 		}
 	}
 	
-	// °¡Àå °¡±î¿î °Å¸®¸¦ °¡Áö´Â Å¸°ÙÀÌ ÁöÇüÀÌ³ª ¸Ê ¿ÀºêÁ§Æ®¶ó¸é nullptrÀ» ¸®ÅÏÇÏ¿© ¾î¶°ÇÑ ¸ó½ºÅÍµµ ´ë¹ÌÁö¸¦ ÀÔÁö ¾Ê°Ô µÈ´Ù.
+	// ê°€ì¥ ê°€ê¹Œìš´ ê±°ë¦¬ë¥¼ ê°€ì§€ëŠ” íƒ€ê²Ÿì´ ì§€í˜•ì´ë‚˜ ë§µ ì˜¤ë¸Œì íŠ¸ë¼ë©´ nullptrì„ ë¦¬í„´í•˜ì—¬ ì–´ë– í•œ ëª¬ìŠ¤í„°ë„ ëŒ€ë¯¸ì§€ë¥¼ ì…ì§€ ì•Šê²Œ ëœë‹¤.
 	auto ptr = rayTarget.GetNearestTarget();
 	if (ptr) {
 		//std::cout << "=========== NOT NULLPTR ==============" << std::endl;
-		// DAMAGE_REDUCE È°¼ºÈ­ ½Ã ´ë¹ÌÁö 20% °¨¼Ò
+		// DAMAGE_REDUCE í™œì„±í™” ì‹œ ëŒ€ë¯¸ì§€ 20% ê°ì†Œ
 		float Result = bulletDamage;
 		if (GLOBAL.deBuff[DAMAGE_REDUCE])
 			Result *= 0.8;
@@ -66,7 +66,7 @@ void Bullet::updateCollision() {
 	//else
 		//std::cout << "NULLPTR" << std::endl;
 
-	// ÃÖÁ¾ÀûÀ¸·Î »èÁ¦
+	// ìµœì¢…ì ìœ¼ë¡œ ì‚­ì œ
 	scene.DeleteObject(this);
 }
 

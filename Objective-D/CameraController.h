@@ -3,7 +3,7 @@
 #include "CameraUtil.h"
 #include "MouseUtil.h"
 
-// °üÀü Ä«¸Þ¶ó ÄÁÆ®·Ñ·¯
+// ê´€ì „ ì¹´ë©”ë¼ ì»¨íŠ¸ë¡¤ëŸ¬
 class CameraController : public GameObject {
 private:
 	bool MoveForward{}, MoveBackward{}, MoveRight{}, MoveLeft{};
@@ -14,7 +14,7 @@ private:
 
 	XMFLOAT3 CamPosition{ 0.0, 80.0, 0.0 };
 
-	// Ä«¸Þ¶ó È¸Àü
+	// ì¹´ë©”ë¼ íšŒì „
 	XMFLOAT3 CamRotation{};
 	XMFLOAT3 DestCamRotation{};
 
@@ -84,7 +84,7 @@ public:
 			MulSpeed = 2.0;
 
 
-		// »óÇÏ È¸Àü¹Ý°æ Á¦ÇÑ
+		// ìƒí•˜ íšŒì „ë°˜ê²½ ì œí•œ
 		if (CamRotation.x > 90.0)
 			CamRotation.x = 90.0;
 		else if (CamRotation.x < -90.0)

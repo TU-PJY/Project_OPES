@@ -13,8 +13,8 @@ public:
     void start();
     void stop();
 
-    void resetRoom(unsigned roomID, int seconds = TIMER_ADVENTURE); // ½ºÅ×ÀÌÁö ÁøÀÔ/ÀüÈ¯
-    void stopRoom(unsigned roomID);                    // ½ºÅ×ÀÌÁö ¿ÏÀü Á¾·á
+    void resetRoom(unsigned roomID, int seconds = TIMER_ADVENTURE); // ìŠ¤í…Œì´ì§€ ì§„ì…/ì „í™˜
+    void stopRoom(unsigned roomID);                    // ìŠ¤í…Œì´ì§€ ì™„ì „ ì¢…ë£Œ
 
 private:
     void loop();

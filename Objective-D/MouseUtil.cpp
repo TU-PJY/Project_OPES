@@ -1,28 +1,28 @@
 #include "MouseUtil.h"
 #include "CameraUtil.h"
 
-// Ä¿¼­¸¦ ¼û±è »óÅÂ·Î ¸¸µç´Ù
+// ì»¤ì„œë¥¼ ìˆ¨ê¹€ ìƒíƒœë¡œ ë§Œë“ ë‹¤
 void MouseUtil::HideCursor() {
 	::SetCursor(NULL);
 }
 
-// ¸¶¿ì½º ¸ğ¼Ç Ä¸ÃÄ¸¦ ½ÃÀÛÇÑ´Ù
+// ë§ˆìš°ìŠ¤ ëª¨ì…˜ ìº¡ì³ë¥¼ ì‹œì‘í•œë‹¤
 void MouseUtil::StartMotionCapture(HWND hWnd) {
 	::SetCapture(hWnd);
 	::GetCursorPos(&MotionPosition);
 }
 
-// ¸¶¿ì½º ¸ğ¼Ê Ä¸ÃÄ¸¦ Áß´ÜÇÑ´Ù
+// ë§ˆìš°ìŠ¤ ëª¨ì…¥ ìº¡ì³ë¥¼ ì¤‘ë‹¨í•œë‹¤
 void MouseUtil::EndMotionCapture() {
 	::ReleaseCapture();
 }
 
-// ¸¶¿ì½º ¸ğ¼Ç À§Ä¡¸¦ ¾÷µ¥ÀÌÆ® ÇÑ´Ù
+// ë§ˆìš°ìŠ¤ ëª¨ì…˜ ìœ„ì¹˜ë¥¼ ì—…ë°ì´íŠ¸ í•œë‹¤
 void MouseUtil::UpdateMotionPosition(POINT& MotionPosition) {
 	::SetCursorPos(MotionPosition.x, MotionPosition.y);
 }
 
-// ¸¶¿ì½º ¸ğ¼Ç¿¡ µû¸¥ delta°ªÀ» ¸®ÅÏÇÑ´Ù. Sensivity °ªÀÌ ³ôÀ» ¼ö·Ï delta°ªÀÌ Ä¿Áø´Ù.
+// ë§ˆìš°ìŠ¤ ëª¨ì…˜ì— ë”°ë¥¸ deltaê°’ì„ ë¦¬í„´í•œë‹¤. Sensivity ê°’ì´ ë†’ì„ ìˆ˜ë¡ deltaê°’ì´ ì»¤ì§„ë‹¤.
 XMFLOAT2 MouseUtil::GetMotionDelta(POINT& MotionPosition, float Sensivity) {
 	XMFLOAT2 Delta{};
 	Delta.x = (float)(CurrentPosition().x - MotionPosition.x) * Sensivity;
@@ -32,7 +32,7 @@ XMFLOAT2 MouseUtil::GetMotionDelta(POINT& MotionPosition, float Sensivity) {
 	return Delta;
 }
 
-// ÇöÀç Ä¿¼­ÀÇ À§Ä¡¸¦ ¾ò´Â´Ù
+// í˜„ì¬ ì»¤ì„œì˜ ìœ„ì¹˜ë¥¼ ì–»ëŠ”ë‹¤
 POINT MouseUtil::CurrentPosition() {
 	POINT CursorPos;
 	::GetCursorPos(&CursorPos);
@@ -40,10 +40,10 @@ POINT MouseUtil::CurrentPosition() {
 	return CursorPos;
 }
 
-// ¸¶¿ì½º Ä¿¼­ À§Ä¡¸¦ ºäÆ÷Æ® À§Ä¡·Î º¯È¯ÇÑ´Ù.
+// ë§ˆìš°ìŠ¤ ì»¤ì„œ ìœ„ì¹˜ë¥¼ ë·°í¬íŠ¸ ìœ„ì¹˜ë¡œ ë³€í™˜í•œë‹¤.
 void MouseUtil::UpdateMousePosition(HWND hWnd) {
 	::GetCursorPos(&ClientPosition);
-	::ScreenToClient(hWnd, &ClientPosition); // Å¬¶óÀÌ¾ğÆ® ÁÂÇ¥·Î º¯È¯
+	::ScreenToClient(hWnd, &ClientPosition); // í´ë¼ì´ì–¸íŠ¸ ì¢Œí‘œë¡œ ë³€í™˜
 
 	x = (((2.0f * (float)ClientPosition.x) / (float)SCREEN_WIDTH) - 1.0f) / camera.StaticProjectionMatrix._11;
 	y = 1.0f - (((2.0f * (float)(ClientPosition.y)) / (float)SCREEN_HEIGHT)) / camera.StaticProjectionMatrix._22;

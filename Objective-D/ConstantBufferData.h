@@ -2,7 +2,7 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-// ¿©±â¿¡ CBV·Î »ç¿ëÇÒ ±¸Á¶Ã¼¸¦ Á¤ÀÇÇÑ´Ù.
+// ì—¬ê¸°ì— CBVë¡œ ì‚¬ìš©í•  êµ¬ì¡°ì²´ë¥¼ ì •ì˜í•œë‹¤.
 
 // texture flip
 struct TEXTURE_FLIP_DATA {
@@ -18,13 +18,13 @@ struct USE_LIGHT_DATA {
 // light data
 struct LIGHT_DATA {
 	XMFLOAT3 gLightDirection;  // 12 bytes
-	float padding1;                     // 4 bytes (ÆĞµùÀ» Ãß°¡ÇÏ¿© 16¹ÙÀÌÆ® Á¤·Ä)
+	float padding1;                     // 4 bytes (íŒ¨ë”©ì„ ì¶”ê°€í•˜ì—¬ 16ë°”ì´íŠ¸ ì •ë ¬)
 
 	XMFLOAT3 gLightColor;      // 12 bytes
-	float padding2;                     // 4 bytes (16¹ÙÀÌÆ® Á¤·Ä)
+	float padding2;                     // 4 bytes (16ë°”ì´íŠ¸ ì •ë ¬)
 
 	XMFLOAT3 gAmbientColor;    // 12 bytes
-	float gShadowStrength;              // 4 bytes (ÀÌ·Î ÀÎÇØ 16¹ÙÀÌÆ® Á¤·Ä ¿Ï·á)
+	float gShadowStrength;              // 4 bytes (ì´ë¡œ ì¸í•´ 16ë°”ì´íŠ¸ ì •ë ¬ ì™„ë£Œ)
 };
 
 // use fog data
@@ -46,8 +46,8 @@ struct FOG_DATA {
 
 // shadow data
 struct SHADOW_MATRIX_DATA {
-	DirectX::XMFLOAT4X4 LightViewProj;  // ¶óÀÌÆ® VP
-	DirectX::XMFLOAT4X4 ShadowTex;      // [-1,1]¡æ[0,1] º¯È¯ (scale-bias)
-	float ShadowBias;                   // 0.0005 ~ 0.005 µî Æ©´×
+	DirectX::XMFLOAT4X4 LightViewProj;  // ë¼ì´íŠ¸ VP
+	DirectX::XMFLOAT4X4 ShadowTex;      // [-1,1]â†’[0,1] ë³€í™˜ (scale-bias)
+	float ShadowBias;                   // 0.0005 ~ 0.005 ë“± íŠœë‹
 	float _pad[3];
 };

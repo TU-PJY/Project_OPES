@@ -1,8 +1,8 @@
 #include "ShaderUtil.h"
 
-// ½ºÅÙ½ÇÀ» ¿©±â¿¡ ÀÛ¼ºÇÑ´Ù.
+// ìŠ¤í…ì‹¤ì„ ì—¬ê¸°ì— ì‘ì„±í•œë‹¤.
 
-// ÀÏ¹İ ½ºÅÙ½ÇÀ» »ı¼ºÇÑ´Ù.
+// ì¼ë°˜ ìŠ¤í…ì‹¤ì„ ìƒì„±í•œë‹¤.
 D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState() {
 	D3D12_DEPTH_STENCIL_DESC DepthStencilDesc;
 	::ZeroMemory(&DepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
@@ -24,17 +24,17 @@ D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState() {
 	return(DepthStencilDesc);
 }
 
-// Åõ¸í ÇÈ¼¿ÀÌ Á¸ÀçÇÏ´Â ÅØ½ºÃ³¸¦ ·»´õ¸µÇÒ ¶§ »ç¿ëÇÏ´Â ½ºÅÙ½ÇÀ» »ı¼ºÇÑ´Ù.
+// íˆ¬ëª… í”½ì…€ì´ ì¡´ì¬í•˜ëŠ” í…ìŠ¤ì²˜ë¥¼ ë Œë”ë§í•  ë•Œ ì‚¬ìš©í•˜ëŠ” ìŠ¤í…ì‹¤ì„ ìƒì„±í•œë‹¤.
 D3D12_DEPTH_STENCIL_DESC Shader::CreateTransparentDepthStencilState() {
 	D3D12_DEPTH_STENCIL_DESC desc{};
 	desc.DepthEnable = TRUE;
-	desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; // ? ±íÀÌ ±â·Ï ºñÈ°¼ºÈ­
+	desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO; // ? ê¹Šì´ ê¸°ë¡ ë¹„í™œì„±í™”
 	desc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	desc.StencilEnable = FALSE;
 	return desc;
 }
 
-// ±íÀÌ °Ë»ç¸¦ ºñÈ°¼ºÈ­ÇÑ ½ºÅÙ½ÇÀ» »ı¼ºÇÑ´Ù.
+// ê¹Šì´ ê²€ì‚¬ë¥¼ ë¹„í™œì„±í™”í•œ ìŠ¤í…ì‹¤ì„ ìƒì„±í•œë‹¤.
 D3D12_DEPTH_STENCIL_DESC Shader::CreateNoneDepthStencilState() {
 	D3D12_DEPTH_STENCIL_DESC DepthStencilDesc;
 	::ZeroMemory(&DepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));

@@ -15,7 +15,7 @@ private:
 	BoundSphere lookRange{};
 	OOBB     hitBox{};
 
-	// 20ÃÊÈÄ ½º½º·Î ÆÄ±«µÈ´Ù.
+	// 20ì´ˆí›„ ìŠ¤ìŠ¤ë¡œ íŒŒê´´ëœë‹¤.
 	float    currentHP{TURRET_DURABILITY};
 
 	float    currentShootDelay{};

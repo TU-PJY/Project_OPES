@@ -11,7 +11,7 @@ void Imp::im_updateTerrainCollision() {
 	float Distance;
 	xmfloat3 newPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, playerRay.Origin, playerRay.Direction, Distance);
 
-	// ¶¥À» ¹ş¾î³ª¸é ¶³¾îÁø´Ù
+	// Â¶Â¥Ã€Â» Â¹Ã¾Â¾Ã®Â³ÂªÂ¸Ã© Â¶Â³Â¾Ã®ÃÃ¸Â´Ã™
 	if ((newPosition.x == 0.0 && newPosition.y == 0.0 && newPosition.z == 0.0) || newPosition.y <= -5.0) {
 		fallDown = true;
 		return;

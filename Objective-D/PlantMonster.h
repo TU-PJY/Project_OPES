@@ -6,16 +6,16 @@ class PlantMonster : public GameObject {
 private:
 	enum PlantMonsterState {
 		PLANT_IDLE,
-		PLANT_MOVE, // »óÅÂ °³¼ö ¸ÂÃß±â À§ÇÔ
+		PLANT_MOVE, // ìƒíƒœ ê°œìˆ˜ ë§ì¶”ê¸° ìœ„í•¨
 		PLANT_ATTACK,
 		PLANT_DEATH,
 		PLANT_LIFT
 	};
 
-	// ¸ğµ¨
+	// ëª¨ë¸
 	FBX         plantFBX{};
 
-	// À§Ä¡, È¸Àü °¢µµ, Å©±â
+	// ìœ„ì¹˜, íšŒì „ ê°ë„, í¬ê¸°
 	XMFLOAT3    position{};
 	XMFLOAT3    tempPosition{};
 	XMFLOAT3    targetPosition{};
@@ -24,7 +24,7 @@ private:
 	XMFLOAT3    destRotation{};
 	XMFLOAT3    size{ XMFLOAT3(3.0, 3.0, 3.0) };
 
-	// °¢Á¾ »óÅÂ
+	// ê°ì¢… ìƒíƒœ
 	int         currentState{ PLANT_IDLE };
 	int         serverState{ PLANT_IDLE };
 	int         prevState{ -1 };
@@ -34,30 +34,30 @@ private:
 
 	float       animationTime{};
 
-	// µğÆæ½º ¸ğµå ½ÇÇà ½Ã º°µµÀÇ ·ÎÁ÷À» ½ÇÇàÇÑ´Ù.
+	// ë””íœìŠ¤ ëª¨ë“œ ì‹¤í–‰ ì‹œ ë³„ë„ì˜ ë¡œì§ì„ ì‹¤í–‰í•œë‹¤.
 	bool        defenseModeState{};
 
-	// ÀüÃ¼ Ã¼·Â, ÇöÀç Ã¼·Â
+	// ì „ì²´ ì²´ë ¥, í˜„ì¬ ì²´ë ¥
 	int         totalHP   = PLANT_HP;
 	int         currentHP = PLANT_HP;
 
-	// Á×Àº »óÅÂ È°¼ºÈ­ ÀÌÈÄ »èÁ¦ Áö¿¬ ½Ã°£
+	// ì£½ì€ ìƒíƒœ í™œì„±í™” ì´í›„ ì‚­ì œ ì§€ì—° ì‹œê°„
 	float       deleteDelayTime{};
 
-	// ÇÃ·¹ÀÌ¾î °¨Áö¸¦ À§ÇÑ ½Ã¾ß
+	// í”Œë ˆì´ì–´ ê°ì§€ë¥¼ ìœ„í•œ ì‹œì•¼
 	BoundSphere lookRange{};
 
-	// Ãæµ¹ °¨Áö¸¦ À§ÇÑ È÷Æ® ¹Ú½º
+	// ì¶©ëŒ ê°ì§€ë¥¼ ìœ„í•œ íˆíŠ¸ ë°•ìŠ¤
 	OOBB        hitBox[3]{};
 	
-	// ÇÁ·¯½ºÅÒ ÄÃ¸µÀ» À§ÇÑ ¹Ù¿îµå
+	// í”„ëŸ¬ìŠ¤í…€ ì»¬ë§ì„ ìœ„í•œ ë°”ìš´ë“œ
 	BoundSphere frustumBound{};
 	bool        inFrustum{};
 	
-	// ÇöÀç °´Ã¼°¡ ¼ÒÀ¯ÇÏ´Â hp Ç¥½Ã±â ¿ÀºêÁ§Æ® Æ÷ÀÎÅÍ
+	// í˜„ì¬ ê°ì²´ê°€ ì†Œìœ í•˜ëŠ” hp í‘œì‹œê¸° ì˜¤ë¸Œì íŠ¸ í¬ì¸í„°
 	GameObject* hpIndicator{};
 
-	// ¸ó½ºÅÍ ¾ÆÀÌµğ
+	// ëª¬ìŠ¤í„° ì•„ì´ë””
 	unsigned int ID{};
 
 	unsigned int currentTargetID{};

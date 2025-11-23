@@ -1,47 +1,47 @@
 #include "TransformUtil.h"
 
-// º¯È¯À» ´ã´çÇÏ´Â À¯Æ¿ÀÌ´Ù
-// ¿ø·¡´Â ¼¼ °¡Áö Çà·Ä¿¡ °¢°¢ Move, Rotate, Scale¸¸ °¡´ÉÇÏ°Ô ÇÏµµ·Ï ÇÏ·Á ÇßÀ¸³ª
-// º¯È¯À» Á÷Á¢ Ä¿½ºÅÒ ÇÒ ¼ö ÀÖµµ·Ï Çà·ÄÀ» ·¹ÆÛ·±½º·Î Àü´ŞÇÏµµ·Ï Çß´Ù
+// ë³€í™˜ì„ ë‹´ë‹¹í•˜ëŠ” ìœ í‹¸ì´ë‹¤
+// ì›ë˜ëŠ” ì„¸ ê°€ì§€ í–‰ë ¬ì— ê°ê° Move, Rotate, Scaleë§Œ ê°€ëŠ¥í•˜ê²Œ í•˜ë„ë¡ í•˜ë ¤ í–ˆìœ¼ë‚˜
+// ë³€í™˜ì„ ì§ì ‘ ì»¤ìŠ¤í…€ í•  ìˆ˜ ìˆë„ë¡ í–‰ë ¬ì„ ë ˆí¼ëŸ°ìŠ¤ë¡œ ì „ë‹¬í•˜ë„ë¡ í–ˆë‹¤
 
-// Çà·Ä ÃÊ±âÈ­
+// í–‰ë ¬ ì´ˆê¸°í™”
 void Transform::Identity(XMFLOAT4X4& Matrix) {
 	Matrix = Mat4::Identity();
 }
 
-// ÆòÇàÀÌµ¿ º¯È¯
+// í‰í–‰ì´ë™ ë³€í™˜
 void Transform::Move(XMFLOAT4X4& Matrix, float X, float Y, float Z) {
 	XMMATRIX TranslateMat = XMMatrixTranslation(X, Y, Z);
 	Matrix = Mat4::Multiply(TranslateMat, Matrix);
 }
 
-// ÆòÇàÀÌµ¿ º¯È¯
+// í‰í–‰ì´ë™ ë³€í™˜
 void Transform::Move(XMFLOAT4X4& Matrix, XMFLOAT3& Value) {
 	XMMATRIX TranslateMat = XMMatrixTranslation(Value.x,Value.y, Value.z);
 	Matrix = Mat4::Multiply(TranslateMat, Matrix);
 }
 
-// ÃàÀ» ÁöÁ¤ÇÏ¿© Æ¯Á¤ °¢µµ¸¸Å­ È¸Àü º¯È¯ ½ÃÅ²´Ù.
+// ì¶•ì„ ì§€ì •í•˜ì—¬ íŠ¹ì • ê°ë„ë§Œí¼ íšŒì „ ë³€í™˜ ì‹œí‚¨ë‹¤.
 void Transform::Rotate(XMFLOAT4X4& Matrix, float RotationValue, float X, float Y, float Z) {
 	XMMATRIX RotateMat = XMMatrixRotationAxis(XMVectorSet(X, Y, Z, 0.0f), XMConvertToRadians(RotationValue));
 	Matrix = Mat4::Multiply(RotateMat, Matrix);
 }
 
-// °¢ Ãà¿¡ È¸Àü °¢µµ¸¦ ºÎ¿©ÇÏ¿© È¸Àü º¯È¯ ½ÃÅ²´Ù.
+// ê° ì¶•ì— íšŒì „ ê°ë„ë¥¼ ë¶€ì—¬í•˜ì—¬ íšŒì „ ë³€í™˜ ì‹œí‚¨ë‹¤.
 void Transform::Rotate(XMFLOAT4X4& Matrix, float RotationX, float RotationY, float RotationZ) {
 	XMMATRIX RotateMat = XMMatrixRotationRollPitchYaw(
 		XMConvertToRadians(RotationX), XMConvertToRadians(RotationY), XMConvertToRadians(RotationZ));
 	Matrix = Mat4::Multiply(RotateMat, Matrix);
 }
 
-// °¢ Ãà¿¡ È¸Àü °¢µµ¸¦ ºÎ¿©ÇÏ¿© È¸Àü º¯È¯ ½ÃÅ²´Ù.
+// ê° ì¶•ì— íšŒì „ ê°ë„ë¥¼ ë¶€ì—¬í•˜ì—¬ íšŒì „ ë³€í™˜ ì‹œí‚¨ë‹¤.
 void Transform::Rotate(XMFLOAT4X4& Matrix, XMFLOAT3& Rotation) {
 	XMMATRIX RotateMat = XMMatrixRotationRollPitchYaw(
 		XMConvertToRadians(Rotation.x), XMConvertToRadians(Rotation.y), XMConvertToRadians(Rotation.z));
 	Matrix = Mat4::Multiply(RotateMat, Matrix);
 }
 
-// YÃà È¸Àü ÈÄ XÃà È¸Àü º¯È¯
+// Yì¶• íšŒì „ í›„ Xì¶• íšŒì „ ë³€í™˜
 void Transform::RotateYX(XMFLOAT4X4& Matrix, float RotationX, float RotationY) {
 	XMMATRIX rotationY = XMMatrixRotationY(XMConvertToRadians(-RotationY));
 	XMMATRIX rotationX = XMMatrixRotationX(XMConvertToRadians(-RotationX));
@@ -51,24 +51,24 @@ void Transform::RotateYX(XMFLOAT4X4& Matrix, float RotationX, float RotationY) {
 	XMMATRIX currentMat = XMLoadFloat4x4(&Matrix);
 	XMMATRIX finalMat = rotationMat * currentMat;
 
-	// °á°ú¸¦ XMFLOAT4X4·Î ´Ù½Ã ÀúÀå
+	// ê²°ê³¼ë¥¼ XMFLOAT4X4ë¡œ ë‹¤ì‹œ ì €ì¥
 	XMStoreFloat4x4(&Matrix, finalMat);
 }
 
-// ½ºÄÉÀÏ º¯È¯
+// ìŠ¤ì¼€ì¼ ë³€í™˜
 void Transform::Scale(XMFLOAT4X4& Matrix, float ScaleX, float ScaleY, float ScaleZ) {
 	XMMATRIX ScaleMat = XMMatrixScaling(ScaleX, ScaleY, ScaleZ);
 	Matrix = Mat4::Multiply(ScaleMat, Matrix);
 }
 
-// ½ºÄÉÀÏ º¯È¯
+// ìŠ¤ì¼€ì¼ ë³€í™˜
 void Transform::Scale(XMFLOAT4X4& Matrix, XMFLOAT3& Size) {
 	XMMATRIX ScaleMat = XMMatrixScaling(Size.x, Size.y, Size.z);
 	Matrix = Mat4::Multiply(ScaleMat, Matrix);
 }
 
-// ÀÌ¹ÌÁö Ãâ·Â ½Ã ¸Å½¬ÀÇ Á¾È¾ºñ¿Í ÀÌ¹ÌÁö Á¾È¾ºñ¸¦ µ¿ÀÏÇÏ°Ô ¸ÂÃá´Ù.
-// º¯È¯ÇÒ Çà·Ä°ú ÀÌ¹ÌÁöÀÇ Å©±â¸¦ ÆÄ¶ó¹ÌÅÍ¿¡ Àü´ŞÇÏ¸é µÈ´Ù.
+// ì´ë¯¸ì§€ ì¶œë ¥ ì‹œ ë§¤ì‰¬ì˜ ì¢…íš¡ë¹„ì™€ ì´ë¯¸ì§€ ì¢…íš¡ë¹„ë¥¼ ë™ì¼í•˜ê²Œ ë§ì¶˜ë‹¤.
+// ë³€í™˜í•  í–‰ë ¬ê³¼ ì´ë¯¸ì§€ì˜ í¬ê¸°ë¥¼ íŒŒë¼ë¯¸í„°ì— ì „ë‹¬í•˜ë©´ ëœë‹¤.
 void Transform::ImageAspect(XMFLOAT4X4& Matrix, int Width, int Height) {
 	float ScaleX{}, ScaleY{};
 
@@ -91,26 +91,26 @@ void Transform::ImageAspect(XMFLOAT4X4& Matrix, int Width, int Height) {
 	Matrix = Mat4::Multiply(ScaleMat, Matrix);
 }
 
-// 2Â÷¿ø ÀÌµ¿ º¯È¯
+// 2ì°¨ì› ì´ë™ ë³€í™˜
 void Transform::Move2D(XMFLOAT4X4& Matrix, float X, float Y) {
 	XMMATRIX TranslateMat = XMMatrixTranslation(X, Y, 0.0);
 	Matrix = Mat4::Multiply(TranslateMat, Matrix);
 }
 
-// 2Â÷¿ø È¸Àü º¯È¯
+// 2ì°¨ì› íšŒì „ ë³€í™˜
 void Transform::Rotate2D(XMFLOAT4X4& Matrix, float Rotation) {
 	XMMATRIX RotateMat = XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0), XMConvertToRadians(0.0), XMConvertToRadians(Rotation));
 	Matrix = Mat4::Multiply(RotateMat, Matrix);
 }
 
-// 2Â÷¿ø ½ºÄÉÀÏ º¯È¯
+// 2ì°¨ì› ìŠ¤ì¼€ì¼ ë³€í™˜
 void Transform::Scale2D(XMFLOAT4X4& Matrix, float X, float Y) {
 	XMMATRIX ScaleMat = XMMatrixScaling(X, Y, 1.0);
 	Matrix = Mat4::Multiply(ScaleMat, Matrix);
 }
 
-// FBX ¾Ö´Ï¸ŞÀÌ¼ÇÀ¸·Î ÀÎÇÑ À§Ä¡ ÀÌµ¿À» ºñÈ°¼ºÈ­ ÇÑ´Ù.
-// true°¡ µÈ Ãà¿¡ ´ëÇØ¼­¸¸ À§Ä¡ ÀÌµ¿À» Á¦°ÅÇÑ´Ù.
+// FBX ì• ë‹ˆë©”ì´ì…˜ìœ¼ë¡œ ì¸í•œ ìœ„ì¹˜ ì´ë™ì„ ë¹„í™œì„±í™” í•œë‹¤.
+// trueê°€ ëœ ì¶•ì— ëŒ€í•´ì„œë§Œ ìœ„ì¹˜ ì´ë™ì„ ì œê±°í•œë‹¤.
 void Transform::InPlace(XMFLOAT4X4& Matrix, FBXMesh& TargetMesh, bool AxisX, bool AxisY, bool AxisZ) {
 	if (!TargetMesh.GlobalRootNode)
 		return;

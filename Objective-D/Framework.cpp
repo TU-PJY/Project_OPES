@@ -13,7 +13,7 @@ void Framework::Init() {
 
 	CmdList->Reset(CmdAllocator, NULL);
 
-	// ·çÆ® ½Ã±×´ÏÃ³¸¦ »ı¼ºÇÑ´Ù.
+	// ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ë¥¼ ìƒì„±í•œë‹¤.
 	DeviceSystem System{ Device, CmdList };
 	GlobalSystem = { Device, CmdList };
 
@@ -47,14 +47,14 @@ void Framework::Init() {
 		}
 	}
 
-	// CBV¸¦ »ı¼ºÇÑ´Ù.
+	// CBVë¥¼ ìƒì„±í•œë‹¤.
 	CreateConstantBufferResource(Device);
 
-	// scene ÃÊ±âÈ­
-	// StartMode.cppÀÇ StartMode º¯°æ ½Ã ½ÃÀÛ ¸ğµå º¯°æÀÌ °¡´ÉÇÏ´Ù.
+	// scene ì´ˆê¸°í™”
+	// StartMode.cppì˜ StartMode ë³€ê²½ ì‹œ ì‹œì‘ ëª¨ë“œ ë³€ê²½ì´ ê°€ëŠ¥í•˜ë‹¤.
 	scene.Init(StartMode);
 
-	// Ä«¸Ş¶ó ÃÊ±â ¼³Á¤(¿ÏÀü ÃÊ±â°ª)
+	// ì¹´ë©”ë¼ ì´ˆê¸° ì„¤ì •(ì™„ì „ ì´ˆê¸°ê°’)
 	camera.Move(XMFLOAT3(0.0, 0.0, 0.0));
 	camera.SetOffset(XMFLOAT3(0.0f, 0.0f, -0.001f));
 	camera.SetViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f, 1.0f);
@@ -69,13 +69,13 @@ void Framework::Init() {
 
 	WaitForGpuComplete();
 
-	// ¸Å½¬ ¹× ÅØ½ºÃ³ ¾÷·Îµå ¹öÆÛ »èÁ¦
+	// ë§¤ì‰¬ ë° í…ìŠ¤ì²˜ ì—…ë¡œë“œ ë²„í¼ ì‚­ì œ
 	ClearUploadBuffer();
 
 	Timer.Reset();
 }
 
-// ÀÌ ÇÔ¼ö ³»¿ëÀº ÀüÇô °Çµå¸± ÇÊ¿ä ¾ø´Ù.
+// ì´ í•¨ìˆ˜ ë‚´ìš©ì€ ì „í˜€ ê±´ë“œë¦´ í•„ìš” ì—†ë‹¤.
 LRESULT CALLBACK Framework::WindowsMessageFunc(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	switch (nMessageID) {
 	case WM_ACTIVATE:
@@ -114,19 +114,19 @@ void Framework::Update() {
 	DsvCPUDescriptorHandle = DsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	CmdList->ClearDepthStencilView(DsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 
-	// ¿ÀºêÁ§Æ® ¾÷µ¥ÀÌÆ®
+	// ì˜¤ë¸Œì íŠ¸ ì—…ë°ì´íŠ¸
 	scene.Update(Timer.GetTimeElapsed(), CmdList);
 
-	// Ä«¸Ş¶ó¸¦ ¾÷µ¥ÀÌÆ®ÇÑ´Ù.
+	// ì¹´ë©”ë¼ë¥¼ ì—…ë°ì´íŠ¸í•œë‹¤.
 	camera.Update(Timer.GetTimeElapsed());
 	camera.SetViewMatrix();
 	camera.SetStaticViewMatrix();
 	camera.SetViewportsAndScissorRects();
 
-	// »èÁ¦ ¸¶Å©°¡ Ç¥½ÃµÈ °´Ã¼¸¦ ÃÖÁ¾»èÁ¦ÇÑ´Ù.
+	// ì‚­ì œ ë§ˆí¬ê°€ í‘œì‹œëœ ê°ì²´ë¥¼ ìµœì¢…ì‚­ì œí•œë‹¤.
 	scene.CompleteCommand();
 
-	// ¿ÀºêÁ§Æ® ·»´õ¸µ
+	// ì˜¤ë¸Œì íŠ¸ ë Œë”ë§
 	scene.Render();
 
 	QP::SoundSystem.Update();

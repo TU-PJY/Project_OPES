@@ -1,29 +1,29 @@
 #include "ShaderUtil.h"
 
-// ¿©±â¿¡ ºí·£µå¸¦ ÀÛ¼ºÇÑ´Ù.
+// ì—¬ê¸°ì— ë¸”ëœë“œë¥¼ ì‘ì„±í•œë‹¤.
 
-// ºí·£µå¸¦ »ı¼ºÇÑ´Ù.
+// ë¸”ëœë“œë¥¼ ìƒì„±í•œë‹¤.
 D3D12_BLEND_DESC Shader::CreateBlendState() {
 	D3D12_BLEND_DESC BlendDesc;
 	::ZeroMemory(&BlendDesc, sizeof(D3D12_BLEND_DESC));
 	BlendDesc.AlphaToCoverageEnable = FALSE;
 	BlendDesc.IndependentBlendEnable = FALSE;
 
-	// 0¹ø ·»´õ Å¸°ÙÀÇ ºí·»µå ¼³Á¤
-	BlendDesc.RenderTarget[0].BlendEnable = TRUE; // ºí·»µå È°¼ºÈ­
+	// 0ë²ˆ ë Œë” íƒ€ê²Ÿì˜ ë¸”ë Œë“œ ì„¤ì •
+	BlendDesc.RenderTarget[0].BlendEnable = TRUE; // ë¸”ë Œë“œ í™œì„±í™”
 	BlendDesc.RenderTarget[0].LogicOpEnable = FALSE;
 
-	// »ö»ó ºí·»µù ¼³Á¤ (SRC_ALPHA * Src + (1 - SRC_ALPHA) * Dest)
-	BlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA; // ¼Ò½º ¾ËÆÄ
-	BlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA; // ¹İ´ë ¾ËÆÄ
-	BlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD; // ´õÇÏ±â ¿¬»ê
+	// ìƒ‰ìƒ ë¸”ë Œë”© ì„¤ì • (SRC_ALPHA * Src + (1 - SRC_ALPHA) * Dest)
+	BlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA; // ì†ŒìŠ¤ ì•ŒíŒŒ
+	BlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA; // ë°˜ëŒ€ ì•ŒíŒŒ
+	BlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD; // ë”í•˜ê¸° ì—°ì‚°
 
-	// ¾ËÆÄ ºí·»µù ¼³Á¤
+	// ì•ŒíŒŒ ë¸”ë Œë”© ì„¤ì •
 	BlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
 	BlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
 	BlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
 
-	// ¾²±â ¸¶½ºÅ© ¼³Á¤ (¸ğµç Ã¤³Î ¾²±â)
+	// ì“°ê¸° ë§ˆìŠ¤í¬ ì„¤ì • (ëª¨ë“  ì±„ë„ ì“°ê¸°)
 	BlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 	//BlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;

@@ -77,7 +77,7 @@ void FBX::SetSpeed(float Speed) {
 	CurrentSpeed = Speed;
 }
 
-// ÇÏ³ªÀÇ Å°ÇÁ·¹ÀÓÀÌ ³¡³¯ ¶§ true¸¦ ¹ÝÈ¯ÇÑ´Ù.
+// í•˜ë‚˜ì˜ í‚¤í”„ë ˆìž„ì´ ëë‚  ë•Œ trueë¥¼ ë°˜í™˜í•œë‹¤.
 bool FBX::GetAnimationEndState() {
 	if (PrevEndCount != CurrentEndCount) {
 		PrevEndCount = CurrentEndCount;
@@ -99,7 +99,7 @@ void FBX::SetCurrentPlayTime(float Time) {
 	CurrentTime = Time;
 }
 
-// ¾Ö´Ï¸ÞÀÌ¼Ç Å°ÇÁ·¹ÀÓ Àç»ý ½Ã°£ÀÌ Æ¯Á¤ ½Ã°£À» Áö³ª¸é true¸¦ ¸®ÅÏÇÑ´Ù.
+// ì• ë‹ˆë©”ì´ì…˜ í‚¤í”„ë ˆìž„ ìž¬ìƒ ì‹œê°„ì´ íŠ¹ì • ì‹œê°„ì„ ì§€ë‚˜ë©´ trueë¥¼ ë¦¬í„´í•œë‹¤.
 bool FBX::GetTimeSectionPassed(float Time) {
 	if (CurrentTime >= Time) 
 		return true;
@@ -197,7 +197,7 @@ XMFLOAT3 FBX::GetRootMoveDelta(std::vector<BoneFrame>& BoneFrame, bool InPlace) 
 	else
 		FirstFrame = std::clamp(static_cast<int>(StartTime * AnimationExtractFrame), 0, (int)BoneFrame.size() - 1);
 
-	// Ã¹ ¹øÂ° º»(·çÆ® º»)À» ±âÁØÀ¸·Î ÀÌµ¿·® ÃøÁ¤
+	// ì²« ë²ˆì§¸ ë³¸(ë£¨íŠ¸ ë³¸)ì„ ê¸°ì¤€ìœ¼ë¡œ ì´ë™ëŸ‰ ì¸¡ì •
 	XMMATRIX currentMatrix = BoneFrame[CurrentFrame][0];
 	XMMATRIX previousMatrix = BoneFrame[FirstFrame][0];
 
@@ -273,7 +273,7 @@ int FBX::GetPrevFrame() {
 
 ///////////////////////////////////////// private
 
-// ¿øº» FBX¿Í µ¿ÀÏ »ç¾çÀ¸·Î ¹öÆÛ¸¦ ¸ÂÃá´Ù.
+// ì›ë³¸ FBXì™€ ë™ì¼ ì‚¬ì–‘ìœ¼ë¡œ ë²„í¼ë¥¼ ë§žì¶˜ë‹¤.
 void FBX::CreateBuffer(DeviceSystem& System) {
 	MeshCount = FBXPtr->MeshPart.size();
 

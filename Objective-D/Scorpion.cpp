@@ -23,7 +23,7 @@ Scorpion::~Scorpion() {
 		scene.DeleteObject(hpIndicator);
 }
 
-// ¼­¹ö·ÎºÎÅÍ À§Ä¡¸¦ ÀÔ·Â ¹ŞÀ¸¸é ¹Ù·Î ¹İ¿µÇÏÁö ¾Ê°í 1ÇÁ·¹ÀÓ ´Ê°Ô ¹İ¿µÇÑ´Ù.
+// ì„œë²„ë¡œë¶€í„° ìœ„ì¹˜ë¥¼ ì…ë ¥ ë°›ìœ¼ë©´ ë°”ë¡œ ë°˜ì˜í•˜ì§€ ì•Šê³  1í”„ë ˆì„ ëŠ¦ê²Œ ë°˜ì˜í•œë‹¤.
 void Scorpion::updateInputedPosition() {
 	/*if (!positionInputedState)
 		return;
@@ -87,7 +87,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 	if (currentState == SCOR_DEATH)
 		return;
 
-	// ÀÏÁ¤ °£°İ¸¶´Ù Àü¼Û È°¼ºÈ­
+	// ì¼ì • ê°„ê²©ë§ˆë‹¤ ì „ì†¡ í™œì„±í™”
 	sendState = false;
 	sendDelay += Delta;
 	if (sendDelay >= destDelay) {
@@ -97,7 +97,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 
-	// ÇöÀç ¾Æ¹«µµ Ãß°İ ¾È ÇÏ°Å³ª ³ª¸¦ Ãß°İ ÁßÀÌ¸é ³ª¸¦ ÃßÀûÇÏµµ·Ï ÇÑ´Ù.
+	// í˜„ì¬ ì•„ë¬´ë„ ì¶”ê²© ì•ˆ í•˜ê±°ë‚˜ ë‚˜ë¥¼ ì¶”ê²© ì¤‘ì´ë©´ ë‚˜ë¥¼ ì¶”ì í•˜ë„ë¡ í•œë‹¤.
 	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
 		for (int i = 0; i < size; i++) {
 			if (auto player = scene.FindMulti("player", LAYER_PLAYER, i); player) {
@@ -124,7 +124,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 					if (!isBlocked) {
 						rotationDest = Math::CalcDegree3D(position, playerPosition);
 
-						// °ø°İ ¹üÀ§¿¡ ÇÃ·¹ÀÌ¾î ¹Ù¿îµå°¡ ´êÀ¸¸é °ø°İ »óÅÂ È°¼ºÈ­
+						// ê³µê²© ë²”ìœ„ì— í”Œë ˆì´ì–´ ë°”ìš´ë“œê°€ ë‹¿ìœ¼ë©´ ê³µê²© ìƒíƒœ í™œì„±í™”
 						if (attackBound.CheckCollision(playerOOBB)) {
 							currentState = SCOR_ATTACK;
 							currentTargetID = GLOBAL.myID;
@@ -135,7 +135,7 @@ void Scorpion::updateDetectPlayer(float Delta) {
 							}
 						}
 
-						// ¾Æ´Ï¶ó¸é Ãß°İ »óÅÂ·Î ÀüÈ¯
+						// ì•„ë‹ˆë¼ë©´ ì¶”ê²© ìƒíƒœë¡œ ì „í™˜
 						else {
 							Math::Normalize2DAngleTo360(rotationDest.y);
 							currentState = SCOR_WALK;
@@ -209,7 +209,7 @@ void Scorpion::updateMove(float Delta) {
 
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
 
-	// ³ª¸¦ Ãß°İÇÏ´Â »óÅÂÀÏ¶§¸¸ MoveWithSlide¸¦ ½ÇÇàÇÑ´Ù.
+	// ë‚˜ë¥¼ ì¶”ê²©í•˜ëŠ” ìƒíƒœì¼ë•Œë§Œ MoveWithSlideë¥¼ ì‹¤í–‰í•œë‹¤.
 	if (currentState == SCOR_WALK && currentTargetID == GLOBAL.myID)
 		Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, scorBound, GLOBAL.mapOOBBdata, Delta);
 		

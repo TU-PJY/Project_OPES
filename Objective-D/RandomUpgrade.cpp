@@ -4,7 +4,7 @@
 
 void SendPlayerUpgradePacket(int player_id, int random_id);
 
-// ·£´ı ¹öÇÁ/µğ¹öÇÁ Áß¿¡´Â ÄÁÆ®·Ñ ºÒ°¡´É
+// ëœë¤ ë²„í”„/ë””ë²„í”„ ì¤‘ì—ëŠ” ì»¨íŠ¸ë¡¤ ë¶ˆê°€ëŠ¥
 RandomUpgrade::RandomUpgrade() {
 	SOUND.buff.Play();
 	text.SetAlign(ALIGN_MIDDLE);
@@ -12,11 +12,11 @@ RandomUpgrade::RandomUpgrade() {
 	text.SetColor({ 1.0, 1.0, 1.0 });
 }
 
-// ¹öÇÁ ºÎ¿©
+// ë²„í”„ ë¶€ì—¬
 void RandomUpgrade::GetRandomBuff() {
 	std::vector<int> availableItems{};
 	int index{};
-	// ÇöÀç Àû¿ëµÇÁö ¾ÊÀº ¹öÇÁ¸¸ »Ì´Â´Ù.
+	// í˜„ì¬ ì ìš©ë˜ì§€ ì•Šì€ ë²„í”„ë§Œ ë½‘ëŠ”ë‹¤.
 	{
 		std::lock_guard<std::mutex> lock(PacketMutex);
 		for (int i = 1; i < 5; i++) {
@@ -32,11 +32,11 @@ void RandomUpgrade::GetRandomBuff() {
 	SendPlayerUpgradePacket(GLOBAL.myID, availableItems[index]);
 }
 
-// µğ¹öÇÁ ºÎ¿©
+// ë””ë²„í”„ ë¶€ì—¬
 void RandomUpgrade::GetRandomDebuff() {
 	std::vector<int> availableItems{};
 	int index{};
-	// ÇöÀç Àû¿ëµÇÁö ¾ÊÀº µğ¹öÇÁ¸¸ »Ì´Â´Ù.
+	// í˜„ì¬ ì ìš©ë˜ì§€ ì•Šì€ ë””ë²„í”„ë§Œ ë½‘ëŠ”ë‹¤.
 	{
 		std::lock_guard<std::mutex> lock(PacketMutex);
 		for (int i = 1; i < 5; i++) {
@@ -53,7 +53,7 @@ void RandomUpgrade::GetRandomDebuff() {
 }
 
 void RandomUpgrade::Update(float delta) {
-	// ¸¶Áö¸· ½ºÅ×ÀÌÁöÀÇ °æ¿ì ¹Ù·Î »èÁ¦
+	// ë§ˆì§€ë§‰ ìŠ¤í…Œì´ì§€ì˜ ê²½ìš° ë°”ë¡œ ì‚­ì œ
 	if (GLOBAL.stage == 3) {
 		scene.SwitchMode(ClearMode::Start);
 		return;
@@ -62,11 +62,11 @@ void RandomUpgrade::Update(float delta) {
 	delay += delta;
 
 	if (delay < 3.0) {
-		// ¾ÆÀÌÄÜÀ» À§·Î ÀÌµ¿ ¹× È¸Àü½ÃÅ°¸é¼­ º¸¿©ÁØ´Ù
+		// ì•„ì´ì½˜ì„ ìœ„ë¡œ ì´ë™ ë° íšŒì „ì‹œí‚¤ë©´ì„œ ë³´ì—¬ì¤€ë‹¤
 		cardSize = std::lerp(cardSize, 0.7, 5.0 * delta);
 		opacity = std::lerp(opacity, 1.0, 5.0 * delta);
 
-		// ·£´ı ¹öÇÁ / µğ¹öÇÁ ºÎ¿©´Â 1È¸¸¸ ÇÑ´Ù.
+		// ëœë¤ ë²„í”„ / ë””ë²„í”„ ë¶€ì—¬ëŠ” 1íšŒë§Œ í•œë‹¤.
 		if (!randomCreated) {
 			{
 				GetRandomBuff();
@@ -90,17 +90,17 @@ void RandomUpgrade::Update(float delta) {
 }
 
 void RandomUpgrade::Render() {
-	// ¹è°æ ·»´õ¸µ
+	// ë°°ê²½ ë Œë”ë§
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Scale2D(ScaleMatrix, ASPECT * 2.0, 2.0);
 	SetColor(0.0, 0.0, 0.0);
 	Render2D(TEX.ColorTex, 0.7 * opacity);
 
-	// ÅØ½ºÆ® ·»´õ¸µ
+	// í…ìŠ¤íŠ¸ ë Œë”ë§
 	text.SetOpacity(opacity);
 	text.Render({ 0.0, 1.0 - 0.2 }, cardSize - 0.5, "Buff And Debuff!");
 
-	// ¹öÇÁ ¾ÆÀÌÄÜ ·»´õ¸µ
+	// ë²„í”„ ì•„ì´ì½˜ ë Œë”ë§
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, -0.7, 0.0);
 	Transform::Scale2D(ScaleMatrix, cardSize, cardSize);
@@ -113,7 +113,7 @@ void RandomUpgrade::Render() {
 	else 
 		Render2D(TEX.UI_buff[buffResult], opacity);
 
-	// µğ¹öÇÁ ¾ÆÀÌÄÜ ·»´õ¸µ
+	// ë””ë²„í”„ ì•„ì´ì½˜ ë Œë”ë§
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, 0.7, 0.0);
 	Transform::Scale2D(ScaleMatrix, cardSize, cardSize);
@@ -174,7 +174,7 @@ void RandomUpgrade::Render() {
 //enum DebuffEnum {
 //	DEBUFF_NONE,
 //	RECOIL_INCREASE,
-//	DAMAGE_REDUCE, // (¼ö·ùÅº, ÅÍ·¿Àº ÇØ´ç X)
+//	DAMAGE_REDUCE, // (ìˆ˜ë¥˜íƒ„, í„°ë ›ì€ í•´ë‹¹ X)
 //	VISION_RANGE_REDUCE,
 //	WALK_ACC_REDUCE
 //};

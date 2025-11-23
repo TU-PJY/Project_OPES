@@ -18,19 +18,19 @@ void SpreadBullet::Update(float Delta) {
 	for (auto& ray : rays) {
 		RayTarget newTarget{};
 
-		// ¸Ê ¿ÀºêÁ§Æ®¿Í Ãæµ¹
+		// ë§µ ì˜¤ë¸Œì íŠ¸ì™€ ì¶©ëŒ
 		for (auto& o : GLOBAL.mapOOBBdata) {
 			if (o.oobb.Intersects(ray.first, ray.second, distance)) {
 				newTarget.Add(nullptr, distance);
 			}
 		}
 
-		// ÁöÇü°ú Ãæµ¹
+		// ì§€í˜•ê³¼ ì¶©ëŒ
 		xmfloat3 result = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, ray.first, ray.second, distance);
 		if (distance > 0.0)
 			newTarget.Add(nullptr, distance);
 
-		// ¸ó½ºÅÍ¿Í Ãæµ¹
+		// ëª¬ìŠ¤í„°ì™€ ì¶©ëŒ
 		for (int i = 0; i < size; i++) {
 			float distance;
 			if (auto monster = scene.ReferLayer(LAYER_MONSTER, i); monster) {
@@ -39,7 +39,7 @@ void SpreadBullet::Update(float Delta) {
 			}
 		}
 
-		// ¶³¾îÁö´Â ¹ÙÀ§¿Í Ãæµ¹
+		// ë–¨ì–´ì§€ëŠ” ë°”ìœ„ì™€ ì¶©ëŒ
 		size_t size2 = scene.LayerSize(LAYER_STONE);
 		for (int i = 0; i < size2; i++) {
 			if (auto stone = scene.ReferLayer(LAYER_STONE, i); stone) {
@@ -61,7 +61,7 @@ void SpreadBullet::Update(float Delta) {
 
 	for (auto& d : damageList) {
 		if (d.first) {
-			// DAMAGE_REDUCE È°¼ºÈ­ ½Ã Åº ÇÏ³ª ´ç ´ë¹ÌÁö 20% °¨¼Ò
+			// DAMAGE_REDUCE í™œì„±í™” ì‹œ íƒ„ í•˜ë‚˜ ë‹¹ ëŒ€ë¯¸ì§€ 20% ê°ì†Œ
 			float Result = d.second;
 			if (GLOBAL.deBuff[DAMAGE_REDUCE])
 				Result *= 0.8;

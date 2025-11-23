@@ -627,19 +627,19 @@ void FBXUtil::ClearVertexVector() {
 }
 
 void FBXUtil::PrecomputeBoneMatrices(FBXMesh& TargetMesh, const std::string& AnimationName, float fps) {
-	SelectAnimation(TargetMesh, AnimationName);              // ¾Ö´Ï¸ŞÀÌ¼Ç ½ºÅÃ ¼³Á¤
-	GetAnimationPlayTime(TargetMesh, AnimationName);         // StartTime, EndTime ¼³Á¤
+	SelectAnimation(TargetMesh, AnimationName);              // ì• ë‹ˆë©”ì´ì…˜ ìŠ¤íƒ ì„¤ì •
+	GetAnimationPlayTime(TargetMesh, AnimationName);         // StartTime, EndTime ì„¤ì •
 
 	float duration = TargetMesh.TotalTime;
 	int frameCount = static_cast<int>(duration * fps);
 
-	// °¢ Meshº°·Î boneFrame º¤ÅÍ ¹Ì¸® ÁØºñ
+	// ê° Meshë³„ë¡œ boneFrame ë²¡í„° ë¯¸ë¦¬ ì¤€ë¹„
 	for (auto m : TargetMesh.MeshPart) {
 		std::vector<BoneFrame> boneFrames;
 		boneFrames.resize(frameCount);
 
 		if (m->BoneIndices && m->BoneWeights) {
-			// ±âÁ¸ ½ºÅ² ¸Ş½Ã Ã³¸®
+			// ê¸°ì¡´ ìŠ¤í‚¨ ë©”ì‹œ ì²˜ë¦¬
 			std::vector<BoneFrame> boneFrames(frameCount);
 			for (int i = 0; i < frameCount; ++i) {
 				float time = TargetMesh.StartTime + (i / fps);
@@ -652,7 +652,7 @@ void FBXUtil::PrecomputeBoneMatrices(FBXMesh& TargetMesh, const std::string& Ani
 
 		else {
 			if (m->FbxNodePtr) {
-				// ½ºÅ²ÀÌ ¾ø´Â ¸Ş½Ã Ã³¸®
+				// ìŠ¤í‚¨ì´ ì—†ëŠ” ë©”ì‹œ ì²˜ë¦¬
 				std::vector<BoneFrame> boneFrames(frameCount);
 
 				for (int i = 0; i < frameCount; ++i) {
@@ -668,7 +668,7 @@ void FBXUtil::PrecomputeBoneMatrices(FBXMesh& TargetMesh, const std::string& Ani
 						(float)Transform[3][0], (float)Transform[3][1], (float)Transform[3][2], (float)Transform[3][3]
 					);
 
-					std::vector<XMMATRIX> DummyBoneFrame(1, M);  // ÇÏ³ªÀÇ Çà·Ä¸¸ °®´Â BoneFrame
+					std::vector<XMMATRIX> DummyBoneFrame(1, M);  // í•˜ë‚˜ì˜ í–‰ë ¬ë§Œ ê°–ëŠ” BoneFrame
 
 					boneFrames[i] = std::move(DummyBoneFrame);
 				}
@@ -682,7 +682,7 @@ void FBXUtil::PrecomputeBoneMatrices(FBXMesh& TargetMesh, const std::string& Ani
 void FBXUtil::CreateAnimationStacksFromJSON(std::string jsonFile, FBXMesh& TargetMesh) {
 	std::ifstream File(jsonFile, std::ios::binary);
 	if (!File) {
-		std::cerr << "ÆÄÀÏÀ» ¿­ ¼ö ¾ø½À´Ï´Ù." << std::endl;
+		std::cerr << "íŒŒì¼ì„ ì—´ ìˆ˜ ì—†ìŠµë‹ˆë‹¤." << std::endl;
 		return;
 	}
 	nlohmann::json JSON;

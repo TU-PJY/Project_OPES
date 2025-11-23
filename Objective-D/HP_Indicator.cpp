@@ -5,17 +5,17 @@ HP_Indicator::HP_Indicator() {
 	Math::InitVector(vec);
 }
 
-// ·»´õ¸® Å©±â¸¦ ÁöÁ¤ÇÑ´Ù.
+// ë Œë”ë¦¬ í¬ê¸°ë¥¼ ì§€ì •í•œë‹¤.
 void HP_Indicator::SetSize(float Value) {
 	renderSize = Value;
 }
 
-// Ã¼·Â ¹Ù¿¡ À§Ä¡¸¦ Àü´ŞÇÑ´Ù. 
+// ì²´ë ¥ ë°”ì— ìœ„ì¹˜ë¥¼ ì „ë‹¬í•œë‹¤. 
 void HP_Indicator::InputPosition(XMFLOAT3& inputPos, float heightOffset) {
 	position = XMFLOAT3(inputPos.x, inputPos.y + heightOffset, inputPos.z);
 }
 
-// ÀÚ½ÅÀÇ ÀüÃ¼ Ã¼·Â°ú ÇöÀç ³²Àº Ã¼·ÂÀ» Àü´ŞÇÑ´Ù.
+// ìì‹ ì˜ ì „ì²´ ì²´ë ¥ê³¼ í˜„ì¬ ë‚¨ì€ ì²´ë ¥ì„ ì „ë‹¬í•œë‹¤.
 void HP_Indicator::InputHP(int fullHP, int currentHP){
 	full_hp = fullHP;
 	current_hp = currentHP;

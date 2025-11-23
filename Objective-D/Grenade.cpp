@@ -1,4 +1,4 @@
-﻿#include "Grenade.h"
+#include "Grenade.h"
 #include "MathUtil.h"
 #include "Explosion.h"
 #include "CameraUtil.h"

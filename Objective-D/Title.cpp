@@ -17,7 +17,7 @@ bool GetClipboardTextW(std::wstring& out) {
 	const wchar_t* pText = static_cast<const wchar_t*>(GlobalLock(hData));
 	if (!pText) { CloseClipboard(); return false; }
 
-	out = pText; // º¹»ç
+	out = pText; // ë³µì‚¬
 	GlobalUnlock(hData);
 	CloseClipboard();
 
@@ -28,7 +28,7 @@ std::string WStringToString(const std::wstring& wstr) {
 	if (wstr.empty()) return {};
 
 	int sizeNeeded = WideCharToMultiByte(
-		CP_UTF8,            // UTF-8 ÄÚµåÆäÀÌÁö
+		CP_UTF8,            // UTF-8 ì½”ë“œí˜ì´ì§€
 		0,
 		wstr.c_str(),
 		(int)wstr.size(),

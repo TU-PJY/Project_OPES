@@ -20,7 +20,7 @@ Treant::Treant(const xmfloat3& createPosition, unsigned int ID, bool defenseMode
 	hpInd = scene.AddObject(new HP_Indicator, "hpIndicator", LAYER3);
 	if (hpInd) hpInd->SetSize(1.5);
 
-	// µğÆæ½º ¸ğµå ÁöÁ¤ ½Ã ¶¥¿¡¼­ ³ª¿È
+	// ë””íœìŠ¤ ëª¨ë“œ ì§€ì • ì‹œ ë•…ì—ì„œ ë‚˜ì˜´
 	if (this->defenseMoveState) {
 		currentState = TREANT_IDLE;
 		heightOffset = -10.0;
@@ -97,11 +97,11 @@ void Treant::detectPlayer(float Delta) {
 		}
 	}
 
-	// µğÆæ½º¿ë ½ºÆù ½Ã °¨Áö ¾È ÇÔ
+	// ë””íœìŠ¤ìš© ìŠ¤í° ì‹œ ê°ì§€ ì•ˆ í•¨
 	if (defenseMoveState)
 		return;
 
-	// ÀÏÁ¤ °£°İ¸¶´Ù Àü¼Û È°¼ºÈ­
+	// ì¼ì • ê°„ê²©ë§ˆë‹¤ ì „ì†¡ í™œì„±í™”
 	sendState = false;
 	sendDelay += Delta;
 	if (sendDelay >= destDelay) {
@@ -111,7 +111,7 @@ void Treant::detectPlayer(float Delta) {
 
 	size_t size = scene.LayerSize(LAYER_PLAYER);
 
-	// ÇöÀç ¾Æ¹«µµ Ãß°İ ¾È ÇÏ°Å³ª ³ª¸¦ Ãß°İ ÁßÀÌ¸é ³ª¸¦ ÃßÀûÇÏµµ·Ï ÇÑ´Ù.
+	// í˜„ì¬ ì•„ë¬´ë„ ì¶”ê²© ì•ˆ í•˜ê±°ë‚˜ ë‚˜ë¥¼ ì¶”ê²© ì¤‘ì´ë©´ ë‚˜ë¥¼ ì¶”ì í•˜ë„ë¡ í•œë‹¤.
 	if (currentTargetID == GLOBAL.myID || currentTargetID == 0) {
 		if (auto player = scene.SearchLayer(LAYER_PLAYER, "player"); player) {
 			auto playerOOBB = player->GetOOBB();
@@ -137,7 +137,7 @@ void Treant::detectPlayer(float Delta) {
 				if (!isBlocked) {
 					rotationDest = Math::CalcDegree3D(position, playerPosition);
 
-					// °ø°İ ¹üÀ§¿¡ ÇÃ·¹ÀÌ¾î ¹Ù¿îµå°¡ ´êÀ¸¸é °ø°İ »óÅÂ È°¼ºÈ­
+					// ê³µê²© ë²”ìœ„ì— í”Œë ˆì´ì–´ ë°”ìš´ë“œê°€ ë‹¿ìœ¼ë©´ ê³µê²© ìƒíƒœ í™œì„±í™”
 					if (attackBound.CheckCollision(playerOOBB)) {
 						currentState = TREANT_ATTACK;
 						currentTargetID = GLOBAL.myID;
@@ -148,7 +148,7 @@ void Treant::detectPlayer(float Delta) {
 						}
 					}
 
-					// ¾Æ´Ï¶ó¸é Ãß°İ »óÅÂ·Î ÀüÈ¯
+					// ì•„ë‹ˆë¼ë©´ ì¶”ê²© ìƒíƒœë¡œ ì „í™˜
 					else {
 						Math::Normalize2DAngleTo360(rotationDest.y);
 						currentState = TREANT_MOVE;
@@ -186,7 +186,7 @@ void Treant::updateMove(float Delta) {
 
 	rotation.y = Math::LerpDegrees(rotation.y, rotationDest.y, 15.0 * Delta);
 
-	// ³ª¸¦ Ãß°İÇÏ´Â »óÅÂÀÏ¶§¸¸ MoveWithSlide¸¦ ½ÇÇàÇÑ´Ù.
+	// ë‚˜ë¥¼ ì¶”ê²©í•˜ëŠ” ìƒíƒœì¼ë•Œë§Œ MoveWithSlideë¥¼ ì‹¤í–‰í•œë‹¤.
 	if (!defenseMoveState) {
 		if (currentState == TREANT_MOVE && currentTargetID == GLOBAL.myID)
 			Math::MoveWithSlide(positionDest, rotation.y, 5.0, 0.0, treantBound, GLOBAL.mapOOBBdata, Delta);

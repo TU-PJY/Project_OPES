@@ -12,7 +12,7 @@
 
 FBXUtil fbxUtil;
 
-// ResourList¿¡¼­ ÇØ´ç ÇÔ¼ö¸¦ »ç¿ëÇÏ¿© ¸Å½¬¸¦ ·ÎµåÇÏµµ·Ï ÇÑ´Ù
+// ResourListì—ì„œ í•´ë‹¹ í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•˜ì—¬ ë§¤ì‰¬ë¥¼ ë¡œë“œí•˜ë„ë¡ í•œë‹¤
 Mesh::Mesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, char* Directory, int Type) {
 	if (Directory) {
 		if (Type == MESH_TYPE_TEXT)
@@ -112,13 +112,13 @@ int Mesh::CheckRayIntersection(XMVECTOR& xmvPickRayOrigin, XMVECTOR& xmvPickRayD
 	return(nIntersections);
 }
 
-// ³ôÀÌ Ä³½Ã¸¦ ºñ¿î´Ù.
+// ë†’ì´ ìºì‹œë¥¼ ë¹„ìš´ë‹¤.
 void Mesh::ClearHeightCache() {
 	HeightCache.clear();
 	HeightCacheSaved = false;
 }
 
-// ³ôÀÌ Ä³½Ã¿¡ ³ôÀÌ °ªÀ» ÀúÀåÇÑ´Ù.
+// ë†’ì´ ìºì‹œì— ë†’ì´ ê°’ì„ ì €ì¥í•œë‹¤.
 void Mesh::SetHeightCache(Mesh* terrainMesh, const XMFLOAT4X4& worldMatrix) {
 	if (!HeightCacheSaved) {
 		XMMATRIX gmtxWorld = XMLoadFloat4x4(&worldMatrix);
@@ -145,7 +145,7 @@ void Mesh::SetHeightCache(Mesh* terrainMesh, const XMFLOAT4X4& worldMatrix) {
 
 			XMVECTOR normal = XMVector3Cross(ab, ac);
 			if (XMVectorGetY(normal) < 0.0f) {
-				std::swap(v1, v2); // ¹ı¼± ¹æÇâ ¹İÀü
+				std::swap(v1, v2); // ë²•ì„  ë°©í–¥ ë°˜ì „
 			}
 		}
 
@@ -161,7 +161,7 @@ XMFLOAT3 Mesh::GetNormalAtPosition(float x, float z) {
 
 	std::vector<size_t> indices;
 	for (size_t i = 0; i < size; i += 3)
-		indices.push_back(i); // º´·Ä Å½»ö¿ë ÀÎµ¦½º ¸®½ºÆ®
+		indices.push_back(i); // ë³‘ë ¬ íƒìƒ‰ìš© ì¸ë±ìŠ¤ ë¦¬ìŠ¤íŠ¸
 
 	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t i) {
 		if (found.load(std::memory_order_relaxed)) return;
@@ -188,7 +188,7 @@ XMFLOAT3 Mesh::GetNormalAtPosition(float x, float z) {
 		}
 	});
 
-	return result.value_or(XMFLOAT3(0.0f, 1.0f, 0.0f)); // ±âº»°ª: ÆòÁö ³ë¸Ö
+	return result.value_or(XMFLOAT3(0.0f, 1.0f, 0.0f)); // ê¸°ë³¸ê°’: í‰ì§€ ë…¸ë©€
 }
 
 XMFLOAT3 Mesh::GetAngleAtPosition(float x, float z) {
@@ -215,10 +215,10 @@ XMFLOAT3 Mesh::GetAngleAtPosition(float x, float z) {
 			XMVECTOR ab = b - a;
 			XMVECTOR ac = c - a;
 
-			//  ±³Â÷ ¼ø¼­ ¹İÀü or º¸Á¤
+			//  êµì°¨ ìˆœì„œ ë°˜ì „ or ë³´ì •
 			XMVECTOR normal = XMVector3Normalize(XMVector3Cross(ac, ab));
 
-			// º¸Á¤: y°¡ À½¼öÀÌ¸é µÚÁıÈû
+			// ë³´ì •: yê°€ ìŒìˆ˜ì´ë©´ ë’¤ì§‘í˜
 			if (XMVectorGetY(normal) < 0.0f)
 				normal *= -1.0f;
 
@@ -234,7 +234,7 @@ XMFLOAT3 Mesh::GetAngleAtPosition(float x, float z) {
 }
 
 
-// ÇöÀç ÁöÁ¡ÀÇ ³ôÀÌ¸¦ ±¸ÇÑ´Ù.
+// í˜„ì¬ ì§€ì ì˜ ë†’ì´ë¥¼ êµ¬í•œë‹¤.
 float Mesh::GetHeightAtPosition(float x, float z) {
 	size_t size = HeightCache.size();
 
@@ -243,7 +243,7 @@ float Mesh::GetHeightAtPosition(float x, float z) {
 
 	std::vector<size_t> indices;
 	for (size_t i = 0; i < size; i += 3)
-		indices.push_back(i); // º´·Ä loop¸¦ À§ÇÑ index ¸®½ºÆ®
+		indices.push_back(i); // ë³‘ë ¬ loopë¥¼ ìœ„í•œ index ë¦¬ìŠ¤íŠ¸
 
 	std::for_each(std::execution::par, indices.begin(), indices.end(), [&](size_t i) {
 		if (found.load(std::memory_order_relaxed)) return;
@@ -323,7 +323,7 @@ bool Mesh::PickTerrainFromRay(
 }
 
 bool Mesh::PickTerrainFromCamera(const XMFLOAT4X4& cameraViewMatrix, XMFLOAT3& outHit, float& Distance) {
-	// 1) Ray ¿øÁ¡/¹æÇâ °è»ê
+	// 1) Ray ì›ì /ë°©í–¥ ê³„ì‚°
 	XMMATRIX view = XMLoadFloat4x4(&cameraViewMatrix);
 	XMMATRIX invView = XMMatrixInverse(nullptr, view);
 	XMVECTOR orig = invView.r[3];
@@ -333,7 +333,7 @@ bool Mesh::PickTerrainFromCamera(const XMFLOAT4X4& cameraViewMatrix, XMFLOAT3& o
 		)
 	);
 
-	// 2) ¸ğµç »ï°¢Çü °Ë»ç
+	// 2) ëª¨ë“  ì‚¼ê°í˜• ê²€ì‚¬
 	float bestT = FLT_MAX;
 	XMVECTOR bestPoint = XMVectorZero();
 	size_t triCount = HeightCache.size() / 3;
@@ -368,7 +368,7 @@ bool Mesh::PickTerrainFromCamera(const XMFLOAT4X4& cameraViewMatrix, XMFLOAT3& o
 bool Mesh::RayIntersectsTriangle(
 	XMVECTOR orig, XMVECTOR dir,
 	XMVECTOR v0, XMVECTOR v1, XMVECTOR v2,
-	float& outT    // ±³Â÷ ÁöÁ¡±îÁö °Å¸® t
+	float& outT    // êµì°¨ ì§€ì ê¹Œì§€ ê±°ë¦¬ t
 ) {
 	const float EPSILON = 1e-6f;
 	XMVECTOR edge1 = v1 - v0;
@@ -377,7 +377,7 @@ bool Mesh::RayIntersectsTriangle(
 	XMVECTOR pvec = XMVector3Cross(dir, edge2);
 	float det = XMVectorGetX(XMVector3Dot(edge1, pvec));
 	if (fabs(det) < EPSILON)
-		return false;              // ÆòÇàÇÏ°Å³ª °ÅÀÇ ÆòÇà
+		return false;              // í‰í–‰í•˜ê±°ë‚˜ ê±°ì˜ í‰í–‰
 
 	float invDet = 1.0f / det;
 	XMVECTOR tvec = orig - v0;
@@ -392,7 +392,7 @@ bool Mesh::RayIntersectsTriangle(
 
 	float tVal = XMVectorGetX(XMVector3Dot(edge2, qvec)) * invDet;
 	if (tVal < EPSILON)
-		return false;              // µÚÂÊ ±³Â÷ ¶Ç´Â ³Ê¹« °¡±î¿ò
+		return false;              // ë’¤ìª½ êµì°¨ ë˜ëŠ” ë„ˆë¬´ ê°€ê¹Œì›€
 
 	outT = tVal;
 	return true;

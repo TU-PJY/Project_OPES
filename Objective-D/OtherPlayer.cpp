@@ -4,7 +4,7 @@
 #include "ScriptUtil.h"
 #include "PlayerTag.h"
 
-// Ä³¸¯ÅÍ Å¸ÀÔ¿¡ µû¶ó ´Ù¸¥ fbx¸¦ ÃÊ±âÈ­ ÇÑ´Ù.
+// ìºë¦­í„° íƒ€ì…ì— ë”°ë¼ ë‹¤ë¥¸ fbxë¥¼ ì´ˆê¸°í™” í•œë‹¤.
 OtherPlayer::OtherPlayer(int characterType, unsigned int ID, const std::string name) {
 	this->characterType = characterType;
 	ScriptUtil script{};
@@ -29,7 +29,7 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID, const std::string n
 		flameMovez = script.LoadDigitData("heavyMove", "z");
 		break;
 
-		// ¼ÒÀ½±â°¡ ÀåÂøµÈ ÃÑÀÌ¹Ç·Î ºÒ²ÉÀ» ·»´õ¸µÇÏÁö ¾Ê´Â´Ù.
+		// ì†ŒìŒê¸°ê°€ ì¥ì°©ëœ ì´ì´ë¯€ë¡œ ë¶ˆê½ƒì„ ë Œë”ë§í•˜ì§€ ì•ŠëŠ”ë‹¤.
 	case CHARACTER_DMR:
 		idleFBX.SelectFBXMesh(MESH.marksman[0]);
 		moveFBX.SelectFBXMesh(MESH.marksman[1]);
@@ -141,7 +141,7 @@ void OtherPlayer::updateDeath() {
 	if (currentState != STATE_DEATH)
 		return;
 
-	// »ç¸Á ½Ã »ç¸Á ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ³¡³­ ÈÄ »èÁ¦µÈ´Ù.
+	// ì‚¬ë§ ì‹œ ì‚¬ë§ ì• ë‹ˆë©”ì´ì…˜ì´ ëë‚œ í›„ ì‚­ì œëœë‹¤.
 	if (deathFBX.GetAnimationEndState())
 		scene.DeleteObject(this);
 }
@@ -265,7 +265,7 @@ OOBB OtherPlayer::GetOOBB() {
 	return playerBound;
 }
 
-// ¾Æ¹« ¿ªÇÒ ¾ÈÇÏ´Â ´õ¹Ì ÇÔ¼ö
+// ì•„ë¬´ ì—­í•  ì•ˆí•˜ëŠ” ë”ë¯¸ í•¨ìˆ˜
 void OtherPlayer::GiveDamage(int damage)
 {}
 

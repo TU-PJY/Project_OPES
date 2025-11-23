@@ -13,16 +13,16 @@ typedef ID3D12GraphicsCommandList* (CommandList);
 
 class GameObject {
 public:
-	// ¿ÀºêÁ§Æ® ÇÇÅ· µÉ °æ¿ì »ç¿ëµÉ Çà·Ä
+	// ì˜¤ë¸Œì íŠ¸ í”¼í‚¹ ë  ê²½ìš° ì‚¬ìš©ë  í–‰ë ¬
 	XMMATRIX PickMatrix{};
 
-	// ¸Å½¬ »ö»ó
+	// ë§¤ì‰¬ ìƒ‰ìƒ
 	XMFLOAT3 ObjectColor{};
 
-	// ÅØ½ºÃ³ Åõ¸íµµ
+	// í…ìŠ¤ì²˜ íˆ¬ëª…ë„
 	float ObjectAlpha{ 1.0f };
 
-	// ·»´õ¸µ Å¸ÀÔ, ÇØ´ç ·»´õ¸µ Å¸ÀÔ¿¡ µû¶ó ·»´õ¸µ Çü½ÄÀÌ ´Ş¶óÁø´Ù.
+	// ë Œë”ë§ íƒ€ì…, í•´ë‹¹ ë Œë”ë§ íƒ€ì…ì— ë”°ë¼ ë Œë”ë§ í˜•ì‹ì´ ë‹¬ë¼ì§„ë‹¤.
 	int RenderType{ RENDER_TYPE_3D };
 
 	int ObjectLayer{};
@@ -56,7 +56,7 @@ public:
 
 	////////// virtual functions
 public:
-	// ¾Æ·¡ ÇÔ¼öµéÀº ¸ğµç °´Ã¼¿¡¼­ Ä¿½ºÅÒ °¡´ÉÇÑ ¹öÃß¾ó ÇÔ¼öµéÀÌ´Ù. ÇÊ¿äÇÏ´Ù¸é »õ·Î¿î ¹öÃß¾ó ÇÔ¼ö¸¦ ÀÛ¼ºÇÏ¿© »ç¿ëÇÒ ¼ö ÀÖ´Ù.
+	// ì•„ë˜ í•¨ìˆ˜ë“¤ì€ ëª¨ë“  ê°ì²´ì—ì„œ ì»¤ìŠ¤í…€ ê°€ëŠ¥í•œ ë²„ì¶”ì–¼ í•¨ìˆ˜ë“¤ì´ë‹¤. í•„ìš”í•˜ë‹¤ë©´ ìƒˆë¡œìš´ ë²„ì¶”ì–¼ í•¨ìˆ˜ë¥¼ ì‘ì„±í•˜ì—¬ ì‚¬ìš©í•  ìˆ˜ ìˆë‹¤.
 	virtual ~GameObject() {}
 	virtual void ReleaseShaderVariables() {}
 	virtual void InputKey(KeyEvent& Event) {}
@@ -84,11 +84,11 @@ public:
 	virtual void InputTime(int time) {}
 	virtual void SetBuffDebuff(unsigned int ID) {}
 
-	// »ç¿ëÀÚ Á¤ÀÇ ¸®ÅÏ ÇÔ¼ö´Â ¾Æ·¡¿¡ Á¤ÀÇÇÑ´Ù.
-	// Å©·Î½ºÇì¾î ¹İµ¿ ºÎ¿© ÇÔ¼ö
+	// ì‚¬ìš©ì ì •ì˜ ë¦¬í„´ í•¨ìˆ˜ëŠ” ì•„ë˜ì— ì •ì˜í•œë‹¤.
+	// í¬ë¡œìŠ¤í—¤ì–´ ë°˜ë™ ë¶€ì—¬ í•¨ìˆ˜
 	virtual void InputRecoil(float Value) {}
 
-	// ÃÑ±â ÇÔ¼ö
+	// ì´ê¸° í•¨ìˆ˜
 	virtual void enableZoom() {}
 	virtual void disableZoom() {}
 	virtual void inputRotation(const XMFLOAT3& rotation) {}
@@ -103,15 +103,15 @@ public:
 	virtual void GiveKnockback(float rotation, float power) {}
 	virtual void addFlameTime() {}
 
-	// Å©·Î½ºÇì¾î ·»´õ¸µ È°¼ºÈ­/ºñÈ°¼ºÈ­
+	// í¬ë¡œìŠ¤í—¤ì–´ ë Œë”ë§ í™œì„±í™”/ë¹„í™œì„±í™”
 	virtual void EnableRender() {}
 	virtual void DisableRender() {}
 	virtual void EnableRender(float totalTime) {}
 
-	// ¸Ê º® oobb ¾ò´Â ÇÔ¼ö
+	// ë§µ ë²½ oobb ì–»ëŠ” í•¨ìˆ˜
 	virtual std::vector<OOBB> GetMapWallOOBB() { return{}; }
 
-	// ¸ó½ºÅÍ ÇÔ¼ö
+	// ëª¬ìŠ¤í„° í•¨ìˆ˜
 	virtual bool CheckHit(BoundSphere& Sphere, int damage) { return{}; }
 	virtual bool CheckHit(XMVECTOR& start, XMVECTOR& direction, int damage) { return{}; }
 	virtual bool CheckHit(float& distance) { return {}; }
@@ -127,7 +127,7 @@ public:
 	virtual void GiveHeal(int healHP) {}
 	virtual bool CheckHit(XMVECTOR& start, XMVECTOR& direction, float& distance) { return {}; }
 
-	// ÀÎµğÄÉÀÌÅÍ ÇÔ¼ö
+	// ì¸ë””ì¼€ì´í„° í•¨ìˆ˜
 	virtual void SetRenderState(bool Flag) {}
 	virtual void InputPosition(XMFLOAT3& inputPos, float heightOffset) {}
 	virtual void InputHP(int fullHP, int currentHP) {}
@@ -144,9 +144,14 @@ public:
 	virtual void ScrollLeft() {}
 	virtual void SetItem(int num) {}
 
-	// ¼­¹ö Å×½ºÆ®
+	// ì„œë²„ í…ŒìŠ¤íŠ¸
 	virtual void InputPosition(XMFLOAT3& value) {}
 	virtual void InputRotation(XMFLOAT3& value) {}
 	virtual void InputRotation(float degrees) {}
 	virtual void InputState(unsigned int state) {}
+
+	// í™•ì¥ ëª¨ë“œ ê¸°ëŠ¥
+	virtual void SetCameraStartPosition(const XMFLOAT3& position) {}
+	virtual void SetCameraFovRange(float start, float end) {}
+	virtual void InputCenterPointPosition(const XMFLOAT3& position) {}
 };

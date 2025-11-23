@@ -6,30 +6,30 @@
 
 #include "ModePack.h"
 
-// ÀÌ ÇÁ·ÎÁ§Æ®ÀÇ ÇÙ½É À¯Æ¿ÀÌ´Ù. ÇÁ·Î±×·¥ÀÇ ¸ðµç °´Ã¼ÀÇ ¾÷µ¥ÀÌÆ® ¹× ·»´õ¸µÀº ¸ðµÎ ÀÌ ÇÁ·¹ÀÓ¿öÅ©¸¦ °ÅÄ£´Ù.
+// ì´ í”„ë¡œì íŠ¸ì˜ í•µì‹¬ ìœ í‹¸ì´ë‹¤. í”„ë¡œê·¸ëž¨ì˜ ëª¨ë“  ê°ì²´ì˜ ì—…ë°ì´íŠ¸ ë° ë Œë”ë§ì€ ëª¨ë‘ ì´ í”„ë ˆìž„ì›Œí¬ë¥¼ ê±°ì¹œë‹¤.
 
-// ÇÁ·¹ÀÓ¿öÅ©¸¦ ÃÊ±âÈ­ ÇÑ´Ù. ½ÇÇà ½Ã ´Ü ÇÑ ¹ø¸¸ ½ÇÇàµÇ´Â ÇÔ¼ö·Î, ´õ¹Ì °´Ã¼¸¦ Ãß°¡ÇÑ ÈÄ ¸ðµå¸¦ ½ÃÀÛÇÑ´Ù.
+// í”„ë ˆìž„ì›Œí¬ë¥¼ ì´ˆê¸°í™” í•œë‹¤. ì‹¤í–‰ ì‹œ ë‹¨ í•œ ë²ˆë§Œ ì‹¤í–‰ë˜ëŠ” í•¨ìˆ˜ë¡œ, ë”ë¯¸ ê°ì²´ë¥¼ ì¶”ê°€í•œ í›„ ëª¨ë“œë¥¼ ì‹œìž‘í•œë‹¤.
 void Scene::Init(Function ModeFunction) {
-	// ½ÃÀÛ ¸ðµå ÇÔ¼ö ½ÇÇà
+	// ì‹œìž‘ ëª¨ë“œ í•¨ìˆ˜ ì‹¤í–‰
 	ModeFunction();
 
-	// »èÁ¦ À§Ä¡ ¹öÆÛ ÇÒ´ç
+	// ì‚­ì œ ìœ„ì¹˜ ë²„í¼ í• ë‹¹
 	for (int i = 0; i < Layers; ++i)
 		DeleteLocation[i].reserve(DELETE_LOCATION_BUFFER_SIZE);
 }
 
-// ÇöÀç ½ÇÇà ÁßÀÎ ¸ðµå ÀÌ¸§À» ¸®ÅÏÇÑ´Ù
+// í˜„ìž¬ ì‹¤í–‰ ì¤‘ì¸ ëª¨ë“œ ì´ë¦„ì„ ë¦¬í„´í•œë‹¤
 std::string Scene::GetMode() {
 	return RunningMode;
 }
 
-// ¸ðµå ¼Ò¸êÀÚ Æ÷ÀÎÅÍ¸¦ ²÷´Â´Ù.
+// ëª¨ë“œ ì†Œë©¸ìž í¬ì¸í„°ë¥¼ ëŠëŠ”ë‹¤.
 void Scene::ReleaseDestructor() {
 	DestructorBuffer = nullptr;
 }
 
-// ÇöÀç Á¸ÀçÇÏ´Â ¸ðµç °´Ã¼µéÀ» ¾÷µ¥ÀÌÆ®ÇÏ°í ·»´õ¸µÇÑ´Ù.
-// »èÁ¦ ¿¹¾àÀÌ È°¼ºÈ­µÈ °´Ã¼µéÀº »èÁ¦ Ä¿¸Çµå È°¼ºÈ­ ÈÄ ÇÁ·¹ÀÓÀÌ ³¡³­ ÈÄ ÀÏ°ý »èÁ¦µÈ´Ù.
+// í˜„ìž¬ ì¡´ìž¬í•˜ëŠ” ëª¨ë“  ê°ì²´ë“¤ì„ ì—…ë°ì´íŠ¸í•˜ê³  ë Œë”ë§í•œë‹¤.
+// ì‚­ì œ ì˜ˆì•½ì´ í™œì„±í™”ëœ ê°ì²´ë“¤ì€ ì‚­ì œ ì»¤ë§¨ë“œ í™œì„±í™” í›„ í”„ë ˆìž„ì´ ëë‚œ í›„ ì¼ê´„ ì‚­ì œëœë‹¤.
 void Scene::Update(float Delta, ID3D12GraphicsCommandList* CmdList) {
 	GlobalCommandList = CmdList;
 	for (int L = 0; L < Layers; L++) {
@@ -37,8 +37,8 @@ void Scene::Update(float Delta, ID3D12GraphicsCommandList* CmdList) {
 			if (!O->DeleteCommand) 
 				O->Update(Delta);
 			
-			// ¸ðµå ÀüÈ¯ ÀÌº¥Æ®°¡ ¹ß»ýÇÒ °æ¿ì °ð¹Ù·Î ·çÇÁ¸¦ °Ç³Ê¶Ú´Ù
-			// ¿ÀºêÁ§Æ® »èÁ¦ À§Ä¡ÀÇ ¹«°á¼ºÀ» ¸ðÀåÇÏ±â À§ÇÔ
+			// ëª¨ë“œ ì „í™˜ ì´ë²¤íŠ¸ê°€ ë°œìƒí•  ê²½ìš° ê³§ë°”ë¡œ ë£¨í”„ë¥¼ ê±´ë„ˆë›´ë‹¤
+			// ì˜¤ë¸Œì íŠ¸ ì‚­ì œ ìœ„ì¹˜ì˜ ë¬´ê²°ì„±ì„ ëª¨ìž¥í•˜ê¸° ìœ„í•¨
 			if (LoopEscapeCommand) {
 				LoopEscapeCommand = false;
 				CurrentReferPosition = 0;
@@ -63,7 +63,7 @@ void Scene::Render() {
 	}
 }
 
-// ¸ðµå¸¦ º¯°æÇÑ´Ù. ¸ðµå º¯°æ ½Ã ±âÁ¸ scene¿¡ ÀÖ´ø °´Ã¼µéÀº ¸ðµÎ »èÁ¦µÈ´Ù.
+// ëª¨ë“œë¥¼ ë³€ê²½í•œë‹¤. ëª¨ë“œ ë³€ê²½ ì‹œ ê¸°ì¡´ sceneì— ìžˆë˜ ê°ì²´ë“¤ì€ ëª¨ë‘ ì‚­ì œëœë‹¤.
 void Scene::SwitchMode(Function ModeFunction) {
 	ClearAll();
 	if (DestructorBuffer)
@@ -71,7 +71,7 @@ void Scene::SwitchMode(Function ModeFunction) {
 	ModeFunction();
 }
 
-// ¸ðµå±¸µ¿¿¡ ÇÊ¿äÇÑ µ¥ÀÌÅÍµéÀ» Scene¿¡ µî·ÏÇÑ´Ù.
+// ëª¨ë“œêµ¬ë™ì— í•„ìš”í•œ ë°ì´í„°ë“¤ì„ Sceneì— ë“±ë¡í•œë‹¤.
 void Scene::SetupMode(std::string ModeName, Function Destructor, std::deque<GameObject*>& ControlObjectList) {
 	RunningMode = ModeName;
 	DestructorBuffer = Destructor;
@@ -85,8 +85,8 @@ void Scene::RegisterControlObjectList(std::deque<GameObject*>& ControlObjectList
 	ControlObjectListPtr = &ControlObjectList;
 }
 
-// °´Ã¼¸¦ Ãß°¡ÇÑ´Ù. ¿øÇÏ´Â °´Ã¼¿Í ÅÂ±×, ·¹ÀÌ¾î¸¦ ¼³Á¤ÇÒ ¼ö ÀÖ´Ù.
-// ÀÌ ÇÔ¼ö¿¡¼­ ÀÔ·ÂÇÑ ÅÂ±×´Â Find()ÇÔ¼ö¿¡¼­ »ç¿ëµÈ´Ù.
+// ê°ì²´ë¥¼ ì¶”ê°€í•œë‹¤. ì›í•˜ëŠ” ê°ì²´ì™€ íƒœê·¸, ë ˆì´ì–´ë¥¼ ì„¤ì •í•  ìˆ˜ ìžˆë‹¤.
+// ì´ í•¨ìˆ˜ì—ì„œ ìž…ë ¥í•œ íƒœê·¸ëŠ” Find()í•¨ìˆ˜ì—ì„œ ì‚¬ìš©ëœë‹¤.
 GameObject* Scene::AddObject(GameObject* Object, std::string Tag, int InputLayer, bool UseController) {
 	ObjectList[InputLayer].push_back(Object);
 	Object->ObjectTag = Tag;
@@ -109,14 +109,14 @@ GameObject* Scene::ReferLayer(int LayerNum, int Index) {
 	return ObjectList[LayerNum][Index];
 }
 
-// Æ÷ÀÎÅÍ¸¦ »ç¿ëÇÏ¿© °´Ã¼¸¦ »èÁ¦ÇÑ´Ù. °´Ã¼¿¡ »èÁ¦ ¸¶Å©¸¦ Ç¥½ÃÇÑ´Ù.
-// ÀÌ ÄÚµå°¡ ½ÇÇàµÇ´Â ½ÃÁ¡¿¡ Áï½Ã »èÁ¦µÇÁö ¾ÊÀ½¿¡ À¯ÀÇÇÑ´Ù.
-// »èÁ¦ ¸¶Å©°¡ Ç¥½ÃµÈ °´Ã¼´Â UpdateObjectIndex()¿¡¼­ ÃÖÁ¾ÀûÀ¸·Î »èÁ¦µÈ´Ù.
-// Å¬·¡½º ³»ºÎ¿¡¼­ this Æ÷ÀÎÅÍ·Îµµ ÀÚ½ÅÀ» »èÁ¦ÇÒ ¼ö ÀÖ´Ù.
+// í¬ì¸í„°ë¥¼ ì‚¬ìš©í•˜ì—¬ ê°ì²´ë¥¼ ì‚­ì œí•œë‹¤. ê°ì²´ì— ì‚­ì œ ë§ˆí¬ë¥¼ í‘œì‹œí•œë‹¤.
+// ì´ ì½”ë“œê°€ ì‹¤í–‰ë˜ëŠ” ì‹œì ì— ì¦‰ì‹œ ì‚­ì œë˜ì§€ ì•ŠìŒì— ìœ ì˜í•œë‹¤.
+// ì‚­ì œ ë§ˆí¬ê°€ í‘œì‹œëœ ê°ì²´ëŠ” UpdateObjectIndex()ì—ì„œ ìµœì¢…ì ìœ¼ë¡œ ì‚­ì œëœë‹¤.
+// í´ëž˜ìŠ¤ ë‚´ë¶€ì—ì„œ this í¬ì¸í„°ë¡œë„ ìžì‹ ì„ ì‚­ì œí•  ìˆ˜ ìžˆë‹¤.
 void Scene::DeleteObject(GameObject* Object) {
 	Object->DeleteCommand = true;
 
-	// ÄÁÆ®·Ñ·¯¸¦ °¡Áö°í ÀÖÀ» °æ¿ì ÄÁÆ®·Ñ·¯ ¸ñ·Ï¿¡¼­ Á¦°ÅÇÑ´Ù.
+	// ì»¨íŠ¸ë¡¤ëŸ¬ë¥¼ ê°€ì§€ê³  ìžˆì„ ê²½ìš° ì»¨íŠ¸ë¡¤ëŸ¬ ëª©ë¡ì—ì„œ ì œê±°í•œë‹¤.
 	CheckHasController(Object);
 }
 
@@ -137,8 +137,8 @@ void Scene::DeleteObject(std::string Tag, int DeleteRangeFlag) {
 	}
 }
 
-// ÇöÀç Á¸ÀçÇÏ´Â °´Ã¼µé Áß Æ¯Á¤ °´Ã¼ÀÇ Æ÷ÀÎÅÍ¸¦ ¾ò¾î Á¢±ÙÇÒ ¶§ »ç¿ëÇÑ´Ù.
-// ÀÌÁø Å½»öÀ» »ç¿ëÇÏ¿© °Ë»öÇÏ¹Ç·Î ¸Å¿ì ºü¸£´Ù.
+// í˜„ìž¬ ì¡´ìž¬í•˜ëŠ” ê°ì²´ë“¤ ì¤‘ íŠ¹ì • ê°ì²´ì˜ í¬ì¸í„°ë¥¼ ì–»ì–´ ì ‘ê·¼í•  ë•Œ ì‚¬ìš©í•œë‹¤.
+// ì´ì§„ íƒìƒ‰ì„ ì‚¬ìš©í•˜ì—¬ ê²€ìƒ‰í•˜ë¯€ë¡œ ë§¤ìš° ë¹ ë¥´ë‹¤.
 GameObject* Scene::Find(std::string Tag) {
 	for (int L = 0; L < Layers; L++) {
 		for (auto& O : ObjectList[L]) {
@@ -150,7 +150,7 @@ GameObject* Scene::Find(std::string Tag) {
 	return nullptr;
 }
 
-// for¹®À» »ç¿ëÇØ Æ¯Á¤ ·¹ÀÌ¾î¿¡ ÀÖ´Â ´Ù¼öÀÇ µ¿ÀÏ °´Ã¼µé¿¡ Á¢±ÙÇÑ´Ù.
+// forë¬¸ì„ ì‚¬ìš©í•´ íŠ¹ì • ë ˆì´ì–´ì— ìžˆëŠ” ë‹¤ìˆ˜ì˜ ë™ì¼ ê°ì²´ë“¤ì— ì ‘ê·¼í•œë‹¤.
 GameObject* Scene::FindMulti(std::string Tag, int Layer, int Index) {
 	if(ObjectList[Layer][Index]->ObjectTag.compare(Tag) == 0 && !ObjectList[Layer][Index]->DeleteCommand)
 		return ObjectList[Layer][Index];
@@ -162,7 +162,7 @@ size_t Scene::LayerSize(int Layer) {
 	return ObjectList[Layer].size();
 }
 
-// »èÁ¦ ¸¶Å©°¡ Ç¥½ÃµÈ °´Ã¼¸¦ ¸Þ¸ð¸®¿¡¼­ Á¦°ÅÇÑ´Ù.
+// ì‚­ì œ ë§ˆí¬ê°€ í‘œì‹œëœ ê°ì²´ë¥¼ ë©”ëª¨ë¦¬ì—ì„œ ì œê±°í•œë‹¤.
 void Scene::CompleteCommand() {
 	if (!CommandExist)
 		return;
@@ -171,12 +171,12 @@ void Scene::CompleteCommand() {
 	CommandExist = false;
 }
 
-// ÇÁ·Î±×·¥À» Á¾·áÇÑ´Ù.
+// í”„ë¡œê·¸ëž¨ì„ ì¢…ë£Œí•œë‹¤.
 void Scene::Exit() {
 	PostQuitMessage(1);
 }
 
-// Å°º¸µå, ¸¶¿ì½º, ¸¶¿ì½º ¿òÁ÷ÀÓÀ» WinMainÀ¸·ÎºÎÅÍ ¹Þ¾Æ¿Â´Ù. Á÷Á¢ ¾µ ÀÏÀº ¾ø´Ù.
+// í‚¤ë³´ë“œ, ë§ˆìš°ìŠ¤, ë§ˆìš°ìŠ¤ ì›€ì§ìž„ì„ WinMainìœ¼ë¡œë¶€í„° ë°›ì•„ì˜¨ë‹¤. ì§ì ‘ ì“¸ ì¼ì€ ì—†ë‹¤.
 void Scene::InputKeyMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam) {
 	KeyEvent Event{ hWnd, nMessageID, wParam, lParam };
 	if (DEV_EXIT && Event.Type == WM_KEYDOWN && Event.Key == VK_ESCAPE)
@@ -198,12 +198,12 @@ void Scene::InputMouseMotionMessage(HWND hWnd) {
 		if (C && !C->DeleteCommand) C->InputMouseMotion(Event);
 }
 
-// ·çÆ® ½Ã±×´ÏÃ³¸¦ ¸®ÅÏÇÑ´Ù
+// ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜ë¥¼ ë¦¬í„´í•œë‹¤
 ID3D12RootSignature* Scene::GetGraphicsRootSignature() {
 	return(ObjectShaderRootSignature);
 }
 
-// ·çÆ®½Ã±×´ÏÃ³¸¦ ¸±¸®ÁîÇÑ´Ù
+// ë£¨íŠ¸ì‹œê·¸ë‹ˆì²˜ë¥¼ ë¦´ë¦¬ì¦ˆí•œë‹¤
 void Scene::ReleaseObjects() {
 	if (ObjectShaderRootSignature)
 		ObjectShaderRootSignature->Release();
@@ -217,13 +217,13 @@ void Scene::CheckHasController(GameObject* Object) {
 		ControlObjectListPtr->erase(Found);
 }
 
-// »èÁ¦ À§Ä¡¸¦ ÀúÀåÇÑ´Ù.
+// ì‚­ì œ ìœ„ì¹˜ë¥¼ ì €ìž¥í•œë‹¤.
 void Scene::AddDeleteLocation(int Layer, int Position) {
 	DeleteLocation[Layer].emplace_back(Position);
 	CommandExist = true;
 }
 
-// »èÁ¦ ¸¶Å©°¡ Ç¥½ÃµÈ °´Ã¼µéÀ» ÄÁÅ×ÀÌ³Ê¿¡¼­ Á¦°ÅÇÑ´Ù. ½ÇÁ¦·Î °´Ã¼°¡ »èÁ¦µÇ´Â°ÍÀÌ ¾Æ´Ô¿¡ À¯ÀÇÇÑ´Ù.
+// ì‚­ì œ ë§ˆí¬ê°€ í‘œì‹œëœ ê°ì²´ë“¤ì„ ì»¨í…Œì´ë„ˆì—ì„œ ì œê±°í•œë‹¤. ì‹¤ì œë¡œ ê°ì²´ê°€ ì‚­ì œë˜ëŠ”ê²ƒì´ ì•„ë‹˜ì— ìœ ì˜í•œë‹¤.
 void Scene::ProcessObjectCommand() {
 	int Offset{};
 
@@ -245,7 +245,7 @@ void Scene::ProcessObjectCommand() {
 	}
 }
 
-// ÇöÀç Á¸ÀçÇÏ´Â ¸ðµç °´Ã¼µéÀ» »èÁ¦ ´ë±â »óÅÂ·Î º¯°æÇÑ´Ù.
+// í˜„ìž¬ ì¡´ìž¬í•˜ëŠ” ëª¨ë“  ê°ì²´ë“¤ì„ ì‚­ì œ ëŒ€ê¸° ìƒíƒœë¡œ ë³€ê²½í•œë‹¤.
 void Scene::ClearAll() {
 	for (int L = 0; L < Layers; L++) {
 		DeleteLocation[L].clear();

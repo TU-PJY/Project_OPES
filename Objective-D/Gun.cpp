@@ -60,14 +60,14 @@ void Gun::ReloadGun() {
 	zoomState = false;
 }
 
-// ÃÑÀÇ À§Ä¡, È¸ÀüÀ» ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+// ì´ì˜ ìœ„ì¹˜, íšŒì „ì„ ì—…ë°ì´íŠ¸ í•œë‹¤.
 void Gun::updateGun(float Delta) {
-	// ÃÑ È¸Àü ¾÷µ¥ÀÌÆ®
+	// ì´ íšŒì „ ì—…ë°ì´íŠ¸
 	rotation.x = std::lerp(rotation.x, rotationDest.x, Delta * 30.0);
 	rotation.y = std::lerp(rotation.y, rotationDest.y, Delta * 30.0);
 	rotation.z = std::lerp(rotation.z, rotationDest.z, Delta * 30.0);
 
-	// ÁÜ¿¡ µû¸¥ À§Ä¡ ¿ÀÇÁ¼Â ¾÷µ¥ÀÌÆ®
+	// ì¤Œì— ë”°ë¥¸ ìœ„ì¹˜ ì˜¤í”„ì…‹ ì—…ë°ì´íŠ¸
 	if (!reloadState) {
 		if (zoomState) {
 			positionOffset.x = std::lerp(positionOffset.x, 0.0, Delta * 20.0);
@@ -86,15 +86,15 @@ void Gun::updateGun(float Delta) {
 		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 10.0);
 	}
 
-	// ¹Ýµ¿¿¡ µû¸¥ À§Ä¡ ¿ÀÇÁ¼Â ¾÷µ¥ÀÌÆ®
+	// ë°˜ë™ì— ë”°ë¥¸ ìœ„ì¹˜ ì˜¤í”„ì…‹ ì—…ë°ì´íŠ¸
 	recoilOffset = std::lerp(recoilOffset, 0.0, Delta * 10.0);
 
-	// È­¿° ·»´õ¸µ½Ã°£ ¾÷µ¥ÀÌÆ®
+	// í™”ì—¼ ë Œë”ë§ì‹œê°„ ì—…ë°ì´íŠ¸
 	currentFlameRenderTime -= Delta;
 	Clamp::LimitValue(currentFlameRenderTime, 0.0, CLAMP_DIR_LESS);
 }
 
-// ÃÑ¾Ë ¹ß»ç ¾÷µ¥ÀÌÆ®
+// ì´ì•Œ ë°œì‚¬ ì—…ë°ì´íŠ¸
 void Gun::updateFire(float Delta) {
 	if (currentFireDelayTime > 0.0)
 		currentFireDelayTime -= Delta;

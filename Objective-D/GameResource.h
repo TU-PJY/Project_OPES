@@ -31,7 +31,7 @@ extern bool LoadSoundResources;
 extern bool UIcreateMode;
 
 enum GlobalEnum : unsigned int {
-	// ¿£Áö´Ï¾î ¼³Ä¡¹° Å¸ÀÔ
+	// ì—”ì§€ë‹ˆì–´ ì„¤ì¹˜ë¬¼ íƒ€ì…
 	CONSTRUCT_TURRET,
 	CONSTRUCT_BEACON,
 	CONSTRUCT_BARRIER
@@ -52,7 +52,7 @@ enum BuffEng {
 enum DebuffEnum {
 	DEBUFF_NONE,
 	RECOIL_INCREASE,
-	DAMAGE_REDUCE, // (¼ö·ùÅº, ÅÍ·¿Àº ÇØ´ç X)
+	DAMAGE_REDUCE, // (ìˆ˜ë¥˜íƒ„, í„°ë ›ì€ í•´ë‹¹ X)
 	VISION_RANGE_REDUCE, 
 	WALK_ACC_REDUCE
 };
@@ -62,14 +62,14 @@ struct PlayerLobbyInfo {
 	std::string name = "N/A";
 	bool readyState{};
 
-	// ÇÃ·¹ÀÌ¾î ¹öÇÁ ¹× µğ¹öÇÁ
+	// í”Œë ˆì´ì–´ ë²„í”„ ë° ë””ë²„í”„
 	bool buff[5]{};
 	bool deBuff[5]{};
 };
 
-// ÇÁ·ÎÁ§Æ® Àü¿ª¿¡¼­ »ç¿ëÇÏ´Â º¯¼öµé
+// í”„ë¡œì íŠ¸ ì „ì—­ì—ì„œ ì‚¬ìš©í•˜ëŠ” ë³€ìˆ˜ë“¤
 typedef struct {
-	// µğÆæ½º ¸ğµå¿¡¼­ »ç¿ëÇÒ ³²Àº Àû ¼ö  ¹× µğÆæ½º ¸ğµå »óÅÂ ¿©ºÎ
+	// ë””íœìŠ¤ ëª¨ë“œì—ì„œ ì‚¬ìš©í•  ë‚¨ì€ ì  ìˆ˜  ë° ë””íœìŠ¤ ëª¨ë“œ ìƒíƒœ ì—¬ë¶€
 	int Map1DefenseEnemyRemained;
 	bool Map1DefenseState;
 
@@ -80,78 +80,78 @@ typedef struct {
 	bool Map3DefenseState;
 
 
-	// Ä«¸Ş¶ó FOV ¿ÀÇÁ¼Â
+	// ì¹´ë©”ë¼ FOV ì˜¤í”„ì…‹
 	float offsetFOV;
 
-	// Àü¿ª¿¡¼­ »ç¿ëµÇ´Â ¸Ê °´Ã¼ ÀÌ¸§
+	// ì „ì—­ì—ì„œ ì‚¬ìš©ë˜ëŠ” ë§µ ê°ì²´ ì´ë¦„
 	std::string mapName;
 
-	// Àü¿ª¿¡¼­ »ç¿ëÇÏ´Â ¸Ê ¿ÀºêÁ§Æ® OOBB µ¥ÀÌÅÍ
+	// ì „ì—­ì—ì„œ ì‚¬ìš©í•˜ëŠ” ë§µ ì˜¤ë¸Œì íŠ¸ OOBB ë°ì´í„°
 	std::vector<OOBB> mapOOBBdata;
 
-	// Àü¿ª¿¡¼­ »ç¿ëÇÏ´Â ¸Ê ÅÍ·¹ÀÎ °´Ã¼
+	// ì „ì—­ì—ì„œ ì‚¬ìš©í•˜ëŠ” ë§µ í„°ë ˆì¸ ê°ì²´
 	TerrainUtil mapTerrain;
 
-	// Àü¿ª ÇÃ·¹ÀÌ¾î ÀÎµğÄÉÀÌÅÍ °´Ã¼
+	// ì „ì—­ í”Œë ˆì´ì–´ ì¸ë””ì¼€ì´í„° ê°ì²´
 	LPVOID otherIndicator;
 
-	// ¼­¹ö »ç¿ë ¿©ºÎ
+	// ì„œë²„ ì‚¬ìš© ì—¬ë¶€
 	bool useServer;
 	bool useLocalServer;
 
-	// ¼­¹ö ±¸µ¿ ¿©ºÎ
+	// ì„œë²„ êµ¬ë™ ì—¬ë¶€
 	std::atomic<bool> NetRunning;
 
-	// ÇöÀç Á¢¼ÓÇÑ ³ªÀÇ ID
+	// í˜„ì¬ ì ‘ì†í•œ ë‚˜ì˜ ID
 	unsigned int myID;
 
-	// ¼­¹ö¿¡ Á¢¼ÓÇÑ ÀÎ¿øµéÀÇ Á¤º¸
+	// ì„œë²„ì— ì ‘ì†í•œ ì¸ì›ë“¤ì˜ ì •ë³´
 	std::map<unsigned int, PlayerLobbyInfo> playerList;
 
-	// µğÆæ½º ¸ğµå ¾ÆÀÌµğ °ü¸®¿ë set
+	// ë””íœìŠ¤ ëª¨ë“œ ì•„ì´ë”” ê´€ë¦¬ìš© set
 	std::set<unsigned int> defenseIDList;
 
-	// ¸¶Áö¸·À¸·Î ÀÔ·ÂÇÑ ¼­¹ö ÁÖ¼Ò
+	// ë§ˆì§€ë§‰ìœ¼ë¡œ ì…ë ¥í•œ ì„œë²„ ì£¼ì†Œ
 	std::string enterIP;
 	std::wstring enterIPw;
 
-	// ¸¶Áö¸·À¸·Î ÀÔ·ÂÇÑ ³» ´Ğ³×ÀÓ
+	// ë§ˆì§€ë§‰ìœ¼ë¡œ ì…ë ¥í•œ ë‚´ ë‹‰ë„¤ì„
 	std::string myName;
 
 	int deathCount;
 
 	int stage;
 
-	// ·Îºñ¿¡¼­ ÁØºñ ¿©ºÎ
+	// ë¡œë¹„ì—ì„œ ì¤€ë¹„ ì—¬ë¶€
 	bool imReady;
 
-	// ³»°¡ ¼±ÅÃÇÑ Ä³¸¯ÅÍ
+	// ë‚´ê°€ ì„ íƒí•œ ìºë¦­í„°
 	int myCharacter;
 
-	// ¼­¹ö ½º·¹µå
+	// ì„œë²„ ìŠ¤ë ˆë“œ
 	bool enterServerState;
 	std::thread netThread;
 
-	// ¼­¹ö ½ÃÀÛ ¿©ºÎ
+	// ì„œë²„ ì‹œì‘ ì—¬ë¶€
 	bool startedGameServer;
 
-	// ÇöÀç ¼­¹ö ¿¬°á ¿©ºÎ
+	// í˜„ì¬ ì„œë²„ ì—°ê²° ì—¬ë¶€
 	std::atomic<bool> serverConnected;
 
-	// Å¸ÀÌÆ² ¸ğµå ³Ñ±è ¿©ºÎ
+	// íƒ€ì´í‹€ ëª¨ë“œ ë„˜ê¹€ ì—¬ë¶€
 	bool skipTitleMode;
 
-	// µğÆæ½º¸ğµå ³Ñ±è ¿©ºÎ
+	// ë””íœìŠ¤ëª¨ë“œ ë„˜ê¹€ ì—¬ë¶€
 	bool skipDefenseMode;
 
-	// ¿¡µğÅÍ ¸ğµå ¿©ºÎ
+	// ì—ë””í„° ëª¨ë“œ ì—¬ë¶€
 	bool editMode;
 
-	// ÇÃ·¹ÀÌ¾î ¹öÇÁ ¹× µğ¹öÇÁ
+	// í”Œë ˆì´ì–´ ë²„í”„ ë° ë””ë²„í”„
 	bool buff[5];
 	bool deBuff[5];
 
-	//ÇÃ·¹ÀÌ¾î ÄÁÆ®·Ñ °¡´É ¿©ºÎ
+	//í”Œë ˆì´ì–´ ì»¨íŠ¸ë¡¤ ê°€ëŠ¥ ì—¬ë¶€
 	bool controlEnabled;
 
 	bool RENDER_BOUND;
@@ -160,9 +160,9 @@ typedef struct {
 extern GlobalValue GLOBAL;
 
 /////////////////////////////////////////////////////////////////////////////////
-// ¸Å½¬ ¸®¼Ò½º´Â ÇØ´ç Å¬·¡½º ¾È¿¡ ¼±¾ğ
+// ë§¤ì‰¬ ë¦¬ì†ŒìŠ¤ëŠ” í•´ë‹¹ í´ë˜ìŠ¤ ì•ˆì— ì„ ì–¸
 typedef struct {
-	// Map1 ¸Å½¬
+	// Map1 ë§¤ì‰¬
 	Mesh* RockMesh;
 	Mesh* LakeMesh;
 	Mesh* LakeRockMesh[3];
@@ -172,12 +172,12 @@ typedef struct {
 	Mesh* Grass[2];
 	Mesh* Flower[2];
 
-	// Map2 ¸Å½¬
+	// Map2 ë§¤ì‰¬
 	Mesh* WinterWall;
 	Mesh* WinterIce[2];
 	Mesh* WinterRock[3];
 
-	// Map3  ¸Å½¬
+	// Map3  ë§¤ì‰¬
 	Mesh* FloatingRock;
 	Mesh* Volcano;
 	Mesh* SmallVolcano;
@@ -232,7 +232,7 @@ typedef struct {
 extern MeshResource MESH;
 
 /////////////////////////////////////////////////////////////////////////////////
-// ÅØ½ºÃ³ ¸®¼Ò½º´Â ÇØ´ç Å¬·¡½º ¾È¿¡ ¼±¾ğ
+// í…ìŠ¤ì²˜ ë¦¬ì†ŒìŠ¤ëŠ” í•´ë‹¹ í´ë˜ìŠ¤ ì•ˆì— ì„ ì–¸
 typedef struct {
 	// font atlas
 	Texture* fontAtlas[96];
@@ -353,9 +353,9 @@ extern Image_Shader* ImageShader;
 extern Line_Shader* LineShader;
 
 /////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////// ±âº» ¸®¼Ò½º
-// ¸Å½¬, ÅØ½ºÃ³ ·Îµå ½Ã Æ÷ÀÎÅÍ¸¦ ÀúÀåÇÏ´Â º¤ÅÍ
-// ÇÑ²¨¹ø¿¡ ¾÷·Îµå ¹öÆÛ¸¦ »èÁ¦ÇÔ
+///////////////////////////////////////////////////////////////////////////////// ê¸°ë³¸ ë¦¬ì†ŒìŠ¤
+// ë§¤ì‰¬, í…ìŠ¤ì²˜ ë¡œë“œ ì‹œ í¬ì¸í„°ë¥¼ ì €ì¥í•˜ëŠ” ë²¡í„°
+// í•œêº¼ë²ˆì— ì—…ë¡œë“œ ë²„í¼ë¥¼ ì‚­ì œí•¨
 extern std::vector<Mesh*> LoadedMeshList;
 extern std::vector<Texture*> LoadedTextureList;
 
@@ -470,8 +470,8 @@ inline void LoadPrecomputedAnimation(FBXMesh& TargetMesh, const std::string& Fil
 	}
 }
 
-// ¾Ö´Ï¸ŞÀÌ¼Ç FBX ÆÄÀÏ ·Îµå¿ë ÇÔ¼ö
-// CreateMode°¡ trueÀÎ ¸Å½¬µé¸¸ ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ°¡ ÃßÃâµÈ´Ù.
+// ì• ë‹ˆë©”ì´ì…˜ FBX íŒŒì¼ ë¡œë“œìš© í•¨ìˆ˜
+// CreateModeê°€ trueì¸ ë§¤ì‰¬ë“¤ë§Œ ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ê°€ ì¶”ì¶œëœë‹¤.
 inline void LoadAnimatedFBX(FBXMesh& TargetMesh, const std::string& Directory, const std::string& AnimationDataFile, const std::string& jsonFile = "", bool CreateMode=false) {
 	if (!CreateMode && AnimationDataExtractMode)
 		return;
@@ -500,7 +500,7 @@ inline void LoadAnimatedFBX(FBXMesh& TargetMesh, const std::string& Directory, c
 		LoadPrecomputedAnimation(TargetMesh, AnimationDataFile);
 
 	else {
-		// ÃÖÀûÈ­¸¦ À§ÇØ ¾Ö´Ï¸ŞÀÌ¼Ç Çà·Ä µ¥ÀÌÅÍ¸¦ ¹Ì¸® °è»êÇÑ´Ù.
+		// ìµœì í™”ë¥¼ ìœ„í•´ ì• ë‹ˆë©”ì´ì…˜ í–‰ë ¬ ë°ì´í„°ë¥¼ ë¯¸ë¦¬ ê³„ì‚°í•œë‹¤.
 		int StackCount = TargetMesh.Scene->GetSrcObjectCount<FbxAnimStack>();
 		for (int i = 0; i < StackCount; ++i) {
 			FbxAnimStack* Stack = TargetMesh.Scene->GetSrcObject<FbxAnimStack>(i);
@@ -526,8 +526,8 @@ inline void SetAnimationOffset(FBXMesh& TargetFBX, float Offset) {
 	fbxUtil.SetAnimationOffsetTime(TargetFBX, Offset);
 }
 
-// ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¾ø´Â FBX ÆÄÀÏ ·Îµå¿ë ÇÔ¼ö
-// ¾Ö´Ï¸ŞÀÌ¼Ç ÃßÃâ¸ğµå¸¦ È°¼ºÈ­ÇÏ¸é °Ç³Ê¶Ú´Ù.
+// ì• ë‹ˆë©”ì´ì…˜ì´ ì—†ëŠ” FBX íŒŒì¼ ë¡œë“œìš© í•¨ìˆ˜
+// ì• ë‹ˆë©”ì´ì…˜ ì¶”ì¶œëª¨ë“œë¥¼ í™œì„±í™”í•˜ë©´ ê±´ë„ˆë›´ë‹¤.
 inline void LoadSingleStaticFBX(Mesh*& TargetMesh, const std::string& Directory) {
 	if (AnimationDataExtractMode)
 		return;
@@ -541,8 +541,8 @@ inline void LoadSingleStaticFBX(Mesh*& TargetMesh, const std::string& Directory)
 	}
 }
 
-// ¾Ö´Ï¸ŞÀÌ¼ÇÀÌ ¾ø´Â ´ÙÁß FBX ÆÄÀÏ ·Îµå¿ë ÇÔ¼ö
-// ¾Ö´Ï¸ŞÀÌ¼Ç ÃßÃâ¸ğµå¸¦ È°¼ºÈ­ÇÏ¸é °Ç³Ê¶Ú´Ù.
+// ì• ë‹ˆë©”ì´ì…˜ì´ ì—†ëŠ” ë‹¤ì¤‘ FBX íŒŒì¼ ë¡œë“œìš© í•¨ìˆ˜
+// ì• ë‹ˆë©”ì´ì…˜ ì¶”ì¶œëª¨ë“œë¥¼ í™œì„±í™”í•˜ë©´ ê±´ë„ˆë›´ë‹¤.
 inline void LoadMultiStaticFBX(Mesh*& TargetMesh, const std::string& Directory) {
 	if (AnimationDataExtractMode)
 		return;
@@ -556,8 +556,8 @@ inline void LoadMultiStaticFBX(Mesh*& TargetMesh, const std::string& Directory) 
 	}
 }
 
-// TEXTURE_TYPE_WIC, D3D12_FILTER_MIN_MAG_MIP_POINT°¡ µğÆúÆ®
-// ¾Ö´Ï¸ŞÀÌ¼Ç ÃßÃâ¸ğµå¸¦ È°¼ºÈ­ÇÏ¸é °Ç³Ê¶Ú´Ù.
+// TEXTURE_TYPE_WIC, D3D12_FILTER_MIN_MAG_MIP_POINTê°€ ë””í´íŠ¸
+// ì• ë‹ˆë©”ì´ì…˜ ì¶”ì¶œëª¨ë“œë¥¼ í™œì„±í™”í•˜ë©´ ê±´ë„ˆë›´ë‹¤.
 inline void LoadTexture(Texture*& TexturePtr, wchar_t* Directory, int Type=TEXTURE_TYPE_WIC, D3D12_FILTER FilterOption= D3D12_FILTER_MIN_MAG_MIP_POINT) {
 	if (AnimationDataExtractMode)
 		return;

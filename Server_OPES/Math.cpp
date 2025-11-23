@@ -1,20 +1,20 @@
 #include "Math.h"
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ ¾ÕÀ¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ì•ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void MoveForward(XMFLOAT3& Position, float RotationY, float MoveDistance) {
 	float Radians = XMConvertToRadians(RotationY);
 	Position.x += sinf(Radians) * MoveDistance;
 	Position.z += cosf(Radians) * MoveDistance;
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ ¿·À¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ì˜†ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void MoveStrafe(XMFLOAT3& Position, float RotationY, float MoveDistance) {
 	float Radians = XMConvertToRadians(RotationY);
 	Position.x += cosf(Radians) * MoveDistance;
 	Position.z -= sinf(Radians) * MoveDistance;
 }
 
-// ¸ó½ºÅÍ¿Í ÇÃ·¹ÀÌ¾îÀÇ À§Ä¡ °è»ê
+// ëª¬ìŠ¤í„°ì™€ í”Œë ˆì´ì–´ì˜ ìœ„ì¹˜ ê³„ì‚°
 XMFLOAT3 CalcDegree3D(const XMFLOAT3& A, const XMFLOAT3& B) {
 	XMFLOAT3 Direction = {
 	   B.x - A.x,
@@ -29,7 +29,7 @@ XMFLOAT3 CalcDegree3D(const XMFLOAT3& A, const XMFLOAT3& B) {
 	return XMFLOAT3(XMConvertToDegrees(Pitch), XMConvertToDegrees(Yaw), Roll);
 }
 
-// °¢µµ¸¦ 360µµ ´ÜÀ§·Î Á¤±ÔÈ­
+// ê°ë„ë¥¼ 360ë„ ë‹¨ìœ„ë¡œ ì •ê·œí™”
 void Normalize2DAngleTo360(float& Degree) {
 	Degree = fmod(Degree, 360.0f);
 	if (Degree < 0.0f)

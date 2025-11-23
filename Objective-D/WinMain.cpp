@@ -1,4 +1,4 @@
-﻿//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+//#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #define MAX_LOADSTRING 100
 
 #pragma warning(push)
@@ -98,7 +98,7 @@ bool LoadMap3Resources = false;
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode =  Level1::Start;
+START_MODE_PTR StartMode =  Level1EntryMode::Start;
 
 // -1: not selected 0: heavy, 1: dmr, 2: engineer
 int myCharacter = 0;
@@ -1245,6 +1245,8 @@ LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow) {
+	SetConsoleOutputCP(CP_UTF8);
+
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 

@@ -1,18 +1,18 @@
 #include "RootConstants.h"
 
-// ¿©±â¿¡ ·çÆ® »ó¼öÀÇ ½Ã±×´ÏÃ³ ÀÎµ¦½º º¯¼ö¸¦ ¼±¾ğÇÑ´Ù.
+// ì—¬ê¸°ì— ë£¨íŠ¸ ìƒìˆ˜ì˜ ì‹œê·¸ë‹ˆì²˜ ì¸ë±ìŠ¤ ë³€ìˆ˜ë¥¼ ì„ ì–¸í•œë‹¤.
 
 /////////////////// 3d object shader
 int GAME_OBJECT_INDEX;
 int CAMERA_INDEX;
 
-// 3D Ãâ·Â¿ë srv¿Í sampler
+// 3D ì¶œë ¥ìš© srvì™€ sampler
 int SRV_INDEX_3D;
 int SAMPLER_INDEX_3D;
 ///////////////////
 
 /////////////////// 2d object shader
-// 2D Ãâ·Â¿ë srv¿Í sampler
+// 2D ì¶œë ¥ìš© srvì™€ sampler
 int SRV_INDEX_2D;
 int SAMPLER_INDEX_2D;
 ///////////////////

@@ -19,7 +19,7 @@ void BuffDebuffIndicator::Render() {
 	if (renderCount == 0)
 		return;
 
-	// ¹öÇÁ ¾ÆÀÌÄÜ ¹è°æ
+	// ë²„í”„ ì•„ì´ì½˜ ë°°ê²½
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, 0.0, -0.9);
 	Transform::Scale2D(TranslateMatrix, 0.7, 0.2);

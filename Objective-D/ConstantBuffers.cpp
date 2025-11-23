@@ -17,7 +17,7 @@ struct ShadowAABB {
 };
 
 XMMATRIX Shadow_TexScaleBias() {
-	// NDC[-1,1] ¡æ UV[0,1]
+	// NDC[-1,1] â†’ UV[0,1]
 	return XMMATRIX(
 		0.5f, 0, 0, 0,
 		0, -0.5f, 0, 0,
@@ -26,7 +26,7 @@ XMMATRIX Shadow_TexScaleBias() {
 	);
 };
 
-// upÀÌ ¶óÀÌÆ®¿Í °ÅÀÇ ÆòÇàÀÏ ¶§ º¸Á¶ upÀ» ¼±ÅÃÇØ ¾ÈÁ¤È­
+// upì´ ë¼ì´íŠ¸ì™€ ê±°ì˜ í‰í–‰ì¼ ë•Œ ë³´ì¡° upì„ ì„ íƒí•´ ì•ˆì •í™”
 XMVECTOR StableUpForDir(FXMVECTOR dir) {
 	XMVECTOR worldUp = XMVectorSet(0, 1, 0, 0);
 	float dp = XMVectorGetX(XMVector3Dot(dir, worldUp));
@@ -35,51 +35,51 @@ XMVECTOR StableUpForDir(FXMVECTOR dir) {
 	return worldUp;
 };
 
-// °íÁ¤ ¹æÇâ±¤¿ë: ÇÑ ¹ø¸¸ È£ÃâÇÏ¸é ³¡
+// ê³ ì • ë°©í–¥ê´‘ìš©: í•œ ë²ˆë§Œ í˜¸ì¶œí•˜ë©´ ë
 void BuildStaticShadowMatrices(const LIGHT_DATA& light, const ShadowAABB& bounds,
 	float nearPlane, float farScale,
 	SHADOW_MATRIX_DATA& outSm)
 {
-	// 1) ¾À Ä¿¹ö¸®Áö
+	// 1) ì”¬ ì»¤ë²„ë¦¬ì§€
 	XMVECTOR bmin = XMLoadFloat3(&bounds.minP);
 	XMVECTOR bmax = XMLoadFloat3(&bounds.maxP);
 	XMVECTOR center = XMVectorScale(XMVectorAdd(bmin, bmax), 0.5f);
 	XMVECTOR extents = XMVectorScale(XMVectorSubtract(bmax, bmin), 0.5f);
 
-	// Á¤»ç°¢ Ortho¸¦ À§ÇØ °¡Àå Å« ¹İ°æÀ¸·Î ÀâÀ½ (ÇØ»óµµ ³¶ºñ ÃÖ¼ÒÈ­)
+	// ì •ì‚¬ê° Orthoë¥¼ ìœ„í•´ ê°€ì¥ í° ë°˜ê²½ìœ¼ë¡œ ì¡ìŒ (í•´ìƒë„ ë‚­ë¹„ ìµœì†Œí™”)
 	float ex = XMVectorGetX(extents);
 	float ey = XMVectorGetY(extents);
 	float ez = XMVectorGetZ(extents);
 	float radius = std::max(ex, std::max(ey, ez));
 
-	// 2) ¶óÀÌÆ® ºä Çà·Ä (¶óÀÌÆ®°¡ ³»·Á´Ùº¸´Â ¹æÇâ: -gLightDirection)
+	// 2) ë¼ì´íŠ¸ ë·° í–‰ë ¬ (ë¼ì´íŠ¸ê°€ ë‚´ë ¤ë‹¤ë³´ëŠ” ë°©í–¥: -gLightDirection)
 	XMVECTOR Ldir = XMVector3Normalize(XMLoadFloat3(&light.gLightDirection));
 	XMVECTOR fwd = XMVectorNegate(Ldir);
 	XMVECTOR up = StableUpForDir(fwd);
-	// ¶óÀÌÆ® Ä«¸Ş¶ó À§Ä¡´Â Áß½É µÚÂÊÀ¸·Î ¾à°£ ¶³¾î¶ß¸²
+	// ë¼ì´íŠ¸ ì¹´ë©”ë¼ ìœ„ì¹˜ëŠ” ì¤‘ì‹¬ ë’¤ìª½ìœ¼ë¡œ ì•½ê°„ ë–¨ì–´ëœ¨ë¦¼
 	XMVECTOR eye = XMVectorSubtract(center, XMVectorScale(fwd, radius * 2.0f));
 	XMMATRIX  V = XMMatrixLookAtLH(eye, center, up);
 
-	// 3) ¶óÀÌÆ® Á÷±³ Åõ¿µ (Á¤»ç°¢ÇüÀ¸·Î ¼³Á¤)
+	// 3) ë¼ì´íŠ¸ ì§êµ íˆ¬ì˜ (ì •ì‚¬ê°í˜•ìœ¼ë¡œ ì„¤ì •)
 	float width = radius * 2.0f;
 	float height = radius * 2.0f;
 	float zNear = std::max(0.01f, nearPlane);
-	float zFar = radius * farScale;      // ¿¹: farScale=4~8
+	float zFar = radius * farScale;      // ì˜ˆ: farScale=4~8
 	XMMATRIX  P = XMMatrixOrthographicLH(width, height, zNear, zFar);
 
-	// 4) NDC¡æUV º¯È¯
+	// 4) NDCâ†’UV ë³€í™˜
 	XMMATRIX T = Shadow_TexScaleBias();
 
-	// 5) CBV µ¥ÀÌÅÍ Ã¤¿ì±â
+	// 5) CBV ë°ì´í„° ì±„ìš°ê¸°
 	XMMATRIX VP = V * P;
 	XMStoreFloat4x4(&outSm.LightViewProj, VP);
 	XMStoreFloat4x4(&outSm.ShadowTex, T);
-	outSm.ShadowBias = 0.0015f; // ½ÃÀÛ°ª (¾ÆÅ©³× ÀÖÀ¸¸é ¡è, ºĞ¸®µÇ¸é ¡é)
+	outSm.ShadowBias = 0.0015f; // ì‹œì‘ê°’ (ì•„í¬ë„¤ ìˆìœ¼ë©´ â†‘, ë¶„ë¦¬ë˜ë©´ â†“)
 }
 
 XMFLOAT3 RGB_(int R, int G, int B);
 
-// »ó¼ö¹öÆÛ·Î »ç¿ëÇÒ ¹öÆÛ ¹× ÈüÀ» ¼³Á¤ÇÑ´Ù.
+// ìƒìˆ˜ë²„í¼ë¡œ ì‚¬ìš©í•  ë²„í¼ ë° í™ì„ ì„¤ì •í•œë‹¤.
 void CreateConstantBufferResource(ID3D12Device* Device) {
 	// texture flipdata
 	TEXTURE_FLIP_DATA TextureFlipData[4]{ {0, 0}, {1, 0}, {0, 1}, {1, 1} };
@@ -140,7 +140,7 @@ void CreateConstantBufferResource(ID3D12Device* Device) {
 	CBVUtil::Create(Device, &FogData, sizeof(FOG_DATA), FogCBV);
 }
 
-// RGB -> 1.0 »ö»ó°ª º¯ÇÑ ÇÔ¼ö
+// RGB -> 1.0 ìƒ‰ìƒê°’ ë³€í•œ í•¨ìˆ˜
 XMFLOAT3 RGB_(int R, int G, int B) {
 	XMFLOAT3 ReturnColor{};
 	ReturnColor.x = 1.0 / 255.0 * float(R);

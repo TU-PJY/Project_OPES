@@ -23,7 +23,7 @@ void SendMasterKeyPacket(int key);
 void SendMtoPDamagePacket(unsigned int playerID, unsigned int monsterID, int attackHp);
 
 Player1st::Player1st(int characterType) {
-	// ÇöÀç Ä³¸¯ÅÍ Å¸ÀÔ¿¡ ¸Â´Â ¹«±â °´Ã¼¸¦ Ãß°¡ ÈÄ ¿¬°áÇÑ´Ù.
+	// í˜„ì¬ ìºë¦­í„° íƒ€ì…ì— ë§ëŠ” ë¬´ê¸° ê°ì²´ë¥¼ ì¶”ê°€ í›„ ì—°ê²°í•œë‹¤.
 	switch (characterType) {
 	case CHARACTER_MG:
 		weaponPtr = scene.AddObject(new HeavyMachineGun(this), "mg", LAYER4);
@@ -53,7 +53,7 @@ Player1st::Player1st(int characterType) {
 	this->characterType = characterType;
 	currentSpeed = maxSpeed;
 	
-	// ÇÃ·¹ÀÌ¾î ÀÎµğÄÉÀÌÅÍ¿¡ ÇÊ¿äÇÑ Á¤º¸µéÀ» Àü´ŞÇÑ´Ù.
+	// í”Œë ˆì´ì–´ ì¸ë””ì¼€ì´í„°ì— í•„ìš”í•œ ì •ë³´ë“¤ì„ ì „ë‹¬í•œë‹¤.
 	IndicatorPtr = scene.AddObject(new PlayerIndicator(this->characterType), "playerInd", LAYER_UI2);
 	if (IndicatorPtr) {
 		IndicatorPtr->InputHP(totalHP, currentHP);
@@ -65,13 +65,13 @@ Player1st::Player1st(int characterType) {
 		}
 	}
 
-	// 2¹ø ¸ÊÀº ¹Ì²ô·¯¿ö¼­ °¡°¨¼ÓÀÌ ´À·ÁÁü
+	// 2ë²ˆ ë§µì€ ë¯¸ë„ëŸ¬ì›Œì„œ ê°€ê°ì†ì´ ëŠë ¤ì§
 	if (GLOBAL.mapName.compare("map2") == 0)
 		speedAcc = 2.0;
 	else
 		speedAcc = 10.0;
 
-	// MORE_GRENADE È°¼ºÈ­ ½Ã ¼ö·ùÅº °³¼ö 1°³ Ãß°¡
+	// MORE_GRENADE í™œì„±í™” ì‹œ ìˆ˜ë¥˜íƒ„ ê°œìˆ˜ 1ê°œ ì¶”ê°€
 	if (GLOBAL.buff[MORE_GRENADE])
 		currentGrenadeCount = 4;
 }
@@ -126,8 +126,8 @@ void Player1st::InputMouseMotion(MotionEvent& Event) {
 		mouse.HideCursor();
 		GetCapture();
 
-		// Á¤Á¶ÁØ ½Ã °¨µµ¸¦ Àı¹İÀ¸·Î ³·Ãá´Ù
-		// ÁöÁ¤»ç¼öÀÇ °æ¿ì °¨µµ¸¦ ´õ ³·Ãá´Ù
+		// ì •ì¡°ì¤€ ì‹œ ê°ë„ë¥¼ ì ˆë°˜ìœ¼ë¡œ ë‚®ì¶˜ë‹¤
+		// ì§€ì •ì‚¬ìˆ˜ì˜ ê²½ìš° ê°ë„ë¥¼ ë” ë‚®ì¶˜ë‹¤
 		float sensivity = 0.08;
 		if (zoomState) {
 			if(characterType == CHARACTER_DMR)
@@ -138,19 +138,19 @@ void Player1st::InputMouseMotion(MotionEvent& Event) {
 		XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, sensivity);
 		UpdateMotionRotation(currentRotation, Delta.x, Delta.y);
 
-		// ÇÃ·¹ÀÌ¾î ½Ã¾ß È¸Àü Á¦ÇÑ 
-		// À§, ¾Æ·¡ È¸ÀüÀ» 180 ¹üÀ§·Î Á¦ÇÑÇÑ´Ù.
+		// í”Œë ˆì´ì–´ ì‹œì•¼ íšŒì „ ì œí•œ 
+		// ìœ„, ì•„ë˜ íšŒì „ì„ 180 ë²”ìœ„ë¡œ ì œí•œí•œë‹¤.
 		Clamp::ClampValue(currentRotation.x, -90.0, 90.0, CLAMP_FIX);
 		Clamp::ClampValue(currentRotation.z, -90.0, 90.0, CLAMP_FIX);
 	}
 }
 
 void Player1st::InputMouse(MouseEvent& Event) {
-	// ÃÑ ¹ß»ç »óÅÂ È°¼ºÈ­ / ºñÈ°¼ºÈ­
+	// ì´ ë°œì‚¬ ìƒíƒœ í™œì„±í™” / ë¹„í™œì„±í™”
 	switch (Event.Type) {
 	case WM_MOUSEWHEEL:
 	{
-		int delta = GET_WHEEL_DELTA_WPARAM(Event.wParam); // ÈÙ ½ºÅ©·Ñ·® (+120, -120 µî)
+		int delta = GET_WHEEL_DELTA_WPARAM(Event.wParam); // íœ  ìŠ¤í¬ë¡¤ëŸ‰ (+120, -120 ë“±)
 
 		if (delta > 0) {
 			IndicatorPtr->ScrollRight();
@@ -215,14 +215,14 @@ void Player1st::InputMouse(MouseEvent& Event) {
 	}
 	break;
 
-	// Ã¢ À§¿¡¼­ ¿òÁ÷ÀÌ¸é ÀÚµ¿ Æ÷Ä¿½Ì µÈ´Ù.
+	// ì°½ ìœ„ì—ì„œ ì›€ì§ì´ë©´ ìë™ í¬ì»¤ì‹± ëœë‹¤.
 	case WM_MOUSEMOVE:
 		mouse.StartMotionCapture(GlobalHWND);
 		break;
 
 	case WM_LBUTTONDOWN:
-		// ¸¶¿ì½º ¸ğ¼Ç Ä¸ÃÄ »óÅÂ°¡ ÇØÁ¦µÈ °æ¿ì(À©µµ¿ì ¹öÆ° µîÀ¸·Î ´Ù¸¥ À©µµ¿ì¿¡ Æ÷Ä¿½ÌµÈ °æ¿ì)
-		// ¿ø·¡ÀÇ À©µµ¿ì¿¡ ÁÂÅ¬¸¯À¸·Î Æ÷Ä¿½ÌÇÏ¸é ¸ğ¼Ç Ä¸ÃÄ »óÅÂ°¡ ´Ù½Ã È°¼ºÈ­ µÈ´Ù.
+		// ë§ˆìš°ìŠ¤ ëª¨ì…˜ ìº¡ì³ ìƒíƒœê°€ í•´ì œëœ ê²½ìš°(ìœˆë„ìš° ë²„íŠ¼ ë“±ìœ¼ë¡œ ë‹¤ë¥¸ ìœˆë„ìš°ì— í¬ì»¤ì‹±ëœ ê²½ìš°)
+		// ì›ë˜ì˜ ìœˆë„ìš°ì— ì¢Œí´ë¦­ìœ¼ë¡œ í¬ì»¤ì‹±í•˜ë©´ ëª¨ì…˜ ìº¡ì³ ìƒíƒœê°€ ë‹¤ì‹œ í™œì„±í™” ëœë‹¤.
 		mouse.StartMotionCapture(GlobalHWND);
 
 		if (characterType == CHARACTER_MG || characterType == CHARACTER_DMR) {
@@ -318,7 +318,7 @@ void Player1st::InputMouse(MouseEvent& Event) {
 	}
 }
 
-// 4¹æÇâ ÀÌµ¿ Åä±Û
+// 4ë°©í–¥ ì´ë™ í† ê¸€
 void Player1st::InputKey(KeyEvent& Event) {
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'W', moveState[FRONT]);
 	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'S', moveState[BACK]);
@@ -359,7 +359,7 @@ void Player1st::InputKey(KeyEvent& Event) {
 	}
 }
 
-// »óÅÂ¸¦ ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+// ìƒíƒœë¥¼ ì—…ë°ì´íŠ¸ í•œë‹¤.
 void Player1st::updateState() {
 	if ((moveState[RIGHT] && !moveState[LEFT]) || (!moveState[RIGHT] && moveState[LEFT])) 
 		currentState = STATE_MOVE_FRONT;
@@ -375,16 +375,16 @@ void Player1st::updateState() {
 		currentState = STATE_IDLE;
 }
 
-// ÇÃ·¹ÀÌ¾î ÀÌµ¿ ¼Óµµ¸¦ ¾÷µ¥ÀÌÆ®ÇÑ´Ù.
+// í”Œë ˆì´ì–´ ì´ë™ ì†ë„ë¥¼ ì—…ë°ì´íŠ¸í•œë‹¤.
 void Player1st::updateMove(float Delta) {
 	if (currentState == STATE_DEATH) return;
 
-	// WALK_ACC_REDUCE°¡ È°¼ºÈ­ µÉ °æ¿ì ÀÌµ¿ °¡¼Ó Áõ°¡ 20% °¨¼Ò
+	// WALK_ACC_REDUCEê°€ í™œì„±í™” ë  ê²½ìš° ì´ë™ ê°€ì† ì¦ê°€ 20% ê°ì†Œ
 	float AccMultiply = 1.0;
 	if (GLOBAL.deBuff[WALK_ACC_REDUCE])
 		AccMultiply *= 0.7;
 
-	// ¾ÕµÚ °¡¼Ó/°¨¼Ó
+	// ì•ë’¤ ê°€ì†/ê°ì†
 	if (moveState[FRONT] && !moveState[BACK])
 		forwardSpeed = std::lerp(forwardSpeed, currentSpeed, AccMultiply * speedAcc * Delta);
 	else if (!moveState[FRONT] && moveState[BACK])
@@ -392,7 +392,7 @@ void Player1st::updateMove(float Delta) {
 	else 
 		forwardSpeed = std::lerp(forwardSpeed, 0.0, speedAcc * Delta);
 
-	// ÁÂ¿ì °¡¼Ó/°¨¼Ó
+	// ì¢Œìš° ê°€ì†/ê°ì†
 	if (moveState[RIGHT] && !moveState[LEFT])
 		strafeSpeed = std::lerp(strafeSpeed, currentSpeed, AccMultiply * speedAcc * Delta);
 	else if (!moveState[RIGHT] && moveState[LEFT])
@@ -403,10 +403,10 @@ void Player1st::updateMove(float Delta) {
 	Math::MoveForward(playerPosition, knockbackRotation, knockbackPower * Delta);
 	knockbackPower = std::lerp(knockbackPower, 0.0, 5.0 * Delta);
 
-	// ¸Ê ¹Ù¿îµå¿Í Ãæµ¹À» Ã¼Å©ÇÏ¸é¼­ ÀÌµ¿
+	// ë§µ ë°”ìš´ë“œì™€ ì¶©ëŒì„ ì²´í¬í•˜ë©´ì„œ ì´ë™
 	Math::MoveWithSlide(playerPosition, currentRotation.y, forwardSpeed, strafeSpeed, playerSphere, GLOBAL.mapOOBBdata, Delta);
 
-	// ¸Ê 3ÇÑÁ¤À¸·Î ¶¥ ¹Ù±ùÀ¸·Î ³ª°¡¸é ¶³¾îÁø´Ù.
+	// ë§µ 3í•œì •ìœ¼ë¡œ ë•… ë°”ê¹¥ìœ¼ë¡œ ë‚˜ê°€ë©´ ë–¨ì–´ì§„ë‹¤.
 	if (fallDown) {
 		fallAcc += Delta * 0.5;
 		playerPosition.y -= fallAcc;
@@ -422,29 +422,29 @@ void Player1st::updateMove(float Delta) {
 		}
 	}
 
-	// Ä«¸Ş¶ó À§Ä¡¸¦ ÇÃ·¹ÀÌ¾î À§Ä¡¿Í µ¿±âÈ­ 
+	// ì¹´ë©”ë¼ ìœ„ì¹˜ë¥¼ í”Œë ˆì´ì–´ ìœ„ì¹˜ì™€ ë™ê¸°í™” 
 	cameraPosition = playerPosition;
 }
 
-// ÇÃ·¹ÀÌ¾î À§Ä¡ - ÅÍ·¹ÀÎ Ãæµ¹ Ã³¸®¸¦ ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+// í”Œë ˆì´ì–´ ìœ„ì¹˜ - í„°ë ˆì¸ ì¶©ëŒ ì²˜ë¦¬ë¥¼ ì—…ë°ì´íŠ¸ í•œë‹¤.
 void Player1st::updateTerrainCollision() {
 	terrainUtil.InputPosition(playerPosition);
 
 	if (GLOBAL.mapName.compare("map3") != 0) {
 		terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, playerPosition, 0.0);
 
-		// Ä«¸Ş¶óÀÇ °æ¿ì ÇÃ·¹ÀÌ¾î ¸ğµ¨ÀÇ ½ÇÁ¦ ´« ³ôÀÌ¿¡ À§Ä¡ÇÏµµ·Ï ÇÑ´Ù.
+		// ì¹´ë©”ë¼ì˜ ê²½ìš° í”Œë ˆì´ì–´ ëª¨ë¸ì˜ ì‹¤ì œ ëˆˆ ë†’ì´ì— ìœ„ì¹˜í•˜ë„ë¡ í•œë‹¤.
 		terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, cameraPosition, playerSize.y * 1.5);
 	}
 
-	// ¸Ê3ÀÇ °æ¿ì ´Ù¸¥ ¹æ½ÄÀ¸·Î ÅÍ·¹ÀÎÀ» °Ë»çÇØ¾ß ÇÑ´Ù.
+	// ë§µ3ì˜ ê²½ìš° ë‹¤ë¥¸ ë°©ì‹ìœ¼ë¡œ í„°ë ˆì¸ì„ ê²€ì‚¬í•´ì•¼ í•œë‹¤.
 	else {
 		if (!fallDown) {
 			Ray playerRay = Math::CalcRayVector(xmfloat3(playerPosition.x, playerPosition.y + 40.0, playerPosition.z), xmfloat3(playerPosition.x, playerPosition.y - 40.0, playerPosition.z));
 			float Distance;
 			xmfloat3 newPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, playerRay.Origin, playerRay.Direction, Distance);
 			
-			// ¶¥À» ¹ş¾î³ª¸é ¶³¾îÁø´Ù
+			// ë•…ì„ ë²—ì–´ë‚˜ë©´ ë–¨ì–´ì§„ë‹¤
 			if ((newPosition.x == 0.0 && newPosition.y == 0.0 && newPosition.z == 0.0) || newPosition.y <= -5.0) {
 				cameraPosition.y = playerPosition.y + playerSize.y * 1.5;
 				fallDown = true;
@@ -456,22 +456,22 @@ void Player1st::updateTerrainCollision() {
 	}
 }
 
-// Ä«¸Ş¶ó¸¦ ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
+// ì¹´ë©”ë¼ë¥¼ ì—…ë°ì´íŠ¸ í•œë‹¤.
 void Player1st::updateCamera(float Delta) {
 	//if (currentState == STATE_DEATH) return;
 
-	// º¤ÅÍ ¹× Ä«¸Ş¶ó ÃßÀû ¾÷µ¥ÀÌÆ®
+	// ë²¡í„° ë° ì¹´ë©”ë¼ ì¶”ì  ì—…ë°ì´íŠ¸
 	Math::UpdateVector(playerVector, currentRotation);
 	camera.Track(cameraPosition, playerVector, 0);
 	camera.Rotate(currentRotation.x, currentRotation.y, currentRotation.z + camera.recoilShake);
 
-	// FOV ¾÷µ¥ÀÌÆ®
+	// FOV ì—…ë°ì´íŠ¸
 	GLOBAL.offsetFOV = std::lerp(GLOBAL.offsetFOV, destFOV, Delta * 20.0);
 }
 
-// ÀÚ±â ¼ÒÀ¯ÀÇ ÃÑ °´Ã¼¿¡ À§Ä¡¿Í È¸Àü°¢µµ¸¦ Àü´ŞÇÑ´Ù.
+// ìê¸° ì†Œìœ ì˜ ì´ ê°ì²´ì— ìœ„ì¹˜ì™€ íšŒì „ê°ë„ë¥¼ ì „ë‹¬í•œë‹¤.
 void Player1st::updateGun() {
-	// 1ÀÎÄª ¹«±âÀÌ¹Ç·Î Ä«¸Ş¶ó À§Ä¡¸¦ »ç¿ëÇÑ´Ù.
+	// 1ì¸ì¹­ ë¬´ê¸°ì´ë¯€ë¡œ ì¹´ë©”ë¼ ìœ„ì¹˜ë¥¼ ì‚¬ìš©í•œë‹¤.
 	if (weaponPtr) {
 		weaponPtr->InputPosition(cameraPosition);
 		weaponPtr->inputRotation(currentRotation);
@@ -482,14 +482,14 @@ void Player1st::updateGun() {
 	}
 }
 
-// ÇÃ·¹ÀÌ¾î ¹Ù¿îµå ¾÷µ¥ÀÌÆ®
+// í”Œë ˆì´ì–´ ë°”ìš´ë“œ ì—…ë°ì´íŠ¸
 void Player1st::updateBound() {
 	//if (currentState == STATE_DEATH) return;
 
-	// ¸Ê - ÇÃ·¹ÀÌ¾î Ãæµ¹ ¹Ù¿îµå
+	// ë§µ - í”Œë ˆì´ì–´ ì¶©ëŒ ë°”ìš´ë“œ
 	playerSphere.Update(XMFLOAT3(playerPosition.x, playerPosition.y + 0.5, playerPosition.z), 1.0);
 
-	// ¸ó½ºÅÍ - ÇÃ·¹ÀÌ¾î Ãæµ¹ ¹Ù¿îµå
+	// ëª¬ìŠ¤í„° - í”Œë ˆì´ì–´ ì¶©ëŒ ë°”ìš´ë“œ
 	playerBound.Update(
 		XMFLOAT3(playerPosition.x, playerPosition.y + playerSize.y * 0.5, playerPosition.z), 
 		XMFLOAT3(playerSize.x * 0.5, playerSize.y * 2.0, playerSize.z * 0.5), currentRotation
@@ -511,7 +511,7 @@ void Player1st::updateIndicator() {
 
 
 void Player1st::Update(float Delta) {
-	// ¿£Áö´Ï¾îÀÇ °æ¿ì LESS_COOL_TIME È°¼ºÈ­ ½Ã ¼³Ä¡ ÄğÅ¸ÀÓ 50% °¨¼Ò
+	// ì—”ì§€ë‹ˆì–´ì˜ ê²½ìš° LESS_COOL_TIME í™œì„±í™” ì‹œ ì„¤ì¹˜ ì¿¨íƒ€ì„ 50% ê°ì†Œ
 	if (GLOBAL.buff[LESS_COOL_TIME]) {
 		turretCoolTime -= Delta * 2.0;
 		beaconCoolTime -= Delta * 2.0;
@@ -563,7 +563,7 @@ XMFLOAT3 Player1st::GetSize() {
 }
 
 void Player1st::InputRecoil(float Value) {
-	// RECOIL_INCREASE È°¼ºÈ­ ½Ã ¹İµ¿ 20% Áõ°¡
+	// RECOIL_INCREASE í™œì„±í™” ì‹œ ë°˜ë™ 20% ì¦ê°€
 	float Input = Value;
 	if (GLOBAL.deBuff[RECOIL_INCREASE])
 		Input *= 1.5;
@@ -581,7 +581,7 @@ void Player1st::GiveHeal(int healHP) {
 		if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
 	}
 	else {
-		//À½¼ö¸¦ º¸³» È¸º¹
+		//ìŒìˆ˜ë¥¼ ë³´ë‚´ íšŒë³µ
 		SendMtoPDamagePacket(GLOBAL.myID, 0, -healHP);
 	}
 }
@@ -589,7 +589,7 @@ void Player1st::GiveHeal(int healHP) {
 void Player1st::GiveDamage(int damage) {
 	if (currentState == STATE_DEATH) return;
 
-	// DEFENSE_INCREASE È°¼ºÈ­ ½Ã ¹Ş´Â ´ë¹ÌÁö 20% °¨¼Ò
+	// DEFENSE_INCREASE í™œì„±í™” ì‹œ ë°›ëŠ” ëŒ€ë¯¸ì§€ 20% ê°ì†Œ
 	float Input = damage;
 	if (GLOBAL.buff[DEFENSE_INCREASE])
 		Input *= 0.8;
@@ -615,7 +615,7 @@ void Player1st::GiveDamage(int damage) {
 		}
 	}
 
-	// Ã¼·ÂÀÌ 0ÀÌ µÇ¸é »óÅÂ¸¦ Á×À½À¸·Î º¯°æÇÑ´Ù.
+	// ì²´ë ¥ì´ 0ì´ ë˜ë©´ ìƒíƒœë¥¼ ì£½ìŒìœ¼ë¡œ ë³€ê²½í•œë‹¤.
 	if (currentHP == 0)
 		currentState = STATE_DEATH;
 }
@@ -628,7 +628,7 @@ void Player1st::InputHP(int currentHP) {
 	if (IndicatorPtr) 
 		IndicatorPtr->InputHP(totalHP, this->currentHP);
 
-	// ÀÌÀü Ã¼·Âº¸´Ù ÇöÀç¤À Ã¼·ÂÀÌ ³·À» ‹š¸¸ ÇÇ°İ ÀÌÆÑÆ® Ãâ·Â
+	// ì´ì „ ì²´ë ¥ë³´ë‹¤ í˜„ì¬ã… ì²´ë ¥ì´ ë‚®ì„ ë–„ë§Œ í”¼ê²© ì´íŒ©íŠ¸ ì¶œë ¥
 	if (prevHP > this->currentHP) {
 		scene.AddObject(new PlayerHit, "playerHit", LAYER_UI2);
 		SOUND.hurt.Play();
@@ -637,7 +637,7 @@ void Player1st::InputHP(int currentHP) {
 
 	prevHP = this->currentHP;
 
-	// ÀÎµğÄÉÀÌÅÍ ¾÷µ¥ÀÌÆ®
+	// ì¸ë””ì¼€ì´í„° ì—…ë°ì´íŠ¸
 	if (IndicatorPtr) IndicatorPtr->InputHP(totalHP, this->currentHP);
 
 	if (this->currentHP <= 0) {

@@ -1,7 +1,7 @@
 #include "ClampUtil.h"
 
-// CLAMP_FIX: ´ë»ó °ªÀÌ ÃÖ´ë °ª°ú ÃÖ¼Ò °ª »çÀÌÀÇ °ªÀ» À¯ÁöÇÑ´Ù.
-// CLAMP_RETURN: ´ë»ó °ªÀÌ ÃÖ´ë °ªÀ» ÃÊ°úÇÏ¸é ÃÖ¼Ò °ªÀ¸·Î, ÃÖ¼Ò °ªÀ» ÃÊ°úÇÏ¸é ÃÖ´ë °ªÀ¸·Î º¯°æÇÑ´Ù.
+// CLAMP_FIX: ëŒ€ìƒ ê°’ì´ ìµœëŒ€ ê°’ê³¼ ìµœì†Œ ê°’ ì‚¬ì´ì˜ ê°’ì„ ìœ ì§€í•œë‹¤.
+// CLAMP_RETURN: ëŒ€ìƒ ê°’ì´ ìµœëŒ€ ê°’ì„ ì´ˆê³¼í•˜ë©´ ìµœì†Œ ê°’ìœ¼ë¡œ, ìµœì†Œ ê°’ì„ ì´ˆê³¼í•˜ë©´ ìµœëŒ€ ê°’ìœ¼ë¡œ ë³€ê²½í•œë‹¤.
 void Clamp::ClampValue(float& Value, float Min, float Max, int ClampFlag) {
 	if (Value > Max) {
 		if (ClampFlag == CLAMP_FIX)
@@ -32,8 +32,8 @@ void Clamp::ClampValue(int& Value, int Min, int Max, int ClampFlag) {
 	}
 }
 
-// CLAMP_DIR_LESS: Á¦ÇÑÇÒ °ªÀÌ ´ë»ó °ªº¸´Ù ÀÛ¾Æ¾ß ÇÏ´Â °æ¿ì
-// CLAMP_DIR_GREATER: Á¦ÇÑÇÒ °ªÀÌ ´ë»ó °ªº¸´Ù Ä¿¾ßÇÏ´Â °æ¿ì
+// CLAMP_DIR_LESS: ì œí•œí•  ê°’ì´ ëŒ€ìƒ ê°’ë³´ë‹¤ ìž‘ì•„ì•¼ í•˜ëŠ” ê²½ìš°
+// CLAMP_DIR_GREATER: ì œí•œí•  ê°’ì´ ëŒ€ìƒ ê°’ë³´ë‹¤ ì»¤ì•¼í•˜ëŠ” ê²½ìš°
 void Clamp::LimitValue(float& Value, float LimitValue, int ValueChangeDirection) {
 	if (ValueChangeDirection == CLAMP_DIR_LESS) {
 		if (Value < LimitValue)

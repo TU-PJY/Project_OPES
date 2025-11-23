@@ -13,7 +13,7 @@ DefenseModeMonsterGenerator::DefenseModeMonsterGenerator() {
 		maxGenerateCount = GLOBAL.Map3DefenseEnemyRemained;
 }
 
-// GLOBAL.useServer°¡ trueÀÏ °æ¿ì ¼­¹ö·ÎºÎÅÍ ÆĞÅ¶À» ¹Ş¾Æ ±× ÀÚ¸®¿¡ »ı¼ºÇÑ´Ù.
+// GLOBAL.useServerê°€ trueì¼ ê²½ìš° ì„œë²„ë¡œë¶€í„° íŒ¨í‚·ì„ ë°›ì•„ ê·¸ ìë¦¬ì— ìƒì„±í•œë‹¤.
 void DefenseModeMonsterGenerator::InputCreatePositionAndID(float x, float z, unsigned int ID) {
 	if (!GLOBAL.useServer)
 		return;
@@ -22,7 +22,7 @@ void DefenseModeMonsterGenerator::InputCreatePositionAndID(float x, float z, uns
 	scene.AddObject(new PlantMonster(createPosition, ID, true), std::to_string(ID), LAYER_MONSTER);
 }
 
-// GLOBAL,useServer°¡ trueÀÏ °æ¿ì ¾Æ·¡ ÇÔ¼ö´Â µ¿ÀÛÇÏÁö ¾Ê´Â´Ù.
+// GLOBAL,useServerê°€ trueì¼ ê²½ìš° ì•„ë˜ í•¨ìˆ˜ëŠ” ë™ì‘í•˜ì§€ ì•ŠëŠ”ë‹¤.
 void DefenseModeMonsterGenerator::Update(float Delta) {
 	if (GLOBAL.useServer)
 		return;
@@ -37,40 +37,40 @@ void DefenseModeMonsterGenerator::Update(float Delta) {
 		if (GLOBAL.mapName.compare("map1") == 0) {
 			XMFLOAT2 RandomXZ = Random.GenPointInDonut(30.0, 60.0, XMFLOAT2(-120.0, -120.0));
 
-			// À§Ä¡ ·£´ı
+			// ìœ„ì¹˜ ëœë¤
 			randomPosition.x = RandomXZ.x;
 			randomPosition.z = RandomXZ.y;
 			scene.AddObject(new PlantMonster(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
-			//std::cout << currentGenerateCount << "¹øÂ° »ı¼º" << std::endl;
+			//std::cout << currentGenerateCount << "ë²ˆì§¸ ìƒì„±" << std::endl;
 		}
 
 		if (GLOBAL.mapName.compare("map2") == 0) {
 			XMFLOAT2 RandomXZ = Random.GenPointInDonut(40.0, 70.0, XMFLOAT2(-120.0, -120.0));
 
-			// À§Ä¡ ·£´ı
+			// ìœ„ì¹˜ ëœë¤
 			randomPosition.x = RandomXZ.x;
 			randomPosition.z = RandomXZ.y;
 			scene.AddObject(new Treant(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
-			//std::cout << currentGenerateCount << "¹øÂ° »ı¼º" << std::endl;
+			//std::cout << currentGenerateCount << "ë²ˆì§¸ ìƒì„±" << std::endl;
 		}
 
 		if (GLOBAL.mapName.compare("map3") == 0) {
 			XMFLOAT2 RandomXZ = Random.GenPointInDonut(150.0, 180.0, XMFLOAT2(-120.0, -120.0));
 
-			// À§Ä¡ ·£´ı
+			// ìœ„ì¹˜ ëœë¤
 			randomPosition.x = RandomXZ.x;
 			randomPosition.z = RandomXZ.y;
 			scene.AddObject(new Gazer(randomPosition, currentID, true), std::to_string(currentID), LAYER_MONSTER);
-			//std::cout << currentGenerateCount << "¹øÂ° »ı¼º" << std::endl;
+			//std::cout << currentGenerateCount << "ë²ˆì§¸ ìƒì„±" << std::endl;
 		}
 
 		currentGenerateCount++;
 		currentID++;
 
-		// ÃÖ´ë ½ºÆù È½¼ö¿¡ µµ´ŞÇÏ¸é ½º½º·Î »èÁ¦ÇÏ¿© ¸ó½ºÅÍ ½ºÆùÀ» Áß´ÜÇÑ´Ù.
+		// ìµœëŒ€ ìŠ¤í° íšŸìˆ˜ì— ë„ë‹¬í•˜ë©´ ìŠ¤ìŠ¤ë¡œ ì‚­ì œí•˜ì—¬ ëª¬ìŠ¤í„° ìŠ¤í°ì„ ì¤‘ë‹¨í•œë‹¤.
 		if (currentGenerateCount == maxGenerateCount) {
 			scene.DeleteObject(this);
-			//std::cout << "Á¦³Ê·¹ÀÌÅÍ »èÁ¦µÊ" << std::endl;
+			//std::cout << "ì œë„ˆë ˆì´í„° ì‚­ì œë¨" << std::endl;
 		}
 	}
 }

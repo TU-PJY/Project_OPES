@@ -36,31 +36,31 @@ enum class PacketType :unsigned int {
     
 };
 
-constexpr int MONSTER_TYPE1 = 1;//²É
-constexpr int MONSTER_TYPE2 = 2;//½ºÄİÇÇ¿Â
+constexpr int MONSTER_TYPE1 = 1;//ê½ƒ
+constexpr int MONSTER_TYPE2 = 2;//ìŠ¤ì½œí”¼ì˜¨
 
-// Ã¤ÆÃ ÆĞÅ¶ ±¸Á¶Ã¼
+// ì±„íŒ… íŒ¨í‚· êµ¬ì¡°ì²´
 struct ChatPacket_StoC {
-    PacketType type;  // Ç×»ó PacketType::CHAT
+    PacketType type;  // í•­ìƒ PacketType::CHAT
     unsigned int id;
     char message[MAX_SOCKBUF];
 
 };
 struct ChatPacket_CtoS {
-    PacketType type;  // Ç×»ó PacketType::CHAT
+    PacketType type;  // í•­ìƒ PacketType::CHAT
     char message[MAX_SOCKBUF];
 
 };
-// ÀÌµ¿ ÆĞÅ¶ ±¸Á¶Ã¼
+// ì´ë™ íŒ¨í‚· êµ¬ì¡°ì²´
 struct MovePacket_CtoS {
-    PacketType type;  // Ç×»ó PacketType::MOVE
+    PacketType type;  // í•­ìƒ PacketType::MOVE
     //int direction;    // 0: UP, 1: DOWN, 2: LEFT, 3: RIGHT
     float x;
     float y;
     float z;
 };
 struct MovePacket_StoC {
-    PacketType type;  // Ç×»ó PacketType::MOVE
+    PacketType type;  // í•­ìƒ PacketType::MOVE
     unsigned int id;
     float x;
     float y;
@@ -110,10 +110,10 @@ struct ExistingClientsDataPacket {
     unsigned int id;
     int size;
     char name[20];
-   //unsigned int count; // Å¬¶óÀÌ¾ğÆ® ¼ö
+   //unsigned int count; // í´ë¼ì´ì–¸íŠ¸ ìˆ˜
    //struct {
    //    unsigned int id;
-   //} clients[1024]; // ¶Ç´Â µ¿Àû Å©±â·Î °ü¸®
+   //} clients[1024]; // ë˜ëŠ” ë™ì  í¬ê¸°ë¡œ ê´€ë¦¬
 };
 
 struct Player2Monster {
@@ -143,15 +143,15 @@ struct MonsterMovePacket{
     float angle_y;
 };
 //----------------------------------7/22
- // ÇÃ·¹ÀÌ¾î°¡ ¸ó½ºÅÍ ÇÇ°İ ½Ã Àü¼Û
+ // í”Œë ˆì´ì–´ê°€ ëª¬ìŠ¤í„° í”¼ê²© ì‹œ ì „ì†¡
 struct  PtoMDamagePacket {
     PacketType type;
     unsigned int monsterID;
     int attackHp;
 };
 
-// ¸ó½ºÅÍ°¡ ÇÃ·¹ÀÌ¾î ÇÇ°İ ½Ã Àü¼Û
-// ¸ğµç ÇÃ·¹ÀÌ¾î °øÅë
+// ëª¬ìŠ¤í„°ê°€ í”Œë ˆì´ì–´ í”¼ê²© ì‹œ ì „ì†¡
+// ëª¨ë“  í”Œë ˆì´ì–´ ê³µí†µ
 struct MtoPDamagePacket {
     PacketType type;
     unsigned int playerID;
@@ -159,55 +159,55 @@ struct MtoPDamagePacket {
     int attackHp;
 };
 
-// ¿£Áö´Ï¾î ±¸Á¶¹° ¼³Ä¡ ½Ã Àü¼Û
+// ì—”ì§€ë‹ˆì–´ êµ¬ì¡°ë¬¼ ì„¤ì¹˜ ì‹œ ì „ì†¡
 struct EngineerInstallPacket {
     PacketType Ptype;
-    int Etype; // ±¸Á¶¹° Å¸ÀÔ
-    unsigned int ID; // ±¸Á¶¹° ¾ÆÀÌµğ
-    float rotY; // ±¸Á¶¹° y È¸Àü
-    float posX; // ±¸Á¶¹° ¼³Ä¡ À§Ä¡
+    int Etype; // êµ¬ì¡°ë¬¼ íƒ€ì…
+    unsigned int ID; // êµ¬ì¡°ë¬¼ ì•„ì´ë””
+    float rotY; // êµ¬ì¡°ë¬¼ y íšŒì „
+    float posX; // êµ¬ì¡°ë¬¼ ì„¤ì¹˜ ìœ„ì¹˜
     float posY;
     float posZ;
 };
 
-// ¿£Áö´Ï¾î ¼³Ä¡ ±¸Á¶¹° Ã¼·Â 
-// ´ë¹ÌÁö¸¦ ¹ŞÀ» ¶§ ¸¶´Ù Àü¼Û
+// ì—”ì§€ë‹ˆì–´ ì„¤ì¹˜ êµ¬ì¡°ë¬¼ ì²´ë ¥ 
+// ëŒ€ë¯¸ì§€ë¥¼ ë°›ì„ ë•Œ ë§ˆë‹¤ ì „ì†¡
 struct EngineerObjectPacket {
     PacketType type;
     unsigned int ID;
     int hp;
 };
 
-// µğÆæ½º ¸ğµå Áß¾Ó °Ç¹° Ã¼·Â
+// ë””íœìŠ¤ ëª¨ë“œ ì¤‘ì•™ ê±´ë¬¼ ì²´ë ¥
 struct CenterBuildingPacket{
     PacketType type;
-    int damage;//¼­¹ö->Å¬¶ó = ¼¾ÅÍÃ¼·Â / Å¬¶ó->¼­¹ö = ¹ŞÀº µ¥¹ÌÁö º¸³»ÁÜ
+    int damage;//ì„œë²„->í´ë¼ = ì„¼í„°ì²´ë ¥ / í´ë¼->ì„œë²„ = ë°›ì€ ë°ë¯¸ì§€ ë³´ë‚´ì¤Œ
 };
 
 
-// ¼ö·ùÅº ´øÁú ½Ã Àü¼Û
-// ¹ŞÀº À§Ä¡ ¹× °¢µµ·Î »ı¼º
+// ìˆ˜ë¥˜íƒ„ ë˜ì§ˆ ì‹œ ì „ì†¡
+// ë°›ì€ ìœ„ì¹˜ ë° ê°ë„ë¡œ ìƒì„±
 struct GrenadePacket {
     PacketType type;
-    float posX; // ¼ö·ùÅº »ı¼º À§Ä¡
+    float posX; // ìˆ˜ë¥˜íƒ„ ìƒì„± ìœ„ì¹˜
     float posY;
     float posZ;
 
-    float rotX; // ¼ö·ùÅº »ı¼º °¢µµ
+    float rotX; // ìˆ˜ë¥˜íƒ„ ìƒì„± ê°ë„
     float rotY;
     float rotZ;
 };
 
-// ÇÃ·¹ÀÌ¾î ³¡ÁöÁ¡ µµÂø ¿©ºÎ
-// ÇÃ·¹ÀÌ¾î µµÂø ½Ã Ä«¿îÆ®°¡ 1 Áõ°¡
-// 3¸í ÇÃ·¹ÀÌ¾î°¡ µµÂøÇÏ¸é Ä«¿îÆ®°¡ 3ÀÌ µÇ¾î ´ÙÀ½ ¸ÊÀ¸·Î ÀüÈ¯
+// í”Œë ˆì´ì–´ ëì§€ì  ë„ì°© ì—¬ë¶€
+// í”Œë ˆì´ì–´ ë„ì°© ì‹œ ì¹´ìš´íŠ¸ê°€ 1 ì¦ê°€
+// 3ëª… í”Œë ˆì´ì–´ê°€ ë„ì°©í•˜ë©´ ì¹´ìš´íŠ¸ê°€ 3ì´ ë˜ì–´ ë‹¤ìŒ ë§µìœ¼ë¡œ ì „í™˜
 
 struct PlayerArrivalPacket {
     PacketType type;
     unsigned int playerID;
     bool arrive;
 };
-//µğÆÒ½º ¸ğµå ÇÃ·»Æ® ÆĞÅ¶
+//ë””íŒ¬ìŠ¤ ëª¨ë“œ í”Œë ŒíŠ¸ íŒ¨í‚·
 struct DefenseRandomPacket {
     PacketType type;
     unsigned int monsterID;
@@ -264,8 +264,8 @@ struct PlayerUpgradePacket {
 struct StageTimerPacket {
     PacketType type = PacketType::STAGE_TIMER;
     unsigned int roomID;
-    int stage;               // ÇöÀç ½ºÅ×ÀÌÁö(1,2,3..)
-    int remainingSeconds;    // ³²Àº ½Ã°£(ÃÊ, 0~60)
-    bool running;            // true=ÁøÇàÁß, false=0ÃÊ µµ´Ş(ÃÖÁ¾ 1È¸)
+    int stage;               // í˜„ì¬ ìŠ¤í…Œì´ì§€(1,2,3..)
+    int remainingSeconds;    // ë‚¨ì€ ì‹œê°„(ì´ˆ, 0~60)
+    bool running;            // true=ì§„í–‰ì¤‘, false=0ì´ˆ ë„ë‹¬(ìµœì¢… 1íšŒ)
 };
 #pragma pack(pop)

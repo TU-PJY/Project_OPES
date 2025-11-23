@@ -10,7 +10,7 @@
 #include "MathUtil.h"
 #include "RootConstantUtil.h"
 
-// ¼±ÀÇ »ö»óÀ» ÁöÁ¤ÇÑ´Ù.
+// ì„ ì˜ ìƒ‰ìƒì„ ì§€ì •í•œë‹¤.
 void LineBrush::SetColor(float R, float G, float B) {
 	LineColor.x = R;
 	LineColor.y = G;
@@ -31,7 +31,7 @@ void LineBrush::Init() {
 	camera.UpdateShaderVariables();
 }
 
-// ¼±À» ±×¸°´Ù.
+// ì„ ì„ ê·¸ë¦°ë‹¤.
 void LineBrush::Draw(float X1, float Y1, float X2, float Y2, float Width, float Alpha) {
 	Init();
 

@@ -57,7 +57,7 @@
 #include "../Server_OPES/Protocol.h"
 
 
-// ½¬ÇÁÆ® ´©¸£±â ±ÍÂú¾Æ¼­ ¸¸µç º°Äª
+// ì‰¬í”„íŠ¸ ëˆ„ë¥´ê¸° ê·€ì°®ì•„ì„œ ë§Œë“  ë³„ì¹­
 using xmfloat3 = XMFLOAT3;
 using xmfloat2 = XMFLOAT2;
 
@@ -65,8 +65,8 @@ extern std::mutex PacketMutex;
 
 
 typedef struct{
-	XMVECTOR Origin;     // ½ÃÀÛ À§Ä¡
-	XMVECTOR Direction;  // Á¤±ÔÈ­µÈ ¹æÇâ
+	XMVECTOR Origin;     // ì‹œì‘ ìœ„ì¹˜
+	XMVECTOR Direction;  // ì •ê·œí™”ëœ ë°©í–¥
 	float    Distance;
 }Ray;
 
@@ -76,7 +76,7 @@ typedef struct {
 	float height;
 }FlameOffset;
 
-// ÇÃ·¹ÀÌ¾î »óÅÂ ¿­°ÅÇü
+// í”Œë ˆì´ì–´ ìƒíƒœ ì—´ê±°í˜•
 enum PlayerState {
 	STATE_IDLE,
 	STATE_MOVE_FRONT,
@@ -84,7 +84,7 @@ enum PlayerState {
 	STATE_DEATH
 };
 
-// ·»´õ¸µ Å¸ÀÔ ¿­°ÅÇü
+// ë Œë”ë§ íƒ€ì… ì—´ê±°í˜•
 enum RenderTypeEnum {
 	RENDER_TYPE_3D, 
 	RENDER_TYPE_3D_ORTHO, 
@@ -93,7 +93,7 @@ enum RenderTypeEnum {
 	RENDER_TYPE_2D_STATIC
 };
 
-// ±íÀÌ °Ë»ç Å¸ÀÔ ¿­°ÅÇü
+// ê¹Šì´ ê²€ì‚¬ íƒ€ì… ì—´ê±°í˜•
 enum DepthTestTypeEnum {
 	DEPTH_TEST_DEFAULT,
 	DEPTH_TEST_NOWRITE,
@@ -101,7 +101,7 @@ enum DepthTestTypeEnum {
 	DEPTH_TEST_NO_CULLING
 };
 
-// ÅØ½ºÃ³ ¹İÀü Å¸ÀÔ ¿­°ÅÇü
+// í…ìŠ¤ì²˜ ë°˜ì „ íƒ€ì… ì—´ê±°í˜•
 enum FlipTypeEnum {
 	FLIP_TYPE_NONE,
 	FLIP_TYPE_H,
@@ -109,63 +109,63 @@ enum FlipTypeEnum {
 	FLIP_TYPE_HV
 };
 
-// Á¶¸í »ç¿ë ¿©ºÎ ¿­°ÅÇü
+// ì¡°ëª… ì‚¬ìš© ì—¬ë¶€ ì—´ê±°í˜•
 enum UseLightEnum {
 	DISABLE_LIGHT,
 	ENABLE_LIGHT
 };
 
-// ¾È°³ »ç¿ë ¿©ºÎ ¿­°ÅÇü
+// ì•ˆê°œ ì‚¬ìš© ì—¬ë¶€ ì—´ê±°í˜•
 enum UseFogenum {
 	DISABLE_FOG,
 	ENABLE_FOG
 };
 
-// ¸Å½¬ ÆÄÀÏ Å¸ÀÔ ¿­°ÅÇü
+// ë§¤ì‰¬ íŒŒì¼ íƒ€ì… ì—´ê±°í˜•
 enum MeshTypeEnum {
 	MESH_TYPE_TEXT,
 	MESH_TYPE_BIN,
 	MESH_TYPE_FBX
 };
 
-// ÅØ½ºÃ³ ÆÄÀÏ Å¸ÀÔ ¿­°ÅÇü
+// í…ìŠ¤ì²˜ íŒŒì¼ íƒ€ì… ì—´ê±°í˜•
 enum TextureTypeEnum {
 	TEXTURE_TYPE_WIC,
 	TEXTURE_TYPE_DDS,
 	TEXTURE_TYPE_WIC_CROP
 };
 
-// FBX ÈüÅ¸ÀÔ ¿­°ÅÇü
+// FBX í™íƒ€ì… ì—´ê±°í˜•
 enum FBXTypeEnum {
 	FBX_ANIMATED,
 	FBX_STATIC
 };
 
-// Bool Switch µ¿ÀÛ Å¸ÀÔ
+// Bool Switch ë™ì‘ íƒ€ì…
 enum BoolSwitchFlagEnum {
 	KEY_DOWN_TRUE,
 	KEY_UP_TRUE
 };
 
-// Å¬·¥ÇÁ ÇÃ·¡±× Å¸ÀÔ
+// í´ë¨í”„ í”Œë˜ê·¸ íƒ€ì…
 enum ClampFlagTypeEnum {
 	CLAMP_FIX,
 	CLAMP_RETURN
 };
 
-// Å¬·¥ÇÁ °ª º¯È­ ¹æÇâ Å¸ÀÔ
+// í´ë¨í”„ ê°’ ë³€í™” ë°©í–¥ íƒ€ì…
 enum ClampDirectionEnum {
 	CLAMP_DIR_LESS,
 	CLAMP_DIR_GREATER
 };
 
-// ¿ÀºêÁ§Æ® »èÁ¦ ¹üÀ§ Å¸ÀÔ
+// ì˜¤ë¸Œì íŠ¸ ì‚­ì œ ë²”ìœ„ íƒ€ì…
 enum ObjectDeleteRangeTypeEnum {
 	DELETE_RANGE_SINGLE,
 	DELETE_RANGE_ALL
 };
 
-// ÅØ½ºÆ® Á¤·Ä Å¸ÀÔ
+// í…ìŠ¤íŠ¸ ì •ë ¬ íƒ€ì…
 enum TextAlignEnum {
 	ALIGN_DEFAULT,
 	ALIGN_MIDDLE,
@@ -175,14 +175,14 @@ enum TextAlignEnum {
 	HEIGHT_UNDER
 };
 
-// ¿ÀºêÁ§Æ® º¤ÅÍ ±¸Á¶Ã¼
+// ì˜¤ë¸Œì íŠ¸ ë²¡í„° êµ¬ì¡°ì²´
 typedef struct Vector {
 	DirectX::XMFLOAT3 Look;
 	DirectX::XMFLOAT3 Right;
 	DirectX::XMFLOAT3 Up;
 }ObjectVector;
 
-// Å°º¸µå ÀÌº¥Æ® ±¸Á¶Ã¼
+// í‚¤ë³´ë“œ ì´ë²¤íŠ¸ êµ¬ì¡°ì²´
 typedef struct {
 	HWND hWnd;
 	UINT Type;
@@ -190,7 +190,7 @@ typedef struct {
 	LPARAM lParam;
 }KeyEvent;
 
-// ¸¶¿ì½º ÀÌº¥Æ® ±¸Á¶Ã¼
+// ë§ˆìš°ìŠ¤ ì´ë²¤íŠ¸ êµ¬ì¡°ì²´
 typedef struct {
 	HWND hWnd;
 	UINT Type;
@@ -198,50 +198,50 @@ typedef struct {
 	LPARAM lParam;
 }MouseEvent;
 
-// ¸¶¿ì½º ¸ğ¼Ç ÀÌº¥Æ® ±¸Á¶Ã¼
+// ë§ˆìš°ìŠ¤ ëª¨ì…˜ ì´ë²¤íŠ¸ êµ¬ì¡°ì²´
 typedef struct {
 	HWND CaptureState;
 	POINT Motion;
 }MotionEvent;
 
-// µğ¹ÙÀÌ½º, Ä¿¸Çµå¸®½ºÆ® ÅëÇÕ ±¸Á¶Ã¼
+// ë””ë°”ì´ìŠ¤, ì»¤ë§¨ë“œë¦¬ìŠ¤íŠ¸ í†µí•© êµ¬ì¡°ì²´
 typedef struct {
 	ID3D12Device* Device;
 	ID3D12GraphicsCommandList* CmdList;
 }DeviceSystem;
 
-// Àü¿ª ½Ã½ºÅÛ
+// ì „ì—­ ì‹œìŠ¤í…œ
 extern DeviceSystem GlobalSystem;
 
-// ¿ÀºêÁ§Æ®¿¡¼­ °ø¿ëÀ¸·Î »ç¿ëÇÏ´Â Ä¿¸ÇÆ® ¸®½ºÆ®
+// ì˜¤ë¸Œì íŠ¸ì—ì„œ ê³µìš©ìœ¼ë¡œ ì‚¬ìš©í•˜ëŠ” ì»¤ë§¨íŠ¸ ë¦¬ìŠ¤íŠ¸
 extern ID3D12GraphicsCommandList* GlobalCommandList;
 
-// ¿ÀºêÁ§Æ® ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³
+// ì˜¤ë¸Œì íŠ¸ ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜
 extern ID3D12RootSignature* ObjectShaderRootSignature;
 
-// ÀÌ¹ÌÁö ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³
+// ì´ë¯¸ì§€ ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜
 extern ID3D12RootSignature* ImageShaderRootSignature;
 
-// ¼± ½¦ÀÌ´õ ·çÆ® ½Ã±×´ÏÃ³
+// ì„  ì‰ì´ë” ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜
 extern ID3D12RootSignature* LineShaderRootSignature;
 
-// ¹Ù¿îµå¹Ú½º ·çÆ® ½Ã±×´ÏÃ³
+// ë°”ìš´ë“œë°•ìŠ¤ ë£¨íŠ¸ ì‹œê·¸ë‹ˆì²˜
 extern ID3D12RootSignature* BoundboxShaderRootSignature;
 
-// Àü¿ª HWND
+// ì „ì—­ HWND
 extern HWND GlobalHWND;
 
-// ÀÏ¹İ ·»´õ¸µ DSV
+// ì¼ë°˜ ë Œë”ë§ DSV
 extern D3D12_CPU_DESCRIPTOR_HANDLE DsvCPUDescriptorHandle;
 
-// ÀÏ¹İ ·»´õ¸µ RTV
+// ì¼ë°˜ ë Œë”ë§ RTV
 extern D3D12_CPU_DESCRIPTOR_HANDLE RtvCPUDescriptorHandle;
 
 // screen size
 extern int SCREEN_WIDTH, SCREEN_HEIGHT;
 #define ASPECT (float(SCREEN_WIDTH) / float(SCREEN_HEIGHT))
 
-// ³×Æ®¿öÅ© ½º·¹µå ÇÔ¼ö
+// ë„¤íŠ¸ì›Œí¬ ìŠ¤ë ˆë“œ í•¨ìˆ˜
 void NetworkThread(bool localServer, const wchar_t* cmdLine);
 
 using namespace DirectX;

@@ -1,8 +1,8 @@
 #include "ShaderUtil.h"
 
-// ·¹½ºÅÍ¶óÀÌÀú¸¦ ¿©±â¿¡ ÀÛ¼ºÇÑ´Ù.
+// ë ˆìŠ¤í„°ë¼ì´ì €ë¥¼ ì—¬ê¸°ì— ì‘ì„±í•œë‹¤.
 
-// ÀÏ¹İ ·¹½ºÅÍ ¶óÀÌÀú
+// ì¼ë°˜ ë ˆìŠ¤í„° ë¼ì´ì €
 D3D12_RASTERIZER_DESC Shader::CreateRasterizerState() {
 	D3D12_RASTERIZER_DESC RasterizerDesc;
 	::ZeroMemory(&RasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
@@ -40,8 +40,8 @@ D3D12_RASTERIZER_DESC Shader::CreateNoneDepthRasterizerState() {
 }
 
 
-// ¹Ù¿îµå¹Ú½º Àü¿ë ·¹½ºÅÍ¶óÀÌÀú
-// ¿ÍÀÌ¾îÇÁ·¹ÀÓÀ¸·Î ¸Å½¬¸¦ ·»´õ¸µÇÏ°í Àº¸é Ã³¸®¸¦ ºñÈ°¼ºÈ­ ÇÑ´Ù.
+// ë°”ìš´ë“œë°•ìŠ¤ ì „ìš© ë ˆìŠ¤í„°ë¼ì´ì €
+// ì™€ì´ì–´í”„ë ˆì„ìœ¼ë¡œ ë§¤ì‰¬ë¥¼ ë Œë”ë§í•˜ê³  ì€ë©´ ì²˜ë¦¬ë¥¼ ë¹„í™œì„±í™” í•œë‹¤.
 D3D12_RASTERIZER_DESC Shader::CreateBoundboxRasterizerState() {
 	D3D12_RASTERIZER_DESC RasterizerDesc;
 	::ZeroMemory(&RasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
@@ -60,7 +60,7 @@ D3D12_RASTERIZER_DESC Shader::CreateBoundboxRasterizerState() {
 	return(RasterizerDesc);
 }
 
-// 1ÀÎÄª ¿ÀºêÁ§Æ® ·»´õ¿ë ·¹½ºÅÍ¶óÀÌÀú
+// 1ì¸ì¹­ ì˜¤ë¸Œì íŠ¸ ë Œë”ìš© ë ˆìŠ¤í„°ë¼ì´ì €
 D3D12_RASTERIZER_DESC Shader::CreateNoneCullingRasterizerState() {
 	D3D12_RASTERIZER_DESC RasterizerDesc;
 	::ZeroMemory(&RasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));

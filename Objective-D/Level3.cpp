@@ -32,7 +32,7 @@ void Level3::Start() {
 	GLOBAL.stage = 3;
 	GLOBAL.controlEnabled = true;
 
-	// VISION_RANGE_REDUCE È°¼ºÈ­ ½Ã ½Ã¾ß°¡ Âª¾ÆÁø´Ù.
+	// VISION_RANGE_REDUCE í™œì„±í™” ì‹œ ì‹œì•¼ê°€ ì§§ì•„ì§„ë‹¤.
 	FOG_DATA FogData{};
 	if (GLOBAL.deBuff[VISION_RANGE_REDUCE]) {
 		FogData = {

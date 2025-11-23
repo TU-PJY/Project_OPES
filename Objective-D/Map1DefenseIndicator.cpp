@@ -37,14 +37,14 @@ void DefenseIndicator::Update(float Delta) {
 
 	renderString = std::to_string(totalRemain) + "/" + std::to_string(currentRemain);
 
-	// ÀûÀÌ Ã³Ä¡µÉ¶§¸¶´Ù ÇÇµå¹éÀ» º¸¿©ÁØ´Ù.
+	// ì ì´ ì²˜ì¹˜ë ë•Œë§ˆë‹¤ í”¼ë“œë°±ì„ ë³´ì—¬ì¤€ë‹¤.
 	if (prevRemain != currentRemain) {
 		sizeOffset = 0.1;
 		prevRemain = currentRemain;
 	}
 	sizeOffset = std::lerp(sizeOffset, 0.0, 5.0 * Delta);
 
-	// µğÆæ½º¸ğµå ÀûÀ» ¸ğµÎ ÀâÀ¸¸é È­¸é À§·Î ¿Ã¶ó°¡¸é¼­ »èÁ¦µÈ´Ù.
+	// ë””íœìŠ¤ëª¨ë“œ ì ì„ ëª¨ë‘ ì¡ìœ¼ë©´ í™”ë©´ ìœ„ë¡œ ì˜¬ë¼ê°€ë©´ì„œ ì‚­ì œëœë‹¤.
 	if (currentRemain == 0) {
 		renderHeight += Delta * 0.5;
 		if (renderHeight >= 0.3) {
@@ -55,19 +55,19 @@ void DefenseIndicator::Update(float Delta) {
 }
 
 void DefenseIndicator::Render() {
-	// ¹è°æ
+	// ë°°ê²½
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, 0.0, 1.0 - 0.15 + renderHeight);
 	Transform::Scale2D(ScaleMatrix, 0.6 + sizeOffset, 0.3 + sizeOffset);
 	Render2D(TEX.ColorTex, 0.5);
 
-	// Àû ÀÌ¹ÌÁö
+	// ì  ì´ë¯¸ì§€
 	/*BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, -0.2, 1.0 - 0.15 + renderHeight);
 	Transform::Scale2D(ScaleMatrix, 0.2 + sizeOffset, 0.2 + sizeOffset);
 	Render2D(TEX.UI_map1Enemy);*/
 
-	// ÅØ½ºÆ®
+	// í…ìŠ¤íŠ¸
 	text.Render(XMFLOAT2(0.0, 1.0 - 0.07 + renderHeight), 0.15 + sizeOffset, renderString);
 }
 

@@ -3,27 +3,27 @@
 
 class ShadowMap {
 private:
-    // ¸®¼Ò½º
+    // ë¦¬ì†ŒìŠ¤
     ComPtr<ID3D12Resource> mShadowMap;
 
-    // µğ½ºÅ©¸³ÅÍ Èü
+    // ë””ìŠ¤í¬ë¦½í„° í™
     ComPtr<ID3D12DescriptorHeap> mDsvHeap;
-    ComPtr<ID3D12DescriptorHeap> mSrvHeap;      // SRV¿ë
-    ComPtr<ID3D12DescriptorHeap> mSamplerHeap;  // »ùÇÃ·¯¿ë
+    ComPtr<ID3D12DescriptorHeap> mSrvHeap;      // SRVìš©
+    ComPtr<ID3D12DescriptorHeap> mSamplerHeap;  // ìƒ˜í”ŒëŸ¬ìš©
 
-    // CPU ÇÚµé (Create*View¿¡ ¾²´Â ÇÚµé)
+    // CPU í•¸ë“¤ (Create*Viewì— ì“°ëŠ” í•¸ë“¤)
     D3D12_CPU_DESCRIPTOR_HANDLE shadowDSVHandle{};
     D3D12_CPU_DESCRIPTOR_HANDLE shadowSRV_CbvSrvUavHeapHandle{};
     D3D12_CPU_DESCRIPTOR_HANDLE shadowSamplerDescHeapHandle{};
 
-    // (¼±ÅÃ) GPU ÇÚµé: ¼ÎÀÌ´õ¿¡¼­ ¹ÙÀÎµùÇÒ ¶§ ÇÊ¿ä
+    // (ì„ íƒ) GPU í•¸ë“¤: ì…°ì´ë”ì—ì„œ ë°”ì¸ë”©í•  ë•Œ í•„ìš”
     D3D12_GPU_DESCRIPTOR_HANDLE shadowSRV_GpuHandle{};
     D3D12_GPU_DESCRIPTOR_HANDLE shadowSampler_GpuHandle{};
 
 public:
     void Init(ID3D12Device*& device);
 
-    // (¼±ÅÃ) ¿ÜºÎ ¹ÙÀÎµù¿ë Á¢±ÙÀÚ
+    // (ì„ íƒ) ì™¸ë¶€ ë°”ì¸ë”©ìš© ì ‘ê·¼ì
     D3D12_CPU_DESCRIPTOR_HANDLE DsvCpu() const { return shadowDSVHandle; }
     D3D12_GPU_DESCRIPTOR_HANDLE SrvGpu() const { return shadowSRV_GpuHandle; }
     D3D12_GPU_DESCRIPTOR_HANDLE SamplerGpu() const { return shadowSampler_GpuHandle; }

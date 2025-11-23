@@ -16,13 +16,13 @@ void AdventureTimer::Update(float Delta) {
 }
 
 void AdventureTimer::Render() {
-	// πË∞Ê
+	// Î∞∞Í≤Ω
 	BeginRender(RENDER_TYPE_2D);
 	Transform::Move2D(TranslateMatrix, 0.0, 1.0 - 0.15 + renderHeight);
 	Transform::Scale2D(ScaleMatrix, 0.6, 0.3 + sizeOffset);
 	Render2D(TEX.ColorTex, 0.5);
 
-	// ≈ÿΩ∫∆Æ
+	// ÌÖçÏä§Ìä∏
 	text.Render(XMFLOAT2(0.0, 1.0 - 0.07 + renderHeight), 0.15, renderString);
 }
 

@@ -7,8 +7,8 @@
 #include <numeric>
 
 static float Lerp(float a, float b, float t) { return a + (b - a) * t; }
-static float Fade(float t) { return t * t * t * (t * (t * 6 - 15) + 10); } // PerlinÀÇ quintic
-static int   Perm[512]; // ½Ãµå·Î Ã¤¿ì´Â ¼ø¿­ Å×ÀÌºí
+static float Fade(float t) { return t * t * t * (t * (t * 6 - 15) + 10); } // Perlinì˜ quintic
+static int   Perm[512]; // ì‹œë“œë¡œ ì±„ìš°ëŠ” ìˆœì—´ í…Œì´ë¸”
 
 static void InitPerm(uint32_t seed) {
 	std::mt19937 rng(seed);
@@ -40,26 +40,26 @@ static float Perlin3(float x, float y, float z) {
 				Grad(Perm[BA + 1], x - 1, y, z - 1), u),
 				Lerp(Grad(Perm[AB + 1], x, y - 1, z - 1),
 					Grad(Perm[BB + 1], x - 1, y - 1, z - 1), u), v), w);
-	// °á°ú ¹üÀ§ ´ë·« [-1,1]
+	// ê²°ê³¼ ë²”ìœ„ ëŒ€ëµ [-1,1]
 	return res;
 }
 
 struct ShakeParams {
-	float duration = 0.35f;     // ÀüÃ¼ ±æÀÌ
-	float freqPos = 10.0f;     // À§Ä¡ ³ëÀÌÁî ÁÖÆÄ¼ö(Hz)
-	float freqRot = 8.0f;      // È¸Àü ³ëÀÌÁî ÁÖÆÄ¼ö(Hz)
-	xmfloat3  ampPos = { 0.02f, 0.02f, 0.01f }; // m ¶Ç´Â world units
+	float duration = 0.35f;     // ì „ì²´ ê¸¸ì´
+	float freqPos = 10.0f;     // ìœ„ì¹˜ ë…¸ì´ì¦ˆ ì£¼íŒŒìˆ˜(Hz)
+	float freqRot = 8.0f;      // íšŒì „ ë…¸ì´ì¦ˆ ì£¼íŒŒìˆ˜(Hz)
+	xmfloat3  ampPos = { 0.02f, 0.02f, 0.01f }; // m ë˜ëŠ” world units
 	xmfloat3  ampRot = { 0.6f, 0.8f, 0.3f };    // degrees
-	float decayK = 6.0f;      // Áö¼ö °¨¼è ¼¼±â (Ä¿Áú¼ö·Ï »¡¸® Á×À½)
-	uint32_t seed = 12345;     // ½Ãµå(¹«±â¸¶´Ù ´Ù¸£°Ô ÁÖ¸é ÆĞÅÏ Â÷º°È­)
-	float   phase = 0.0f;      // ½Ã°£ ¿ÀÇÁ¼Â(¼îÆ®¸¶´Ù ·£´ı Ãß°¡)
-	float   distanceFalloffK = 0.06f; // °Å¸® °¨¼è °è¼ö
+	float decayK = 6.0f;      // ì§€ìˆ˜ ê°ì‡  ì„¸ê¸° (ì»¤ì§ˆìˆ˜ë¡ ë¹¨ë¦¬ ì£½ìŒ)
+	uint32_t seed = 12345;     // ì‹œë“œ(ë¬´ê¸°ë§ˆë‹¤ ë‹¤ë¥´ê²Œ ì£¼ë©´ íŒ¨í„´ ì°¨ë³„í™”)
+	float   phase = 0.0f;      // ì‹œê°„ ì˜¤í”„ì…‹(ì‡¼íŠ¸ë§ˆë‹¤ ëœë¤ ì¶”ê°€)
+	float   distanceFalloffK = 0.06f; // ê±°ë¦¬ ê°ì‡  ê³„ìˆ˜
 };
 
 struct ShakeState {
 	bool   active = false;
-	float  t = 0.0f;     // ´©Àû ½Ã°£(ÃÊ)
-	float  life = 0.0f;  // ³²Àº ½Ã°£
+	float  t = 0.0f;     // ëˆ„ì  ì‹œê°„(ì´ˆ)
+	float  life = 0.0f;  // ë‚¨ì€ ì‹œê°„
 	ShakeParams P;
 };
 ShakeState gShake;
@@ -68,13 +68,13 @@ static float Attenuation(float d, float k) { return 1.0f / (1.0f + k * d * d); }
 
 inline void StartShake(ShakeState& S, const ShakeParams& P, float distanceToEvent = 0.0f) {
 	S.P = P;
-	S.P.phase = std::uniform_real_distribution<float>(0.0f, 1000.0f)(std::mt19937(P.seed)); // ÀÓÀÇ À§»ó
-	InitPerm(P.seed); // ½Ãµå ±â¹İ ³ëÀÌÁî Å×ÀÌºí
+	S.P.phase = std::uniform_real_distribution<float>(0.0f, 1000.0f)(std::mt19937(P.seed)); // ì„ì˜ ìœ„ìƒ
+	InitPerm(P.seed); // ì‹œë“œ ê¸°ë°˜ ë…¸ì´ì¦ˆ í…Œì´ë¸”
 	S.t = 0.0f;
 	S.life = P.duration;
 	S.active = true;
 
-	// °Å¸® °¨¼è¸¦ ½ÃÀÛ ¼¼±â¿¡ ¹İ¿µÇÏ°í ½Í´Ù¸é, ¹Ù·Î amp¿¡ °öÇÏ°Å³ª º°µµ ½ºÄÉÀÏ À¯Áö
+	// ê±°ë¦¬ ê°ì‡ ë¥¼ ì‹œì‘ ì„¸ê¸°ì— ë°˜ì˜í•˜ê³  ì‹¶ë‹¤ë©´, ë°”ë¡œ ampì— ê³±í•˜ê±°ë‚˜ ë³„ë„ ìŠ¤ì¼€ì¼ ìœ ì§€
 	float att = Attenuation(distanceToEvent, P.distanceFalloffK);
 	S.P.ampPos.x *= att; S.P.ampPos.y *= att; S.P.ampPos.z *= att;
 	S.P.ampRot.x *= att; S.P.ampRot.y *= att; S.P.ampRot.z *= att;
@@ -89,11 +89,11 @@ inline void UpdateShake(ShakeState& S, float dt, xmfloat3& outPos, xmfloat3& out
 	S.life -= dt;
 	float time = S.t + S.P.phase;
 
-	// Áö¼ö °¨¼è(0~1)
+	// ì§€ìˆ˜ ê°ì‡ (0~1)
 	float env = expf(-S.P.decayK * (S.t / std::max(0.0001f, S.P.duration)));
 	env = std::clamp(env, 0.0f, 1.0f);
 
-	// Ãàº° »ùÇÃ ÁÂÇ¥(¼­·Î ´Ù¸¥ À§»ó/½Ãµå¸¦ ÁÖ·Á¸é »ó¼ö ¿ÀÇÁ¼Â)
+	// ì¶•ë³„ ìƒ˜í”Œ ì¢Œí‘œ(ì„œë¡œ ë‹¤ë¥¸ ìœ„ìƒ/ì‹œë“œë¥¼ ì£¼ë ¤ë©´ ìƒìˆ˜ ì˜¤í”„ì…‹)
 	float px = Perlin3(time * S.P.freqPos, 3.17f, 8.23f);
 	float py = Perlin3(5.91f, time * S.P.freqPos, 11.71f);
 	float pz = Perlin3(9.73f, 6.41f, time * S.P.freqPos);
@@ -102,7 +102,7 @@ inline void UpdateShake(ShakeState& S, float dt, xmfloat3& outPos, xmfloat3& out
 	float ry = Perlin3(7.33f, time * S.P.freqRot, 1.19f);
 	float rz = Perlin3(0.41f, 5.55f, time * S.P.freqRot);
 
-	// [-1,1] ¡æ °ö
+	// [-1,1] â†’ ê³±
 	outPos.x = px * S.P.ampPos.x * env;
 	outPos.y = py * S.P.ampPos.y * env;
 	outPos.z = pz * S.P.ampPos.z * env;
@@ -114,12 +114,12 @@ inline void UpdateShake(ShakeState& S, float dt, xmfloat3& outPos, xmfloat3& out
 	if (S.life <= 0.0f) S.active = false;
 }
 
-// Config.h ¿¡¼­ ÀÛ¼ºÇÑ ¸ğµå¿¡ µû¶ó Ä«¸Ş¶ó°¡ ´Ù¸£°Ô µ¿ÀÛÇÏµµ·Ï ÀÛ¼ºÇÒ ¼ö ÀÖ´Ù.
-// ¿¹) Ä«¸Ş¶ó ÃßÀû ´ë»ó º¯°æ, Ä«¸Ş¶ó ½ÃÁ¡ º¯°æ µî
+// Config.h ì—ì„œ ì‘ì„±í•œ ëª¨ë“œì— ë”°ë¼ ì¹´ë©”ë¼ê°€ ë‹¤ë¥´ê²Œ ë™ì‘í•˜ë„ë¡ ì‘ì„±í•  ìˆ˜ ìˆë‹¤.
+// ì˜ˆ) ì¹´ë©”ë¼ ì¶”ì  ëŒ€ìƒ ë³€ê²½, ì¹´ë©”ë¼ ì‹œì  ë³€ê²½ ë“±
 void Camera::Update(float FT) {
-	// Ä«¸Ş¶ó Èçµé¸²
-	// ShakeStrength¸¦ ±â¹İÀ¸·Î ½Ç½Ã°£À¸·Î ·£´ı °ªÀ» »ı¼ºÇÏ¿© ºäÆ÷Æ® ¿ÀÇÁ¼ÂÀ» ÀÌµ¿½ÃÅ°¸ç, Èçµé¸² °­µµ´Â ¼±Çü º¸°£À¸·Î °¨¼ÒÇÑ´Ù.
-	// ³Ê¹« ºü¸£°Ô Èçµé¸®´Â°ÍÀ» ¹æÁöÇÏ±â À§ÇØ µô·¹ÀÌ¸¦ ÁØ´Ù.
+	// ì¹´ë©”ë¼ í”ë“¤ë¦¼
+	// ShakeStrengthë¥¼ ê¸°ë°˜ìœ¼ë¡œ ì‹¤ì‹œê°„ìœ¼ë¡œ ëœë¤ ê°’ì„ ìƒì„±í•˜ì—¬ ë·°í¬íŠ¸ ì˜¤í”„ì…‹ì„ ì´ë™ì‹œí‚¤ë©°, í”ë“¤ë¦¼ ê°•ë„ëŠ” ì„ í˜• ë³´ê°„ìœ¼ë¡œ ê°ì†Œí•œë‹¤.
+	// ë„ˆë¬´ ë¹ ë¥´ê²Œ í”ë“¤ë¦¬ëŠ”ê²ƒì„ ë°©ì§€í•˜ê¸° ìœ„í•´ ë”œë ˆì´ë¥¼ ì¤€ë‹¤.
 	ShakeDelay += FT;
 	if (ShakeDelay >= 0.01) {
 		ShakeStrength = std::lerp(ShakeStrength, 0.0, 5.0 * FT);
@@ -152,9 +152,9 @@ void Camera::AddRecoilShake(float Strength, float duration, float Speed) {
 	
 	int randNum = Random.Gen(0, 1);
 	if (randNum == 1)
-		params.ampRot = { 0.0f, 0.0f, Strength }; // ¹İµ¿ ¼¼±â
+		params.ampRot = { 0.0f, 0.0f, Strength }; // ë°˜ë™ ì„¸ê¸°
 	else
-		params.ampRot = { 0.0f, 0.0f, -Strength }; // ¹İµ¿ ¼¼±â
+		params.ampRot = { 0.0f, 0.0f, -Strength }; // ë°˜ë™ ì„¸ê¸°
 	StartShake(gShake, params);
 }
 
@@ -176,22 +176,22 @@ void Camera::AddShakeWithDistance(float Distance, float Strength) {
 	int damage = (int)(300.0 * t);
 }
 
-// Ä«¸Ş¶ó ¸ğµå¸¦ º¯°æÇÑ´Ù. Config.h¿¡ ÀÛ¼ºÇß´ø ¸ğµå ¿­°ÅÇüÀ» ÆÄ¶ó¹ÌÅÍ¿¡ ³ÖÀ¸¸é µÈ´Ù.
+// ì¹´ë©”ë¼ ëª¨ë“œë¥¼ ë³€ê²½í•œë‹¤. Config.hì— ì‘ì„±í–ˆë˜ ëª¨ë“œ ì—´ê±°í˜•ì„ íŒŒë¼ë¯¸í„°ì— ë„£ìœ¼ë©´ ëœë‹¤.
 void Camera::SwitchCameraMode(CamMode ModeValue) {
 	Mode = ModeValue;
 }
 
-// ÇöÀç ½ÇÇà ÁßÀÎ Ä«¸Ş¶ó ¸ğµå¸¦ ¾ò´Â´Ù.
+// í˜„ì¬ ì‹¤í–‰ ì¤‘ì¸ ì¹´ë©”ë¼ ëª¨ë“œë¥¼ ì–»ëŠ”ë‹¤.
 CamMode Camera::CurrentMode() {
 	return Mode;
 }
 
-// Á¤Àû Ãâ·Â ¸ğµå·Î ÀüÈ¯ÇÑ´Ù.
+// ì •ì  ì¶œë ¥ ëª¨ë“œë¡œ ì „í™˜í•œë‹¤.
 void Camera::SetToStaticMode() {
 	StaticMode = true;
 }
 
-// ÀÏ¹İ Ãâ·Â ¸ğµå·Î ÀüÈ¯ÇÑ´Ù.
+// ì¼ë°˜ ì¶œë ¥ ëª¨ë“œë¡œ ì „í™˜í•œë‹¤.
 void Camera::SetToDefaultMode() {
 	StaticMode = false;
 }
@@ -224,7 +224,7 @@ void Camera::UpdateShaderVariables() {
 	XMFLOAT4X4 xmf4x4View;
 	XMFLOAT4X4 xmf4x4Projection;
 
-	// ½ºÅ×Æ½ ¸ğµå ½ÇÇà ½Ã ½ºÅ×Æ½ Çà·ÄÀ» ½¦ÀÌ´õ·Î Àü´ŞÇÑ´Ù.
+	// ìŠ¤í…Œí‹± ëª¨ë“œ ì‹¤í–‰ ì‹œ ìŠ¤í…Œí‹± í–‰ë ¬ì„ ì‰ì´ë”ë¡œ ì „ë‹¬í•œë‹¤.
 	switch(StaticMode) {
 	case false:
 		ProjectionMatrix._31 += ShakeOffset.x;
@@ -246,7 +246,7 @@ void Camera::UpdateShaderVariables() {
 	RCUtil::Input(GlobalCommandList, &xmf4x4Projection, CAMERA_INDEX, 16, 16);
 }
 
-// Ä«¸Ş¶ó ºä Çà·ÄÀ» ¼³Á¤ÇÑ´Ù.
+// ì¹´ë©”ë¼ ë·° í–‰ë ¬ì„ ì„¤ì •í•œë‹¤.
 void Camera::SetViewMatrix() {
 	Look = Vec3::Normalize(Look);
 	Right = Vec3::CrossProduct(Up, Look, true);
@@ -279,7 +279,7 @@ void Camera::SetStaticViewMatrix() {
 	StaticViewMatrix._43 = -Vec3::DotProduct(XMFLOAT3(0.0, 0.0, 0.0), StaticLook);
 }
 
-// ¿ø±Ù Åõ¿µ Çà·ÄÀ» ÃÊ±âÈ­ÇÑ´Ù. À©µµ¿ì »çÀÌÁî º¯°æ ½Ã ÀÌ ÇÔ¼ö°¡ ½ÇÇàµÈ´Ù.
+// ì›ê·¼ íˆ¬ì˜ í–‰ë ¬ì„ ì´ˆê¸°í™”í•œë‹¤. ìœˆë„ìš° ì‚¬ì´ì¦ˆ ë³€ê²½ ì‹œ ì´ í•¨ìˆ˜ê°€ ì‹¤í–‰ëœë‹¤.
 void Camera::GeneratePerspectiveMatrix(float NearPlane, float FarPlane, float AspRatio, float Fov) {
 	Transform::Identity(ProjectionMatrix);
 	XMMATRIX Projection = XMMatrixPerspectiveFovLH(XMConvertToRadians(Fov), AspRatio, NearPlane, FarPlane);
@@ -291,7 +291,7 @@ void Camera::GeneratePerspectiveMatrix(float NearPlane, float FarPlane, float As
 #endif
 }
 
-// Á÷°¢ Åõ¿µ Çà·ÄÀ» ÃÊ±âÈ­ ÇÑ´Ù
+// ì§ê° íˆ¬ì˜ í–‰ë ¬ì„ ì´ˆê¸°í™” í•œë‹¤
 void Camera::GenerateOrthoMatrix(float Width, float Height, float AspRatio, float Near, float Far) {
 	Transform::Identity(ProjectionMatrix);
 	XMMATRIX Projection = XMMatrixOrthographicLH(Width * AspRatio * 2.0, Height * 2.0, Near, Far);
@@ -302,7 +302,7 @@ void Camera::GenerateOrthoMatrix(float Width, float Height, float AspRatio, floa
 #endif
 }
 
-// Á¤Àû Á÷°¢ Åõ¿µ Çà·ÄÀ» ÃÊ±âÈ­ ÇÑ´Ù
+// ì •ì  ì§ê° íˆ¬ì˜ í–‰ë ¬ì„ ì´ˆê¸°í™” í•œë‹¤
 void Camera::GenerateStaticMatrix() {
 	Transform::Identity(StaticViewMatrix);
 	Transform::Identity(StaticProjectionMatrix);
@@ -310,9 +310,9 @@ void Camera::GenerateStaticMatrix() {
 	XMStoreFloat4x4(&StaticProjectionMatrix, Projection);
 }
 
-// Á¤Àû Ãâ·ÂÀ» À§ÇÑ ½ºÅ×Æ½ Çà·ÄÀ» »ı¼ºÇÑ´Ù. UI, ÀÌ¹ÌÁö µîÀÇ Ãâ·ÂÀ» ¸ñÀûÀ¸·Î ÇÏ´Â Çà·ÄÀÌ¹Ç·Î 
-// ÇÁ·Î±×·¥ ½ÇÇà ½Ã ÃÖÃÊ 1È¸¸¸ ½ÇÇàÇÑ´Ù.
-// Á÷°¢Åõ¿µÀÌ µğÆúÆ®ÀÌ´Ù.
+// ì •ì  ì¶œë ¥ì„ ìœ„í•œ ìŠ¤í…Œí‹± í–‰ë ¬ì„ ìƒì„±í•œë‹¤. UI, ì´ë¯¸ì§€ ë“±ì˜ ì¶œë ¥ì„ ëª©ì ìœ¼ë¡œ í•˜ëŠ” í–‰ë ¬ì´ë¯€ë¡œ 
+// í”„ë¡œê·¸ë¨ ì‹¤í–‰ ì‹œ ìµœì´ˆ 1íšŒë§Œ ì‹¤í–‰í•œë‹¤.
+// ì§ê°íˆ¬ì˜ì´ ë””í´íŠ¸ì´ë‹¤.
 void Camera::InitStaticMatrix() {
 	Transform::Identity(StaticViewMatrix);
 	Transform::Identity(StaticProjectionMatrix);
@@ -320,7 +320,7 @@ void Camera::InitStaticMatrix() {
 	XMStoreFloat4x4(&StaticProjectionMatrix, Projection);
 }
 
-// ºäÆ÷Æ®¸¦ ¼³Á¤ÇÑ´Ù. ÇÑ ¹ø ¼³Á¤ÇÑ ÀÌÈÄ¿¡´Â °Çµé ÇÊ¿ä ¾ø´Ù.
+// ë·°í¬íŠ¸ë¥¼ ì„¤ì •í•œë‹¤. í•œ ë²ˆ ì„¤ì •í•œ ì´í›„ì—ëŠ” ê±´ë“¤ í•„ìš” ì—†ë‹¤.
 void Camera::SetViewport(int xTopLeft, int yTopLeft, int nWidth, int nHeight, float zMin, float zMax) {
 	Viewport.TopLeftX = float(xTopLeft);
 	Viewport.TopLeftY = float(yTopLeft);
@@ -330,7 +330,7 @@ void Camera::SetViewport(int xTopLeft, int yTopLeft, int nWidth, int nHeight, fl
 	Viewport.MaxDepth = zMax;
 }
 
-// ½ÃÀú ·ºÆ®¸¦ ¼³Á¤ÇÑ´Ù. ÇÑ ¹ø ¼³Á¤ÇÑ ÀÌÈÄ¿¡´Â °Çµé ÇÊ¿ä ¾ø´Ù.
+// ì‹œì € ë ‰íŠ¸ë¥¼ ì„¤ì •í•œë‹¤. í•œ ë²ˆ ì„¤ì •í•œ ì´í›„ì—ëŠ” ê±´ë“¤ í•„ìš” ì—†ë‹¤.
 void Camera::SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom) {
 	ScissorRect.left = xLeft;
 	ScissorRect.top = yTop;
@@ -338,7 +338,7 @@ void Camera::SetScissorRect(LONG xLeft, LONG yTop, LONG xRight, LONG yBottom) {
 	ScissorRect.bottom = yBottom;
 }
 
-// ºäÆ÷Æ®¿Í ½ÃÀú·ºÆ®¸¦ ½¦ÀÌ´õ·Î Àü´ŞÇÑ´Ù.
+// ë·°í¬íŠ¸ì™€ ì‹œì €ë ‰íŠ¸ë¥¼ ì‰ì´ë”ë¡œ ì „ë‹¬í•œë‹¤.
 void Camera::SetViewportsAndScissorRects() {
 	GlobalCommandList->RSSetViewports(1, &Viewport);
 	GlobalCommandList->RSSetScissorRects(1, &ScissorRect);
@@ -346,7 +346,7 @@ void Camera::SetViewportsAndScissorRects() {
 
 
 
-// À§Ä¡ ÀÌµ¿, ½ÃÁ¡ ÃßÀû À§Ä¡ ¼³Á¤ µî È¸Àü°¢µµ, À§Ä¡, º¤ÅÍ °ü·Ã ÇÔ¼öµéÀÌ´Ù.
+// ìœ„ì¹˜ ì´ë™, ì‹œì  ì¶”ì  ìœ„ì¹˜ ì„¤ì • ë“± íšŒì „ê°ë„, ìœ„ì¹˜, ë²¡í„° ê´€ë ¨ í•¨ìˆ˜ë“¤ì´ë‹¤.
 XMFLOAT3& Camera::GetPosition() { 
 	return Position; 
 }
@@ -417,19 +417,19 @@ D3D12_RECT Camera::GetScissorRect() {
 
 
 
-// Ä«¸Ş¶óÀÇ À§Ä¡¸¦ º¯°æÇÑ´Ù.
+// ì¹´ë©”ë¼ì˜ ìœ„ì¹˜ë¥¼ ë³€ê²½í•œë‹¤.
 void Camera::Move(float X, float Y, float Z) {
 	Position.x = X;
 	Position.y = Y;
 	Position.z = Z;
 }
 
-// Ä«¸Ş¶óÀÇ À§Ä¡¸¦ º¯°æÇÑ´Ù.
+// ì¹´ë©”ë¼ì˜ ìœ„ì¹˜ë¥¼ ë³€ê²½í•œë‹¤.
 void Camera::Move(XMFLOAT3 PositionValue) { 
 	Position = PositionValue; 
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ look º¤ÅÍ¸¦ »ç¿ëÇÏ¿© ¾ÕÀ¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ look ë²¡í„°ë¥¼ ì‚¬ìš©í•˜ì—¬ ì•ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void Camera::Vector_MoveForward(float MoveDistance) {
 	XMFLOAT3 NormlaizedLook = Vec3::Normalize(Look);
 
@@ -438,7 +438,7 @@ void Camera::Vector_MoveForward(float MoveDistance) {
 	Position.z += NormlaizedLook.z * MoveDistance;
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ right º¤ÅÍ¸¦ »ç¿ëÇÏ¿© ¿·À¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ right ë²¡í„°ë¥¼ ì‚¬ìš©í•˜ì—¬ ì˜†ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void Camera::Vector_MoveStrafe(float MoveDistance) {
 	XMFLOAT3 NormlaizedRight = Vec3::Normalize(Right);
 
@@ -447,29 +447,29 @@ void Camera::Vector_MoveStrafe(float MoveDistance) {
 	Position.z += NormlaizedRight.z * MoveDistance;
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ up º¤ÅÍ¸¦ »ç¿ëÇÏ¿© À§·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ up ë²¡í„°ë¥¼ ì‚¬ìš©í•˜ì—¬ ìœ„ë¡œ ì›€ì§ì¸ë‹¤.
 void Camera::Vector_MoveUp(XMFLOAT3& Position, XMFLOAT3 Up, float Distance) {
 	Position = Vec3::Add(Position, Up, Distance);
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ ¾ÕÀ¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ì•ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void Camera::MoveForward(float MoveDistance) {
 	Position.x += sin(Yaw) * MoveDistance;
 	Position.z += cos(Yaw) * MoveDistance;
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ ¿·À¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ì˜†ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void Camera::MoveStrafe(float MoveDistance) {
 	Position.x += cos(Yaw) * MoveDistance;
 	Position.z -= sin(Yaw) * MoveDistance;
 }
 
-// ¼öÁ÷À¸·Î ¿òÁ÷ÀÎ´Ù.
+// ìˆ˜ì§ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void Camera::MoveUp(float MoveDistance) {
 	Position.y += MoveDistance;
 }
 
-// Ä«¸Ş¶ó È¸Àü, »õ·Î¿î º¤ÅÍ¸¦ ÁöÁ¤ÇÑ´Ù.
+// ì¹´ë©”ë¼ íšŒì „, ìƒˆë¡œìš´ ë²¡í„°ë¥¼ ì§€ì •í•œë‹¤.
 void Camera::Rotate(float X, float Y, float Z) {
 	Look = XMFLOAT3(0.0, 0.0, 1.0);
 	Right = XMFLOAT3(1.0, 0.0, 0.0);
@@ -479,7 +479,7 @@ void Camera::Rotate(float X, float Y, float Z) {
 	Yaw = XMConvertToRadians(Y);
 	Roll = XMConvertToRadians(Z);
 
-	// È¸Àü Çà·Ä »ı¼º
+	// íšŒì „ í–‰ë ¬ ìƒì„±
 	XMMATRIX RotationMatrix = XMMatrixRotationRollPitchYaw(Pitch, Yaw, Roll);
 
 	XMStoreFloat3(&Look, XMVector3TransformNormal(XMLoadFloat3(&Look), RotationMatrix));
@@ -487,7 +487,7 @@ void Camera::Rotate(float X, float Y, float Z) {
 	XMStoreFloat3(&Up, XMVector3TransformNormal(XMLoadFloat3(&Up), RotationMatrix));
 }
 
-// ÆÄ¶ó¹ÌÅÍ·Î ÀÔ·Â¹ŞÀº À§Ä¡, ¾÷º¤ÅÍ, ¶óÀÌÆ®º¤ÅÍ, ·èº¤ÅÍ¸¦ ÃßÀûÇÑ´Ù.
+// íŒŒë¼ë¯¸í„°ë¡œ ì…ë ¥ë°›ì€ ìœ„ì¹˜, ì—…ë²¡í„°, ë¼ì´íŠ¸ë²¡í„°, ë£©ë²¡í„°ë¥¼ ì¶”ì í•œë‹¤.
 void Camera::Track(XMFLOAT3& ObjectPosition, Vector& VectorStruct, float fTimeElapsed) {
 	XMFLOAT4X4 RotateMatrix = Mat4::Identity();
 
@@ -525,7 +525,7 @@ void Camera::Track(XMFLOAT3& ObjectPosition, Vector& VectorStruct, float fTimeEl
 	SetLookAt(ObjectPosition, VectorStruct.Up);
 }
 
-// µ¿ÀÛÀº Track°ú µ¿ÀÏÇÏ³ª, ½ÃÁ¡ OffsetÀ» ¼³Á¤ÇÒ ¼ö ÀÖ´Ù.
+// ë™ì‘ì€ Trackê³¼ ë™ì¼í•˜ë‚˜, ì‹œì  Offsetì„ ì„¤ì •í•  ìˆ˜ ìˆë‹¤.
 void Camera::TrackOffset(XMFLOAT3& ObjectPosition, Vector& VectorStruct, XMFLOAT3& OffsetValue, float fTimeElapsed) {
 	XMFLOAT4X4 RotateMatrix = Mat4::Identity();
 
@@ -561,10 +561,10 @@ void Camera::TrackOffset(XMFLOAT3& ObjectPosition, Vector& VectorStruct, XMFLOAT
 
 	Position = Vec3::Add(Position, Direction, MoveDistance);
 
-	// ·ÎÄÃ ÁÂÇ¥°è¿¡¼­ LookAtPosition Á¶Á¤
+	// ë¡œì»¬ ì¢Œí‘œê³„ì—ì„œ LookAtPosition ì¡°ì •
 	XMFLOAT3 LookAtPosition = ObjectPosition;
 
-	// ·ÎÄÃ ÁÂÇ¥°è¸¦ ±âÁØÀ¸·Î ¿ÀÇÁ¼Â Àû¿ë
+	// ë¡œì»¬ ì¢Œí‘œê³„ë¥¼ ê¸°ì¤€ìœ¼ë¡œ ì˜¤í”„ì…‹ ì ìš©
 	LookAtPosition = Vec3::Add(LookAtPosition, Vec3::Scale(VectorStruct.Right, OffsetValue.x));
 	LookAtPosition = Vec3::Add(LookAtPosition, Vec3::Scale(VectorStruct.Up, OffsetValue.y));
 	LookAtPosition = Vec3::Add(LookAtPosition, Vec3::Scale(VectorStruct.Look, OffsetValue.z));
@@ -572,7 +572,7 @@ void Camera::TrackOffset(XMFLOAT3& ObjectPosition, Vector& VectorStruct, XMFLOAT
 	SetLookAt(LookAtPosition, VectorStruct.Up);
 }
 
-// Ä«¸Ş¶ó°¡ ¹Ù¶óº¸´Â ¹æÇâÀ» ¼³Á¤ÇÑ´Ù. Track¿¡¼­ ½ÇÇàµÇ¹Ç·Î º¸ÅëÀÇ °æ¿ì Á÷Á¢ ¾µ ÀÏÀº ¾ø´Ù.
+// ì¹´ë©”ë¼ê°€ ë°”ë¼ë³´ëŠ” ë°©í–¥ì„ ì„¤ì •í•œë‹¤. Trackì—ì„œ ì‹¤í–‰ë˜ë¯€ë¡œ ë³´í†µì˜ ê²½ìš° ì§ì ‘ ì“¸ ì¼ì€ ì—†ë‹¤.
 void Camera::SetLookAt(XMFLOAT3& ObjectPosition, XMFLOAT3& UpVec) {
 	XMFLOAT4X4 mtxLookAt = Mat4::LookAtLH(Position, ObjectPosition, UpVec);
 	Right = XMFLOAT3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
@@ -580,7 +580,7 @@ void Camera::SetLookAt(XMFLOAT3& ObjectPosition, XMFLOAT3& UpVec) {
 	Look = XMFLOAT3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
 }
 
-// ÇÁ·¯½ºÅÒ °ü·Ã ÇÔ¼öµé
+// í”„ëŸ¬ìŠ¤í…€ ê´€ë ¨ í•¨ìˆ˜ë“¤
 void Camera::CalculateFrustumPlanes() {
 #ifdef _WITH_DIERECTX_MATH_FRUSTUM
 	FrustumView.Transform(FrustumWorld, XMMatrixInverse(NULL, XMLoadFloat4x4(&ViewMatrix)));

@@ -5,7 +5,7 @@
 #include <map>
 #include <set>
 
-using BoneFrame = std::vector<XMMATRIX>; // ÇÑ ÇÁ·¹ÀÓÀÇ º» Çà·Äµé
+using BoneFrame = std::vector<XMMATRIX>; // í•œ í”„ë ˆì„ì˜ ë³¸ í–‰ë ¬ë“¤
 using BoneAnimationCache = std::unordered_map<std::string, std::vector<BoneFrame>>;
 
 struct FBXVertex {
@@ -48,10 +48,10 @@ typedef struct {
 	float TotalTime;
 	float OffsetTime;
 
-	std::vector<std::string> AnimationStackNames; // ÀüÃ¼ ½ºÅÃ ÀÌ¸§µé
-	std::string CurrentAnimationStackName;        // ÇöÀç ¼±ÅÃµÈ ½ºÅÃ ÀÌ¸§
+	std::vector<std::string> AnimationStackNames; // ì „ì²´ ìŠ¤íƒ ì´ë¦„ë“¤
+	std::string CurrentAnimationStackName;        // í˜„ì¬ ì„ íƒëœ ìŠ¤íƒ ì´ë¦„
 
-	// Á÷·ÄÈ­ ¾Ö´Ï¸ŞÀÌ¼Ç µ¥ÀÌÅÍ¸¦ °¡Áø °æ¿ì ÇØ´ç ÄÁÅ×ÀÌ³Ê¸¦ »ç¿ëÇÑ´Ù.
+	// ì§ë ¬í™” ì• ë‹ˆë©”ì´ì…˜ ë°ì´í„°ë¥¼ ê°€ì§„ ê²½ìš° í•´ë‹¹ ì»¨í…Œì´ë„ˆë¥¼ ì‚¬ìš©í•œë‹¤.
 	bool SerializedFlag;
 	std::string FirstStackName;
 	std::unordered_map<std::string, SerializedAnimationInfo> SerializedAnimationStacks;
@@ -73,11 +73,11 @@ public:
 	std::unordered_map<std::string, std::vector<BoneFrame>> PrecomputedBoneMatrices;
 	std::unordered_map<int, std::vector<int>> ControlPointToVertexIndices{};
 
-	XMUINT4* BoneIndices{};                      // Á¤Á¡´ç º» ÀÎµ¦½º (ÃÖ´ë 4°³)
-	XMFLOAT4* BoneWeights{};                     // Á¤Á¡´ç º» °¡ÁßÄ¡ (ÃÖ´ë 4°³)
+	XMUINT4* BoneIndices{};                      // ì •ì ë‹¹ ë³¸ ì¸ë±ìŠ¤ (ìµœëŒ€ 4ê°œ)
+	XMFLOAT4* BoneWeights{};                     // ì •ì ë‹¹ ë³¸ ê°€ì¤‘ì¹˜ (ìµœëŒ€ 4ê°œ)
 
-	std::vector<XMMATRIX> BoneOffsetMatrices{};    // °¢ º»ÀÇ inverse bind pose
-	std::vector<int> BoneParentIndices{};          // °¢ º»ÀÇ ºÎ¸ğ ÀÎµ¦½º
+	std::vector<XMMATRIX> BoneOffsetMatrices{};    // ê° ë³¸ì˜ inverse bind pose
+	std::vector<int> BoneParentIndices{};          // ê° ë³¸ì˜ ë¶€ëª¨ ì¸ë±ìŠ¤
 	std::vector<FbxNode*> BoneNodes{};
 	FbxNode* FbxNodePtr{};
 
@@ -216,7 +216,7 @@ private:
 	size_t MeshCount{};
 	bool Serialized{};
 
-	// ¹öÆÛ¸¦ ¿øº» FBX ¸Å½¬¿Í µ¿ÀÏ »ç¾çÀ¸·Î ¸ÂÃß°¡ À§ÇÑ ¹öÆÛ
+	// ë²„í¼ë¥¼ ì›ë³¸ FBX ë§¤ì‰¬ì™€ ë™ì¼ ì‚¬ì–‘ìœ¼ë¡œ ë§ì¶”ê°€ ìœ„í•œ ë²„í¼
 	std::vector<ID3D12Resource*> PositionBuffer{};
 	std::vector<ID3D12Resource*> PositionUploadBuffer{};
 	std::vector<ID3D12Resource*> NormalBuffer{};

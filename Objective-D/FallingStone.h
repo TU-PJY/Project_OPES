@@ -13,10 +13,10 @@ private:
 	OOBB oobb{};
 	BoundSphere sphere{};
 
-	// hp°¡ 0ÀÌ µÇ¾î¾ß ¶³¾îÁü
+	// hpê°€ 0ì´ ë˜ì–´ì•¼ ë–¨ì–´ì§
 	int hp{100}; 
 
-	// Å¬¶ó - ¼­¹ö µ¿±âÈ­¸¦ À§ÇÑ ID
+	// í´ë¼ - ì„œë²„ ë™ê¸°í™”ë¥¼ ìœ„í•œ ID
 	unsigned int ID{};
 
 public:

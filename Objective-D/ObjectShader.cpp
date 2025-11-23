@@ -1,6 +1,6 @@
 #include "ObjectShader.h"
 
-// ¿ÀºêÁ§Æ® Ãâ·Â¿ë ½¦ÀÌ´õ
+// ì˜¤ë¸Œì íŠ¸ ì¶œë ¥ìš© ì‰ì´ë”
 D3D12_INPUT_LAYOUT_DESC Object_Shader::CreateInputLayout() {
 	UINT NumInputElementDescs = 3;
 	D3D12_INPUT_ELEMENT_DESC* InputElementDescs = new D3D12_INPUT_ELEMENT_DESC[NumInputElementDescs];

@@ -1,7 +1,7 @@
 #include "CBVUtil.h"
 
-// ½¦ÀÌ´õ¿¡ »ç¿ëµÇ´Â »ó¼ö ¹öÆÛ¸¦ »ý¼ºÇÑ´Ù
-// ½¦ÀÌ´õ¿¡ »ç¿ëµÇ´Â »ó¼ö ¹öÆÛ¸¦ »ý¼ºÇÑ´Ù
+// ì‰ì´ë”ì— ì‚¬ìš©ë˜ëŠ” ìƒìˆ˜ ë²„í¼ë¥¼ ìƒì„±í•œë‹¤
+// ì‰ì´ë”ì— ì‚¬ìš©ë˜ëŠ” ìƒìˆ˜ ë²„í¼ë¥¼ ìƒì„±í•œë‹¤
 void CBVUtil::Create(ID3D12Device* Device, void* Data, size_t DataSize, CBV& CBV_Struct, int CBV_Index) {
 	UINT64 cbSize = (DataSize + 255) & ~255;
 
@@ -32,8 +32,8 @@ void CBVUtil::Create(ID3D12Device* Device, void* Data, size_t DataSize, CBV& CBV
 		IID_PPV_ARGS(&CBV_Struct.Buffer[CBV_Index])
 	);
 
-	void* pCbData = nullptr;  // void*·Î ¸ÅÇÎ
-	D3D12_RANGE readRange = { 0, 0 };  // ÀÐ±â ¹üÀ§°¡ ¾øÀ¸¹Ç·Î 0À¸·Î ¼³Á¤
+	void* pCbData = nullptr;  // void*ë¡œ ë§¤í•‘
+	D3D12_RANGE readRange = { 0, 0 };  // ì½ê¸° ë²”ìœ„ê°€ ì—†ìœ¼ë¯€ë¡œ 0ìœ¼ë¡œ ì„¤ì •
 	CBV_Struct.Buffer[CBV_Index]->Map(0, &readRange, reinterpret_cast<void**>(&pCbData));
 
 	memcpy(pCbData, Data, DataSize);
@@ -54,7 +54,7 @@ void CBVUtil::Create(ID3D12Device* Device, void* Data, size_t DataSize, CBV& CBV
 	Device->CreateConstantBufferView(&cbvDesc, CBV_Struct.Heap[CBV_Index]->GetCPUDescriptorHandleForHeapStart());
 }
 
-// CBV¸¦ ½¦ÀÌ´õ·Î Àü¼ÛÇÑ´Ù.
+// CBVë¥¼ ì‰ì´ë”ë¡œ ì „ì†¡í•œë‹¤.
 void CBVUtil::Input(ID3D12GraphicsCommandList* CmdList, CBV& CBV_Struct, int CBV_Index) {
 	ID3D12DescriptorHeap* heaps[] = { CBV_Struct.Heap[CBV_Index] };
 	CmdList->SetDescriptorHeaps(_countof(heaps), heaps);

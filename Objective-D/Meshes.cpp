@@ -1,92 +1,92 @@
 #include "MeshUtil.h"
 
-// ¿©±â¿¡ ¸Å½¬¸¦ ÀÛ¼ºÇÑ´Ù.
+// ì—¬ê¸°ì— ë§¤ì‰¬ë¥¼ ì‘ì„±í•œë‹¤.
 
-// ½ºÄ«ÀÌ¹Ú½º ¸Å½¬¸¦ »ı¼ºÇÑ´Ù. ÇÁ·Î±×·¥ ½ÇÇà ½Ã ÃÖÃÊ 1È¸ ½ÇÇàµÇ°í ±× ÀÌÈÄ¿¡´Â ±»ÀÌ ½ÇÇàÇÒ ÇÊ¿ä ¾ø´Ù.
+// ìŠ¤ì¹´ì´ë°•ìŠ¤ ë§¤ì‰¬ë¥¼ ìƒì„±í•œë‹¤. í”„ë¡œê·¸ë¨ ì‹¤í–‰ ì‹œ ìµœì´ˆ 1íšŒ ì‹¤í–‰ë˜ê³  ê·¸ ì´í›„ì—ëŠ” êµ³ì´ ì‹¤í–‰í•  í•„ìš” ì—†ë‹¤.
 void Mesh::CreateSkyboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList) {
 	float SkyboxVertices[][8] = {
 		// x, y, z, nx, ny, nz, u, v
-	   // Front face (Áß¾Ó)
+	   // Front face (ì¤‘ì•™)
 	   { -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.2509f, 0.3339f },  // Top-left
 	   {  1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.4991f, 0.3339f },  // Top-right
 	   {  1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.4991f, 0.6661f },  // Bottom-right
 	   { -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.2509f, 0.6661f },  // Bottom-left
 
-	   // Back face (¿À¸¥ÂÊ)
+	   // Back face (ì˜¤ë¥¸ìª½)
 	   {  1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  0.7491f, 0.3339f },  // Top-left
 	   { -1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  0.9991f, 0.3339f },  // Top-right
 	   { -1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  0.9991f, 0.6661f },  // Bottom-right
 	   {  1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  0.7491f, 0.6661f },  // Bottom-left
 
-	   // Left face (¿ŞÂÊ)
+	   // Left face (ì™¼ìª½)
 	   { -1.0f,  1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0.0009f, 0.3339f },   // Top-left
 	   { -1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.2491f, 0.3339f },   // Top-right
 	   { -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.2491f, 0.6661f },   // Bottom-right
 	   { -1.0f, -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0.0009f, 0.6661f },   // Bottom-left
 
-	   // Right face (¿À¸¥ÂÊ Áß¾Ó)
+	   // Right face (ì˜¤ë¥¸ìª½ ì¤‘ì•™)
 	   {  1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.5009f, 0.3339f },    // Top-left
 	   {  1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.7491f, 0.3339f },    // Top-right
 	   {  1.0f, -1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.7491f, 0.6661f },    // Bottom-right
 	   {  1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.5009f, 0.6661f },    // Bottom-left
 
-	   // Top face (Áß¾Ó ¾Æ·¡)
+	   // Top face (ì¤‘ì•™ ì•„ë˜)
 	   { -1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.2509f, 0.0009f },    // Top-left
 	   {  1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.4991f, 0.0009f },    // Top-right
 	   {  1.0f,  1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.4991f, 0.3339f },    // Bottom-right
 	   { -1.0f,  1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.2509f, 0.3339f },    // Bottom-left
 
-	   // Bottom face (Áß¾Ó À§)
+	   // Bottom face (ì¤‘ì•™ ìœ„)
 	   { -1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.2509f, 0.6661f },   // Top-left
 	   {  1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.4991f, 0.6661f },   // Top-right
 	   {  1.0f, -1.0f,  1.0f, 0.0f, -1.0f, 0.0f, 0.4991f, 0.9991f },   // Bottom-right
 	   { -1.0f, -1.0f,  1.0f, 0.0f, -1.0f, 0.0f, 0.2509f, 0.9991f }    // Bottom-left
 	};
 
-	// ÀÎµ¦½º ¹è¿­ (°¢ ¸éÀ» µÎ °³ÀÇ »ï°¢ÇüÀ¸·Î ±¸¼º)
+	// ì¸ë±ìŠ¤ ë°°ì—´ (ê° ë©´ì„ ë‘ ê°œì˜ ì‚¼ê°í˜•ìœ¼ë¡œ êµ¬ì„±)
 	UINT indices[] = {
-		// Front face (½Ã°è ¹æÇâ)
+		// Front face (ì‹œê³„ ë°©í–¥)
 		0, 2, 1, 0, 3, 2,
-		// Back face (½Ã°è ¹æÇâ)
+		// Back face (ì‹œê³„ ë°©í–¥)
 		4, 6, 5, 4, 7, 6,
-		// Left face (½Ã°è ¹æÇâ)
+		// Left face (ì‹œê³„ ë°©í–¥)
 		8, 10, 9, 8, 11, 10,
-		// Right face (½Ã°è ¹æÇâ)
+		// Right face (ì‹œê³„ ë°©í–¥)
 		12, 14, 13, 12, 15, 14,
-		// Top face (½Ã°è ¹æÇâ)
+		// Top face (ì‹œê³„ ë°©í–¥)
 		16, 18, 17, 16, 19, 18,
-		// Bottom face (½Ã°è ¹æÇâ)
+		// Bottom face (ì‹œê³„ ë°©í–¥)
 		20, 22, 21, 20, 23, 22
 	};
 
 
-	// Á¤Á¡ °³¼ö¿Í ÀÎµ¦½º °³¼ö ¼³Á¤
+	// ì •ì  ê°œìˆ˜ì™€ ì¸ë±ìŠ¤ ê°œìˆ˜ ì„¤ì •
 	Vertices = 24;
 	Indices = 36;
 
-	// Á¤Á¡ ¹× °ü·Ã µ¥ÀÌÅÍ ÇÒ´ç
+	// ì •ì  ë° ê´€ë ¨ ë°ì´í„° í• ë‹¹
 	Position = new XMFLOAT3[Vertices];
 	Normal = new XMFLOAT3[Vertices];
 	TextureCoords = new XMFLOAT2[Vertices];
 	PnIndices = new UINT[Indices];
 
-	// SkyboxVertices µ¥ÀÌÅÍ¸¦ ÀÌ¿ëÇÏ¿© °¢ Á¤Á¡ÀÇ Æ÷Áö¼Ç, ³ë¸», ÅØ½ºÃ³ ÁÂÇ¥¸¦ ¼³Á¤
+	// SkyboxVertices ë°ì´í„°ë¥¼ ì´ìš©í•˜ì—¬ ê° ì •ì ì˜ í¬ì§€ì…˜, ë…¸ë§, í…ìŠ¤ì²˜ ì¢Œí‘œë¥¼ ì„¤ì •
 	for (UINT i = 0; i < Vertices; i++) {
 		Position[i] = XMFLOAT3(SkyboxVertices[i][0], SkyboxVertices[i][1], SkyboxVertices[i][2]);
 		Normal[i] = XMFLOAT3(SkyboxVertices[i][3], SkyboxVertices[i][4], SkyboxVertices[i][5]);
 		TextureCoords[i] = XMFLOAT2(SkyboxVertices[i][6], SkyboxVertices[i][7]);
 	}
 
-	// ÀÎµ¦½º µ¥ÀÌÅÍ º¹»ç
+	// ì¸ë±ìŠ¤ ë°ì´í„° ë³µì‚¬
 	for (UINT i = 0; i < Indices; i++)
 		PnIndices[i] = indices[i];
 
-	// DirectX ¹öÆÛ »ı¼º ¹× ºä ¼³Á¤ (¿ø·¡ ÄÚµå¿Í µ¿ÀÏ)
+	// DirectX ë²„í¼ ìƒì„± ë° ë·° ì„¤ì • (ì›ë˜ ì½”ë“œì™€ ë™ì¼)
 	PositionBuffer = ::CreateBufferResource(Device, CmdList, Position, sizeof(XMFLOAT3) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &PositionUploadBuffer);
 	NormalBuffer = ::CreateBufferResource(Device, CmdList, Normal, sizeof(XMFLOAT3) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &NormalUploadBuffer);
 	TextureCoordBuffer = ::CreateBufferResource(Device, CmdList, TextureCoords, sizeof(XMFLOAT2) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &TextureCoordUploadBuffer);
 
-	// ¹öÆÛ ºä ¼³Á¤
+	// ë²„í¼ ë·° ì„¤ì •
 	NumVertexBufferViews = 3;
 	VertexBufferViews = new D3D12_VERTEX_BUFFER_VIEW[NumVertexBufferViews];
 
@@ -102,16 +102,16 @@ void Mesh::CreateSkyboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* Cmd
 	VertexBufferViews[2].StrideInBytes = sizeof(XMFLOAT2);
 	VertexBufferViews[2].SizeInBytes = sizeof(XMFLOAT2) * Vertices;
 
-	// ÀÎµ¦½º ¹öÆÛ »ı¼º
+	// ì¸ë±ìŠ¤ ë²„í¼ ìƒì„±
 	IndexBuffer = ::CreateBufferResource(Device, CmdList, PnIndices, sizeof(UINT) * Indices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &IndexUploadBuffer);
 
-	// ÀÎµ¦½º ¹öÆÛ ºä ¼³Á¤
+	// ì¸ë±ìŠ¤ ë²„í¼ ë·° ì„¤ì •
 	IndexBufferView.BufferLocation = IndexBuffer->GetGPUVirtualAddress();
 	IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	IndexBufferView.SizeInBytes = sizeof(UINT) * Indices;
 }
 
-// ÀÌ¹ÌÁö Ãâ·ÂÀ» À§ÇÑ µÎ²²°¡ ¾ø´Â Á¤»ç°¢Çü ¸Å½¬¸¦ »ı¼ºÇÑ´Ù. ÇÁ·Î±×·¥ ½ÇÇà ½Ã ÃÖÃÊ 1È¸ ½ÇÇàµÇ°í ±× ÀÌÈÄ¿¡´Â ±»ÀÌ ½ÇÇàÇÒ ÇÊ¿ä ¾ø´Ù.
+// ì´ë¯¸ì§€ ì¶œë ¥ì„ ìœ„í•œ ë‘ê»˜ê°€ ì—†ëŠ” ì •ì‚¬ê°í˜• ë§¤ì‰¬ë¥¼ ìƒì„±í•œë‹¤. í”„ë¡œê·¸ë¨ ì‹¤í–‰ ì‹œ ìµœì´ˆ 1íšŒ ì‹¤í–‰ë˜ê³  ê·¸ ì´í›„ì—ëŠ” êµ³ì´ ì‹¤í–‰í•  í•„ìš” ì—†ë‹¤.
 void Mesh::CreateImagePannelMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList) {
 	float ImagePannel[][8] = {
 		// x, y, z, nx, ny, nz, u, v
@@ -121,37 +121,37 @@ void Mesh::CreateImagePannelMesh(ID3D12Device* Device, ID3D12GraphicsCommandList
 		{ -0.5f,  0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f }
 	};
 
-	// ÀÎµ¦½º ¹è¿­
+	// ì¸ë±ìŠ¤ ë°°ì—´
 	UINT indices[] = { 0, 2, 1, 0, 3, 2 };
 
-	// Á¤Á¡ °³¼ö¿Í ÀÎµ¦½º °³¼ö
+	// ì •ì  ê°œìˆ˜ì™€ ì¸ë±ìŠ¤ ê°œìˆ˜
 	Vertices = 4;
 	Indices = 6;
 
-	// Á¤Á¡ ¹× °ü·Ã µ¥ÀÌÅÍ ÇÒ´ç
+	// ì •ì  ë° ê´€ë ¨ ë°ì´í„° í• ë‹¹
 	Position = new XMFLOAT3[Vertices];
 	Normal = new XMFLOAT3[Vertices];
 	TextureCoords = new XMFLOAT2[Vertices];
 	PnIndices = new UINT[Indices];
 
-	// ImagePannel µ¥ÀÌÅÍ¸¦ ÀÌ¿ëÇÏ¿© °¢ Á¤Á¡ÀÇ Æ÷Áö¼Ç, ³ë¸», ÅØ½ºÃ³ ÁÂÇ¥¸¦ ¼³Á¤
+	// ImagePannel ë°ì´í„°ë¥¼ ì´ìš©í•˜ì—¬ ê° ì •ì ì˜ í¬ì§€ì…˜, ë…¸ë§, í…ìŠ¤ì²˜ ì¢Œí‘œë¥¼ ì„¤ì •
 	for (UINT i = 0; i < Vertices; i++) {
 		Position[i] = XMFLOAT3(ImagePannel[i][0], ImagePannel[i][1], ImagePannel[i][2]);
 		Normal[i] = XMFLOAT3(ImagePannel[i][3], ImagePannel[i][4], ImagePannel[i][5]);
 		TextureCoords[i] = XMFLOAT2(ImagePannel[i][6], ImagePannel[i][7]);
 	}
 
-	// ÀÎµ¦½º µ¥ÀÌÅÍ º¹»ç
+	// ì¸ë±ìŠ¤ ë°ì´í„° ë³µì‚¬
 	for (UINT i = 0; i < Indices; i++) {
 		PnIndices[i] = indices[i];
 	}
 
-	// DirectX ¹öÆÛ »ı¼º (À§ ÄÚµåÀÇ ImportMesh ÇÔ¼ö¿Í À¯»ç)
+	// DirectX ë²„í¼ ìƒì„± (ìœ„ ì½”ë“œì˜ ImportMesh í•¨ìˆ˜ì™€ ìœ ì‚¬)
 	PositionBuffer = ::CreateBufferResource(Device, CmdList, Position, sizeof(XMFLOAT3) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &PositionUploadBuffer);
 	NormalBuffer = ::CreateBufferResource(Device, CmdList, Normal, sizeof(XMFLOAT3) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &NormalUploadBuffer);
 	TextureCoordBuffer = ::CreateBufferResource(Device, CmdList, TextureCoords, sizeof(XMFLOAT2) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &TextureCoordUploadBuffer);
 
-	// ¹öÆÛ ºä ¼³Á¤
+	// ë²„í¼ ë·° ì„¤ì •
 	NumVertexBufferViews = 3;
 	VertexBufferViews = new D3D12_VERTEX_BUFFER_VIEW[NumVertexBufferViews];
 
@@ -167,50 +167,50 @@ void Mesh::CreateImagePannelMesh(ID3D12Device* Device, ID3D12GraphicsCommandList
 	VertexBufferViews[2].StrideInBytes = sizeof(XMFLOAT2);
 	VertexBufferViews[2].SizeInBytes = sizeof(XMFLOAT2) * Vertices;
 
-	// ÀÎµ¦½º ¹öÆÛ »ı¼º
+	// ì¸ë±ìŠ¤ ë²„í¼ ìƒì„±
 	IndexBuffer = ::CreateBufferResource(Device, CmdList, PnIndices, sizeof(UINT) * Indices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &IndexUploadBuffer);
 
-	// ÀÎµ¦½º ¹öÆÛ ºä ¼³Á¤
+	// ì¸ë±ìŠ¤ ë²„í¼ ë·° ì„¤ì •
 	IndexBufferView.BufferLocation = IndexBuffer->GetGPUVirtualAddress();
 	IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	IndexBufferView.SizeInBytes = sizeof(UINT) * Indices;
 }
 
-// ¹Ù¿îµå ¹Ú½º Ãâ·ÂÀ» À§ÇÑ ¸Å½¬¸¦ »ı¼ºÇÑ´Ù. ÇÁ·Î±×·¥ ½ÇÇà ½Ã ÃÖÃÊ 1È¸ ½ÇÇàµÇ°í ±× ÀÌÈÄ¿¡´Â ±»ÀÌ ½ÇÇàÇÒ ÇÊ¿ä ¾ø´Ù.
+// ë°”ìš´ë“œ ë°•ìŠ¤ ì¶œë ¥ì„ ìœ„í•œ ë§¤ì‰¬ë¥¼ ìƒì„±í•œë‹¤. í”„ë¡œê·¸ë¨ ì‹¤í–‰ ì‹œ ìµœì´ˆ 1íšŒ ì‹¤í–‰ë˜ê³  ê·¸ ì´í›„ì—ëŠ” êµ³ì´ ì‹¤í–‰í•  í•„ìš” ì—†ë‹¤.
 void Mesh::CreateBoundboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList) {
 	float BoundboxVertices[][8] = {
 		// x, y, z, nx, ny, nz, u, v
-		// Front face (Áß¾Ó)
+		// Front face (ì¤‘ì•™)
 		{ -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f },  // Top-left
 		{ -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f },  // Bottom-left
 		{  1.0f, -1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f },  // Bottom-right
 		{  1.0f,  1.0f, -1.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f },  // Top-right
 
-		// Back face (¿À¸¥ÂÊ)
+		// Back face (ì˜¤ë¥¸ìª½)
 		{  1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f },  // Top-left
 		{  1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f },  // Bottom-left
 		{ -1.0f, -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f },  // Bottom-right
 		{ -1.0f,  1.0f,  1.0f, 0.0f, 0.0f, 1.0f,  0.0f, 0.0f },  // Top-right
 
-		// Left face (¿ŞÂÊ)
+		// Left face (ì™¼ìª½)
 		{ -1.0f,  1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f },   // Top-left
 		{ -1.0f, -1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f },   // Bottom-left
 		{ -1.0f, -1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f },   // Bottom-right
 		{ -1.0f,  1.0f,  1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f },   // Top-right
 
-		// Right face (¿À¸¥ÂÊ Áß¾Ó)
+		// Right face (ì˜¤ë¥¸ìª½ ì¤‘ì•™)
 		{  1.0f,  1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f },    // Top-left
 		{  1.0f, -1.0f,  1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f },    // Bottom-left
 		{  1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f },    // Bottom-right
 		{  1.0f,  1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f },    // Top-right
 
-		// Top face (Áß¾Ó ¾Æ·¡)
+		// Top face (ì¤‘ì•™ ì•„ë˜)
 		{ -1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f },    // Top-left
 		{ -1.0f,  1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f },    // Bottom-left
 		{  1.0f,  1.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f },    // Bottom-right
 		{  1.0f,  1.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f },    // Top-right
 
-		// Bottom face (Áß¾Ó À§)
+		// Bottom face (ì¤‘ì•™ ìœ„)
 		{ -1.0f, -1.0f,  1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f },   // Top-left
 		{ -1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f },   // Bottom-left
 		{  1.0f, -1.0f, -1.0f, 0.0f, -1.0f, 0.0f, 0.0f, 0.0f },   // Bottom-right
@@ -218,40 +218,40 @@ void Mesh::CreateBoundboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* C
 	};
 
 	UINT indices[] = {
-		// Front face (¹İ½Ã°è ¹æÇâ)
+		// Front face (ë°˜ì‹œê³„ ë°©í–¥)
 		0, 1, 2, 0, 2, 3,
-		// Back face (¹İ½Ã°è ¹æÇâ)
+		// Back face (ë°˜ì‹œê³„ ë°©í–¥)
 		4, 5, 6, 4, 6, 7,
-		// Left face (¹İ½Ã°è ¹æÇâ)
+		// Left face (ë°˜ì‹œê³„ ë°©í–¥)
 		8, 9, 10, 8, 10, 11,
-		// Right face (¹İ½Ã°è ¹æÇâ)
+		// Right face (ë°˜ì‹œê³„ ë°©í–¥)
 		12, 13, 14, 12, 14, 15,
-		// Top face (¹İ½Ã°è ¹æÇâ)
+		// Top face (ë°˜ì‹œê³„ ë°©í–¥)
 		16, 17, 18, 16, 18, 19,
-		// Bottom face (¹İ½Ã°è ¹æÇâ)
+		// Bottom face (ë°˜ì‹œê³„ ë°©í–¥)
 		20, 21, 22, 20, 22, 23
 	};
 
-	// Á¤Á¡ °³¼ö¿Í ÀÎµ¦½º °³¼ö ¼³Á¤
+	// ì •ì  ê°œìˆ˜ì™€ ì¸ë±ìŠ¤ ê°œìˆ˜ ì„¤ì •
 	Vertices = 24;
 	Indices = 36;
 
-	// Á¤Á¡ ¹× °ü·Ã µ¥ÀÌÅÍ ÇÒ´ç
+	// ì •ì  ë° ê´€ë ¨ ë°ì´í„° í• ë‹¹
 	Position = new XMFLOAT3[Vertices];
 	PnIndices = new UINT[Indices];
 
-	// °¢ Á¤Á¡ÀÇ Æ÷Áö¼Ç ÁÂÇ¥¸¦ ¼³Á¤
+	// ê° ì •ì ì˜ í¬ì§€ì…˜ ì¢Œí‘œë¥¼ ì„¤ì •
 	for (UINT i = 0; i < Vertices; i++) 
 		Position[i] = XMFLOAT3(BoundboxVertices[i][0], BoundboxVertices[i][1], BoundboxVertices[i][2]);
 	
-	// ÀÎµ¦½º µ¥ÀÌÅÍ º¹»ç
+	// ì¸ë±ìŠ¤ ë°ì´í„° ë³µì‚¬
 	for (UINT i = 0; i < Indices; i++) 
 		PnIndices[i] = indices[i];
 	
-	// DirectX ¹öÆÛ »ı¼º ¹× ºä ¼³Á¤ (¿ø·¡ ÄÚµå¿Í µ¿ÀÏ)
+	// DirectX ë²„í¼ ìƒì„± ë° ë·° ì„¤ì • (ì›ë˜ ì½”ë“œì™€ ë™ì¼)
 	PositionBuffer = ::CreateBufferResource(Device, CmdList, Position, sizeof(XMFLOAT3) * Vertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &PositionUploadBuffer);
 
-	// ¹öÆÛ ºä ¼³Á¤
+	// ë²„í¼ ë·° ì„¤ì •
 	NumVertexBufferViews = 1;
 	VertexBufferViews = new D3D12_VERTEX_BUFFER_VIEW[NumVertexBufferViews];
 
@@ -259,16 +259,16 @@ void Mesh::CreateBoundboxMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* C
 	VertexBufferViews[0].StrideInBytes = sizeof(XMFLOAT3);
 	VertexBufferViews[0].SizeInBytes = sizeof(XMFLOAT3) * Vertices;
 
-	// ÀÎµ¦½º ¹öÆÛ »ı¼º
+	// ì¸ë±ìŠ¤ ë²„í¼ ìƒì„±
 	IndexBuffer = ::CreateBufferResource(Device, CmdList, PnIndices, sizeof(UINT) * Indices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &IndexUploadBuffer);
 
-	// ÀÎµ¦½º ¹öÆÛ ºä ¼³Á¤
+	// ì¸ë±ìŠ¤ ë²„í¼ ë·° ì„¤ì •
 	IndexBufferView.BufferLocation = IndexBuffer->GetGPUVirtualAddress();
 	IndexBufferView.Format = DXGI_FORMAT_R32_UINT;
 	IndexBufferView.SizeInBytes = sizeof(UINT) * Indices;
 }
 
-// ÆÄÀÏ·ÎºÎÅÍ ¸Å½¬¸¦ ºÒ·¯¿Â´Ù,
+// íŒŒì¼ë¡œë¶€í„° ë§¤ì‰¬ë¥¼ ë¶ˆëŸ¬ì˜¨ë‹¤,
 void Mesh::ImportMesh(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList, char* Directory, bool TextMode) {
 	char Token[64] = { '\0' };
 

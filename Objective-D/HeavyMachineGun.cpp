@@ -15,11 +15,11 @@ HeavyMachineGun::HeavyMachineGun(GameObject* Ptr) {
 
 	userPtr = Ptr;
 
-	// SHOOT_SPEED_INCREASE È°¼ºÈ­ ½Ã ¿¬»ç ¼Óµµ 20% Áõ°¡
+	// SHOOT_SPEED_INCREASE í™œì„±í™” ì‹œ ì—°ì‚¬ ì†ë„ 20% ì¦ê°€
 	if (GLOBAL.buff[SHOOT_SPEED_INCREASE])
 		fireDelayTime *= 0.6;
 
-	// RELOAD_SPEED_INCREASE È°¼ºÈ­ ½Ã ÀçÀåÀü ½Ã°£ 50% °¨¼Ò
+	// RELOAD_SPEED_INCREASE í™œì„±í™” ì‹œ ìž¬ìž¥ì „ ì‹œê°„ 50% ê°ì†Œ
 	if (GLOBAL.buff[RELOAD_SPEED_INCREASE])
 		reloadTime *= 0.5;
 }
@@ -60,18 +60,18 @@ void HeavyMachineGun::updateFire(float Delta) {
 }
 
 void HeavyMachineGun::Render() {
-	// ÃÑ ·»´õ¸µ
+	// ì´ ë Œë”ë§
 	BeginRender();
 	Transform::Move(TranslateMatrix, position);
 	Transform::Rotate(TranslateMatrix, rotation);
 	Transform::Move(TranslateMatrix, positionOffset.x + shakeResultX, positionOffset.y + shakeResultY, positionOffset.z + recoilOffset);
 	Render3D(MESH.machine_gun, TEX.scifi);
 
-	// ·¹µå µµÆ® ·»´õ¸µ
+	// ë ˆë“œ ë„íŠ¸ ë Œë”ë§
 	SetLightUse(DISABLE_LIGHT);
 	Render3D(MESH.dot_machine_gun, TEX.scifi);
 
-	// È­¿° ·»´õ¸µ
+	// í™”ì—¼ ë Œë”ë§
 	if (currentFlameRenderTime > 0.0) {
 		Render3D(MESH.gun_flame, TEX.gun_flame);
 		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);

@@ -25,7 +25,7 @@ public:
 	template <typename Type>
 	void Update(Type& Value, const Type& StartPoint, const Type& EndPoint, float Speed, float Delta) {
 		CurrentValue += Delta * Speed;
-		Clamp::LimitValue(CurrentValue, PRESET::MIN_NEGATIVE, PRESET::MAX_POSITIVE, CLAMP_FIX);
+		Clamp::ClampValue(CurrentValue, PRESET::MIN_NEGATIVE, PRESET::MAX_POSITIVE, CLAMP_FIX);
 
 		if constexpr (std::is_same_v<Type, float>)
 			Value = CalcSinPosition(CurrentValue, StartPoint, EndPoint);
@@ -50,10 +50,8 @@ private:
 public:
 	template <typename Type>
 	void Update(Type& Value, const Type& StartPoint, const Type& EndPoint, float Speed, float Delta) {
-		if (Intensity <= 0.f) return;
-
 		CurrentTime += Delta * Speed;
-		Clamp::LimitValue(CurrentTime, 0.f, 1.f, CLAMP_FIX);
+		Clamp::ClampValue(CurrentTime, 0.f, 1.f, CLAMP_FIX);
 
 		if constexpr (std::is_same_v<Type, float>)
 			Value = CalcEaseInOut(CurrentTime, StartPoint, EndPoint, 10.f);

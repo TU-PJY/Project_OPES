@@ -3,14 +3,14 @@
 #include <cmath>
 using namespace DirectX;
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ ¾ÕÀ¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ì•ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void MoveForward(XMFLOAT3& Position, float RotationY, float MoveDistance);
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ ¿·À¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ì˜†ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void MoveStrafe(XMFLOAT3& Position, float RotationY, float MoveDistance);
 
-// ¸ó½ºÅÍ¿Í ÇÃ·¹ÀÌ¾îÀÇ À§Ä¡ °è»ê
+// ëª¬ìŠ¤í„°ì™€ í”Œë ˆì´ì–´ì˜ ìœ„ì¹˜ ê³„ì‚°
 XMFLOAT3 CalcDegree3D(const XMFLOAT3& A, const XMFLOAT3& B);
 
-// °¢µµ¸¦ 360µµ ´ÜÀ§·Î Á¤±ÔÈ­
+// ê°ë„ë¥¼ 360ë„ ë‹¨ìœ„ë¡œ ì •ê·œí™”
 void Normalize2DAngleTo360(float& Degree);

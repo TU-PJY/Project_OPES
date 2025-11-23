@@ -15,10 +15,10 @@ private:
 	XMFLOAT3 velocity{};
 	XMFLOAT3 rotation{};
 
-	// Æ¨±è °è¼ö
+	// Ã†Â¨Â±Ã¨ Â°Ã¨Â¼Ã¶
 	float    restitution{ 0.65f };
 
-	// ¼öÆò °¨¼è
+	// Â¼Ã¶Ã†Ã² Â°Â¨Â¼Ã¨
 	float    friction{ 0.5f };   
 	float    gravity{ 9.8f };
 	bool     isStopped{ false };

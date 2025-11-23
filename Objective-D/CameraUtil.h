@@ -5,14 +5,14 @@
 
 class Camera {
 protected:
-	//Ä«¸Ş¶ó ¿¬Ãâ º¯¼ö
-	// Èçµé¸² °­µµ
+	//ì¹´ë©”ë¼ ì—°ì¶œ ë³€ìˆ˜
+	// í”ë“¤ë¦¼ ê°•ë„
 	float ShakeStrength{};
 
-	// Èçµé¸²À¸·Î ÀÎÇÑ ºäÆ÷Æ® À§Ä¡ ¿ÀÇÁ¼Â
+	// í”ë“¤ë¦¼ìœ¼ë¡œ ì¸í•œ ë·°í¬íŠ¸ ìœ„ì¹˜ ì˜¤í”„ì…‹
 	xmfloat2 ShakeOffset{};
 
-	// Èçµé¸² °ª »ı¼º µô·¹ÀÌ
+	// í”ë“¤ë¦¼ ê°’ ìƒì„± ë”œë ˆì´
 	float ShakeDelay{};
 
 	float destRecoilShake{};
@@ -60,7 +60,7 @@ public:
 	XMFLOAT4X4						ProjectionMatrix{};
 	XMFLOAT4X4                      ShakeMatrix{};
 
-	// Á¤Àû Ãâ·ÂÀ» À§ÇÑ ½ºÅ×Æ½ Çà·Ä (¿¹: UI, ÀÌ¹ÌÁö µî
+	// ì •ì  ì¶œë ¥ì„ ìœ„í•œ ìŠ¤í…Œí‹± í–‰ë ¬ (ì˜ˆ: UI, ì´ë¯¸ì§€ ë“±
 	XMFLOAT4X4 StaticViewMatrix{};
 	XMFLOAT4X4 StaticProjectionMatrix{};
 
@@ -68,15 +68,15 @@ public:
 	virtual ~Camera() {}
 	void Update(float FT);
 
-	// Èçµé¸² °­µµ¸¦ Æ¯Á¤ ¼öÄ¡·Î ¼³Á¤ÇÑ´Ù.
+	// í”ë“¤ë¦¼ ê°•ë„ë¥¼ íŠ¹ì • ìˆ˜ì¹˜ë¡œ ì„¤ì •í•œë‹¤.
 	void SetShake(float Strength);
 
-	// ÇöÀç Èçµé¸² °­µµ¿¡¼­ Ãß°¡ Èçµé¸² °­µµ¸¦ Ãß°¡ÇÑ´Ù.
+	// í˜„ì¬ í”ë“¤ë¦¼ ê°•ë„ì—ì„œ ì¶”ê°€ í”ë“¤ë¦¼ ê°•ë„ë¥¼ ì¶”ê°€í•œë‹¤.
 	void AddShake(float Strength);
 	void AddRecoilShake(float Strength, float duration = 0.3f, float Speed=30.0f);
 	void AddShake(float d, float R0, float R1, float p, float Strength);
 
-	// ÇöÀç Èçµé¸² °­µµ¿¡¼­ °Å¸®¿¡ µû¸¥ °­µµ¸¦ Ãß°¡ÇÑ´Ù.
+	// í˜„ì¬ í”ë“¤ë¦¼ ê°•ë„ì—ì„œ ê±°ë¦¬ì— ë”°ë¥¸ ê°•ë„ë¥¼ ì¶”ê°€í•œë‹¤.
 	void AddShakeWithDistance(float Distance, float Strength);
 
 	virtual void CreateShaderVariables(ID3D12Device* Device, ID3D12GraphicsCommandList* CmdList) {}

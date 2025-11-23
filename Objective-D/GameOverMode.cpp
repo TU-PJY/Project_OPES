@@ -19,8 +19,8 @@ void GameOverMode::Start() {
 		GLOBAL.deBuff[i] = false;
 	}
 
-	GLOBAL.NetRunning = false;                 // ¨ç ³×Æ®¿öÅ© ·çÇÁ Á¤Áö ÇÃ·¡±×
-	//if (GLOBAL.netThread.joinable())           // ¨é Áï½Ã Á¶ÀÎ °¡´É
+	GLOBAL.NetRunning = false;                 // â‘  ë„¤íŠ¸ì›Œí¬ ë£¨í”„ ì •ì§€ í”Œë˜ê·¸
+	//if (GLOBAL.netThread.joinable())           // â‘¢ ì¦‰ì‹œ ì¡°ì¸ ê°€ëŠ¥
 		//GLOBAL.netThread.join();
 }
 

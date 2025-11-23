@@ -22,8 +22,8 @@ void OOBB::UpdateDelta(float Delta) {
 	}
 }
 
-// Ãæµ¹ Ã³¸®¸¦ ´ã´çÇÏ´Â À¯Æ¿ÀÌ´Ù.
-// ¼­·Î ´Ù¸¥ Á¾·ùÀÇ ¹Ù¿îµù °´Ã¼¿Íµµ ºñ±³ °¡´ÉÇÏ¸ç, °´Ã¼°¡ °¡Áö´Â À§Ä¡, È¸Àü, Å©±â¸¦ ÆÄ¶ó¹ÌÅÍ¿¡ ³Ö¾îÁÖ¸é µÈ´Ù.
+// ì¶©ëŒ ì²˜ë¦¬ë¥¼ ë‹´ë‹¹í•˜ëŠ” ìœ í‹¸ì´ë‹¤.
+// ì„œë¡œ ë‹¤ë¥¸ ì¢…ë¥˜ì˜ ë°”ìš´ë”© ê°ì²´ì™€ë„ ë¹„êµ ê°€ëŠ¥í•˜ë©°, ê°ì²´ê°€ ê°€ì§€ëŠ” ìœ„ì¹˜, íšŒì „, í¬ê¸°ë¥¼ íŒŒë¼ë¯¸í„°ì— ë„£ì–´ì£¼ë©´ ëœë‹¤.
 void OOBB::UpdateAnimated(FBXMesh& Mesh, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatrix, XMFLOAT4X4& SMatrix, int NodeIndex) {
 	if(NodeIndex > Mesh.MeshPart.size() - 1)
 		Update(Mesh.MeshPart[0], TMatrix, RMatrix, SMatrix, true);
@@ -45,7 +45,7 @@ void OOBB::UpdateAnimated(FBX& TargetFBX, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatr
 	const XMFLOAT3* Positions = reinterpret_cast<const XMFLOAT3*>(TargetFBX.PositionMapped[NodeIndex]);
 	int VertexCount = MeshNode->Vertices;
 
-	// º´·Ä Ã³¸®
+	// ë³‘ë ¬ ì²˜ë¦¬
 	const int threadCount = std::thread::hardware_concurrency();
 	const int verticesPerThread = (VertexCount + threadCount - 1) / threadCount;
 
@@ -62,7 +62,7 @@ void OOBB::UpdateAnimated(FBX& TargetFBX, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatr
 		}));
 	}
 
-	// ¸ğµç Á¤Á¡ ÃëÇÕ
+	// ëª¨ë“  ì •ì  ì·¨í•©
 	std::vector<XMFLOAT3> AllPositions;
 	AllPositions.reserve(VertexCount);
 	for (auto& f : futures) {
@@ -70,11 +70,11 @@ void OOBB::UpdateAnimated(FBX& TargetFBX, XMFLOAT4X4& TMatrix, XMFLOAT4X4& RMatr
 		AllPositions.insert(AllPositions.end(), partial.begin(), partial.end());
 	}
 
-	// OOBB »ı¼º
+	// OOBB ìƒì„±
 	DirectX::BoundingOrientedBox NewBox;
 	BoundingOrientedBox::CreateFromPoints(NewBox, static_cast<UINT>(AllPositions.size()), AllPositions.data(), sizeof(XMFLOAT3));
 
-	// S * R * T Àû¿ë
+	// S * R * T ì ìš©
 	XMMATRIX S = XMLoadFloat4x4(&SMatrix);
 	XMMATRIX R = XMLoadFloat4x4(&RMatrix);
 	XMMATRIX T = XMLoadFloat4x4(&TMatrix);
@@ -124,7 +124,7 @@ void OOBB::Render() {
 	Transform::Move(TranslateMatrix, oobb.Center.x, oobb.Center.y, oobb.Center.z);
 	Transform::Scale(ScaleMatrix, oobb.Extents.x, oobb.Extents.y, oobb.Extents.z);
 
-	// ÄõÅÍ´Ï¾ğÀ» È¸ÀüÇà·Ä·Î º¯È¯
+	// ì¿¼í„°ë‹ˆì–¸ì„ íšŒì „í–‰ë ¬ë¡œ ë³€í™˜
 	XMVECTOR QuaternionForMatrix = XMLoadFloat4(&oobb.Orientation);
 	XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(QuaternionForMatrix);
 	XMStoreFloat4x4(&RotateMatrix, rotationMatrix);

@@ -3,16 +3,16 @@
 #include "CameraUtil.h"
 #include <cmath>
 
-// º¤ÅÍ ¿¬»êÀ» À§ÇÑ ÇÔ¼öµéÀÌ´Ù. °´Ã¼°¡ °¡Áö´Â º¤ÅÍ »ïÇüÁ¦¿Í È¸Àü°ªÀ» ÆÄ¶ó¹ÌÅÍ¿¡ ³Ö¾îÁÖ¸é µÈ´Ù.
+// ë²¡í„° ì—°ì‚°ì„ ìœ„í•œ í•¨ìˆ˜ë“¤ì´ë‹¤. ê°ì²´ê°€ ê°€ì§€ëŠ” ë²¡í„° ì‚¼í˜•ì œì™€ íšŒì „ê°’ì„ íŒŒë¼ë¯¸í„°ì— ë„£ì–´ì£¼ë©´ ëœë‹¤.
 
-// º¤ÅÍ¸¦ ±âº» °ªÀ¸·Î ÃÊ±âÈ­ ÇÑ´Ù.
+// ë²¡í„°ë¥¼ ê¸°ë³¸ ê°’ìœ¼ë¡œ ì´ˆê¸°í™” í•œë‹¤.
 void Math::InitVector(ObjectVector& VectorStruct) {
 	VectorStruct.Up = XMFLOAT3(0.0, 1.0, 0.0);
 	VectorStruct.Right = XMFLOAT3(1.0, 0.0, 0.0);
 	VectorStruct.Look = XMFLOAT3(0.0, 0.0, 1.0);
 }
 
-// ¿ÀºêÁ§Æ®°¡ È¸ÀüÇÑ ÈÄÀÇ º¤ÅÍ¸¦ ¾÷µ¥ÀÌÆ® ÇÑ´Ù. Ä«¸Ş¶ó ÃßÀûÀ» ½ÇÇàÇÏ±â À§ÇØ¼­´Â ¹İµå½Ã ÀÌ ÇÔ¼ö·Î º¤ÅÍ¸¦ ¾÷µ¥ÀÌÆ® ÇØ¾ßÇÑ´Ù.
+// ì˜¤ë¸Œì íŠ¸ê°€ íšŒì „í•œ í›„ì˜ ë²¡í„°ë¥¼ ì—…ë°ì´íŠ¸ í•œë‹¤. ì¹´ë©”ë¼ ì¶”ì ì„ ì‹¤í–‰í•˜ê¸° ìœ„í•´ì„œëŠ” ë°˜ë“œì‹œ ì´ í•¨ìˆ˜ë¡œ ë²¡í„°ë¥¼ ì—…ë°ì´íŠ¸ í•´ì•¼í•œë‹¤.
 void Math::UpdateVector(ObjectVector& VectorStruct, float Pitch, float Yaw, float Roll) {
 	XMVECTOR UpVector = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	XMVECTOR LookVector = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
@@ -65,7 +65,7 @@ void Math::UpdateVector(ObjectVector& VectorStruct, XMFLOAT3& Rotation) {
 	};
 }
 
-// º¤ÅÍ¸¦ »ç¿ëÇÏ¿© Æ¯Á¤ À§Ä¡¸¦ ¹Ù¶óº¸°Ô ÇÏµµ·Ï ¼³Á¤ÇÑ´Ù. ÀÚ½ÅÀÇ Çà·Ä, º¤ÅÍ, À§Ä¡¿Í »ó´ëÀÇ À§Ä¡, ¾÷º¤ÅÍ¸¦ ÆÄ¶ó¹ÌÅÍ¿¡ ³ÖÀ¸¸é µÈ´Ù.
+// ë²¡í„°ë¥¼ ì‚¬ìš©í•˜ì—¬ íŠ¹ì • ìœ„ì¹˜ë¥¼ ë°”ë¼ë³´ê²Œ í•˜ë„ë¡ ì„¤ì •í•œë‹¤. ìì‹ ì˜ í–‰ë ¬, ë²¡í„°, ìœ„ì¹˜ì™€ ìƒëŒ€ì˜ ìœ„ì¹˜, ì—…ë²¡í„°ë¥¼ íŒŒë¼ë¯¸í„°ì— ë„£ìœ¼ë©´ ëœë‹¤.
 void Math::LookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLOAT3& ThisPosition, XMFLOAT3& TargetPosition, XMFLOAT3& TargetUpVector) {
 	XMFLOAT4X4 xmf4x4View = Mat4::LookAtLH(TargetPosition, ThisPosition, TargetUpVector);
 	Matrix._11 = xmf4x4View._11; Matrix._12 = xmf4x4View._21; Matrix._13 = xmf4x4View._31;
@@ -77,7 +77,7 @@ void Math::LookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLOAT3& This
 	VectorStruct.Look = Vec3::Normalize(XMFLOAT3(Matrix._31, Matrix._32, Matrix._33));
 }
 
-// ºôº¸µå¿ë LookAt ÇÔ¼ö
+// ë¹Œë³´ë“œìš© LookAt í•¨ìˆ˜
 void Math::BillboardLookAt(XMFLOAT4X4& Matrix, ObjectVector& VectorStruct, XMFLOAT3& ThisPosition, XMFLOAT3& TargetPosition) {
 	XMFLOAT4X4 xmf4x4View = Mat4::LookAtLH(TargetPosition, ThisPosition, XMFLOAT3(0.0, 1.0, 0.0));
 	Matrix._11 = xmf4x4View._11; Matrix._12 = xmf4x4View._21; Matrix._13 = xmf4x4View._31;
@@ -94,7 +94,7 @@ float Math::LerpDegrees(float a, float b, float t) {
 	return a + delta * t;
 }
 
-// ±¤¼± º¤ÅÍ¸¦ µÎ À§Ä¡¸¦ »ç¿ëÇØ °è»êÇÑ´Ù.
+// ê´‘ì„  ë²¡í„°ë¥¼ ë‘ ìœ„ì¹˜ë¥¼ ì‚¬ìš©í•´ ê³„ì‚°í•œë‹¤.
 Ray Math::CalcRayVector(const XMFLOAT3& OriginPosition, const XMFLOAT3& TargetPosition) {
 	XMVECTOR Origin = XMLoadFloat3(&OriginPosition);
 	XMVECTOR Target = XMLoadFloat3(&TargetPosition);
@@ -108,7 +108,7 @@ Ray Math::CalcRayVector(const XMFLOAT3& OriginPosition, const XMFLOAT3& TargetPo
 	return OutRay;
 }
 
-// ±¤¼± º¤ÅÍ°¡ ¹Ù¿îµå¿Í Ãæµ¹ÇÏ´ÂÁö °Ë»çÇÑ´Ù. CalcRayVector()¿¡¼­ °è»êµÈ °Å¸®±îÁö¸¸ °Ë»çÇÑ´Ù.
+// ê´‘ì„  ë²¡í„°ê°€ ë°”ìš´ë“œì™€ ì¶©ëŒí•˜ëŠ”ì§€ ê²€ì‚¬í•œë‹¤. CalcRayVector()ì—ì„œ ê³„ì‚°ëœ ê±°ë¦¬ê¹Œì§€ë§Œ ê²€ì‚¬í•œë‹¤.
 bool Math::CheckRayCollision(Ray& RayVector, OOBB& oobb) {
 	float Distance{};
 	if (oobb.oobb.Intersects(RayVector.Origin, RayVector.Direction, Distance)) {
@@ -135,7 +135,7 @@ bool Math::CheckRayCollision(Ray& RayVector, BoundSphere& sphere) {
 	return false;
 }
 
-// È¸Àü°¢µµ·Î ·¹ÀÌ¸¦ °è»êÇÑ´Ù.
+// íšŒì „ê°ë„ë¡œ ë ˆì´ë¥¼ ê³„ì‚°í•œë‹¤.
 XMVECTOR Math::CalcRayDirection(XMFLOAT3& Rotation) {
 	float RotationX = XMConvertToRadians(Rotation.x);
 	float RotationY = XMConvertToRadians(Rotation.y);
@@ -148,29 +148,29 @@ XMVECTOR Math::CalcRayDirection(XMFLOAT3& Rotation) {
 	return RayDirection;
 }
 
-// ·¹ÀÌ°¡ ½ÃÀÛµÇ´Â À§Ä¡¸¦ °è»êÇÑ´Ù.
+// ë ˆì´ê°€ ì‹œì‘ë˜ëŠ” ìœ„ì¹˜ë¥¼ ê³„ì‚°í•œë‹¤.
 XMVECTOR Math::CalcRayOrigin(XMFLOAT3& Position) {
 	return XMVectorSet(Position.x, Position.y, Position.z, 1.0f);
 }
 
-// ·¹ÀÌ°¡ ¹Ù¿îµù ¹Ú½º¿Í Ãæµ¹ÇÏ´ÂÁö °Ë»çÇÑ´Ù
+// ë ˆì´ê°€ ë°”ìš´ë”© ë°•ìŠ¤ì™€ ì¶©ëŒí•˜ëŠ”ì§€ ê²€ì‚¬í•œë‹¤
 bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const AABB& Other) {
 	float Distance;
 	return Other.aabb.Intersects(RayOrigin, RayDirection, Distance);
 }
 
-// ·¹ÀÌ°¡ ¹Ù¿îµù ¹Ú½º¿Í Ãæµ¹ÇÏ´ÂÁö °Ë»çÇÑ´Ù
+// ë ˆì´ê°€ ë°”ìš´ë”© ë°•ìŠ¤ì™€ ì¶©ëŒí•˜ëŠ”ì§€ ê²€ì‚¬í•œë‹¤
 bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, float& distance, const OOBB& Other) {
 	return Other.oobb.Intersects(RayOrigin, RayDirection, distance);
 }
 
-// ·¹ÀÌ°¡ ¹Ù¿îµù ¹Ú½º¿Í Ãæµ¹ÇÏ´ÂÁö °Ë»çÇÑ´Ù
+// ë ˆì´ê°€ ë°”ìš´ë”© ë°•ìŠ¤ì™€ ì¶©ëŒí•˜ëŠ”ì§€ ê²€ì‚¬í•œë‹¤
 bool Math::CheckRayCollision(XMVECTOR& RayOrigin, XMVECTOR& RayDirection, const BoundSphere& Other) {
 	float Distance;
 	return Other.sphere.Intersects(RayOrigin, RayDirection, Distance);
 }
 
-// ÇöÀç ½ÃÁ¡À» ±âÁØÀ¸·Î ÀÚ½ÅÀÇ À§Ä¡°¡ Æ¯Á¤ ÁöÁ¡À¸·Î ºÎÅÍ ¿À¸¥ÂÊ¿¡ ÀÖ´ÂÁö °Ë»çÇÑ´Ù. ¿À¸¥ÂÊÀÌ¶ó¸é true, ¿ŞÂÊÀÌ¶ó¸é false¸¦ ¸®ÅÏÇÑ´Ù.
+// í˜„ì¬ ì‹œì ì„ ê¸°ì¤€ìœ¼ë¡œ ìì‹ ì˜ ìœ„ì¹˜ê°€ íŠ¹ì • ì§€ì ìœ¼ë¡œ ë¶€í„° ì˜¤ë¥¸ìª½ì— ìˆëŠ”ì§€ ê²€ì‚¬í•œë‹¤. ì˜¤ë¥¸ìª½ì´ë¼ë©´ true, ì™¼ìª½ì´ë¼ë©´ falseë¥¼ ë¦¬í„´í•œë‹¤.
 bool Math::IsRightOfTarget(XMFLOAT3& ThisPosition, ObjectVector& Vector, XMFLOAT3& TargetPosition) {
 	XMFLOAT3 Direction = XMFLOAT3(
 		TargetPosition.x - ThisPosition.x,
@@ -188,36 +188,36 @@ bool Math::IsRightOfTarget(XMFLOAT3& ThisPosition, ObjectVector& Vector, XMFLOAT
 	return false;
 }
 
-// À§Ä¡¸¦ ¾ÕÀ¸·Î ¿òÁ÷ÀÎ´Ù. ÇöÀç ÀÚ½ÅÀÇ À§Ä¡°ª°ú ÀÚ½ÅÀÇ lookº¤ÅÍ, ¼Óµµ°ªÀ» ³Ö¾îÁÖ¸é µÈ´Ù.
+// ìœ„ì¹˜ë¥¼ ì•ìœ¼ë¡œ ì›€ì§ì¸ë‹¤. í˜„ì¬ ìì‹ ì˜ ìœ„ì¹˜ê°’ê³¼ ìì‹ ì˜ lookë²¡í„°, ì†ë„ê°’ì„ ë„£ì–´ì£¼ë©´ ëœë‹¤.
 void Math::Vector_MoveForward(XMFLOAT3& Position, XMFLOAT3& Look, float Distance) {
 	Position = Vec3::Add(Position, Look, Distance);
 }
 
-// À§Ä¡¸¦ ¿·À¸·Î ¿òÁ÷ÀÎ´Ù. ÇöÀç ÀÚ½ÅÀÇ À§Ä¡°ª°ú ÀÚ½ÅÀÇ rightº¤ÅÍ, ¼Óµµ°ªÀ» ³Ö¾îÁÖ¸é µÈ´Ù.
+// ìœ„ì¹˜ë¥¼ ì˜†ìœ¼ë¡œ ì›€ì§ì¸ë‹¤. í˜„ì¬ ìì‹ ì˜ ìœ„ì¹˜ê°’ê³¼ ìì‹ ì˜ rightë²¡í„°, ì†ë„ê°’ì„ ë„£ì–´ì£¼ë©´ ëœë‹¤.
 void Math::Vector_MoveStrafe(XMFLOAT3& Position, XMFLOAT3& Right, float Distance) {
 	Position = Vec3::Add(Position, Right, Distance);
 }
 
-// À§Ä¡¸¦ À§·Î ¿òÁ÷ÀÎ´Ù. ÇöÀç ÀÚ½ÅÀÇ À§Ä¡°ª°ú ÀÚ½ÅÀÇ upº¤ÅÍ, ¼Óµµ°ªÀ» ³Ö¾îÁÖ¸é µÈ´Ù.
+// ìœ„ì¹˜ë¥¼ ìœ„ë¡œ ì›€ì§ì¸ë‹¤. í˜„ì¬ ìì‹ ì˜ ìœ„ì¹˜ê°’ê³¼ ìì‹ ì˜ upë²¡í„°, ì†ë„ê°’ì„ ë„£ì–´ì£¼ë©´ ëœë‹¤.
 void Math::Vector_MoveUp(XMFLOAT3& Position, XMFLOAT3& Up, float Distance) {
 	Position = Vec3::Add(Position, Up, Distance);
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ ¾ÕÀ¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ì•ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void Math::MoveForward(XMFLOAT3& Position, float RotationY, float MoveDistance) {
 	float Radians = XMConvertToRadians(RotationY);
 	Position.x += sinf(Radians) * MoveDistance;
 	Position.z += cosf(Radians) * MoveDistance;
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ ¿·À¸·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ì˜†ìœ¼ë¡œ ì›€ì§ì¸ë‹¤.
 void Math::MoveStrafe(XMFLOAT3& Position, float RotationY, float MoveDistance) {
 	float Radians = XMConvertToRadians(RotationY);
 	Position.x += cosf(Radians) * MoveDistance;
 	Position.z -= sinf(Radians) * MoveDistance;
 }
 
-// ÇöÀç ½ÃÁ¡¿¡¼­ À§·Î ¿òÁ÷ÀÎ´Ù.
+// í˜„ì¬ ì‹œì ì—ì„œ ìœ„ë¡œ ì›€ì§ì¸ë‹¤.
 void Math::MoveUp(XMFLOAT3& Position, float MoveDistance) {
 	Position.y += MoveDistance;
 }
@@ -311,7 +311,7 @@ void Math::MoveWithSlide(XMFLOAT3& Position, float RotationY, float ForwardSpeed
 	XMStoreFloat3(&Position, FinalVector);
 }
 
-// 2Â÷¿ø °Å¸®¸¦ °è»êÇÑ´Ù.
+// 2ì°¨ì› ê±°ë¦¬ë¥¼ ê³„ì‚°í•œë‹¤.
 float Math::CalcDistance2D(float FromX, float FromY, float ToX, float ToY) {
 	return  std::sqrt(std::pow(FromX - ToX, 2) + std::pow(FromY - ToY, 2));
 }
@@ -324,7 +324,7 @@ float Math::CalcDistance3D(const XMFLOAT3& A, const XMFLOAT3& B) {
 	return XMVectorGetX(Length);
 }
 
-// 2Â÷¿ø °¢µµ¸¦ °è»êÇÑ´Ù.
+// 2ì°¨ì› ê°ë„ë¥¼ ê³„ì‚°í•œë‹¤.
 float Math::CalcDegree2D(float FromX, float FromY, float ToX, float ToY) {
 	return XMConvertToDegrees(atan2(ToY - FromY, ToX - FromX));
 }
@@ -357,12 +357,12 @@ XMFLOAT3 Math::CalcRadians3D(const XMFLOAT3& A, const XMFLOAT3& B) {
 	return XMFLOAT3(Pitch, Yaw, Roll);
 }
 
-// 2Â÷¿ø ¶óµğ¾ÈÀ» °è»êÇÑ´Ù.
+// 2ì°¨ì› ë¼ë””ì•ˆì„ ê³„ì‚°í•œë‹¤.
 float Math::CalcRadians2D(float FromX, float FromY, float ToX, float ToY) {
 	return atan2(ToY - FromY, ToX - FromX);
 }
 
-// 2Â÷¿ø °¢µµ¸¦ 360µµ ¹üÀ§·Î Á¤±ÔÈ­ ÇÑ´Ù.
+// 2ì°¨ì› ê°ë„ë¥¼ 360ë„ ë²”ìœ„ë¡œ ì •ê·œí™” í•œë‹¤.
 void Math::Normalize2DAngleTo360(float& Degree) {
 	Degree = fmod(Degree, 360.0f);
 	if (Degree < 0.0f)
@@ -429,11 +429,11 @@ XMFLOAT3 Math::CalcForwardOffset(const XMFLOAT3& Position, float DegreesY, float
 XMFLOAT3 Math::CalcStrafeOffset(const XMFLOAT3& Position, float DegreesY, float StrafeDistance, float HeightOffset) {
 	float radians = XMConvertToRadians(DegreesY);
 
-    // Àü¹æ º¤ÅÍ
+    // ì „ë°© ë²¡í„°
     float forwardX = sinf(radians);
     float forwardZ = cosf(radians);
 
-    // Àü¹æ¿¡ ¼öÁ÷ÀÎ ¿À¸¥ÂÊ º¤ÅÍ (Strafe)
+    // ì „ë°©ì— ìˆ˜ì§ì¸ ì˜¤ë¥¸ìª½ ë²¡í„° (Strafe)
     float rightX = forwardZ;
     float rightZ = -forwardX;
 

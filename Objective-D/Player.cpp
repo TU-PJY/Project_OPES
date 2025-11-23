@@ -15,19 +15,19 @@
 //void SendViewingAnglePacket(float x, float y, float z);
 //void SendAnimaionPacket(unsigned short playerState);
 //
-//// »ı¼ºÀÚ¿¡¼­ ÀÔ·Â¹ŞÀº ¸Ê ¿ÀºêÁ§Æ® ÀÌ¸§À¸·Î ÅÍ·¹ÀÎ °ªÀ» ¹Ş¾Æ¿Â´Ù.
+//// ìƒì„±ìì—ì„œ ì…ë ¥ë°›ì€ ë§µ ì˜¤ë¸Œì íŠ¸ ì´ë¦„ìœ¼ë¡œ í„°ë ˆì¸ ê°’ì„ ë°›ì•„ì˜¨ë‹¤.
 //Player::Player(std::string MapObjectName) {
 //	currentTerrainName = MapObjectName;
 //	mouse.StartMotionCapture(GlobalHWND);
 //
-//	// ÇöÀç ¸Ê¿¡¼­ º® oobb¸¦ ¾ò¾î¿Â´Ù.
+//	// í˜„ì¬ ë§µì—ì„œ ë²½ oobbë¥¼ ì–»ì–´ì˜¨ë‹¤.
 //	if (auto Map = scene.Find(MapObjectName); Map)
 //		map_oobb_data = Map->GetMapWallOOBB();
 //
 //	if (auto building = scene.Find("center_building"); building)
 //		map_oobb_data.emplace_back(building->GetOOBB());
 //
-//	// ¿À¹öÇìµå °¨¼Ò¸¦ À§ÇØ ¹Ì¸® Å©·Î½ºÇì¾î ¿ÀºêÁ§Æ® Æ÷ÀÎÅÍ¸¦ ÀúÀåÇÑ´Ù.
+//	// ì˜¤ë²„í—¤ë“œ ê°ì†Œë¥¼ ìœ„í•´ ë¯¸ë¦¬ í¬ë¡œìŠ¤í—¤ì–´ ì˜¤ë¸Œì íŠ¸ í¬ì¸í„°ë¥¼ ì €ì¥í•œë‹¤.
 //	if (auto Object = scene.Find("crosshair"))
 //		crosshair = Object;
 //
@@ -39,7 +39,7 @@
 //		mouse.HideCursor();
 //		GetCapture();
 //
-//		// Á¤Á¶ÁØ ½Ã °¨µµ¸¦ Àı¹İÀ¸·Î ³·Ãá´Ù
+//		// ì •ì¡°ì¤€ ì‹œ ê°ë„ë¥¼ ì ˆë°˜ìœ¼ë¡œ ë‚®ì¶˜ë‹¤
 //		float sensivity = 0.08;
 //		if (gunZoomState)  sensivity = 0.04;
 //		XMFLOAT2 Delta = mouse.GetMotionDelta(Event.Motion, sensivity);
@@ -48,11 +48,11 @@
 //}
 //
 //void Player::InputMouse(MouseEvent& Event) {
-//	// ÃÑ ¹ß»ç »óÅÂ È°¼ºÈ­ / ºñÈ°¼ºÈ­
+//	// ì´ ë°œì‚¬ ìƒíƒœ í™œì„±í™” / ë¹„í™œì„±í™”
 //	switch (Event.Type) {
 //	case WM_LBUTTONDOWN:
-//		// ¸¶¿ì½º ¸ğ¼Ç Ä¸ÃÄ »óÅÂ°¡ ÇØÁ¦µÈ °æ¿ì(À©µµ¿ì ¹öÆ° µîÀ¸·Î ´Ù¸¥ À©µµ¿ì¿¡ Æ÷Ä¿½ÌµÈ °æ¿ì)
-//		// ¿ø·¡ÀÇ À©µµ¿ì¿¡ ÁÂÅ¬¸¯À¸·Î Æ÷Ä¿½ÌÇÏ¸é ¸ğ¼Ç Ä¸ÃÄ »óÅÂ°¡ ´Ù½Ã È°¼ºÈ­ µÈ´Ù.
+//		// ë§ˆìš°ìŠ¤ ëª¨ì…˜ ìº¡ì³ ìƒíƒœê°€ í•´ì œëœ ê²½ìš°(ìœˆë„ìš° ë²„íŠ¼ ë“±ìœ¼ë¡œ ë‹¤ë¥¸ ìœˆë„ìš°ì— í¬ì»¤ì‹±ëœ ê²½ìš°)
+//		// ì›ë˜ì˜ ìœˆë„ìš°ì— ì¢Œí´ë¦­ìœ¼ë¡œ í¬ì»¤ì‹±í•˜ë©´ ëª¨ì…˜ ìº¡ì³ ìƒíƒœê°€ ë‹¤ì‹œ í™œì„±í™” ëœë‹¤.
 //		mouse.StartMotionCapture(GlobalHWND);
 //		triggerState = true;
 //		break;
@@ -76,20 +76,20 @@
 //}
 //
 //void Player::InputKey(KeyEvent& Event) {
-//	// °¢ ¿òÁ÷ÀÓ º¯¼ö¿¡ ´ëÀÀµÈ Å°
+//	// ê° ì›€ì§ì„ ë³€ìˆ˜ì— ëŒ€ì‘ëœ í‚¤
 //	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'W', moveFrontState);
 //	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'S', moveBackState);
 //	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'A', moveLeftState);
 //	InputBoolSwitch(KEY_DOWN_TRUE, Event, 'D', moveRightState);
 //}
 //
-//// ÇöÀç À§Ä¡, yÈ¸Àü°ª, xÈ¸Àü°ª, ´ë¹ÌÁö, ÇöÀç ¸Ê ÀÌ¸§À» Àü´ŞÇÑ´Ù.
+//// í˜„ì¬ ìœ„ì¹˜, yíšŒì „ê°’, xíšŒì „ê°’, ëŒ€ë¯¸ì§€, í˜„ì¬ ë§µ ì´ë¦„ì„ ì „ë‹¬í•œë‹¤.
 //void Player::createBulletObject() {
 //	//scene.AddObject(new Bullet(cameraPosition, rotation.y, rotation.x, 10), "bullet", LAYER1);
 //}
 //
-//// ¼­¹ö ºÎÇÏ¸¦ ¹æÁöÇÏ±â À§ÇØ 0.05ÃÊ °£°İÀ¸·Î ÆĞÅ¶ Àü¼Û 
-//// °³¹ßÀ» À§ÇØ Àá½Ã ºñÈ°¼ºÈ­
+//// ì„œë²„ ë¶€í•˜ë¥¼ ë°©ì§€í•˜ê¸° ìœ„í•´ 0.05ì´ˆ ê°„ê²©ìœ¼ë¡œ íŒ¨í‚· ì „ì†¡ 
+//// ê°œë°œì„ ìœ„í•´ ì ì‹œ ë¹„í™œì„±í™”
 //void Player::SendPacket(float Delta) {
 //	/*std::cout << cameraPosition.x << " " << cameraPosition.y << " " << cameraPosition.z << std::endl;
 //
@@ -121,49 +121,49 @@
 //}
 //
 //void Player::Update(float FrameTime) {
-//	// ÃÑ ¹ß»ç ¾÷µ¥ÀÌÆ®
-//	// ÀÌµ¿ ¼Óµµ °¡°¨¼Ó ¾÷µ¥ÀÌÆ®
+//	// ì´ ë°œì‚¬ ì—…ë°ì´íŠ¸
+//	// ì´ë™ ì†ë„ ê°€ê°ì† ì—…ë°ì´íŠ¸
 //	UpdateMoveSpeed(FrameTime);
 //
-//	// ÅÍ·¹ÀÎ Ãæµ¹ Ã³¸® ¾÷µ¥ÀÌÆ®
+//	// í„°ë ˆì¸ ì¶©ëŒ ì²˜ë¦¬ ì—…ë°ì´íŠ¸
 //	UpdateTerrainCollision(FrameTime);
 //
-//	// ÇÃ·¹ÀÌ¾î ¹Ù¿îµù ½ºÆä¾î ¾÷µ¥ÀÌÆ®
+//	// í”Œë ˆì´ì–´ ë°”ìš´ë”© ìŠ¤í˜ì–´ ì—…ë°ì´íŠ¸
 //	player_sphere.Update(XMFLOAT3(playerPosition.x, playerPosition.y + 0.5, playerPosition.z), 1.0);
 //
-//	// ÃÑ - ¸Ê ¿ÀºêÁ§Æ® Ãæµ¹ Ã³¸® ¾÷µ¥ÀÌÆ®
+//	// ì´ - ë§µ ì˜¤ë¸Œì íŠ¸ ì¶©ëŒ ì²˜ë¦¬ ì—…ë°ì´íŠ¸
 //	UpdateGunCollision();
 //	 
-//	// ÃÑ ¾÷µ¥ÀÌÆ®
+//	// ì´ ì—…ë°ì´íŠ¸
 //	UpdateGun(FrameTime);
 //
-//	// Ä«¸Ş¶ó ¾÷µ¥ÀÌÆ®
+//	// ì¹´ë©”ë¼ ì—…ë°ì´íŠ¸
 //	UpdateCamera(FrameTime);
 //
 //	UpdateFire(FrameTime);
 //
-//	// ÇÃ·¹ÀÌ¾î OOBB ¾÷µ¥ÀÌÆ®
+//	// í”Œë ˆì´ì–´ OOBB ì—…ë°ì´íŠ¸
 //	updateBound(FrameTime);
 //
-//	// ¼­¹ö·Î ÆĞÅ¶ Àü¼Û
+//	// ì„œë²„ë¡œ íŒ¨í‚· ì „ì†¡
 //	SendPacket(FrameTime);
 //}
 //
 //void Player::Render() {
-////	// 1ÀÎÄª ÃÑ ·»´õ¸µ
+////	// 1ì¸ì¹­ ì´ ë Œë”ë§
 ////	BeginRender();
 ////	Transform::Move(TranslateMatrix, cameraPosition);
 ////	Transform::Rotate(TranslateMatrix, gunRotation.x, gunRotation.y + gunRotationOffset, gunRotation.z);
 ////	Transform::Move(TranslateMatrix, gunPositionOffset.x, gunPositionOffset.y, gunPositionOffset.z + gunOffset);
 ////	Render3D(MESH.machine_gun, TEX.scifi);
 ////
-////	// ·¹µå µµÆ® ·»´õ¸µ
+////	// ë ˆë“œ ë„íŠ¸ ë Œë”ë§
 ////	SetLightUse(DISABLE_LIGHT);
 ////	Render3D(MESH.dot_machine_gun, TEX.scifi);
 ////
-////	// flame_time µ¿¾È ºÒ²É ·»´õ¸µ
+////	// flame_time ë™ì•ˆ ë¶ˆê½ƒ ë Œë”ë§
 ////	if (flameTime > 0.0) {
-////		// ºÒ²É ·»´õ¸µ
+////		// ë¶ˆê½ƒ ë Œë”ë§
 ////		Render3D(MESH.gun_flame, TEX.gun_flame);
 ////		Render3D(MESH.gun_flame_back, TEX.gun_flame_back);
 ////	}
@@ -171,7 +171,7 @@
 ////	gunOOBB.Render();
 ////	player_sphere.Render();
 ////
-////	// ÇÃ·¹ÀÌ¾î ¹Ù¿îµå¹Ú½º ¾÷µ¥ÀÌÆ®
+////	// í”Œë ˆì´ì–´ ë°”ìš´ë“œë°•ìŠ¤ ì—…ë°ì´íŠ¸
 ////	BeginRender();
 ////	Transform::Move(TranslateMatrix, playerPosition);
 ////	Transform::Rotate(RotateMatrix, XMFLOAT3(0.0, rotation.y, 0.0));
@@ -181,7 +181,7 @@
 ////}
 ////
 ////void Player::UpdateMoveSpeed(float FrameTime) {
-////	// ¿òÁ÷ÀÓ È°¼ºÈ­ ½Ã ÇØ´ç ¹æÇâÀ¸·Î °¡¼Ó
+////	// ì›€ì§ì„ í™œì„±í™” ì‹œ í•´ë‹¹ ë°©í–¥ìœ¼ë¡œ ê°€ì†
 ////	if (moveFrontState && !moveBackState)
 ////		forwardSpeed = std::lerp(forwardSpeed, destMoveSpeed, 10.0 * FrameTime);
 ////	if (moveBackState && !moveFrontState)
@@ -191,7 +191,7 @@
 ////	if (moveLeftState && !moveRightState)
 ////		strafeSpeed = std::lerp(strafeSpeed, -destMoveSpeed, 10.0 * FrameTime);
 ////
-////	// ¿òÁ÷ÀÓ ºñÈ°¼ºÈ­ ¶Ç´Â ¼­·Î ¹İ´ë ¹æÇâ ÀÌµ¿ È°¼ºÈ­ ½Ã °¨¼Ó
+////	// ì›€ì§ì„ ë¹„í™œì„±í™” ë˜ëŠ” ì„œë¡œ ë°˜ëŒ€ ë°©í–¥ ì´ë™ í™œì„±í™” ì‹œ ê°ì†
 ////	if ((!moveFrontState && !moveBackState) || (moveFrontState && moveBackState)) 
 ////		forwardSpeed = std::lerp(forwardSpeed, 0.0, 10.0 * FrameTime);
 ////	
@@ -212,7 +212,7 @@
 ////			currentPlayerState = STATE_IDLE;
 ////	}
 ////
-////	// OOBB¿Í Ãæµ¹À» Ã¼Å©ÇÏ¸é¼­ ÀÌµ¿
+////	// OOBBì™€ ì¶©ëŒì„ ì²´í¬í•˜ë©´ì„œ ì´ë™
 ////	Math::MoveWithSlide(cameraPosition, rotation.y, forwardSpeed, strafeSpeed, player_sphere, map_oobb_data, FrameTime);
 ////	playerPosition.x = cameraPosition.x;
 ////	playerPosition.z = cameraPosition.z;
@@ -221,18 +221,18 @@
 //}
 //
 //void Player::UpdateFire(float FrameTime) {
-//	// ÃÑ ¹ß»ç °£°İÀ» ¾÷µ¥ÀÌÆ® ÇÑ´Ù.
-//	// dest_fire_delay °£°İÀ¸·Î ¹ß»çÇÏ°Ô µÈ´Ù.
+//	// ì´ ë°œì‚¬ ê°„ê²©ì„ ì—…ë°ì´íŠ¸ í•œë‹¤.
+//	// dest_fire_delay ê°„ê²©ìœ¼ë¡œ ë°œì‚¬í•˜ê²Œ ëœë‹¤.
 //	if (currentFireDelay > 0.0)
 //		currentFireDelay -= FrameTime;
 //
 //	if (flameTime > 0.0)
 //		flameTime -= FrameTime;
 //
-//	// ¹ß»ç »óÅÂ¿¡¼­ current_fire_delay°¡ 0.0ÀÌ µÇ¸é crosshair¿¡ ¹İµ¿°ª ºÎ¿© -> ¹ß»ç
+//	// ë°œì‚¬ ìƒíƒœì—ì„œ current_fire_delayê°€ 0.0ì´ ë˜ë©´ crosshairì— ë°˜ë™ê°’ ë¶€ì—¬ -> ë°œì‚¬
 //	if (triggerState) {
 //		if (currentFireDelay <= 0.0) {
-//			// ÃÑ¾Ë °´Ã¼¸¦ »ı¼ºÇÑ´Ù.
+//			// ì´ì•Œ ê°ì²´ë¥¼ ìƒì„±í•œë‹¤.
 //			createBulletObject();
 //
 //			currentFireDelay = destFireDelay;
@@ -278,7 +278,7 @@
 //}
 //
 //void Player::UpdateTerrainCollision(float FrameTime) {
-//	// ÇÃ·¹ÀÌ¾î ³ôÀÌ°¡ Ç×»ó ÅÍ·¹ÀÎ À§¿¡ À§Ä¡ÇÏµµ·Ï ÇÑ´Ù
+//	// í”Œë ˆì´ì–´ ë†’ì´ê°€ í•­ìƒ í„°ë ˆì¸ ìœ„ì— ìœ„ì¹˜í•˜ë„ë¡ í•œë‹¤
 //	if (auto terrain = scene.Find(currentTerrainName); terrain) {
 //		terr.InputPosition(cameraPosition);
 //		terr.ClampToTerrain(terrain->GetTerrain(), cameraPosition, 3.0);
@@ -303,11 +303,11 @@
 //}
 //
 //void Player::UpdateCameraRotation() {
-//	// »óÇÏ Ä«¸Ş¶ó È¸Àü Á¦ÇÑ
+//	// ìƒí•˜ ì¹´ë©”ë¼ íšŒì „ ì œí•œ
 //	Clamp::ClampValue(rotation.x, -90.0, 90.0, CLAMP_FIX);
 //	Clamp::ClampValue(rotation.z, -90.0, 90.0, CLAMP_FIX);
 //
-//	// º¤ÅÍ ¹× Ä«¸Ş¶ó ÃßÀû ¾÷µ¥ÀÌÆ®
+//	// ë²¡í„° ë° ì¹´ë©”ë¼ ì¶”ì  ì—…ë°ì´íŠ¸
 //	Math::UpdateVector(vec, rotation);
 //	camera.Track(cameraPosition, vec, 0);
 //}
@@ -315,15 +315,15 @@
 //void Player::UpdateWalkMotion(float FrameTime) {
 //	walkShakeNum += FrameTime * 10.0;
 //
-//	// °È±â »óÅÂ È°¼ºÈ­ ½Ã Ä«¸Ş¶ó°¡ Èçµé¸®´Â ¿¬ÃâÀ» ÁØ´Ù.
+//	// ê±·ê¸° ìƒíƒœ í™œì„±í™” ì‹œ ì¹´ë©”ë¼ê°€ í”ë“¤ë¦¬ëŠ” ì—°ì¶œì„ ì¤€ë‹¤.
 //	if (moveFrontState || moveBackState || moveRightState || moveLeftState)
 //		walkShakeValue = std::lerp(walkShakeValue, 1.5, FrameTime * 5.0);
 //
-//	// °È±â »óÅÂ°¡ ºñÈ°¼ºÈ­µÈ »óÅÂ¶ó¸é Á¡Â÷ Èçµé¸²À» ÁÙÀÎ´Ù.
+//	// ê±·ê¸° ìƒíƒœê°€ ë¹„í™œì„±í™”ëœ ìƒíƒœë¼ë©´ ì ì°¨ í”ë“¤ë¦¼ì„ ì¤„ì¸ë‹¤.
 //	else
 //		walkShakeValue = std::lerp(walkShakeValue, 0.0, FrameTime * 5.0);
 //
-//	// ÃÖÁ¾ Èçµé¸² °ª °è»ê
+//	// ìµœì¢… í”ë“¤ë¦¼ ê°’ ê³„ì‚°
 //	walkShakeResult = sinf(walkShakeNum) * walkShakeValue;
 //}
 //
@@ -338,25 +338,25 @@
 //}
 //
 //void Player::UpdateCamera(float FrameTime) {
-//	// Ä«¸Ş¶ó È¸Àü ¾÷µ¥ÀÌÆ®
+//	// ì¹´ë©”ë¼ íšŒì „ ì—…ë°ì´íŠ¸
 //	UpdateCameraRotation();
 //
 //
-//	// Ä«¸Ş¶ó ¿öÅ·Àº ÀÓ½Ã·Î ºñÈ°¼ºÈ­
-//	// °È±â ¸ğ¼Ç ¾÷µ¥ÀÌÆ®
+//	// ì¹´ë©”ë¼ ì›Œí‚¹ì€ ì„ì‹œë¡œ ë¹„í™œì„±í™”
+//	// ê±·ê¸° ëª¨ì…˜ ì—…ë°ì´íŠ¸
 //	//UpdateWalkMotion(FrameTime);
 //
-//	// ÃÑ ¹İµ¿ ¿¬Ãâ ¾÷µ¥ÀÌÆ®
+//	// ì´ ë°˜ë™ ì—°ì¶œ ì—…ë°ì´íŠ¸
 //	//UpdateShootMotion(FrameTime);
 //
-//	// Ä«¸Ş¶ó ÃÖÁ¾ È¸Àü
+//	// ì¹´ë©”ë¼ ìµœì¢… íšŒì „
 //	camera.Rotate(rotation.x, rotation.y, rotation.z + walkShakeResult + recoilShake);
 //
-//	// Á¤Á¶ÁØ ½Ã fov ¾÷µ¥ÀÌÆ®
+//	// ì •ì¡°ì¤€ ì‹œ fov ì—…ë°ì´íŠ¸
 //	//globalFovOffset = std::lerp(globalFovOffset, fovDest, FrameTime * 20.0);
 //}
 //
 //void Player::GiveDamage(int HP) {
-//	// ´ë¹ÌÁö¸¦ ¹ŞÀ¸¸é ÇÇµå¹éÀ» Ç¥½ÃÇÑ´Ù.
+//	// ëŒ€ë¯¸ì§€ë¥¼ ë°›ìœ¼ë©´ í”¼ë“œë°±ì„ í‘œì‹œí•œë‹¤.
 //	scene.AddObject(new PlayerHit, "playerHit", LAYER_UI2);
 //}

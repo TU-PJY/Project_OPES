@@ -12,13 +12,13 @@ void CrossHair::InputMouse(MouseEvent& Event) {
 		render_state = true;
 }
 
-// ÇÃ·¹ÀÌ¾î ÃÑ ¹ß»ç ½Ã ¹İµ¿ °ª ºÎ¿©
+// í”Œë ˆì´ì–´ ì´ ë°œì‚¬ ì‹œ ë°˜ë™ ê°’ ë¶€ì—¬
 void CrossHair::InputRecoil(float Value) {
 	recoil += Value;
 }
 
 void CrossHair::Update(float Delta) {
-	// ¹İµ¿Àº Ç×»ó 0.0À» ÇâÇØ ¼±Çü º¸°£ÇÑ´Ù
+	// ë°˜ë™ì€ í•­ìƒ 0.0ì„ í–¥í•´ ì„ í˜• ë³´ê°„í•œë‹¤
 	recoil = std::lerp(recoil, 0.0, Delta * 5.0);
 }
 

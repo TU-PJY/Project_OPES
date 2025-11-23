@@ -54,12 +54,12 @@ void Level1::Start() {
 	auto mapObject = scene.AddObject(new Map1, GLOBAL.mapName, LAYER1, true);
 	auto centerObject = scene.AddObject(new CenterBuilding(-2.0), "center_building", LAYER1);
 
-	// ¶³¾îÁö´Â ¹ÙÀ§´Â 0ºÎÅÍ ¼øÂ÷ ID·Î »ı¼º
+	// ë–¨ì–´ì§€ëŠ” ë°”ìœ„ëŠ” 0ë¶€í„° ìˆœì°¨ IDë¡œ ìƒì„±
 	scene.AddObject(new FallingStone(xmfloat3(-114.3, 20.0, -40.9), 0), std::to_string(0), LAYER_STONE);
 	scene.AddObject(new FallingStone(xmfloat3(-77.0, 10.0, 71.9), 1), std::to_string(1), LAYER_STONE);
 	scene.AddObject(new FallingStone(xmfloat3(34.9, 10.0, -92.9), 2), std::to_string(2), LAYER_STONE);
 
-	// ÅÍ·¹ÀÎ À¯Æ¿ °´Ã¼¿Í ¸Ê ¿ÀºêÁ§Æ® ¹Ù¿îµå µ¥ÀÌÅÍ¸¦ Àü¿ª¿¡ ÀúÀå
+	// í„°ë ˆì¸ ìœ í‹¸ ê°ì²´ì™€ ë§µ ì˜¤ë¸Œì íŠ¸ ë°”ìš´ë“œ ë°ì´í„°ë¥¼ ì „ì—­ì— ì €ì¥
 	GLOBAL.mapTerrain = mapObject->GetTerrain();
 	GLOBAL.mapOOBBdata = mapObject->GetMapWallOOBB();
 	GLOBAL.mapOOBBdata.emplace_back(centerObject->GetOOBB());
@@ -79,7 +79,7 @@ void Level1::Start() {
 
 			GLOBAL.mapOOBBdata.emplace_back(block->GetOOBB());
 
-			// map1 ¸ó½ºÅÍ¸¦ 20¹ø ½ºÆùÇÏ´Â µğÆæ½º ¸ğµå ¸ó½ºÅÍ Á¦³Ê·¹ÀÌÅÍ
+			// map1 ëª¬ìŠ¤í„°ë¥¼ 20ë²ˆ ìŠ¤í°í•˜ëŠ” ë””íœìŠ¤ ëª¨ë“œ ëª¬ìŠ¤í„° ì œë„ˆë ˆì´í„°
 			scene.AddObject(new DefenseModeMonsterGenerator, "defenseModeMonsterGenerator", LAYER1);
 		}
 
@@ -107,6 +107,6 @@ void Level1::Start() {
 	SendFilePacket(1, true);
 }
 
-// ´Ù¸¥ ¸ğµå·Î ÀüÈ¯ ½Ã ¸Ê ¿ÀºêÁ§Æ® ¹Ù¿îµå µ¥ÀÌÅÍ »èÁ¦
+// ë‹¤ë¥¸ ëª¨ë“œë¡œ ì „í™˜ ì‹œ ë§µ ì˜¤ë¸Œì íŠ¸ ë°”ìš´ë“œ ë°ì´í„° ì‚­ì œ
 void Level1::Destructor() {
 }

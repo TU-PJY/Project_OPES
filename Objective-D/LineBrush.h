@@ -10,7 +10,7 @@ public:
 
 	float Length{}, Rotation{};
 
-	// ¼±ÀÇ »ö»óÀ» ÁöÁ¤ÇÑ´Ù.
+	// ì„ ì˜ ìƒ‰ìƒì„ ì§€ì •í•œë‹¤.
 	void SetColor(float R, float G, float B);
 	void Draw(float X1, float Y1, float X2, float Y2, float Width, float Alpha=1.0f);
 	void Init();

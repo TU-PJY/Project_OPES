@@ -3,7 +3,7 @@
 
 void SendCenterBuildingPacket(int hp);
 
-// »ı¼º ½Ã ³¯¾Æ°¥ ´ë»ó°úÀÇ °¢µµ¸¦ °è»êÇÑ´Ù.
+// ìƒì„± ì‹œ ë‚ ì•„ê°ˆ ëŒ€ìƒê³¼ì˜ ê°ë„ë¥¼ ê³„ì‚°í•œë‹¤.
 PoisonBall::PoisonBall(const XMFLOAT3& createPosition, const XMFLOAT3& targetPosition, bool defenseMode) {
 	position = createPosition;
 	originPosition = createPosition;
@@ -25,7 +25,7 @@ void PoisonBall::updateCollision() {
 	for (int i = 0; i < layerSize; i++) {
 		if (auto player = scene.ReferLayer(LAYER_PLAYER, i); player) {
 			if (bs.CheckCollision(player->GetOOBB())) {
-				// GiveDamage¸¦ °¡Áø 1ÀÎÄª ÇÃ·¹ÀÌ¾î °´Ã¼¸¸ÀÌ ´ë¹ÌÁö¸¦ ¹Ş°Ô µÈ´Ù.
+				// GiveDamageë¥¼ ê°€ì§„ 1ì¸ì¹­ í”Œë ˆì´ì–´ ê°ì²´ë§Œì´ ëŒ€ë¯¸ì§€ë¥¼ ë°›ê²Œ ëœë‹¤.
 				player->GiveDamage(PLANT_DAMAGE);
 				returnState = true;
 			}
@@ -51,7 +51,7 @@ void PoisonBall::updateCollision() {
 		}
 	}
 
-	// µğÆæ½º ¸ğµå¿¡¼­´Â ¼¾ÅÍ °Ç¹°¿¡ ´ë¹ÌÁö °¡ÇÔ
+	// ë””íœìŠ¤ ëª¨ë“œì—ì„œëŠ” ì„¼í„° ê±´ë¬¼ì— ëŒ€ë¯¸ì§€ ê°€í•¨
 	if (GLOBAL.Map1DefenseState) {
 		if (auto centerBuilding = scene.SearchLayer(LAYER1, "center_building"); centerBuilding) {
 			if (bs.CheckCollision(centerBuilding->GetOOBB())) {
@@ -64,33 +64,33 @@ void PoisonBall::updateCollision() {
 	}
 }
 
-// ÀÌµ¿ ¾÷µ¥ÀÌÆ®
+// ì´ë™ ì—…ë°ì´íŠ¸
 void PoisonBall::updateMove(float Delta) {
 	if (disappearState)
 		return;
 
-	// ´ë»óÀ» ÇâÇØ ³¯¾Æ°£´Ù
+	// ëŒ€ìƒì„ í–¥í•´ ë‚ ì•„ê°„ë‹¤
 	Math::MoveInDirection(position, moveAngleY, moveAngleX, 30.0, Delta);
 	bs.Update(position, 1.0);
 
-	// 300.0ÀÌ»ó ÀÌµ¿Çß´Ù¸é »ç¶óÁü »óÅÂ È°¼ºÈ­
+	// 300.0ì´ìƒ ì´ë™í–ˆë‹¤ë©´ ì‚¬ë¼ì§ ìƒíƒœ í™œì„±í™”
 	float MoveDistance = Math::CalcDistance3D(position, originPosition);
 	if (MoveDistance >= 300.0)
 		disappearState = true;
 }
 
-// »ç¶óÁö´Â ¾Ö´Ï¸Ş¿©¼Ç ¾÷µ¥ÀÌÆ®
+// ì‚¬ë¼ì§€ëŠ” ì• ë‹ˆë©”ì—¬ì…˜ ì—…ë°ì´íŠ¸
 void PoisonBall::updateDisappear(float Delta) {
 	if (!disappearState)
 		return;
 
-	// Åõ¸íÇØÁü°ú µ¿½Ã¿¡ Ä¿Áö¸é¼­ »ç¶óÁø´Ù.
+	// íˆ¬ëª…í•´ì§ê³¼ ë™ì‹œì— ì»¤ì§€ë©´ì„œ ì‚¬ë¼ì§„ë‹¤.
 	opacity -= Delta * 4.0;
 	size.x += Delta * 8.0;
 	size.y += Delta * 8.0;
 	size.z += Delta * 8.0;
 
-	// ¿ÏÀüÈ÷ Åõ¸íÇØÁö¸é »èÁ¦
+	// ì™„ì „íˆ íˆ¬ëª…í•´ì§€ë©´ ì‚­ì œ
 	if (opacity <= 0.0)
 		scene.DeleteObject(this);
 }

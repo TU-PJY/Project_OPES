@@ -1,6 +1,6 @@
 #include "ImageShader.h"
 
-// ÀÌ¹ÌÁö Ãâ·Â¿ë ½¦ÀÌ´õ
+// ì´ë¯¸ì§€ ì¶œë ¥ìš© ì‰ì´ë”
 D3D12_INPUT_LAYOUT_DESC Image_Shader::CreateInputLayout() {
 	UINT NumInputElementDescs = 2;
 	D3D12_INPUT_ELEMENT_DESC* InputElementDescs = new D3D12_INPUT_ELEMENT_DESC[NumInputElementDescs];

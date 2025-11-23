@@ -5,11 +5,11 @@
 #include "MathUtil.h"
 #include "CameraUtil.h"
 
-// ÅÍ·¹ÀÎ Ãæµ¹Ã³¸® À¯Æ¿ÀÌ´Ù.
+// í„°ë ˆì¸ ì¶©ëŒì²˜ë¦¬ ìœ í‹¸ì´ë‹¤.
 
-// ÅÍ·¹ÀÎÀÇ Á¤º¸¸¦ ÀÔ·ÂÇÑ´Ù.
-// ÇÑ ÅÍ·¹ÀÎ ¸Å½¬ ´ç ÇÑ ¹ø¸¸ ½ÇÇàÇÏ¸é µÈ´Ù. »ý¼ºÀÚ¿¡¼­ ½ÇÇàÇÒ °ÍÀ» ±ÇÀåÇÑ´Ù.
-// ÅÍ·¹ÀÎÀÌ ¾Æ´Ñ °´Ã¼´Â ÇØ´ç ÇÔ¼ö¸¦ ½ÇÇàÇÒ ÇÊ¿ä°¡ ¾ø´Ù.
+// í„°ë ˆì¸ì˜ ì •ë³´ë¥¼ ìž…ë ¥í•œë‹¤.
+// í•œ í„°ë ˆì¸ ë§¤ì‰¬ ë‹¹ í•œ ë²ˆë§Œ ì‹¤í–‰í•˜ë©´ ëœë‹¤. ìƒì„±ìžì—ì„œ ì‹¤í–‰í•  ê²ƒì„ ê¶Œìž¥í•œë‹¤.
+// í„°ë ˆì¸ì´ ì•„ë‹Œ ê°ì²´ëŠ” í•´ë‹¹ í•¨ìˆ˜ë¥¼ ì‹¤í–‰í•  í•„ìš”ê°€ ì—†ë‹¤.
 void TerrainUtil::InputData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat, Mesh* MeshData) {
 	XMMATRIX world = XMMatrixMultiply(
 		XMMatrixMultiply(XMLoadFloat4x4(&SMat),
@@ -21,7 +21,7 @@ void TerrainUtil::InputData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat
 
 	TerrainMesh = MeshData;
 
-	// ³ôÀÌ Ä³½Ã¸¦ ºñ¿ì°í »õ·Î¿î °ªÀ¸·Î ³ôÀÌ Ä³½Ã¸¦ ¼³Á¤ÇÑ´Ù.
+	// ë†’ì´ ìºì‹œë¥¼ ë¹„ìš°ê³  ìƒˆë¡œìš´ ê°’ìœ¼ë¡œ ë†’ì´ ìºì‹œë¥¼ ì„¤ì •í•œë‹¤.
 	TerrainMesh->ClearHeightCache();
 	TerrainMesh->SetHeightCache(TerrainMesh, TerrainMatrix);
 }
@@ -64,24 +64,24 @@ void TerrainUtil::AddData(XMFLOAT4X4& TMat, XMFLOAT4X4& RMat, XMFLOAT4X4& SMat, 
 
 		XMVECTOR normal = XMVector3Cross(ab, ac);
 		if (XMVectorGetY(normal) < 0.0f) {
-			std::swap(v1, v2); // ¹ý¼± ¹æÇâ ¹ÝÀü
+			std::swap(v1, v2); // ë²•ì„  ë°©í–¥ ë°˜ì „
 		}
 	}
 
 	TerrainMesh->HeightCache.insert(TerrainMesh->HeightCache.end(), NewData.begin(), NewData.end());
 }
 
-// ¾Æ·¡ÀÇ ÇÔ¼öµéÀº ÅÍ·¹ÀÎ °´Ã¼¿¡¼­ ½ÇÇà ÇÒ ÇÊ¿ä ¾ø´Ù.
+// ì•„ëž˜ì˜ í•¨ìˆ˜ë“¤ì€ í„°ë ˆì¸ ê°ì²´ì—ì„œ ì‹¤í–‰ í•  í•„ìš” ì—†ë‹¤.
 
-// ÇöÀç À§Ä¡¿Í ³ôÀÌ ¿ÀÇÁ¼ÂÀ» ÀÔ·ÂÇÑ´Ù
+// í˜„ìž¬ ìœ„ì¹˜ì™€ ë†’ì´ ì˜¤í”„ì…‹ì„ ìž…ë ¥í•œë‹¤
 void TerrainUtil::InputPosition(XMFLOAT3& PositionValue, float HeightOffsetValue) {
 	Position = PositionValue;
 	HeightOffset = HeightOffsetValue;
 }
 
-// ÅÍ·¹ÀÎ°ú Ãæµ¹ ½Ã ´ë»ó ³ôÀÌ¸¦ ÅÍ·¹ÀÎ ³ôÀÌ·Î º¯°æÇÑ´Ù.
+// í„°ë ˆì¸ê³¼ ì¶©ëŒ ì‹œ ëŒ€ìƒ ë†’ì´ë¥¼ í„°ë ˆì¸ ë†’ì´ë¡œ ë³€ê²½í•œë‹¤.
 
-// ´ë»ó ³ôÀÌ¸¦ ÅÍ·¹ÀÎ ³ôÀÌ¿¡ °íÁ¤½ÃÅ²´Ù.
+// ëŒ€ìƒ ë†’ì´ë¥¼ í„°ë ˆì¸ ë†’ì´ì— ê³ ì •ì‹œí‚¨ë‹¤.
 void TerrainUtil::ClampToTerrain(const TerrainUtil& Other, XMFLOAT3& PositionValue, float HeightOffsetValue) {
 	PositionValue.y = Other.TerrainMesh->GetHeightAtPosition(Position.x, Position.z) + HeightOffsetValue;
 }
@@ -90,7 +90,7 @@ void TerrainUtil::SetHeightToTerrain(XMFLOAT3& PositionValue) {
 	PositionValue.y = Position.y + HeightOffset;
 }
 
-// ÀÔ·ÂÇÑ ³ôÀÌ°¡ ÅÍ·¹ÀÎÀÇ ¹Ù´Ú ³ôÀÌº¸´Ù ³·ÀºÁö °Ë»çÇÑ´Ù. ³·À» °æ¿ì true¸¦ ¸®ÅÏÇÑ´Ù.
+// ìž…ë ¥í•œ ë†’ì´ê°€ í„°ë ˆì¸ì˜ ë°”ë‹¥ ë†’ì´ë³´ë‹¤ ë‚®ì€ì§€ ê²€ì‚¬í•œë‹¤. ë‚®ì„ ê²½ìš° trueë¥¼ ë¦¬í„´í•œë‹¤.
 bool TerrainUtil::CheckCollision(const TerrainUtil& Other) {
 	float Height = Other.TerrainMesh->GetHeightAtPosition(Position.x, Position.z) + HeightOffset;
 
@@ -102,13 +102,13 @@ bool TerrainUtil::CheckCollision(const TerrainUtil& Other) {
 	return false;
 }
 
-// ÇöÀç ÁöÁ¡¿¡¼­ ÅÍ·¹ÀÎÀÇ °¢µµ¸¦ °è»êÇÑ´Ù.
+// í˜„ìž¬ ì§€ì ì—ì„œ í„°ë ˆì¸ì˜ ê°ë„ë¥¼ ê³„ì‚°í•œë‹¤.
 XMFLOAT3 TerrainUtil::GetNormalAtPoint(const TerrainUtil& Other) {
 	XMFLOAT3 Normal = Other.TerrainMesh->GetNormalAtPosition(Position.x, Position.z);
 	return Normal;
 }
 
-// ÇöÀç ÁöÁ¡¿¡¼­ ÅÍ·¹ÀÎÀÇ °¢µµ¸¦ °è»êÇÑ´Ù.
+// í˜„ìž¬ ì§€ì ì—ì„œ í„°ë ˆì¸ì˜ ê°ë„ë¥¼ ê³„ì‚°í•œë‹¤.
 XMFLOAT3 TerrainUtil::GetAngleAtPoint(const TerrainUtil& Other) {
 	XMFLOAT3 Angle = Other.TerrainMesh->GetAngleAtPosition(Position.x, Position.z);
 	return Angle;

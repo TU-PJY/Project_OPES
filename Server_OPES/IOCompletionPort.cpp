@@ -1,4 +1,4 @@
-﻿#include "IOCompletionPort.h"
+#include "IOCompletionPort.h"
 //#include"Packet.h"
 #include "Math.h"
 #include <iostream>

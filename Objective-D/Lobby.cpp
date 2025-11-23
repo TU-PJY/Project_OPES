@@ -11,18 +11,18 @@ Lobby::Lobby() {
 
 void Lobby::InputMouse(MouseEvent& Event) {
 	if (Event.Type == WM_LBUTTONDOWN) {
-		// µÚ·Î°¡±â ¹öÆ°À» ´©¸£¸é ´Ù½Ã Å¸ÀÌÆ²·Î µÇµ¹¾Æ °£´Ù.
+		// ë’¤ë¡œê°€ê¸° ë²„íŠ¼ì„ ëˆ„ë¥´ë©´ ë‹¤ì‹œ íƒ€ì´í‹€ë¡œ ë˜ëŒì•„ ê°„ë‹¤.
 		if (!GLOBAL.imReady && backButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
 			scene.SwitchMode(TitleMode::Start);
 			return;
 		}
 
-		// ÇÃ·¹ÀÌ¾î°¡ ¾øÀ» °æ¿ì ´©¸¦ ¼ö ¾øÀ½
-		// ¼­¹ö¸¦ »ç¿ëÇÏ´Â °æ¿ì¿¡ ÇÑ ÇÔ
+		// í”Œë ˆì´ì–´ê°€ ì—†ì„ ê²½ìš° ëˆ„ë¥¼ ìˆ˜ ì—†ìŒ
+		// ì„œë²„ë¥¼ ì‚¬ìš©í•˜ëŠ” ê²½ìš°ì— í•œ í•¨
 		if (GLOBAL.useServer) {
 			if (GLOBAL.playerList.size() >= MIN_PLAYER_COUNT - 1) {
-				// ÇÑ ¹ø ÁØºñµÇ¸é ÇØÁ¦ ºÒ°¡
-				// Ä³¸¯ÅÍ¸¦ ¼±ÅÃÇÏÁö ¾ÊÀ¸¸é ÁØºñ ºÒ°¡
+				// í•œ ë²ˆ ì¤€ë¹„ë˜ë©´ í•´ì œ ë¶ˆê°€
+				// ìºë¦­í„°ë¥¼ ì„ íƒí•˜ì§€ ì•Šìœ¼ë©´ ì¤€ë¹„ ë¶ˆê°€
 				if (!GLOBAL.imReady && selectedCharacter != -1 && readyButton.CheckCollisionPoint(xmfloat2(mouse.x, mouse.y))) {
 					GLOBAL.imReady = !GLOBAL.imReady;
 					GLOBAL.myCharacter = selectedCharacter;

@@ -1,6 +1,6 @@
 #include "LineShader.h"
 
-// ¿ÀºêÁ§Æ® Ãâ·Â¿ë ½¦ÀÌ´õ
+// ì˜¤ë¸Œì íŠ¸ ì¶œë ¥ìš© ì‰ì´ë”
 D3D12_INPUT_LAYOUT_DESC Line_Shader::CreateInputLayout() {
 	UINT NumInputElementDescs = 2;
 	D3D12_INPUT_ELEMENT_DESC* InputElementDescs = new D3D12_INPUT_ELEMENT_DESC[NumInputElementDescs];

@@ -1,8 +1,8 @@
 #include "ShaderUtil.h"
 
-// ¿©±â¿¡ ÆÄÀÌÇÁ¶óÀÎÀ» ÀÛ¼ºÇÑ´Ù.
+// ì—¬ê¸°ì— íŒŒì´í”„ë¼ì¸ì„ ì‘ì„±í•œë‹¤.
 
-// ÀÏ¹İ Ãâ·Â ÆÄÀÌÇÁ¶óÀÎÀ» »ı¼ºÇÑ´Ù.
+// ì¼ë°˜ ì¶œë ¥ íŒŒì´í”„ë¼ì¸ì„ ìƒì„±í•œë‹¤.
 void Shader::CreateDefaultPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
 	ID3DBlob* VertexShaderBlob = NULL, * PixelShaderBlob = NULL;
 
@@ -34,7 +34,7 @@ void Shader::CreateDefaultPS(ID3D12Device* Device, ID3D12RootSignature* RootSign
 		delete[] PipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
-// Åõ¸í ÇÈ¼¿ÀÌ Á¸ÀçÇÏ´Â ÅØ½ºÃ³ ·»´õ¸µ ½Ã »ç¿ëÇÏ´Â ÆÄÀÌÇÁ¶óÀÎ
+// íˆ¬ëª… í”½ì…€ì´ ì¡´ì¬í•˜ëŠ” í…ìŠ¤ì²˜ ë Œë”ë§ ì‹œ ì‚¬ìš©í•˜ëŠ” íŒŒì´í”„ë¼ì¸
 void Shader::CreateTransparentDefaultPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
 	ID3DBlob* VertexShaderBlob = NULL, * PixelShaderBlob = NULL;
 
@@ -66,7 +66,7 @@ void Shader::CreateTransparentDefaultPS(ID3D12Device* Device, ID3D12RootSignatur
 		delete[] PipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
-// ÃÑ ºÒ²É ¿ÀºêÁ§Æ®¿ë ÆÄÀÌÇÁ¶óÀÎ
+// ì´ ë¶ˆê½ƒ ì˜¤ë¸Œì íŠ¸ìš© íŒŒì´í”„ë¼ì¸
 void Shader::CreateNoneCullingPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
 	ID3DBlob* VertexShaderBlob = NULL, * PixelShaderBlob = NULL;
 
@@ -78,7 +78,7 @@ void Shader::CreateNoneCullingPS(ID3D12Device* Device, ID3D12RootSignature* Root
 	PipelineStateDesc.RasterizerState = CreateNoneCullingRasterizerState();
 	PipelineStateDesc.BlendState = CreateBlendState();
 
-	// ±íÀÌ °Ë»ç ÇÏÁö ¾Ê´Â ½ºÅÙ½Ç »ç¿ë
+	// ê¹Šì´ ê²€ì‚¬ í•˜ì§€ ì•ŠëŠ” ìŠ¤í…ì‹¤ ì‚¬ìš©
 	PipelineStateDesc.DepthStencilState = CreateNoneDepthStencilState();
 	PipelineStateDesc.InputLayout = CreateInputLayout();
 	PipelineStateDesc.SampleMask = UINT_MAX;
@@ -100,7 +100,7 @@ void Shader::CreateNoneCullingPS(ID3D12Device* Device, ID3D12RootSignature* Root
 		delete[] PipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
-// ±íÀÌ °Ë»ç°¡ ºñÈ°¼ºÈ­µÈ ÆÄÀÌÇÁ¶óÀÎÀ» »ı¼ºÇÑ´Ù.
+// ê¹Šì´ ê²€ì‚¬ê°€ ë¹„í™œì„±í™”ëœ íŒŒì´í”„ë¼ì¸ì„ ìƒì„±í•œë‹¤.
 void Shader::CreateNoneDepthPS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
 	ID3DBlob* VertexShaderBlob = NULL, * PixelShaderBlob = NULL;
 
@@ -112,7 +112,7 @@ void Shader::CreateNoneDepthPS(ID3D12Device* Device, ID3D12RootSignature* RootSi
 	PipelineStateDesc.RasterizerState = CreateNoneDepthRasterizerState();
 	PipelineStateDesc.BlendState = CreateBlendState();
 
-	// ±íÀÌ °Ë»ç¸¦ ºñÈ°¼ºÈ­ÇÑ ½ºÅÙ½ÇÀ» »ı¼ºÇÑ´Ù.
+	// ê¹Šì´ ê²€ì‚¬ë¥¼ ë¹„í™œì„±í™”í•œ ìŠ¤í…ì‹¤ì„ ìƒì„±í•œë‹¤.
 	PipelineStateDesc.DepthStencilState = CreateNoneDepthStencilState();
 
 	PipelineStateDesc.InputLayout = CreateInputLayout();
@@ -135,7 +135,7 @@ void Shader::CreateNoneDepthPS(ID3D12Device* Device, ID3D12RootSignature* RootSi
 		delete[] PipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
-// ¹Ù¿îµå¹Ú½º Ãâ·Â¿ë ÆÄÀÌÇÁ¶óÀÎÀ» »ı¼ºÇÑ´Ù.
+// ë°”ìš´ë“œë°•ìŠ¤ ì¶œë ¥ìš© íŒŒì´í”„ë¼ì¸ì„ ìƒì„±í•œë‹¤.
 void Shader::CreateWireframePS(ID3D12Device* Device, ID3D12RootSignature* RootSignature) {
 	ID3DBlob* VertexShaderBlob = NULL, * PixelShaderBlob = NULL;
 

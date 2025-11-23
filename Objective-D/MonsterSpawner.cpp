@@ -8,7 +8,7 @@
 
 void SendFilePacket(int stage, bool startDefense);
 
-// ÇöÀç ¸Ê¿¡ µû¶ó ´Ù¸¥ ¸ó½ºÅÍ µ¥ÀÌÅÍ¸¦ ·ÎµåÇÏµµ·Ï ÇÑ´Ù.
+// í˜„ì¬ ë§µì— ë”°ë¼ ë‹¤ë¥¸ ëª¬ìŠ¤í„° ë°ì´í„°ë¥¼ ë¡œë“œí•˜ë„ë¡ í•œë‹¤.
 MonsterSpawner::MonsterSpawner(bool editMode) {
 	this->editMode = editMode;
 
@@ -16,8 +16,8 @@ MonsterSpawner::MonsterSpawner(bool editMode) {
 		LoadDataAndSpawnMonster();
 }
 
-// F5¸¦ ´©¸£¸é ±âÁ¸ ¸ó½ºÅÍµéÀ» ¸ğµÎ Á¦°Å ÈÄ ¼öÁ¤µÈ µ¥ÀÌÅÍ¸¦ ·ÎµåÇÑ ÈÄ ¸ó½ºÅÍ¸¦ ½ºÆùÇÑ´Ù.
-// editMode¿¡¼­¸¸ µ¿ÀÛÇÑ´Ù.
+// F5ë¥¼ ëˆ„ë¥´ë©´ ê¸°ì¡´ ëª¬ìŠ¤í„°ë“¤ì„ ëª¨ë‘ ì œê±° í›„ ìˆ˜ì •ëœ ë°ì´í„°ë¥¼ ë¡œë“œí•œ í›„ ëª¬ìŠ¤í„°ë¥¼ ìŠ¤í°í•œë‹¤.
+// editModeì—ì„œë§Œ ë™ì‘í•œë‹¤.
 void MonsterSpawner::InputKey(KeyEvent& Event) {
 	if (!editMode)
 		return;
@@ -34,7 +34,7 @@ void MonsterSpawner::InputKey(KeyEvent& Event) {
 }
 
 void MonsterSpawner::LoadDataAndSpawnMonster() {
-	// ÇöÀç ¸Ê¿¡ µû¶ó ´Ù¸¥ µ¥ÀÌÅÍ¸¦ ·ÎµåÇÑ´Ù.
+	// í˜„ì¬ ë§µì— ë”°ë¼ ë‹¤ë¥¸ ë°ì´í„°ë¥¼ ë¡œë“œí•œë‹¤.
 	script.Release();
 	position.clear();
 	type.clear();
@@ -57,13 +57,13 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 		loadedType = (int)script.GetDigitData(Category, "type");
 		loadedPosition.x = script.GetDigitData(Category, "x");
 		loadedPosition.z = script.GetDigitData(Category, "z");
-		loadedPosition.y = 0.0; // ¸ó½ºÅÍ ³ôÀÌ´Â ¸ó½ºÅÍ °´Ã¼°¡ ¾Ë¾Æ¼­ ¸ÂÃã
+		loadedPosition.y = 0.0; // ëª¬ìŠ¤í„° ë†’ì´ëŠ” ëª¬ìŠ¤í„° ê°ì²´ê°€ ì•Œì•„ì„œ ë§ì¶¤
 
 		position.emplace_back(loadedPosition);
 		type.emplace_back(loadedType);
 	};
 	
-	// ¶÷´Ù·Î Á¤ÀÇÇÑ µ¿ÀÛ´ë·Î ·Îµå ¼öÇà
+	// ëŒë‹¤ë¡œ ì •ì˜í•œ ë™ì‘ëŒ€ë¡œ ë¡œë“œ ìˆ˜í–‰
 	script.LoadAllData(custumLoad);
 
 	size_t size = position.size();
@@ -104,8 +104,8 @@ void MonsterSpawner::LoadDataAndSpawnMonster() {
 	}
 }
 
-// µğÆæ½º ¸ğµå¿¡¼­ ¸ğµç ¸ó½ºÅÍ°¡ Á×À¸¸é ¾îµåº¥Ã³¸ğµå ¸ó½ºÅÍ¸¦ ½ºÆùÇÑ ÈÄ »èÁ¦µÈ´Ù.
-// ¿¡µğÆ® ¸ğµå¿¡¼­´Â F5¸¦ ´©¸¦‹š¸¶´Ù »õ·Î ½ºÆùÇÑ´Ù.
+// ë””íœìŠ¤ ëª¨ë“œì—ì„œ ëª¨ë“  ëª¬ìŠ¤í„°ê°€ ì£½ìœ¼ë©´ ì–´ë“œë²¤ì²˜ëª¨ë“œ ëª¬ìŠ¤í„°ë¥¼ ìŠ¤í°í•œ í›„ ì‚­ì œëœë‹¤.
+// ì—ë””íŠ¸ ëª¨ë“œì—ì„œëŠ” F5ë¥¼ ëˆ„ë¥¼ë–„ë§ˆë‹¤ ìƒˆë¡œ ìŠ¤í°í•œë‹¤.
 void MonsterSpawner::Update(float Delta) {
 	if (editMode)
 		return;

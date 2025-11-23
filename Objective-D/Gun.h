@@ -2,8 +2,8 @@
 #include "Scene.h"
 #include "RayTargetUtil.h"
 
-// ¸ğµç ÃÑÀÌ »ó¼Ó¹Ş´Â ºÎ¸ğ Å¬·¡½º
-// ÃÑ °´Ã¼ »ı¼º ½Ã specºÎºĞ¸¸ ÀçÁ¤ÀÇÇØ¼­ »ç¿ëÇÑ´Ù.
+// ëª¨ë“  ì´ì´ ìƒì†ë°›ëŠ” ë¶€ëª¨ í´ë˜ìŠ¤
+// ì´ ê°ì²´ ìƒì„± ì‹œ specë¶€ë¶„ë§Œ ì¬ì •ì˜í•´ì„œ ì‚¬ìš©í•œë‹¤.
 class Gun : public GameObject {
 protected:
 	// spec
@@ -41,10 +41,10 @@ protected:
 	float shakeResultY{};
 	float shakeRatio{};
 
-	// »ç¿ëÀÚ °´Ã¼ÀÇ Æ÷ÀÎÅÍ, ÁÖ·Î Player1st
+	// ì‚¬ìš©ì ê°ì²´ì˜ í¬ì¸í„°, ì£¼ë¡œ Player1st
 	GameObject* userPtr{};
 
-	// ·¹ÀÌÄ³½ºÆÃ À¯Æ¿
+	// ë ˆì´ìºìŠ¤íŒ… ìœ í‹¸
 	RayTarget rayTarget{};
 
 public:

@@ -1,8 +1,8 @@
 #include "GameResource.h"
 #include <string>
-// ÀÌ ÆÄÀÏÀº ¸®¼Ò½º¸¦ °ü¸®ÇÑ´Ù.
-// ±âº»ÀûÀ¸·Î Àü¿ª ¸®¼Ò½ºÀÌ¸ç, ResourceManager.h¿¡ ¸ÕÀú extern ¼±¾ğÇÑ µÚ, ÀÌ ÆÄÀÏ¿¡ ¾Æ·¡¿Í °°ÀÌ Á¤ÀÇÇÏ¸é µÈ´Ù.
-// Scene::Init()¿¡¼­ ½ÇÇàµÈ´Ù.
+// ì´ íŒŒì¼ì€ ë¦¬ì†ŒìŠ¤ë¥¼ ê´€ë¦¬í•œë‹¤.
+// ê¸°ë³¸ì ìœ¼ë¡œ ì „ì—­ ë¦¬ì†ŒìŠ¤ì´ë©°, ResourceManager.hì— ë¨¼ì € extern ì„ ì–¸í•œ ë’¤, ì´ íŒŒì¼ì— ì•„ë˜ì™€ ê°™ì´ ì •ì˜í•˜ë©´ ëœë‹¤.
+// Scene::Init()ì—ì„œ ì‹¤í–‰ëœë‹¤.
 
 MeshResource MESH;
 TextureResource TEX;
@@ -10,7 +10,7 @@ SystemResource SYSRES;
 GlobalValue GLOBAL;
 SoundRecources SOUND;
 
-// Àü¿ª Ä«¸Ş¶ó fov °ª ¿ÀÇÁ¼Â
+// ì „ì—­ ì¹´ë©”ë¼ fov ê°’ ì˜¤í”„ì…‹
 float globalFovOffset;
 
 bool player_enter;
@@ -19,18 +19,18 @@ unsigned int enter_player_id;
 DeviceSystem LoadSystem;
 
 
-// ¸Å½¬¸¦ ¿©±â¼­ ·ÎµåÇÑ´Ù.
+// ë§¤ì‰¬ë¥¼ ì—¬ê¸°ì„œ ë¡œë“œí•œë‹¤.
 void LoadMesh(DeviceSystem& System) {
 	LoadSystem = System;
 
-	// DevMode°¡ ¾Æ´Ò °æ¿ì ¸ğµÎ ·ÎµåÇÏµµ·Ï °­Á¦ÇÑ´Ù.
+	// DevModeê°€ ì•„ë‹ ê²½ìš° ëª¨ë‘ ë¡œë“œí•˜ë„ë¡ ê°•ì œí•œë‹¤.
 	if (!DevMode) {
 		LoadMap1Resources = true;
 		LoadMap2Resources = true;
 		LoadMap3Resources = true;
 	}
 
-	// UI Á¦ÀÛ¸ğµåÀÇ °æ¿ì ¸ğµÎ ºñÈ°¼ºÈ­ µÈ´Ù.
+	// UI ì œì‘ëª¨ë“œì˜ ê²½ìš° ëª¨ë‘ ë¹„í™œì„±í™” ëœë‹¤.
 	if (UIcreateMode && DevMode)
 		return;
 
@@ -96,7 +96,7 @@ void LoadMesh(DeviceSystem& System) {
 		LoadAnimatedFBX(MESH.treant[3], "Resources//Models//monster//treantDeath.fbx", "Resources//Animation Data//treantDeath.pca", "", false);
 	}
 
-	// ¸Ê 1, 2¿Í °øÀ¯ÇÏ¹Ç·Î µÑ ´Ù ·Îµå ¾ÈÇÒ ½Ã¿¡¸¸ ·Îµå ¾È ÇÔ
+	// ë§µ 1, 2ì™€ ê³µìœ í•˜ë¯€ë¡œ ë‘˜ ë‹¤ ë¡œë“œ ì•ˆí•  ì‹œì—ë§Œ ë¡œë“œ ì•ˆ í•¨
 	if(LoadMap2Resources || LoadMap1Resources)
 		LoadSingleStaticFBX(MESH.TerrainMesh1, "Resources//Models//map1//terrain.fbx");
 
@@ -127,7 +127,7 @@ void LoadMesh(DeviceSystem& System) {
 			"Resources//Models//monster//imp.json", true);
 	}
 
-	// Ç×»ó ÇÊ¿äÇÑ ¸®¼Ò½ºµéÀº ¿©±â¿¡¼­ ·ÎµåÇÑ´Ù.
+	// í•­ìƒ í•„ìš”í•œ ë¦¬ì†ŒìŠ¤ë“¤ì€ ì—¬ê¸°ì—ì„œ ë¡œë“œí•œë‹¤.
 	// explosion effect
 	LoadAnimatedFBX(MESH.explosion, "Resources//Models//effect//explosion.fbx",
 		"Resources//Animation Data//explosion.pca", "", false);
@@ -199,15 +199,15 @@ void LoadMesh(DeviceSystem& System) {
 }
 /////////////////////////////////////////////////////////////////////////////////
 
-// ÅÃ½ºÃ³¸¦ ¿©±â¼­ ·ÎµåÇÑ´Ù.
+// íƒìŠ¤ì²˜ë¥¼ ì—¬ê¸°ì„œ ë¡œë“œí•œë‹¤.
 void LoadTexture(DeviceSystem& System) {
 	LoadSystem = System;
 
 	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 
 	// fontAtlas
-	int CropSize = 2048 / 16;      // °¢ ¼¿ÀÇ °¡·Î/¼¼·Î Å©±â
-	int Columns = 16;      // ÇÑ ÁÙ´ç ¼¿ ¼ö
+	int CropSize = 2048 / 16;      // ê° ì…€ì˜ ê°€ë¡œ/ì„¸ë¡œ í¬ê¸°
+	int Columns = 16;      // í•œ ì¤„ë‹¹ ì…€ ìˆ˜
 	int Offset = 2048 / 16 * 2;
 
 	for (int i = 0; i < 96; ++i) {
@@ -354,35 +354,35 @@ Boundbox_Shader* BoundboxShader;
 Image_Shader* ImageShader;
 Line_Shader* LineShader;
 
-// ¿ÀºêÁ§Æ® Ãâ·Â¿ë ½¦ÀÌ´õ »ı¼º
+// ì˜¤ë¸Œì íŠ¸ ì¶œë ¥ìš© ì‰ì´ë” ìƒì„±
 void InitObjectShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
-	// ÀÏ¹İ ·»´õ¸µ ½¦ÀÌ´õ »ı¼º
+	// ì¼ë°˜ ë Œë”ë§ ì‰ì´ë” ìƒì„±
 	ObjectShader = new Object_Shader();
-	// ±âº» ÆÄÀÌÇÁ¶óÀÎ »ı¼º
+	// ê¸°ë³¸ íŒŒì´í”„ë¼ì¸ ìƒì„±
 	ObjectShader->CreateDefaultPS(Device, RootSignature);
-	// ±íÀÌ ¾²±â ¹ÌÆ÷ÇÔ ÆÄÀÌÇÁ¶óÀÎ »÷¼º
+	// ê¹Šì´ ì“°ê¸° ë¯¸í¬í•¨ íŒŒì´í”„ë¼ì¸ ìƒŒì„±
 	ObjectShader->CreateTransparentDefaultPS(Device, RootSignature);
-	// ±íÀÌ °Ë»ç ¹ÌÆ÷ÇÔ ÆÄÀÌÇÁ¶óÀÎ »ı¼º
+	// ê¹Šì´ ê²€ì‚¬ ë¯¸í¬í•¨ íŒŒì´í”„ë¼ì¸ ìƒì„±
 	ObjectShader->CreateNoneDepthPS(Device, RootSignature);
-	// 1ÀÎÄª ÆÄÀÌÇÁ¶óÀÎ »ı¼º
+	// 1ì¸ì¹­ íŒŒì´í”„ë¼ì¸ ìƒì„±
 	ObjectShader->CreateNoneCullingPS(Device, RootSignature);
 }
 
-// ÀÌ¹ÌÁö Ãâ·Â¿ë ½¦ÀÌ´õ »ı¼º
+// ì´ë¯¸ì§€ ì¶œë ¥ìš© ì‰ì´ë” ìƒì„±
 void InitImageShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 	ImageShader = new Image_Shader();
 	ImageShader->CreateNoneDepthPS(Device, RootSignature);
 }
 
-// ¹Ù¿îµå¹Ú½º ½¦ÀÌ´õ »ı¼º
+// ë°”ìš´ë“œë°•ìŠ¤ ì‰ì´ë” ìƒì„±
 void InitBoundboxShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 	BoundboxShader = new Boundbox_Shader();
 	BoundboxShader->CreateWireframePS(Device, RootSignature);
-	// ¹Ù¿îµå ½ºÆä¾î Ãâ·Â¿ë
+	// ë°”ìš´ë“œ ìŠ¤í˜ì–´ ì¶œë ¥ìš©
 	BoundboxShader->CreateDefaultPS(Device, RootSignature);
 }
 
-// ¶óÀÎ ºê·¯½¬ Ãâ·Â¿ë ½¦ÀÌ´õ »ı¼º
+// ë¼ì¸ ë¸ŒëŸ¬ì‰¬ ì¶œë ¥ìš© ì‰ì´ë” ìƒì„±
 void InitLineShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 	LineShader = new Line_Shader();
 	LineShader->CreateNoneDepthPS(Device, RootSignature);
@@ -390,36 +390,36 @@ void InitLineShader(ID3D12RootSignature* RootSignature, ID3D12Device* Device) {
 
 /////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////
-// ¾÷·Îµå ¹öÆÛ¸¦ Ã³¸®ÇÏ±â À§ÇÑ º¤ÅÍ
+// ì—…ë¡œë“œ ë²„í¼ë¥¼ ì²˜ë¦¬í•˜ê¸° ìœ„í•œ ë²¡í„°
 std::vector<Mesh*> LoadedMeshList;
 std::vector<Texture*> LoadedTextureList;
 
-// ±âº» Àü¿ª ¸Å½¬ ·Îµå
+// ê¸°ë³¸ ì „ì—­ ë§¤ì‰¬ ë¡œë“œ
 void LoadSystemMesh(DeviceSystem& System) {
-	// ÀÌ¹ÌÁö Ãâ·Â¿ë ¸Å½¬ »ı¼º
+	// ì´ë¯¸ì§€ ì¶œë ¥ìš© ë§¤ì‰¬ ìƒì„±
 	SYSRES.ImagePannel = new Mesh;
 	SYSRES.ImagePannel->CreateImagePannelMesh(System.Device, System.CmdList);
 	LoadedMeshList.emplace_back(SYSRES.ImagePannel);
 
-	// ÀÌ¹ÌÁö ÆĞ³Î°ú ºôº¸µå ¸Å½¬´Â °°Àº ¹öÅØ½º¸¦ »ç¿ëÇÔ
+	// ì´ë¯¸ì§€ íŒ¨ë„ê³¼ ë¹Œë³´ë“œ ë§¤ì‰¬ëŠ” ê°™ì€ ë²„í…ìŠ¤ë¥¼ ì‚¬ìš©í•¨
 	SYSRES.BillboardMesh = SYSRES.ImagePannel;
 
-	// ½ºÄ«ÀÌ¹Ú½º Ãâ·Â¿ë ¸Å½¬ »ı¼º
+	// ìŠ¤ì¹´ì´ë°•ìŠ¤ ì¶œë ¥ìš© ë§¤ì‰¬ ìƒì„±
 	SYSRES.SkyboxMesh = new Mesh;
 	SYSRES.SkyboxMesh->CreateSkyboxMesh(System.Device, System.CmdList);
 	LoadedMeshList.emplace_back(SYSRES.SkyboxMesh);
 
-	// ¹Ù¿îµå¹Ú½º Ãâ·Â¿ë ¸Å½¬ »ı¼º
+	// ë°”ìš´ë“œë°•ìŠ¤ ì¶œë ¥ìš© ë§¤ì‰¬ ìƒì„±
 	SYSRES.BoundMesh = new Mesh;
 	SYSRES.BoundMesh->CreateBoundboxMesh(System.Device, System.CmdList);
 	LoadedMeshList.emplace_back(SYSRES.BoundMesh);
 
-	// ¹Ù¿îµå½ºÆä¾î Ãâ·Â¿ë ¸Å½¬ »ı¼º
+	// ë°”ìš´ë“œìŠ¤í˜ì–´ ì¶œë ¥ìš© ë§¤ì‰¬ ìƒì„±
 	SYSRES.BoundingSphereMesh = new Mesh(System.Device, System.CmdList, "Resources//SystemResources//Models//BoundingSphereMesh.txt", MESH_TYPE_TEXT);
 	LoadedMeshList.emplace_back(SYSRES.BoundingSphereMesh);
 }
 
-// ¾÷·Îµå ¹öÆÛ¸¦ »èÁ¦ÇÏ°í, º¤ÅÍ¸¦ ºñ¿î´Ù.
+// ì—…ë¡œë“œ ë²„í¼ë¥¼ ì‚­ì œí•˜ê³ , ë²¡í„°ë¥¼ ë¹„ìš´ë‹¤.
 void ClearUploadBuffer() {
 	for (auto const& MeshPtr : LoadedMeshList)
 		MeshPtr->ReleaseUploadBuffers();

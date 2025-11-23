@@ -48,12 +48,12 @@ public:
 				Load();
 				break;
 
-			//	// ½Ã¿¬¿ë ÀÓ½Ã Á¶ÀÛÅ°
+			//	// ì‹œì—°ìš© ì„ì‹œ ì¡°ì‘í‚¤
 			//case VK_RIGHT:
 			//	scene.SwitchMode(Level3::Start);
 			//	break;
 
-			//	// ½Ã¿¬¿ë ÀÓ½Ã Á¶ÀÛÅ°
+			//	// ì‹œì—°ìš© ì„ì‹œ ì¡°ì‘í‚¤
 			//case VK_LEFT:
 			//	scene.SwitchMode(Level1::Start);
 			//	break;
@@ -73,7 +73,7 @@ public:
 	}
 
 	void Render() override {
-		// ¸Ê ÅÍ·¹ÀÎ ·»´õ¸µ
+		// ë§µ í„°ë ˆì¸ ë Œë”ë§
 		BeginRender();
 		Transform::Move(TranslateMatrix, 0.0, -50.0, 0.0);
 		Transform::Scale(ScaleMatrix, 0.3, 0.2, 0.3);
@@ -131,7 +131,7 @@ public:
 		WallPositionScript.Release();
 		WallPositionScript.Load("Resources//Scripts//map2//map2-wall-rock.xml");
 
-		// ·Îµå µ¿ÀÛÀ» ¶÷´Ù ÇÔ¼ö·Î Á¤ÀÇÇÑ ÈÄ LoadAllData()¿¡ Àü´ŞÇÏ¸é LoadAllData()³»ºÎ¿¡¼­ Á¤ÀÇÇÑ µ¿ÀÛÀ» ½ÇÇàÇÑ´Ù.
+		// ë¡œë“œ ë™ì‘ì„ ëŒë‹¤ í•¨ìˆ˜ë¡œ ì •ì˜í•œ í›„ LoadAllData()ì— ì „ë‹¬í•˜ë©´ LoadAllData()ë‚´ë¶€ì—ì„œ ì •ì˜í•œ ë™ì‘ì„ ì‹¤í–‰í•œë‹¤.
 		auto LoadWallData = [&](CategoryPtr Category) {
 			ObjectStruct Obj;
 			Obj.Position.x = WallPositionScript.LoadDigitData(Category, "X");
@@ -204,7 +204,7 @@ public:
 		OOBBDataScript.LoadAllData(LoadOOBBData);
 	}
 
-	// ¸ÊÀÇ º® oobb¸¦ ¾ò´Â´Ù
+	// ë§µì˜ ë²½ oobbë¥¼ ì–»ëŠ”ë‹¤
 	std::vector<OOBB> GetMapWallOOBB() {
 		return OOBBVec;
 	}

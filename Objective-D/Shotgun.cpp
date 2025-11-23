@@ -6,7 +6,7 @@
 void SendBangPacket(unsigned int ID);
 
 Shotgun::Shotgun(GameObject* Ptr) {
-	// ÅºÈ¯ ÇÏ³ª ´ç ´ë¹ÌÁö (12°³)
+	// íƒ„í™˜ í•˜ë‚˜ ë‹¹ ëŒ€ë¯¸ì§€ (12ê°œ)
 	damage = SG_DAMAGE;
 	recoil = SG_RECOIL;
 	recoilBack = SG_RECOIL_BACK;
@@ -18,11 +18,11 @@ Shotgun::Shotgun(GameObject* Ptr) {
 
 	userPtr = Ptr;
 
-	// SHOOT_SPEED_INCREASE È°¼ºÈ­ ½Ã ¿¬»ç ¼Óµµ 20% Áõ°¡
+	// SHOOT_SPEED_INCREASE í™œì„±í™” ì‹œ ì—°ì‚¬ ì†ë„ 20% ì¦ê°€
 	if (GLOBAL.buff[SHOOT_SPEED_INCREASE])
 		fireDelayTime *= 0.6;
 
-	// RELOAD_SPEED_INCREASE È°¼ºÈ­ ½Ã ÀçÀåÀü ½Ã°£ 50% °¨¼Ò
+	// RELOAD_SPEED_INCREASE í™œì„±í™” ì‹œ ì¬ì¥ì „ ì‹œê°„ 50% ê°ì†Œ
 	if (GLOBAL.buff[RELOAD_SPEED_INCREASE])
 		reloadTime *= 0.5;
 }
@@ -35,11 +35,11 @@ void Shotgun::Render() {
 	Transform::Move(TranslateMatrix, positionOffset.x + shakeResultX, positionOffset.y + shakeResultY, positionOffset.z + recoilOffset);
 	Render3D(MESH.shotgun, TEX.scifi);
 
-	// ·¹µå µµÆ® ·»´õ¸µ
+	// ë ˆë“œ ë„íŠ¸ ë Œë”ë§
 	SetLightUse(DISABLE_LIGHT);
 	Render3D(MESH.dot_shotgun, TEX.scifi);
 
-	// È­¿° ·»´õ¸µ
+	// í™”ì—¼ ë Œë”ë§
 	if (currentFlameRenderTime > 0.0) {
 		Transform::Scale(ScaleMatrix, 1.5, 1.5, 1.0);
 		Render3D(MESH.gun_flame, TEX.gun_flame);
@@ -82,12 +82,12 @@ void Shotgun::updateFire(float Delta) {
 }
 
 void Shotgun::updateGun(float Delta) {
-	// ÃÑ È¸Àü ¾÷µ¥ÀÌÆ®
+	// ì´ íšŒì „ ì—…ë°ì´íŠ¸
 	rotation.x = std::lerp(rotation.x, rotationDest.x, Delta * 30.0);
 	rotation.y = std::lerp(rotation.y, rotationDest.y, Delta * 30.0);
 	rotation.z = std::lerp(rotation.z, rotationDest.z, Delta * 30.0);
 
-	// ÁÜ¿¡ µû¸¥ À§Ä¡ ¿ÀÇÁ¼Â ¾÷µ¥ÀÌÆ®
+	// ì¤Œì— ë”°ë¥¸ ìœ„ì¹˜ ì˜¤í”„ì…‹ ì—…ë°ì´íŠ¸
 	if (!reloadState) {
 		if (zoomState) {
 			positionOffset.x = std::lerp(positionOffset.x, 0.0, Delta * 20.0);
@@ -106,10 +106,10 @@ void Shotgun::updateGun(float Delta) {
 		positionOffset.z = std::lerp(positionOffset.z, 0.3, Delta * 10.0);
 	}
 
-	// ¹İµ¿¿¡ µû¸¥ À§Ä¡ ¿ÀÇÁ¼Â ¾÷µ¥ÀÌÆ®
+	// ë°˜ë™ì— ë”°ë¥¸ ìœ„ì¹˜ ì˜¤í”„ì…‹ ì—…ë°ì´íŠ¸
 	recoilOffset = std::lerp(recoilOffset, 0.0, Delta * 4.0);
 
-	// È­¿° ·»´õ¸µ½Ã°£ ¾÷µ¥ÀÌÆ®
+	// í™”ì—¼ ë Œë”ë§ì‹œê°„ ì—…ë°ì´íŠ¸
 	currentFlameRenderTime -= Delta;
 	Clamp::LimitValue(currentFlameRenderTime, 0.0, CLAMP_DIR_LESS);
 }

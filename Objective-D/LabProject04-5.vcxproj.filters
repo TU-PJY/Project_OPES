@@ -362,6 +362,9 @@
     <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ LevelEntry ]">
       <UniqueIdentifier>{2ba63e4f-3599-4e60-a99f-3c2f9cb45956}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Cam Animation Controller ]">
+      <UniqueIdentifier>{947d1569-cd97-40cf-b004-f33c87cca7b3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -658,6 +661,9 @@
     </ClInclude>
     <ClInclude Include="AnimationUtil.h">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Animation Util ]</Filter>
+    </ClInclude>
+    <ClInclude Include="CamAnimController.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Cam Animation Controller ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

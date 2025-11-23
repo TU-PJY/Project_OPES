@@ -16,7 +16,7 @@
 #include "Gazer.h"
 
 #include "Lobby.h"
-//Å×½ºÆ® ÀÛ¾÷À» À§ÇÑ ¸ğµå.
+//í…ŒìŠ¤íŠ¸ ì‘ì—…ì„ ìœ„í•œ ëª¨ë“œ.
 
 #include "ScriptUtil.h"
 
