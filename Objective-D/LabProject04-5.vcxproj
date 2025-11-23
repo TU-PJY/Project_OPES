@@ -242,6 +242,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="Scorpion.h" />
     <ClInclude Include="SoundModule\QuadPent_Sound.h" />
+    <ClInclude Include="Spaceship.h" />
     <ClInclude Include="SpecterUI.h" />
     <ClInclude Include="SpreadBullet.h" />
     <ClInclude Include="StartMode.h" />

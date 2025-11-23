@@ -229,6 +229,7 @@ void LoadTexture(DeviceSystem& System) {
 	LoadTexture(TEX.ColorTex, L"Resources//Image//ColorTexture.png", TEXTURE_TYPE_WIC);
 	LoadTexture(TEX.skyBox, L"Resources//Image//sky.png", TEXTURE_TYPE_WIC);
 	LoadTexture(TEX.skyBox2, L"Resources//Image//sky-2.png", TEXTURE_TYPE_WIC);
+	LoadTexture(TEX.skyBoxSpace, L"Resources//Image//space.png", TEXTURE_TYPE_WIC, D3D12_FILTER_MIN_MAG_MIP_LINEAR);
 
 	// map1
 	if (LoadMap1Resources) {

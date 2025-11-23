@@ -368,6 +368,9 @@
     <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ LevelExit ]">
       <UniqueIdentifier>{9a053325-eb1a-4600-ad77-a41d86c89242}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Spaceship ]">
+      <UniqueIdentifier>{639f071e-9cbd-4580-996a-b17a5a6072c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -667,6 +670,9 @@
     </ClInclude>
     <ClInclude Include="CamAnimController.h">
       <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Cam Animation Controller ]</Filter>
+    </ClInclude>
+    <ClInclude Include="Spaceship.h">
+      <Filter>[ WorkSpace ]\[3][ Game Object ]\[ Entity ]\[ Spaceship ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

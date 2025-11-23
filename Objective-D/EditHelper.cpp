@@ -2,15 +2,19 @@
 #include "CameraUtil.h"
 #include "MathUtil.h"
 
-EditHelper::EditHelper() {
+EditHelper::EditHelper(bool terrainCheck) {
 	text.EnableShadow();
 	text.SetShadow(XMFLOAT2(0.008, -0.008), 1.0);
+	checkTerrain = terrainCheck;
 }
 
 void EditHelper::Update(float Delta) {
 	XMFLOAT3 pickPosition{};
-	float distance{};
-	pickPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
+
+	if (checkTerrain) {
+		float distance{};
+		pickPosition = terrainUtil.CheckCollisionRay(GLOBAL.mapTerrain, distance);
+	}
 
 	XMFLOAT3 currentCamPosition = camera.GetPosition();
 	float currentCamRotation = XMConvertToDegrees(camera.GetYaw());

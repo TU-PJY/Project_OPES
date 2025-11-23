@@ -11,8 +11,10 @@ private:
 	XMFLOAT2    compassPos[4]{};
 	TerrainUtil terrainUtil{};
 
+	bool checkTerrain{};
+
 public:
-	EditHelper();
+	EditHelper(bool terrainCheck=true);
 	void Update(float Delta) override;
 	void Render() override;
 };

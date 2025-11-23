@@ -44,6 +44,8 @@ public:
 	CamAnimController(int flag, int level) {
 		animModeFlag = flag;
 		currentLevel = level;
+		if (level == 3)
+			screenOpacity = 1.5f;
 	}
 
 	void SetCameraStartPosition(const XMFLOAT3& position) override {
@@ -102,22 +104,41 @@ public:
 			break;
 
 		case MODE_EXIT:
-			if (currentTime <= 1.f) {
-				camRot.y = Math::CalcDegree2D(camPos.z, camPos.x, centerPointPos.z, centerPointPos.x);
-				easeInOut.Update(fov, fovStart, fovEnd, 1.f, delta);
+			if (currentLevel < 3) {
+				if (currentTime <= 1.f) {
+					camRot.y = Math::CalcDegree2D(camPos.z, camPos.x, centerPointPos.z, centerPointPos.x);
+					easeInOut.Update(fov, fovStart, fovEnd, 1.f, delta);
+				}
+
+				if (currentTime >= 1.5f) {
+					if (!randUp)
+						randUp = scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
+				}
+
+				if (currentTime >= 7.f)
+					screenOpacity += delta;
+
+				camera.Move(camPos);
+				camera.Rotate(camRot.x, camRot.y, 0.f);
+				GLOBAL.offsetFOV = fov;
 			}
 
-			if (currentTime >= 1.5f) {
-				if(!randUp && currentLevel < 3)
-					randUp = scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
+			else {
+				if (currentTime <= 3.f) {
+					camRot = Math::CalcDegree3D(centerPointPos, camPos);
+					camRot.y = Math::CalcDegree2D(camPos.z, camPos.x, centerPointPos.z, centerPointPos.x);
+					screenOpacity -= delta;
+					Clamp::LimitValue(screenOpacity, 0.f, CLAMP_DIR_LESS);
+				}
+
+				else if (currentTime >= 6.f)
+					screenOpacity += delta;
+
+				camera.Move(camPos);
+				camera.Rotate(camRot.x, camRot.y, 20.f);
+				camera.SetShake(0.025f);
+				GLOBAL.offsetFOV = fov;
 			}
-
-			camera.Move(camPos);
-			camera.Rotate(camRot.x, camRot.y, 0.f);
-			GLOBAL.offsetFOV = fov;
-
-			if (currentTime >= 7.f)
-				screenOpacity += delta;
 
 			if (screenOpacity >= 1.5f) {
 				switch (currentLevel) {

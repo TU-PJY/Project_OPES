@@ -9,8 +9,10 @@ void SkyBox::Render() {
 	Transform::Move(TranslateMatrix, camera.GetPosition());
 	Transform::Scale(ScaleMatrix, XMFLOAT3(600.0, 600.0, 600.0));
 
-	if (GLOBAL.mapName.compare("map3") != 0)
+	if(GLOBAL.mapName == "map1" || GLOBAL.mapName == "map2")
 		Render3D(SYSRES.SkyboxMesh, TEX.skyBox);
-	else
+	else if(GLOBAL.mapName == "map3")
 		Render3D(SYSRES.SkyboxMesh, TEX.skyBox2);
+	else
+		Render3D(SYSRES.SkyboxMesh, TEX.skyBoxSpace);
 }
