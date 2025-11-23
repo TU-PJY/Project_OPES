@@ -5,11 +5,15 @@
 #include "CenterBuilding.h"
 #include "CamAnimController.h"
 
+namespace Level3EntryMode { std::deque<GameObject*> ControlObjectList; }
+
 void Level3EntryMode::Start() {
+	scene.SetupMode("level3_entry_mode", Destructor, ControlObjectList);
+
+	// 맵 추가
 	GLOBAL.offsetFOV = 0.0;
 
-	FOG_DATA FogData{};
-	FogData = {
+	FOG_DATA FogData = {
 		{0.68, 0.28, 0.1}, // Fog Color
 		0.0,   //   padding1
 
