@@ -83,6 +83,8 @@ public:
 	virtual void InputCreatePositionAndID(float x, float z, unsigned int ID) {}
 	virtual void InputTime(int time) {}
 	virtual void SetBuffDebuff(unsigned int ID) {}
+	virtual void SetPosition(const XMFLOAT3& pos) {}
+	virtual void SetRotation(float degrees) {}
 
 	// 사용자 정의 리턴 함수는 아래에 정의한다.
 	// 크로스헤어 반동 부여 함수
@@ -153,5 +155,6 @@ public:
 	// 확장 모드 기능
 	virtual void SetCameraStartPosition(const XMFLOAT3& position) {}
 	virtual void SetCameraFovRange(float start, float end) {}
+	virtual void SetCameraRotation(float degrees) {}
 	virtual void InputCenterPointPosition(const XMFLOAT3& position) {}
 };

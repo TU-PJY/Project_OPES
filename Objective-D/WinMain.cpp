@@ -98,7 +98,7 @@ bool LoadMap3Resources = true;
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode = (GLOBAL.EXT_MODE_ENABLED) ? Level1EntryMode::Start : Level1::Start;
+START_MODE_PTR StartMode = Level3EntryMode::Start; //(GLOBAL.EXT_MODE_ENABLED) ? Level1EntryMode::Start : Level1::Start;
 
 // -1: not selected 0: heavy, 1: dmr, 2: engineer
 int myCharacter = 0;

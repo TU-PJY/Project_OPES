@@ -12,6 +12,7 @@ void Level2EntryMode::Start() {
 
 	// 맵 추가
 	GLOBAL.offsetFOV = 0.0;
+	GLOBAL.mapName = "map2";
 
 	FOG_DATA FogData = {
 		{0.63, 0.77, 0.98}, // Fog Color

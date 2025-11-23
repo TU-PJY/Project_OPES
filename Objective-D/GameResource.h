@@ -158,6 +158,9 @@ struct GlobalValue {
 
 	// 확장 모드 여부
 	bool EXT_MODE_ENABLED = true;
+
+	// 최근 플레이어 위치
+	XMFLOAT3 finalPlayerPos{};
 };
 extern GlobalValue GLOBAL;
 

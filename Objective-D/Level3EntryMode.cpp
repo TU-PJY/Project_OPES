@@ -12,6 +12,7 @@ void Level3EntryMode::Start() {
 
 	// 맵 추가
 	GLOBAL.offsetFOV = 0.0;
+	GLOBAL.mapName = "map3";
 
 	FOG_DATA FogData = {
 		{0.68, 0.28, 0.1}, // Fog Color
@@ -28,7 +29,7 @@ void Level3EntryMode::Start() {
 	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
 
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
-	scene.AddObject(new Map3, "map", LAYER1);
+	scene.AddObject(new Map3, "map3", LAYER1);
 	auto center = scene.AddObject(new CenterBuilding(7.0), "center_building", LAYER1);
 
 	auto camCont = scene.AddObject(new CamAnimController(MODE_ENTRY, 3), "cam_anim_cont", LAYER_UI1);

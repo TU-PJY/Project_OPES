@@ -365,6 +365,9 @@
     <Filter Include="[ WorkSpace ]\[3][ Game Object ]\[ Invisible ]\[ Cam Animation Controller ]">
       <UniqueIdentifier>{947d1569-cd97-40cf-b004-f33c87cca7b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ LevelExit ]">
+      <UniqueIdentifier>{9a053325-eb1a-4600-ad77-a41d86c89242}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -999,6 +1002,15 @@
     </ClCompile>
     <ClCompile Include="Level3EntryMode.cpp">
       <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ LevelEntry ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level1ExitMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ LevelExit ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level2ExitMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ LevelExit ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level3ExitMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ LevelExit ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

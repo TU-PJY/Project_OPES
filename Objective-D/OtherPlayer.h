@@ -52,7 +52,7 @@ private:
 	GameObject* tagObject{};
 
 public:
-	OtherPlayer(int characterType, unsigned int ID, const std::string name);
+	OtherPlayer(int characterType, unsigned int ID, const std::string name, bool MySelf=false);
 	~OtherPlayer();
 	void updateState();
 	void updateAnimation(float Delta);
@@ -67,6 +67,8 @@ public:
 	void InputRotation(XMFLOAT3& rotation) override;
 	void InputState(unsigned int state) override;
 	XMFLOAT3 GetPosition() override;
+	void SetPosition(const XMFLOAT3& pos) override;
+	void SetRotation(float degrees) override;
 	void InputHP(int currentHP) override;
 	OOBB GetOOBB() override;
 	void GiveDamage(int damage) override;

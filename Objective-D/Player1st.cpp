@@ -13,6 +13,7 @@
 #include "Scope.h"
 #include "CameraController.h"
 #include "SpecterUI.h"
+#include "ModePack.h"
 
 #include "Grenade.h"
 
@@ -345,22 +346,22 @@ void Player1st::InputKey(KeyEvent& Event) {
 		case '1':
 			//SendMasterKeyPacket(1);
 			playerPosition = MAP1_DESTINATION;
-			if(GLOBAL.EXT_MODE_ENABLED && !GLOBAL.useServer)
-				scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
+			if (GLOBAL.EXT_MODE_ENABLED && !GLOBAL.useServer)
+				scene.SwitchMode(Level1ExitMode::Start);
 			break;
 
 		case '2':
 			//SendMasterKeyPacket(2);
 			playerPosition = MAP2_DESTINATION;
 			if(GLOBAL.EXT_MODE_ENABLED && !GLOBAL.useServer)
-				scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
+				scene.SwitchMode(Level2ExitMode::Start);
 			break;
 
 		case '3':
 			//SendMasterKeyPacket(3);
 			playerPosition = MAP3_DESTINATION;
 			if(GLOBAL.EXT_MODE_ENABLED && !GLOBAL.useServer)
-				scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
+				scene.SwitchMode(Level3ExitMode::Start);
 			break;
 		break;
 		}

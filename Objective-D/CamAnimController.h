@@ -5,6 +5,7 @@
 #include "ModePack.h"
 #include "CameraController.h"
 #include "MathUtil.h"
+#include "RandomUpgrade.h"
 
 enum AnimMode {
 	MODE_ENTRY,
@@ -36,7 +37,7 @@ private:
 
 	float     screenOpacity{};
 
-	bool      camPosLocated{};
+	GameObject* randUp{};
 
 public:
 	// 레벨 엔트리/엑시트, 현재 레벨 번호 입력
@@ -101,7 +102,36 @@ public:
 			break;
 
 		case MODE_EXIT:
+			if (currentTime <= 1.f) {
+				camRot.y = Math::CalcDegree2D(camPos.z, camPos.x, centerPointPos.z, centerPointPos.x);
+				easeInOut.Update(fov, fovStart, fovEnd, 1.f, delta);
+			}
 
+			if (currentTime >= 1.5f) {
+				if(!randUp && currentLevel < 3)
+					randUp = scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
+			}
+
+			camera.Move(camPos);
+			camera.Rotate(camRot.x, camRot.y, 0.f);
+			GLOBAL.offsetFOV = fov;
+
+			if (currentTime >= 7.f)
+				screenOpacity += delta;
+
+			if (screenOpacity >= 1.5f) {
+				switch (currentLevel) {
+				case 1:
+					scene.SwitchMode(Level2EntryMode::Start);
+					break;
+				case 2:
+					scene.SwitchMode(Level3EntryMode::Start);
+					break;
+				case 3:
+					scene.SwitchMode(ClearMode::Start);
+					break;
+				}
+			}
 			break;
 		}
 	}

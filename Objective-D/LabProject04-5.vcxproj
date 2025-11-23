@@ -298,11 +298,14 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="ImageShader.cpp" />
     <ClCompile Include="Imp.cpp" />
     <ClCompile Include="InstallIndicator.cpp" />
+    <ClCompile Include="Level1ExitMode.cpp" />
     <ClCompile Include="Level2.cpp" />
     <ClCompile Include="Level2EntryMode.cpp" />
+    <ClCompile Include="Level2ExitMode.cpp" />
     <ClCompile Include="Level3.cpp" />
     <ClCompile Include="Level1EntryMode.cpp" />
     <ClCompile Include="Level3EntryMode.cpp" />
+    <ClCompile Include="Level3ExitMode.cpp" />
     <ClCompile Include="LineBrush.cpp" />
     <ClCompile Include="LineShader.cpp" />
     <ClCompile Include="Lobby.cpp" />

@@ -5,7 +5,7 @@
 #include "PlayerTag.h"
 
 // 캐릭터 타입에 따라 다른 fbx를 초기화 한다.
-OtherPlayer::OtherPlayer(int characterType, unsigned int ID, const std::string name) {
+OtherPlayer::OtherPlayer(int characterType, unsigned int ID, const std::string name, bool MySelf) {
 	this->characterType = characterType;
 	ScriptUtil script{};
 	script.Load("Resources//Scripts//weapon//flamePosition.xml");
@@ -68,11 +68,13 @@ OtherPlayer::OtherPlayer(int characterType, unsigned int ID, const std::string n
 	this->ID = ID;
 
 	playerName = name;
-
-	tagObject = scene.AddObject(new PlayerTag(playerName), "tag", LAYER_UI1);
-	if (tagObject) {
-		tagObject->InputPosition(position);
-		tagObject->SetBuffDebuff(ID);
+	
+	if (!MySelf) {
+		tagObject = scene.AddObject(new PlayerTag(playerName), "tag", LAYER_UI1);
+		if (tagObject) {
+			tagObject->InputPosition(position);
+			tagObject->SetBuffDebuff(ID);
+		}
 	}
 }
 
@@ -243,6 +245,21 @@ void OtherPlayer::InputState(unsigned int state) {
 XMFLOAT3 OtherPlayer::GetPosition() {
 	XMFLOAT3 outPosition = XMFLOAT3(position.x, position.y + size.y * 0.5, position.z);
 	return outPosition;
+}
+
+void OtherPlayer::SetPosition(const XMFLOAT3& pos) {
+	position = pos;
+	positionDest = pos;
+
+	TerrainUtil terrainUtil;
+	terrainUtil.InputPosition(position);
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, positionDest, 0.0);
+	terrainUtil.ClampToTerrain(GLOBAL.mapTerrain, position, 0.0);
+}
+
+void OtherPlayer::SetRotation(float degrees) {
+	rotation.y = degrees;
+	rotationDest.y = degrees;
 }
 
 void OtherPlayer::InputHP(int currentHP) {
