@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "MouseUtil.h"
 
-// ¿©±â¿¡ ¸ğµå ³×ÀÓ½ºÆäÀÌ½º ÇÔ¼öµéÀ» ¸ğ¾Æ¼­ ¼±¾ğÇÑ´Ù. -> ¸ğµå¿¡ »ç¿ëµÇ´Â ÆÄÀÏ °³¼ö¸¦ ÁÙÀÌ±â À§ÇÔ
+// ì—¬ê¸°ì— ëª¨ë“œ ë„¤ì„ìŠ¤í˜ì´ìŠ¤ í•¨ìˆ˜ë“¤ì„ ëª¨ì•„ì„œ ì„ ì–¸í•œë‹¤. -> ëª¨ë“œì— ì‚¬ìš©ë˜ëŠ” íŒŒì¼ ê°œìˆ˜ë¥¼ ì¤„ì´ê¸° ìœ„í•¨
 namespace Level1 {
 	void Start();
 	void Destructor();
@@ -38,14 +38,40 @@ namespace ClearMode {
 	void Destructor();
 }
 
+// ë ˆë²¨ ì‹œì‘ ë° ë ì—°ì¶œì„ ìœ„í•œ í™•ì¥ ëª¨ë“œ.
+namespace Level1EntryMode {
+	void Start();
+	void Destructor();
+}
 
-// FBX ¾Ö´Ï¸ŞÀÌ¼Ç ±¸ÇöÀ» À§ÇÑ Å×½ºÆ® ¸ğµå. ½ÇÁ¦ °³¹ß ½Ã ºñÈ°¼ºÈ­ÇÑ´Ù.
+namespace Level2EntryMode {
+
+}
+
+namespace Level3EntryMode {
+
+}
+
+namespace Level1ExitMode {
+
+}
+
+namespace Level2ExitMode {
+
+}
+
+namespace Level3ExitMode {
+
+}
+
+
+// FBX ì• ë‹ˆë©”ì´ì…˜ êµ¬í˜„ì„ ìœ„í•œ í…ŒìŠ¤íŠ¸ ëª¨ë“œ. ì‹¤ì œ ê°œë°œ ì‹œ ë¹„í™œì„±í™”í•œë‹¤.
 namespace TestMode {
 	void Start();
 	void Destructor();
 }
 
-// ¼­¹ö ½Ã¿¬¿ë ¸ğµå
+// ì„œë²„ ì‹œì—°ìš© ëª¨ë“œ
 namespace ServerTestMode {
 	void Start();
 	void Destructor();

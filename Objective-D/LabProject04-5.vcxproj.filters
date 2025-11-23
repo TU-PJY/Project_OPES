@@ -356,6 +356,12 @@
     <Filter Include="[ D3D12 ]\[6] - [ Util ]\[ Shadow Util ]">
       <UniqueIdentifier>{1cdcac4b-fb1b-46b4-9bd2-cd2747b79fe5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="[ D3D12 ]\[6] - [ Util ]\[ Animation Util ]">
+      <UniqueIdentifier>{bda68486-c1a5-492e-ae6f-f3c011e7ef49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="[ WorkSpace ]\[2][ Game Mode ]\[ LevelEntry ]">
+      <UniqueIdentifier>{2ba63e4f-3599-4e60-a99f-3c2f9cb45956}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scene.h">
@@ -649,6 +655,9 @@
     </ClInclude>
     <ClInclude Include="ShadowMap.h">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Shadow Util ]</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationUtil.h">
+      <Filter>[ D3D12 ]\[6] - [ Util ]\[ Animation Util ]</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -972,6 +981,12 @@
     </ClCompile>
     <ClCompile Include="ShadowMap.cpp">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Shadow Util ]</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationUtil.cpp">
+      <Filter>[ D3D12 ]\[6] - [ Util ]\[ Animation Util ]</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEntryMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ LevelEntry ]</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

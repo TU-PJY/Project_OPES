@@ -162,6 +162,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClInclude Include="..\Server_OPES\Packet.h" />
     <ClInclude Include="..\Server_OPES\protocol.h" />
     <ClInclude Include="AdventureTimer.h" />
+    <ClInclude Include="AnimationUtil.h" />
     <ClInclude Include="Beacon.h" />
     <ClInclude Include="BoundboxShader.h" />
     <ClInclude Include="BuffDebuffIndicator.h" />
@@ -260,6 +261,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdventureTimer.cpp" />
+    <ClCompile Include="AnimationUtil.cpp" />
     <ClCompile Include="Beacon.cpp" />
     <ClCompile Include="Blends.cpp" />
     <ClCompile Include="BoundboxShader.cpp" />
@@ -296,6 +298,7 @@ zlib.lib;%(AdditionalDependencies)</AdditionalDependencies>
     <ClCompile Include="InstallIndicator.cpp" />
     <ClCompile Include="Level2.cpp" />
     <ClCompile Include="Level3.cpp" />
+    <ClCompile Include="LevelEntryMode.cpp" />
     <ClCompile Include="LineBrush.cpp" />
     <ClCompile Include="LineShader.cpp" />
     <ClCompile Include="Lobby.cpp" />
