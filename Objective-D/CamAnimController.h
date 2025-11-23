@@ -69,21 +69,22 @@ public:
 				if (currentTime <= 5.f)
 					sinMove.Update(camRot.y, 0.f, 180.f, 1.f, delta);
 				else {
-					camPos = XMFLOAT3(centerPointPos.x - 100.f, camPos.y, centerPointPos.z - 100.f);
-					camRot = -Math::CalcDegree3D(camPos, centerPointPos);
-					easeInOut.Update(fov, fovStart, fovEnd, 1.f, delta);
+					camRot = Math::CalcDegree3D(centerPointPos, camPos);
+					camRot.y = Math::CalcDegree2D(camPos.z, camPos.x, centerPointPos.z, centerPointPos.x);
+					camPos = XMFLOAT3(centerPointPos.x - 25.f, centerPointPos.y + 20.f, centerPointPos.z + 25.f);
+					easeInOut.Update(fov, fovEnd, fovStart, 1.f, delta);
 				}
 			}
 
 			camera.Move(camPos);
-			camera.Rotate(camRot.x, camRot.y, camRot.z);
+			camera.Rotate(camRot.x, camRot.y, 0.f);
 			GLOBAL.offsetFOV = fov;
 
 			// 애니메이션이 모두 끝난다면 화면이 어두워지고, 완전히 어두워지면 본 게임으로 진입한다.
-			if (currentTime >= 10.f) {
+			if (currentTime >= 7.f) {
 				screenOpacity += delta;
 
-				if (screenOpacity >= 1.f) {
+				if (screenOpacity >= 1.5f) {
 					switch (currentLevel) {
 					case 1:
 						scene.SwitchMode(Level1::Start);
@@ -107,10 +108,9 @@ public:
 
 	// 화면이 어두워지는 장면 렌더링
 	void Render() override {
-		BeginRender(RENDER_TYPE_2D_STATIC);
-		Transform::Identity(ScaleMatrix);
+		BeginRender(RENDER_TYPE_2D);
 		Transform::Scale2D(ScaleMatrix, 10.f, 10.f);
-		SetColor(XMFLOAT3(0.f, 0.f, 0.f ));
+		SetColor(XMFLOAT3(0.f, 0.f, 0.f));
 		Render2D(TEX.ColorTex, screenOpacity);
 	}
 };
