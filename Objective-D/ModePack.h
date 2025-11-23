@@ -45,11 +45,13 @@ namespace Level1EntryMode {
 }
 
 namespace Level2EntryMode {
-
+	void Start();
+	void Destructor();
 }
 
 namespace Level3EntryMode {
-
+	void Start();
+	void Destructor();
 }
 
 namespace Level1ExitMode {

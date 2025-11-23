@@ -29,8 +29,7 @@ void Level1EntryMode::Start() {
 	CBVUtil::Create(GlobalSystem.Device, &FogData, sizeof(FOG_DATA), FogCBV);
 
 	scene.AddObject(new SkyBox, "skybox", LAYER1);
-	GLOBAL.mapName = "map1";
-	scene.AddObject(new Map1, GLOBAL.mapName, LAYER1, true);
+	scene.AddObject(new Map1, "map", LAYER1, true);
 	auto center = scene.AddObject(new CenterBuilding(-2.0), "center_building", LAYER1);
 	scene.AddObject(new FallingStone(xmfloat3(-114.3, 20.0, -40.9), 0), std::to_string(0), LAYER_STONE);
 	scene.AddObject(new FallingStone(xmfloat3(-77.0, 10.0, 71.9), 1), std::to_string(1), LAYER_STONE);

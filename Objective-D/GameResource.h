@@ -68,95 +68,97 @@ struct PlayerLobbyInfo {
 };
 
 // 프로젝트 전역에서 사용하는 변수들
-typedef struct {
+struct GlobalValue {
 	// 디펜스 모드에서 사용할 남은 적 수  및 디펜스 모드 상태 여부
-	int Map1DefenseEnemyRemained;
-	bool Map1DefenseState;
+	int Map1DefenseEnemyRemained{};
+	bool Map1DefenseState{};
 
-	int Map2DefenseEnemyRemained;
-	bool Map2DefenseState;
+	int Map2DefenseEnemyRemained{};
+	bool Map2DefenseState{};
 
-	int Map3DefenseEnemyRemained;
-	bool Map3DefenseState;
+	int Map3DefenseEnemyRemained{};
+	bool Map3DefenseState{};
 
 
 	// 카메라 FOV 오프셋
-	float offsetFOV;
+	float offsetFOV{};
 
 	// 전역에서 사용되는 맵 객체 이름
-	std::string mapName;
+	std::string mapName{};
 
 	// 전역에서 사용하는 맵 오브젝트 OOBB 데이터
-	std::vector<OOBB> mapOOBBdata;
+	std::vector<OOBB> mapOOBBdata{};
 
 	// 전역에서 사용하는 맵 터레인 객체
-	TerrainUtil mapTerrain;
+	TerrainUtil mapTerrain{};
 
 	// 전역 플레이어 인디케이터 객체
-	LPVOID otherIndicator;
+	LPVOID otherIndicator{};
 
 	// 서버 사용 여부
-	bool useServer;
-	bool useLocalServer;
+	bool useServer{};
+	bool useLocalServer{};
 
 	// 서버 구동 여부
-	std::atomic<bool> NetRunning;
+	std::atomic<bool> NetRunning{};
 
 	// 현재 접속한 나의 ID
-	unsigned int myID;
+	unsigned int myID{};
 
 	// 서버에 접속한 인원들의 정보
-	std::map<unsigned int, PlayerLobbyInfo> playerList;
+	std::map<unsigned int, PlayerLobbyInfo> playerList{};
 
 	// 디펜스 모드 아이디 관리용 set
-	std::set<unsigned int> defenseIDList;
+	std::set<unsigned int> defenseIDList{};
 
 	// 마지막으로 입력한 서버 주소
-	std::string enterIP;
-	std::wstring enterIPw;
+	std::string enterIP{};
+	std::wstring enterIPw{};
 
 	// 마지막으로 입력한 내 닉네임
-	std::string myName;
+	std::string myName{};
 
-	int deathCount;
+	int deathCount{};
 
-	int stage;
+	int stage{};
 
 	// 로비에서 준비 여부
-	bool imReady;
+	bool imReady{};
 
 	// 내가 선택한 캐릭터
-	int myCharacter;
+	int myCharacter{};
 
 	// 서버 스레드
-	bool enterServerState;
-	std::thread netThread;
+	bool enterServerState{};
+	std::thread netThread{};
 
 	// 서버 시작 여부
-	bool startedGameServer;
+	bool startedGameServer{};
 
 	// 현재 서버 연결 여부
-	std::atomic<bool> serverConnected;
+	std::atomic<bool> serverConnected{};
 
 	// 타이틀 모드 넘김 여부
-	bool skipTitleMode;
+	bool skipTitleMode{};
 
 	// 디펜스모드 넘김 여부
-	bool skipDefenseMode;
+	bool skipDefenseMode{};
 
 	// 에디터 모드 여부
-	bool editMode;
+	bool editMode{};
 
 	// 플레이어 버프 및 디버프
-	bool buff[5];
-	bool deBuff[5];
+	bool buff[5]{};
+	bool deBuff[5]{};
 
 	//플레이어 컨트롤 가능 여부
-	bool controlEnabled;
+	bool controlEnabled{};
 
-	bool RENDER_BOUND;
+	bool RENDER_BOUND{};
 
-}GlobalValue;
+	// 확장 모드 여부
+	bool EXT_MODE_ENABLED = true;
+};
 extern GlobalValue GLOBAL;
 
 /////////////////////////////////////////////////////////////////////////////////

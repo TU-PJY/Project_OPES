@@ -91,14 +91,14 @@ bool DevMode = true;
 bool UIcreateMode = false;
 
 bool LoadMap1Resources = true;
-bool LoadMap2Resources = false;
-bool LoadMap3Resources = false;
+bool LoadMap2Resources = true;
+bool LoadMap3Resources = true;
 
 // 사운드 리소스를 로드한다.
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode =  Level1EntryMode::Start;
+START_MODE_PTR StartMode = (GLOBAL.EXT_MODE_ENABLED) ? Level1EntryMode::Start : Level1::Start;
 
 // -1: not selected 0: heavy, 1: dmr, 2: engineer
 int myCharacter = 0;

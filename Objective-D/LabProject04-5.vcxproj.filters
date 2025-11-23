@@ -991,7 +991,13 @@
     <ClCompile Include="AnimationUtil.cpp">
       <Filter>[ D3D12 ]\[6] - [ Util ]\[ Animation Util ]</Filter>
     </ClCompile>
-    <ClCompile Include="LevelEntryMode.cpp">
+    <ClCompile Include="Level1EntryMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ LevelEntry ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level2EntryMode.cpp">
+      <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ LevelEntry ]</Filter>
+    </ClCompile>
+    <ClCompile Include="Level3EntryMode.cpp">
       <Filter>[ WorkSpace ]\[2][ Game Mode ]\[ LevelEntry ]</Filter>
     </ClCompile>
   </ItemGroup>

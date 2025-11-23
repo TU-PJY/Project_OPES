@@ -16,6 +16,8 @@
 
 #include "Grenade.h"
 
+#include "RandomUpgrade.h"
+
 void SendMovePacket(float x, float y, float z);
 void SendViewingAnglePacket(float x, float y, float z);
 void SendAnimaionPacket(unsigned short playerState);
@@ -343,16 +345,22 @@ void Player1st::InputKey(KeyEvent& Event) {
 		case '1':
 			//SendMasterKeyPacket(1);
 			playerPosition = MAP1_DESTINATION;
+			if(GLOBAL.EXT_MODE_ENABLED && !GLOBAL.useServer)
+				scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
 			break;
 
 		case '2':
 			//SendMasterKeyPacket(2);
 			playerPosition = MAP2_DESTINATION;
+			if(GLOBAL.EXT_MODE_ENABLED && !GLOBAL.useServer)
+				scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
 			break;
 
 		case '3':
 			//SendMasterKeyPacket(3);
 			playerPosition = MAP3_DESTINATION;
+			if(GLOBAL.EXT_MODE_ENABLED && !GLOBAL.useServer)
+				scene.AddObject(new RandomUpgrade, "randomup", LAYER_UI2);
 			break;
 		break;
 		}

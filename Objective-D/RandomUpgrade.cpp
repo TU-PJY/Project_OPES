@@ -80,11 +80,20 @@ void RandomUpgrade::Update(float delta) {
 		cardSize = std::lerp(cardSize, 1.2, 5.0 * delta);
 		opacity = std::lerp(opacity, 0.0, 5.0 * delta);
 		if (opacity <= 0.001) {
-			if (GLOBAL.stage == 1)
-				scene.SwitchMode(Level2::Start);
+			// 확장 모드 활성화 시 확장 모드 실행
+			if (GLOBAL.stage == 1) {
+				if (GLOBAL.EXT_MODE_ENABLED)
+					scene.SwitchMode(Level2EntryMode::Start);
+				else
+					scene.SwitchMode(Level2::Start);
+			}
 
-			else if (GLOBAL.stage == 2) 
-				scene.SwitchMode(Level3::Start);
+			else if (GLOBAL.stage == 2) {
+				if (GLOBAL.EXT_MODE_ENABLED)
+					scene.SwitchMode(Level3EntryMode::Start);
+				else
+					scene.SwitchMode(Level3::Start);
+			}
 		}
 	}
 }
