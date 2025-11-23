@@ -223,6 +223,9 @@ typedef struct {
 	Mesh* turretFlame;
 	Mesh* turretFlameBack;
 
+	// spaceship
+	Mesh* spaceship;
+
 	// monster
 	FBXMesh plantMonster;
 	FBXMesh scorpion;
@@ -232,7 +235,6 @@ typedef struct {
 
 	FBXMesh gazer;
 	FBXMesh imp;
-
 }MeshResource;
 extern MeshResource MESH;
 
@@ -325,6 +327,9 @@ typedef struct {
 	Texture* UI_crosshair;
 
 	Texture* UI_clearScreen;
+
+	// spaceship
+	Texture* spaceship;
 }TextureResource;
 extern TextureResource TEX;
 
