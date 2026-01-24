@@ -2,7 +2,7 @@
 using namespace DirectX;
 
 // 기지 체력
-constexpr int                  CENTER_HP		= 500;
+constexpr int                  CENTER_HP		= 500000;
 
 // 무기
 // DAMAGE 데미지, RPM 연사속도(분당 발사수), RELOAD 재장전 속도, MAGAZINE 장탄수, HIP 견착, ADS 정조준

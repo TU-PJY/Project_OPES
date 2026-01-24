@@ -75,12 +75,12 @@ struct RecvContext {
 
 // 인게임 모드로 스킵하려면 true
 // StartMod도 Level1 ~ Level3으로 변경해주어야 함
-constexpr bool skipTitleMode = true;
+constexpr bool skipTitleMode = false;
 
 constexpr bool skipDefenseMode = false;
 constexpr bool editMode = false;
 
-constexpr bool useServer = false;//클라만 켜서 할땐 false로 바꿔서하기
+constexpr bool useServer = true;//클라만 켜서 할땐 false로 바꿔서하기
 constexpr bool localServer = false; //!useServer;
 
 // 개발 시 로드 시간 단축을 위해 선택적으로 리소스를 로드할 수 있도록 하였다.
@@ -98,7 +98,7 @@ bool LoadMap3Resources = true;
 bool LoadSoundResources = true;
 
 // 시작 모드
-START_MODE_PTR StartMode = Level3ExitMode::Start; //(GLOBAL.EXT_MODE_ENABLED) ? Level1EntryMode::Start : Level1::Start;
+START_MODE_PTR StartMode = TitleMode::Start; //(GLOBAL.EXT_MODE_ENABLED) ? Level1EntryMode::Start : Level1::Start;
 
 // -1: not selected 0: heavy, 1: dmr, 2: engineer
 int myCharacter = 0;
@@ -1178,26 +1178,7 @@ void SendReadyPacket(unsigned int id) {
 	}
 }
 
-// 채팅 패킷 전송 함수
-//void SendChatPacket(const char* message) {
-//	if (enter_room) {
-//		ChatPacket_CtoS chatPacket = {};
-//		chatPacket.type = PacketType::CHAT;
-//		int msg_size = strlen(message);
-//		memcpy(chatPacket.message, message, msg_size);
-//
-//		WSABUF wsaBuf[1];
-//		wsaBuf[0].buf = reinterpret_cast<char*>(&chatPacket);
-//		wsaBuf[0].len = sizeof(PacketType) + msg_size;
-//
-//		WSAOVERLAPPED send_over = { 0 };
-//
-//		int result = WSASend(clientSocket, wsaBuf, 1, NULL, 0, &send_over, SendCallback);//동기 io
-//		if (result == SOCKET_ERROR && WSAGetLastError() != WSA_IO_PENDING) {
-//			std::cerr << "[클라이언트] 채팅 패킷 전송 오류\n";
-//		}
-//	}
-//}
+
 
 
 int SCREEN_WIDTH = GetSystemMetrics(SM_CXSCREEN);
